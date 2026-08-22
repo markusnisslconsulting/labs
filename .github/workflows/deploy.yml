@@ -54,6 +54,22 @@ jobs:
             **/.git*/**
             **/node_modules/**
 
+      - name: Deploy the Storybook workbench over FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          local-dir: ./dist/packages/ui-storybook/
+          server-dir: labs.markusnissl.com/public/storybook/
+          dangerous-clean-slate: true
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+
       - name: Write the run summary
         run: |
           {

@@ -1,33 +1,21 @@
-import { Link, Route, Routes } from "react-router";
-import ChatBoxPage from "./pages/ChatBoxPage";
-import WebMcpPage from "./pages/WebMcpPage";
-import OnDevicePage from "./pages/OnDevicePage";
-
-const articles = {
-  "chat-box": {
-    title: "The chat box is a log",
-    blurb:
-      "When software acts, the transcript can only describe. Two demos from the article: the same scripted agent run twice, once as a transcript and once as events landing on the row, and the undo state machine that keeps the record honest.",
-    href: "https://www.markusnissl.com/blog/the-chat-box-is-a-log",
-    lab: "chat-box",
-  },
-  webmcp: {
-    title: "Declare your product's verbs",
-    blurb:
-      "A page that registers set_reorder_point as a callable tool. With the WebMCP flag on, the registration is real and the Tool Inspector can call it; without it, the simulate button runs the identical function an agent would.",
-    href: "https://www.markusnissl.com/blog/webmcp-the-page-as-a-tool-surface",
-    lab: "webmcp",
-  },
-  "on-device-ai": {
-    title: "On-device AI in Chrome",
-    blurb:
-      "All seven built-in APIs checked live: availability per machine, translation and summarising on the device, and the honest unavailable state everywhere else.",
-    href: "https://www.markusnissl.com/blog/chrome-built-in-ai-apis",
-    lab: "on-device-ai",
-  },
-} as const;
+import { useState } from "react";
+import { Link, Route, Routes, useParams } from "react-router";
+import { allTags, labBySlug, labs } from "./labs";
 
 const Home = () => {
+  const [query, setQuery] = useState("");
+  const [tag, setTag] = useState<string | null>(null);
+
+  const visible = labs.filter((lab) => {
+    if (tag && !lab.tags.includes(tag)) return false;
+    const needle = query.trim().toLowerCase();
+    if (!needle) return true;
+    return [lab.title, lab.summary, ...lab.tags]
+      .join(" ")
+      .toLowerCase()
+      .includes(needle);
+  });
+
   return (
     <div className="page">
       <p className="eyebrow">Markus Nissl · Labs</p>
@@ -36,23 +24,78 @@ const Home = () => {
         Each lab runs the exact code an article prints. Nothing here is a
         mock-up of the argument; it is the argument, compiled.
       </p>
-      <ul className="lab-list">
-        {Object.entries(articles).map(([slug, entry]) => (
-          <li key={slug} className="lab-card">
-            <h2>
-              <Link to={`/${entry.lab}`}>{entry.title}</Link>
-            </h2>
-            <p>{entry.blurb}</p>
-            <p className="lab-links">
-              <Link to={`/${entry.lab}`}>Open the lab</Link>
-              <span aria-hidden> · </span>
-              <a href={entry.href} target="_blank" rel="noopener noreferrer">
-                Read the article
-              </a>
-            </p>
-          </li>
-        ))}
-      </ul>
+
+      {labs.length > 3 ? (
+        <div className="lab-controls">
+          <input
+            type="search"
+            className="lab-search"
+            placeholder="Search the labs"
+            aria-label="Search the labs"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <div className="chip-row" role="group" aria-label="Filter by tag">
+            <button
+              type="button"
+              className={tag === null ? "chip active" : "chip"}
+              onClick={() => setTag(null)}
+              aria-pressed={tag === null}
+            >
+              All
+            </button>
+            {allTags.map((entry) => (
+              <button
+                key={entry}
+                type="button"
+                className={tag === entry ? "chip active" : "chip"}
+                onClick={() => setTag(tag === entry ? null : entry)}
+                aria-pressed={tag === entry}
+              >
+                {entry}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      <p className="count-line" role="status">
+        {visible.length} of {labs.length} {labs.length === 1 ? "lab" : "labs"}
+        {tag ? `, tagged “${tag}”` : ""}
+      </p>
+
+      {visible.length > 0 ? (
+        <ul className="lab-list">
+          {visible.map((lab) => (
+            <li key={lab.slug} className="lab-card">
+              <h2>
+                <Link to={`/${lab.slug}`}>{lab.title}</Link>
+              </h2>
+              <p>{lab.summary}</p>
+              <ul className="card-tags" aria-label="Tags">
+                {lab.tags.map((entry) => (
+                  <li key={entry}>{entry}</li>
+                ))}
+              </ul>
+              <p className="lab-links">
+                <Link to={`/${lab.slug}`}>Open the lab</Link>
+                <span aria-hidden> · </span>
+                <a
+                  href={lab.article.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Read the article
+                </a>
+              </p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="page-lede">
+          No lab matches. Clear the search or pick another tag.
+        </p>
+      )}
     </div>
   );
 };
@@ -68,6 +111,78 @@ const NotFound = () => {
   );
 };
 
+const LabPage = () => {
+  const { slug } = useParams();
+  const lab = labBySlug(slug);
+
+  if (!lab) {
+    return <NotFound />;
+  }
+
+  const Demo = lab.demo;
+
+  return (
+    <article className="page">
+      <p className="eyebrow">
+        <Link to="/" className="crumb">
+          Labs
+        </Link>{" "}
+        · {lab.article.title}
+      </p>
+      <h1>{lab.title}</h1>
+
+      {lab.explanation.map((paragraph) => (
+        <p className="page-lede" key={paragraph.slice(0, 40)}>
+          {paragraph}
+        </p>
+      ))}
+
+      <ul className="link-row" aria-label="Links for this lab">
+        <li>
+          <a href={lab.article.href} target="_blank" rel="noopener noreferrer">
+            Read the article ↗
+          </a>
+        </li>
+        <li>
+          <a href={lab.source} target="_blank" rel="noopener noreferrer">
+            Source on GitHub ↗
+          </a>
+        </li>
+        {lab.storybookPath ? (
+          <li>
+            <a href={`/storybook/index.html${lab.storybookPath}`}>
+              Open in Storybook ↗
+            </a>
+          </li>
+        ) : null}
+      </ul>
+
+      {Demo ? <Demo /> : null}
+
+      {!Demo && lab.storybookPath ? (
+        <>
+          <section className="lab-demo">
+            <h2>The workbench, embedded</h2>
+            <iframe
+              title={`${lab.title} in Storybook`}
+              src={`/storybook/index.html${lab.storybookPath}`}
+              loading="lazy"
+              className="story-frame"
+            />
+          </section>
+          <p>
+            The frame above is the hosted Storybook;{" "}
+            <a href={`/storybook/index.html${lab.storybookPath}`}>
+              open it full-size
+            </a>{" "}
+            to drive states yourself.
+          </p>
+        </>
+      ) : null}
+    </article>
+  );
+};
+
 const App = () => {
   return (
     <>
@@ -77,9 +192,12 @@ const App = () => {
             Labs
           </Link>
           <nav className="site-nav" aria-label="Labs">
-            <Link to="/chat-box">Chat box</Link>
-            <Link to="/webmcp">WebMCP</Link>
-            <Link to="/on-device-ai">On-device AI</Link>
+            {labs.slice(0, 4).map((lab) => (
+              <Link key={lab.slug} to={`/${lab.slug}`}>
+                {lab.title.replace("@labs/ui ", "")}
+              </Link>
+            ))}
+            {labs.length > 4 ? <Link to="/">All {labs.length}</Link> : null}
           </nav>
           <a href="https://www.markusnissl.com/blog" className="site-back">
             Writing ↗
@@ -89,9 +207,7 @@ const App = () => {
       <main id="main">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/chat-box" element={<ChatBoxPage />} />
-          <Route path="/webmcp" element={<WebMcpPage />} />
-          <Route path="/on-device-ai" element={<OnDevicePage />} />
+          <Route path="/:slug" element={<LabPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -100,7 +216,11 @@ const App = () => {
           Running companions to{" "}
           <a href="https://www.markusnissl.com/blog">markusnissl.com/blog</a>.
           Every demo here is the code the article prints, checked against the
-          packages it names.
+          packages it names. Source:{" "}
+          <a href="https://github.com/markusnisslconsulting/labs">
+            markusnisslconsulting/labs
+          </a>
+          .
         </p>
       </footer>
     </>

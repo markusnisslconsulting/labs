@@ -19,9 +19,11 @@ cannot blur:
 
 ```
 apps/
-  site/                 composition shell only (Vite + React SPA)
+  site/                 composition shell + the lab registry
+    src/labs/<slug>/    one folder per lab: manifest, demo, links
 packages/
-  ui/                   @labs/ui — demo components, stories, tokens
+  ui/                   @labs/ui — demo components, stories, tokens;
+                        Storybook instance and hosted workbench
   undo-machine/         @labs/undo-machine — write lifecycle, vitest
   agent-stream/         @labs/agent-stream — typed event run, vitest
   reorder-desk/         @labs/reorder-desk — desk state + tool descriptor
@@ -78,12 +80,19 @@ pnpm format                   # prettier over the workspace
 
 ## Adding a lab
 
-1. Logic first: if the demo has behaviour worth pinning, it becomes a
-   package under `packages/` with its own tests.
-2. The view goes into `@labs/ui`, thin, consuming that package, with a
-   colocated story.
-3. The page lands in `apps/site/src/pages/` with a route and a link
-   back to the article. Both directions, always.
+The registry scans `apps/site/src/labs/*/lab.tsx` at build time, so a
+lab registers itself by existing:
+
+1. Create `apps/site/src/labs/<slug>/lab.tsx` exporting a `LabMeta`:
+   title, summary, explanation paragraphs, tags, article link, GitHub
+   source link, and optionally a live demo component.
+2. Logic first: if the demo has behaviour worth pinning, that behaviour
+   becomes a package under `packages/` with its own tests; the view in
+   `@labs/ui` stays thin.
+3. Add a colocated story so the component appears in the workbench.
+
+The overview, search, tag filter, lab page and footer all read from
+the registry. Lab hundred costs what lab one cost.
 
 ## Deployment
 
