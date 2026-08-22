@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "site",
+  "tags": ["scope:site", "type:app"],
+  "// targets": [
+    "build and serve are inferred by the @nx/vite plugin from",
+    "vite.config.ts; typecheck and lint are explicit."
+  ],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p apps/site/tsconfig.json --noEmit"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint apps/site/src --max-warnings 0"
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Two dependencies ship postinstall scripts that patch their own native
+# binaries; without them installs stay slower or fall back entirely.
+allowBuilds:
+  nx: true
+  esbuild: true

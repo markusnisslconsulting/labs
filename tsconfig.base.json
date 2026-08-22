@@ -1,0 +1,27 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@labs/undo-machine": ["packages/undo-machine/src/index.ts"],
+      "@labs/agent-stream": ["packages/agent-stream/src/index.ts"],
+      "@labs/reorder-desk": ["packages/reorder-desk/src/index.ts"],
+      "@labs/ui": ["packages/ui/src/index.ts"]
+    }
+  },
+  "include": []
+}

@@ -1,0 +1,19 @@
+# Same host family as the main site, same two guards.
+
+# The host otherwise recombines scripts into two copies of React and
+# breaks hydration on any page with a lazy chunk.
+<IfModule mod_pagespeed_module>
+  ModPagespeed off
+</IfModule>
+
+# Prerendered pages and client-side routes cost no redirect.
+DirectorySlash Off
+
+# Single-page app: every path serves the shell, the router takes it
+# from there.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ /index.html [L]
+</IfModule>

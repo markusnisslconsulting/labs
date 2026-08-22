@@ -1,0 +1,55 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json"],
+    "production": [
+      "default",
+      "!{projectRoot}/**/*.spec.ts",
+      "!{projectRoot}/**/test/**",
+      "!{projectRoot}/**/*.stories.tsx",
+      "!{projectRoot}/.storybook/**"
+    ]
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "testTargetName": "test"
+      }
+    }
+  ],
+  "targetDefaults": {
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["production", "{workspaceRoot}/tsconfig.base.json"]
+    },
+    "test": {
+      "cache": true,
+      "inputs": ["default", "^production"]
+    },
+    "lint": {
+      "cache": true
+    },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["production", "{workspaceRoot}/tsconfig.base.json"]
+    },
+    "storybook": {
+      "cache": false
+    },
+    "serve": {
+      "cache": false
+    }
+  },
+  "defaultBase": "main"
+}

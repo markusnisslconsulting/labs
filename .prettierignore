@@ -1,0 +1,6 @@
+dist
+node_modules
+.nx
+storybook-static
+pnpm-lock.yaml
+apps/site/public/.htaccess

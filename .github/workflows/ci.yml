@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          # nx affected compares against the merge base, so it needs
+          # enough history to find one.
+          fetch-depth: 0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # On a PR this runs only what changed; on main it is the whole
+      # graph. The Nx cloud is not configured, so the cache is local to
+      # the runner and affected is what keeps this fast.
+      - name: Lint what is affected
+        run: pnpm exec nx affected --target=lint
+
+      - name: Typecheck, test and build what is affected
+        run: |
+          pnpm exec nx affected --target=typecheck
+          pnpm exec nx affected --target=test
+          pnpm exec nx affected --target=build
+          pnpm exec nx affected --target=build-storybook
