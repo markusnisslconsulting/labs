@@ -1,0 +1,173 @@
+/* Accessible primitives. Every interactive element shows a
+   focus-visible ring, never removes it; every state pairs colour with
+   text, so tone is never the only carrier of meaning. */
+
+/* Button ---------------------------------------------------------------- */
+
+.uix-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: 0.7rem;
+  border: 1px solid transparent;
+  background: var(--color-seal);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.uix-button:hover {
+  filter: brightness(1.08);
+}
+
+.uix-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.uix-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.uix-button--ghost {
+  background: #fff;
+  border-color: var(--color-rule);
+  color: var(--color-ink);
+}
+
+.uix-button--ghost:hover {
+  border-color: var(--color-mute);
+  filter: none;
+}
+
+.uix-button--confirm-mini,
+.uix-button--danger-mini {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.85rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+}
+
+.uix-button--confirm-mini {
+  background: var(--color-ink);
+  color: #fff;
+}
+
+.uix-button--danger-mini {
+  background: #fff;
+  border-color: var(--color-rule);
+  color: var(--color-seal);
+}
+
+.uix-button--danger-mini:hover {
+  border-color: var(--color-seal);
+  filter: none;
+}
+
+/* Chip ------------------------------------------------------------------ */
+
+.uix-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--color-feld);
+  color: var(--color-mute);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+button.uix-chip {
+  cursor: pointer;
+}
+
+button.uix-chip:hover {
+  color: var(--color-seal);
+}
+
+button.uix-chip[aria-pressed="true"] {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: #fff;
+}
+
+button.uix-chip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* StatusPill ------------------------------------------------------------ */
+
+.uix-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--color-ink);
+}
+
+.uix-pill::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.uix-pill[data-tone="ok"] {
+  color: #14691f;
+}
+
+.uix-pill[data-tone="warn"] {
+  color: #8a5a00;
+}
+
+.uix-pill[data-tone="off"] {
+  color: var(--color-mute);
+}
+
+/* Panel ----------------------------------------------------------------- */
+
+.uix-panel {
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-surface);
+  background: #fff;
+  padding: 1.25rem 1.4rem 1.4rem;
+  margin: 0 0 1.5rem;
+}
+
+.uix-panel-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.9rem;
+}
+
+.uix-panel-label::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-seal);
+}
+
+/* Shared action row ------------------------------------------------------ */
+
+.uix-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0;
+}

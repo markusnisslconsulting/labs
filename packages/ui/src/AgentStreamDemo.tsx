@@ -4,6 +4,8 @@ import {
   type AgentEvent,
   type ScriptedRun,
 } from "@labs/agent-stream";
+import { Button } from "./components/Button";
+import { Panel } from "./components/Panel";
 
 type RunState = "idle" | "running" | "awaiting" | "finished";
 
@@ -102,23 +104,17 @@ const AgentStreamDemo = () => {
   };
 
   return (
-    <section
-      className="article-demo"
-      aria-label="Live demo: transcript versus control surface"
-    >
-      <div className="demo-label">Live on this page</div>
-      <div className="demo-actions">
-        <button
-          type="button"
-          className="demo-button"
+    <Panel label="Live · transcript versus control surface">
+      <div className="uix-actions">
+        <Button
           onClick={run}
           disabled={runState === "running" || runState === "awaiting"}
         >
           {runState === "idle" ? "Run the agent" : "Run it again"}
-        </button>
-        <button type="button" className="demo-button ghost" onClick={reset}>
+        </Button>
+        <Button variant="ghost" onClick={reset}>
           Reset
-        </button>
+        </Button>
       </div>
 
       <div className="demo-panes">
@@ -156,20 +152,18 @@ const AgentStreamDemo = () => {
                       <span className="demo-old">{units}</span>
                       <strong>{proposed} units</strong>
                       <span className="demo-inline-actions">
-                        <button
-                          type="button"
-                          className="demo-mini yes"
+                        <Button
+                          variant="confirm-mini"
                           onClick={() => resolve(true)}
                         >
                           Accept
-                        </button>
-                        <button
-                          type="button"
-                          className="demo-mini no"
+                        </Button>
+                        <Button
+                          variant="danger-mini"
                           onClick={() => resolve(false)}
                         >
                           Undo
-                        </button>
+                        </Button>
                       </span>
                     </>
                   ) : (
@@ -200,7 +194,7 @@ const AgentStreamDemo = () => {
           vocabulary from this section.
         </p>
       ) : null}
-    </section>
+    </Panel>
   );
 };
 

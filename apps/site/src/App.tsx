@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, Route, Routes, useParams } from "react-router";
+import { Chip } from "@labs/ui";
 import { allTags, labBySlug, labs } from "./labs";
 
 const Home = () => {
@@ -18,12 +19,23 @@ const Home = () => {
 
   return (
     <div className="page">
-      <p className="eyebrow">Markus Nissl · Labs</p>
-      <h1>Code that accompanies the writing.</h1>
-      <p className="page-lede">
-        Each lab runs the exact code an article prints. Nothing here is a
-        mock-up of the argument; it is the argument, compiled.
-      </p>
+      <section className="hero">
+        <p className="eyebrow">Markus Nissl · Labs</p>
+        <h1>
+          Code that accompanies <span className="hero-accent">the writing</span>
+          .
+        </h1>
+        <p className="page-lede">
+          Each lab runs the exact code an article prints. Nothing here is a
+          mock-up of the argument; it is the argument, compiled.
+        </p>
+        <ul className="hero-stats" aria-label="What this workspace guarantees">
+          <li>{labs.length} labs</li>
+          <li>4 tested packages</li>
+          <li>axe-checked components</li>
+          <li>every target cached</li>
+        </ul>
+      </section>
 
       {labs.length > 3 ? (
         <div className="lab-controls">
@@ -36,24 +48,22 @@ const Home = () => {
             onChange={(event) => setQuery(event.target.value)}
           />
           <div className="chip-row" role="group" aria-label="Filter by tag">
-            <button
-              type="button"
-              className={tag === null ? "chip active" : "chip"}
-              onClick={() => setTag(null)}
-              aria-pressed={tag === null}
+            <Chip
+              interactive
+              active={tag === null}
+              onSelect={() => setTag(null)}
             >
               All
-            </button>
+            </Chip>
             {allTags.map((entry) => (
-              <button
+              <Chip
                 key={entry}
-                type="button"
-                className={tag === entry ? "chip active" : "chip"}
-                onClick={() => setTag(tag === entry ? null : entry)}
-                aria-pressed={tag === entry}
+                interactive
+                active={tag === entry}
+                onSelect={() => setTag(tag === entry ? null : entry)}
               >
                 {entry}
-              </button>
+              </Chip>
             ))}
           </div>
         </div>
@@ -74,7 +84,9 @@ const Home = () => {
               <p>{lab.summary}</p>
               <ul className="card-tags" aria-label="Tags">
                 {lab.tags.map((entry) => (
-                  <li key={entry}>{entry}</li>
+                  <li key={entry}>
+                    <Chip>{entry}</Chip>
+                  </li>
                 ))}
               </ul>
               <p className="lab-links">

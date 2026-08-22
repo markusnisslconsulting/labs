@@ -1,0 +1,167 @@
+/* Demo surfaces: the classes the article pages print. Button,
+   status and action-row rules are superseded by primitives; these
+   cover tables, panes, notes, results and progress. */
+.article-demo {
+  border: 1px solid var(--color-rule);
+  border-radius: 1rem;
+  background: #fff;
+  padding: 1.25rem 1.4rem 1.4rem;
+  margin: 0 0 1.5rem;
+}
+
+.article-demo .demo-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.9rem;
+}
+
+.article-demo .demo-label::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-seal);
+}
+
+.demo-textarea {
+  width: 100%;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 4.2rem;
+}
+
+.demo-textarea:focus {
+  outline: 2px solid var(--color-seal);
+  outline-offset: 1px;
+}
+
+.article-col p.demo-note {
+  font-size: 0.9rem;
+  color: var(--color-mute);
+  margin: 0.75rem 0 0;
+}
+
+.demo-result {
+  margin-top: 0.9rem;
+  padding: 0.8rem 1rem;
+  border-left: 3px solid var(--color-seal);
+  background: var(--color-feld);
+  border-radius: 0 0.6rem 0.6rem 0;
+  font-size: 1rem;
+}
+
+.demo-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.demo-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-mute);
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.demo-table td {
+  padding: 0.55rem 0.6rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.demo-table tr.proposed td {
+  background: var(--color-seal-soft);
+}
+
+.demo-old {
+  text-decoration: line-through;
+  color: var(--color-mute);
+  margin-right: 0.5rem;
+}
+
+.demo-inline-actions {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-left: 0.6rem;
+}
+
+.demo-panes {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 0.9rem;
+}
+
+@media (min-width: 720px) {
+  .demo-panes {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.demo-pane {
+  border: 1px solid var(--color-rule);
+  border-radius: 0.75rem;
+  padding: 0.8rem 0.95rem;
+  min-height: 11rem;
+}
+
+.demo-pane h4 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.6rem;
+  color: var(--color-mute);
+}
+
+.article-col .demo-chat-line {
+  font-size: 0.92rem;
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
+}
+
+.demo-events {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.demo-event {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  background: var(--color-ink);
+  color: #e8eef6;
+  border-radius: 0.4rem;
+  padding: 0.15rem 0.5rem;
+}
+
+.demo-progress {
+  height: 6px;
+  background: var(--color-feld);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+.demo-progress span {
+  display: block;
+  height: 100%;
+  background: var(--color-seal);
+  transition: width 0.2s ease;
+}
+
+.article-demo .demo-call {
+  margin-top: 0.9rem;
+  font-size: 0.78rem;
+}

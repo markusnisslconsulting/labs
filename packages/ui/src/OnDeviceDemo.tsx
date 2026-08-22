@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { Button } from "./components/Button";
+import { Panel } from "./components/Panel";
+import { StatusPill } from "./components/StatusPill";
 
 type Availability =
   "unavailable" | "downloadable" | "downloading" | "available";
@@ -23,10 +26,10 @@ const stateLabel: Record<ApiState, string> = {
   available: "ready on this machine",
 };
 
-function stateClass(state: ApiState): string {
-  if (state === "available") return "state-ok";
-  if (state === "downloadable" || state === "downloading") return "state-warn";
-  return "state-off";
+function toneOf(state: ApiState): "ok" | "warn" | "off" {
+  if (state === "available") return "ok";
+  if (state === "downloadable" || state === "downloading") return "warn";
+  return "off";
 }
 
 function hasApi(name: string): boolean {
@@ -222,45 +225,45 @@ const OnDeviceDemo = () => {
   };
 
   return (
-    <section
-      className="article-demo"
-      aria-label="Live demo: on-device translation"
-    >
-      <div className="demo-label">Live on this page</div>
+    <Panel label="Live · the seven built-in APIs, checked on this machine">
       <ul className="demo-status">
         <li>
           Language Detector ·{" "}
-          <span className={stateClass(detector)}>{stateLabel[detector]}</span>
+          <StatusPill tone={toneOf(detector)}>
+            {stateLabel[detector]}
+          </StatusPill>
         </li>
         <li>
           Translator (de → en) ·{" "}
-          <span className={stateClass(translator)}>
+          <StatusPill tone={toneOf(translator)}>
             {stateLabel[translator]}
-          </span>
+          </StatusPill>
         </li>
         <li>
           Summarizer ·{" "}
-          <span className={stateClass(summarizer)}>
+          <StatusPill tone={toneOf(summarizer)}>
             {stateLabel[summarizer]}
-          </span>
+          </StatusPill>
         </li>
         <li>
           Prompt ·{" "}
-          <span className={stateClass(prompt)}>{stateLabel[prompt]}</span>
+          <StatusPill tone={toneOf(prompt)}>{stateLabel[prompt]}</StatusPill>
         </li>
         <li>
           Writer ·{" "}
-          <span className={stateClass(writer)}>{stateLabel[writer]}</span>
+          <StatusPill tone={toneOf(writer)}>{stateLabel[writer]}</StatusPill>
         </li>
         <li>
           Rewriter ·{" "}
-          <span className={stateClass(rewriter)}>{stateLabel[rewriter]}</span>
+          <StatusPill tone={toneOf(rewriter)}>
+            {stateLabel[rewriter]}
+          </StatusPill>
         </li>
         <li>
           Proofreader ·{" "}
-          <span className={stateClass(proofreader)}>
+          <StatusPill tone={toneOf(proofreader)}>
             {stateLabel[proofreader]}
-          </span>
+          </StatusPill>
         </li>
       </ul>
 
@@ -291,32 +294,22 @@ const OnDeviceDemo = () => {
           </button>
         ) : null}
         {summarizer === "available" || summarizer === "downloadable" ? (
-          <button
-            type="button"
-            className="demo-button ghost"
-            disabled={summarising}
-            onClick={runSummary}
-          >
+          <Button variant="ghost" disabled={summarising} onClick={runSummary}>
             {summarising
               ? "Summarising…"
               : summarizer === "available"
                 ? "Summarise a sample ticket thread (three bullets)"
                 : "Download the shared model (several GB) and summarise"}
-          </button>
+          </Button>
         ) : null}
         {prompt === "available" || prompt === "downloadable" ? (
-          <button
-            type="button"
-            className="demo-button ghost"
-            disabled={asking}
-            onClick={runAsk}
-          >
+          <Button variant="ghost" disabled={asking} onClick={runAsk}>
             {asking
               ? "Asking…"
               : prompt === "available"
                 ? "Ask: extract order number and issue (JSON)"
                 : "Download the shared model (several GB) and ask"}
-          </button>
+          </Button>
         ) : null}
       </div>
 
@@ -398,7 +391,7 @@ const OnDeviceDemo = () => {
             : ""}
         </p>
       )}
-    </section>
+    </Panel>
   );
 };
 

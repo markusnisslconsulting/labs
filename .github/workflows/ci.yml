@@ -48,3 +48,4 @@ jobs:
           pnpm exec nx affected --target=test
           pnpm exec nx affected --target=build
           pnpm exec nx affected --target=build-storybook
+          pnpm exec nx affected --target=test-storybook

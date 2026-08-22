@@ -1,5 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import { reduceRow, type RowEvent, type RowState } from "@labs/undo-machine";
+import { Button } from "./components/Button";
+import { Panel } from "./components/Panel";
 const START_UNITS = 800;
 const PROPOSED_UNITS = 1240;
 
@@ -80,26 +82,20 @@ const UndoMachineDemo = () => {
   };
 
   return (
-    <section
-      className="article-demo"
-      aria-label="Live demo: the write lifecycle as a state machine"
-    >
-      <div className="demo-label">Live on this page</div>
-      <div className="demo-actions">
-        <button
-          type="button"
-          className="demo-button"
+    <Panel label="Live · the write lifecycle as a state machine">
+      <div className="uix-actions">
+        <Button
           onClick={() =>
             dispatch({ type: "agent-proposed", units: PROPOSED_UNITS })
           }
           disabled={state.kind !== "settled"}
         >
           Agent proposes
-        </button>
-        <button type="button" className="demo-button ghost" onClick={reset}>
+        </Button>
+        <Button variant="ghost" onClick={reset}>
           Reset
-        </button>
-        <label className="demo-chat-line" style={{ margin: 0 }}>
+        </Button>
+        <label className="demo-chat-line">
           <input
             type="checkbox"
             checked={failNext}
@@ -128,20 +124,15 @@ const UndoMachineDemo = () => {
                   <span className="demo-old">{state.units}</span>
                   <strong>{state.proposedUnits} units</strong>
                   <span className="demo-inline-actions">
-                    <button
-                      type="button"
-                      className="demo-mini yes"
-                      onClick={accept}
-                    >
+                    <Button variant="confirm-mini" onClick={accept}>
                       Accept
-                    </button>
-                    <button
-                      type="button"
-                      className="demo-mini no"
+                    </Button>
+                    <Button
+                      variant="danger-mini"
                       onClick={() => dispatch({ type: "person-rejected" })}
                     >
                       Reject
-                    </button>
+                    </Button>
                   </span>
                 </>
               ) : null}
@@ -154,13 +145,9 @@ const UndoMachineDemo = () => {
                 <>
                   <strong>{state.units} units</strong>
                   <span className="demo-inline-actions">
-                    <button
-                      type="button"
-                      className="demo-mini no"
-                      onClick={undo}
-                    >
+                    <Button variant="danger-mini" onClick={undo}>
                       Undo
-                    </button>
+                    </Button>
                   </span>
                 </>
               ) : null}
@@ -188,7 +175,7 @@ const UndoMachineDemo = () => {
           refuse and the row fall back to the proposal.
         </p>
       )}
-    </section>
+    </Panel>
   );
 };
 

@@ -1,10 +1,23 @@
-/**
- * The demo components, as a library. Apps compose them; Storybook
- * renders them in isolation. Every component here is the printed
- * counterpart of an article section, so the stories double as the
- * article's living exhibits.
- */
-export { default as AgentStreamDemo } from "./AgentStreamDemo";
-export { default as UndoMachineDemo } from "./UndoMachineDemo";
-export { default as WebMcpDemo } from "./WebMcpDemo";
-export { default as OnDeviceDemo } from "./OnDeviceDemo";
+import AgentStreamDemoBase from "./AgentStreamDemo";
+import OnDeviceDemoBase from "./OnDeviceDemo";
+import UndoMachineDemoBase from "./UndoMachineDemo";
+import WebMcpDemoBase from "./WebMcpDemo";
+import { Button, type ButtonProps } from "./components/Button";
+import { Chip, type ChipProps } from "./components/Chip";
+import { Panel, type PanelProps } from "./components/Panel";
+import { StatusPill, type StatusPillProps } from "./components/StatusPill";
+
+export const AgentStreamDemo = AgentStreamDemoBase;
+export const OnDeviceDemo = OnDeviceDemoBase;
+export const UndoMachineDemo = UndoMachineDemoBase;
+export const WebMcpDemo = WebMcpDemoBase;
+export {
+  Button,
+  type ButtonProps,
+  Chip,
+  type ChipProps,
+  Panel,
+  type PanelProps,
+  StatusPill,
+  type StatusPillProps,
+};

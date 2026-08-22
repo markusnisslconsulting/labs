@@ -28,6 +28,13 @@
         "cwd": "."
       },
       "outputs": ["{workspaceRoot}/dist/packages/ui-storybook"]
+    },
+    "test-storybook": {
+      "dependsOn": ["build-storybook"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4411 --silent\" \"wait-on tcp:127.0.0.1:4411 && pnpm exec test-storybook --url http://127.0.0.1:4411 --config-dir packages/ui/.storybook\""
+      }
     }
   }
 }

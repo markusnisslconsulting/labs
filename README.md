@@ -63,6 +63,37 @@ site ──▶ ui ──▶ undo-machine
   components in isolation; `build-storybook` is a cached target like
   any other.
 
+## The design system
+
+`@labs/ui` is layered like a real system, because the demos deserve the
+same discipline as a product:
+
+```
+styles/
+  tokens.css        colour, focus ring, radius — no component names
+  base.css          element defaults shared by site and Storybook
+  primitives.css    Button, Chip, StatusPill, Panel (.uix-*)
+  surfaces.css      demo-table/pane/note classes the articles print
+components/
+  Button.tsx        native button, four variants, focus-visible ring
+  Chip.tsx          static tag or filter button with aria-pressed
+  StatusPill.tsx    tone dot hidden from AT; the words carry the state
+  Panel.tsx         named landmark per live example
+```
+
+The demos compose these primitives; nothing in a demo hand-rolls its
+own button styles.
+
+## Testing
+
+- **Unit:** vitest over every logic package (`nx run-many -t test`).
+- **Stories as tests:** play functions assert semantics — a disabled
+  button keeps its accessible name, a filter chip toggles
+  `aria-pressed`, a panel resolves as a named region.
+- **A11y:** the a11y addon checks every story, and
+  `pnpm nx run ui:test-storybook` replays all of them headless against
+  the built Storybook, so axe violations fail CI, not users.
+
 ## Commands
 
 ```sh

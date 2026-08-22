@@ -7,3 +7,6 @@ packages:
 allowBuilds:
   nx: true
   esbuild: true
+  playwright: true
+  "@swc/core": true
+  unrs-resolver: true

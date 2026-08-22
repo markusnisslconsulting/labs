@@ -199,46 +199,10 @@ main {
   gap: 0.4rem;
 }
 
-.chip {
-  border: 1px solid var(--color-rule);
-  background: #fff;
-  color: var(--color-mute);
-  border-radius: 999px;
-  padding: 0.35rem 0.85rem;
-  font-size: 0.88rem;
-  cursor: pointer;
-}
-
-.chip:hover {
-  color: var(--color-seal);
-}
-
-.chip.active {
-  background: var(--color-ink);
-  border-color: var(--color-ink);
-  color: #fff;
-}
-
 .count-line {
   margin-top: 1rem;
   color: var(--color-mute);
   font-size: 0.95rem;
-}
-
-.card-tags {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  font-size: 0.82rem;
-  color: var(--color-mute);
-}
-
-.card-tags li {
-  background: var(--color-feld);
-  border-radius: 999px;
-  padding: 0.15rem 0.6rem;
 }
 
 .link-row {
@@ -268,4 +232,83 @@ main {
 
 .lab-demo {
   margin-top: 2.4rem;
+}
+
+/* Hero: one gradient breath behind the headline, nothing louder. */
+
+.hero {
+  position: relative;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -2rem -3rem auto auto;
+  width: 22rem;
+  height: 14rem;
+  background: radial-gradient(
+    closest-side,
+    rgba(229, 23, 63, 0.1),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.hero-accent {
+  box-shadow: inset 0 -0.45em 0 0 rgba(229, 23, 63, 0.18);
+}
+
+.hero-stats {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  margin: 1.4rem 0 0;
+  font-size: 0.95rem;
+  color: var(--color-mute);
+}
+
+.hero-stats li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.hero-stats li::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--color-seal);
+}
+
+/* Cards lift on hover; the accent bar marks the whole card. */
+
+.lab-card {
+  position: relative;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.lab-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.lab-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(23, 43, 77, 0.1);
+}
+
+.lab-card:hover::before {
+  background: var(--color-seal);
 }

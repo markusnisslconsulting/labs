@@ -4,6 +4,9 @@ import {
   reorderPointToolDescriptor,
   type DeskRow,
 } from "@labs/reorder-desk";
+import { Button } from "./components/Button";
+import { Panel } from "./components/Panel";
+import { StatusPill } from "./components/StatusPill";
 
 type Registration = "checking" | "registered" | "absent";
 
@@ -74,20 +77,16 @@ const WebMcpDemo = () => {
   };
 
   return (
-    <section
-      className="article-demo"
-      aria-label="Live demo: a page-registered tool"
-    >
-      <div className="demo-label">Live on this page</div>
+    <Panel label="Live · a page-registered tool">
       <ul className="demo-status">
         <li>
           <code>set_reorder_point</code> ·{" "}
           {registration === "registered" ? (
-            <span className="state-ok">registered on this page</span>
+            <StatusPill tone="ok">registered on this page</StatusPill>
           ) : registration === "absent" ? (
-            <span className="state-off">
+            <StatusPill tone="off">
               document.modelContext not exposed here
-            </span>
+            </StatusPill>
           ) : (
             <span className="state-off">checking…</span>
           )}
@@ -141,13 +140,11 @@ const WebMcpDemo = () => {
         </tbody>
       </table>
 
-      <div className="demo-actions">
-        <button type="button" className="demo-button" onClick={simulate}>
-          Simulate an agent call
-        </button>
-        <button type="button" className="demo-button ghost" onClick={reset}>
+      <div className="uix-actions">
+        <Button onClick={simulate}>Simulate an agent call</Button>
+        <Button variant="ghost" onClick={reset}>
           Reset
-        </button>
+        </Button>
       </div>
 
       {lastCall ? (
@@ -161,7 +158,7 @@ const WebMcpDemo = () => {
           ? "The tool is genuinely registered: open the Model Context Tool Inspector extension and you will find set_reorder_point on this page, callable by hand. The simulated call and a real agent call run the identical function."
           : "With the WebMCP origin trial or the chrome://flags/#enable-webmcp-testing flag active, this page registers the tool for real. The simulated call runs the identical function an agent would: no clicking, no guessing, and the person still owns the yes."}
       </p>
-    </section>
+    </Panel>
   );
 };
 
