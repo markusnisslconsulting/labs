@@ -16,5 +16,5 @@ export default {
     href: "https://www.markusnissl.com/blog",
   },
   source: "https://github.com/markusnisslconsulting/labs/tree/main/packages/ui",
-  storybookPath: "?path=/docs/introduction--page",
+  storybookPath: "?path=/docs/introduction--docs",
 } satisfies LabMeta;
