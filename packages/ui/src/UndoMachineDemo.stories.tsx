@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import UndoMachineDemo from "./UndoMachineDemo";
 
 const meta = {
-  title: "Chat Box/Undo machine",
+  title: "Demos/Undo machine",
   component: UndoMachineDemo,
   tags: ["autodocs"],
 } satisfies Meta<typeof UndoMachineDemo>;

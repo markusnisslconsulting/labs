@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import OnDeviceDemo from "./OnDeviceDemo";
 
 const meta = {
-  title: "On-device AI/Built-in APIs",
+  title: "Demos/Built-in APIs",
   component: OnDeviceDemo,
   tags: ["autodocs"],
 } satisfies Meta<typeof OnDeviceDemo>;

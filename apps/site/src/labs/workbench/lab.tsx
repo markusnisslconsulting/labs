@@ -15,5 +15,5 @@ export default {
     href: "https://www.markusnissl.com/blog",
   },
   source: "https://github.com/markusnisslconsulting/labs/tree/main/packages/ui",
-  storybookPath: "?path=/docs/chat-box-agent-stream--docs",
+  storybookPath: "?path=/docs/introduction--page",
 } satisfies LabMeta;

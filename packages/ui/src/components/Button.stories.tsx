@@ -3,15 +3,28 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 
 const meta = {
-  title: "Primitives/Button",
+  title: "Components/Button",
   component: Button,
   tags: ["autodocs"],
+  argTypes: {
+    variant: {
+      control: "radio",
+      options: ["primary", "ghost", "confirm-mini", "danger-mini"],
+      table: { category: "Appearance", defaultValue: { summary: "primary" } },
+    },
+    disabled: {
+      control: "boolean",
+      table: { category: "State" },
+    },
+  },
 } satisfies Meta<typeof Button>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+  args: { children: "Run the agent" },
+};
 
 export const Ghost: Story = {
   args: { variant: "ghost", children: "Reset" },

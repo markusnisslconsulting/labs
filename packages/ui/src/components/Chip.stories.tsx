@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Chip } from "./Chip";
 
 const meta = {
-  title: "Primitives/Chip",
+  title: "Components/Chip",
   component: Chip,
   tags: ["autodocs"],
 } satisfies Meta<typeof Chip>;

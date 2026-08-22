@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { StatusPill } from "./StatusPill";
 
 const meta = {
-  title: "Primitives/StatusPill",
+  title: "Components/StatusPill",
   component: StatusPill,
   tags: ["autodocs"],
 } satisfies Meta<typeof StatusPill>;

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import WebMcpDemo from "./WebMcpDemo";
 
 const meta = {
-  title: "WebMCP/Ordering desk",
+  title: "Demos/Ordering desk",
   component: WebMcpDemo,
   tags: ["autodocs"],
 } satisfies Meta<typeof WebMcpDemo>;

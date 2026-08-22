@@ -26,5 +26,5 @@ export default {
   source:
     "https://github.com/markusnisslconsulting/labs/tree/main/packages/ui/src/WebMcpDemo.tsx",
   demo: WebMcpLabDemo,
-  storybookPath: "?path=/docs/webmcp-ordering-desk--docs",
+  storybookPath: "?path=/docs/demos-ordering-desk--docs",
 } satisfies LabMeta;

@@ -25,5 +25,5 @@ export default {
   source:
     "https://github.com/markusnisslconsulting/labs/tree/main/packages/ui/src/OnDeviceDemo.tsx",
   demo: OnDeviceLabDemo,
-  storybookPath: "?path=/docs/on-device-ai-built-in-apis--docs",
+  storybookPath: "?path=/docs/demos-built-in-apis--docs",
 } satisfies LabMeta;

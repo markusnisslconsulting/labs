@@ -90,9 +90,14 @@ own button styles.
 - **Stories as tests:** play functions assert semantics — a disabled
   button keeps its accessible name, a filter chip toggles
   `aria-pressed`, a panel resolves as a named region.
-- **A11y:** the a11y addon checks every story, and
+- **A11y as a gate:** the a11y addon checks every story with
+  `a11y: { test: "error" }`, so an axe finding fails the story, and
   `pnpm nx run ui:test-storybook` replays all of them headless against
-  the built Storybook, so axe violations fail CI, not users.
+  the built Storybook in CI. Findings block deploys; they never ship
+  as warnings.
+- **Foundations documented:** colour tokens render as swatches with
+  their computed contrast ratios against paper; keyboard focus is
+  asserted by a play function that tabs through real controls.
 
 ## Commands
 

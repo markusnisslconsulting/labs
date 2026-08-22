@@ -1,0 +1,36 @@
+# Labs UI
+
+Welcome to the component workbench for the labs at
+[labs.markusnissl.com](https://labs.markusnissl.com). This is not a
+scrapbook of one-off demos; it is the design system those demos are
+built from, reviewed in isolation.
+
+## How the layers fit
+
+| Layer       | Lives in            | Answers                                                             |
+| ----------- | ------------------- | ------------------------------------------------------------------- |
+| Foundations | `styles/tokens.css` | Which colours, focus ring and radii exist                           |
+| Base        | `styles/base.css`   | How plain elements behave                                           |
+| Components  | `src/components/`   | The accessible primitives (`Button`, `Chip`, `StatusPill`, `Panel`) |
+| Demos       | `src/*Demo.tsx`     | The article exhibits, composed from primitives                      |
+
+Two rules keep it honest. First, components reference tokens only —
+no rule in the token layer names a component, and no component
+hard-codes a colour. Second, every primitive carries its
+accessibility contract in its documentation: what the keyboard does,
+what assistive technology hears, and which prop changes which state.
+
+## Accessibility
+
+The a11y addon checks every story on render, and the test runner
+replays all stories headless in CI (`nx run ui:test-storybook`).
+Interaction tests assert semantics directly: a disabled button keeps
+its accessible name, a filter chip toggles `aria-pressed`, a panel is
+reachable as a named region.
+
+## Where to start
+
+Open **Foundations / Colour tokens** to see the palette with its
+computed contrast ratios, then **Components / Button** for a full
+state matrix. Each demo under **Demos** links back to the article it
+belongs to.

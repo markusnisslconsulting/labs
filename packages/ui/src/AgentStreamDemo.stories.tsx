@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import AgentStreamDemo from "./AgentStreamDemo";
 
 const meta = {
-  title: "Chat Box/Agent stream",
+  title: "Demos/Agent stream",
   component: AgentStreamDemo,
   tags: ["autodocs"],
 } satisfies Meta<typeof AgentStreamDemo>;
