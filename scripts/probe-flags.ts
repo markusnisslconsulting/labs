@@ -40,11 +40,11 @@ const result = await page.evaluate(async () => {
     try {
       apis[name] =
         name === "Translator"
-          ? await ctor.availability({
+          ? ((await ctor.availability?.({
               sourceLanguage: "de",
               targetLanguage: "en",
-            })
-          : await ctor.availability();
+            })) ?? "present, no availability()")
+          : ((await ctor.availability?.()) ?? "present, no availability()");
     } catch (error) {
       apis[name] = `error: ${(error as Error).message}`;
     }

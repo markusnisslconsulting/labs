@@ -1,13 +1,19 @@
 /*
  * @labs/ui stylesheet, in layers:
- *   tokens.css      design tokens, no component names
- *   base.css        element defaults shared by site and Storybook
- *   primitives.css  the .uix-* component classes
- *   surfaces.css    demo-table/pane/note classes the articles print
  *
- * Apps import this entry; Storybook's preview imports the same file.
+ *   tokens/primitive.css   raw values (palette, radii, spacing)
+ *   tokens/semantic.css    intent: text, surface, border, focus, status
+ *   tokens/component.css   per-part theming surface (Button, Chip, …)
+ *   base.css               element defaults shared by site and Storybook
+ *   primitives.css         the .uix-* component classes
+ *   surfaces.css           demo-table/pane/note classes the articles print
+ *
+ * Components bind ONLY to semantic or component tokens. A product
+ * rebrands by overriding the semantic layer — one file, no forks.
  */
-@import "./styles/tokens.css";
+@import "./styles/tokens/primitive.css";
+@import "./styles/tokens/semantic.css";
+@import "./styles/tokens/component.css";
 @import "./styles/base.css";
 @import "./styles/primitives.css";
 @import "./styles/surfaces.css";

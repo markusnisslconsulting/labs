@@ -1,0 +1,25 @@
+/* Semantic tokens: intent, not appearance. Products rebrand by
+   overriding these — never the primitives, never the components. */
+
+:root {
+  /* Text */
+  --uix-text-primary: var(--uix-navy-900);
+  --uix-text-secondary: var(--uix-slate-600);
+  --uix-text-on-accent: var(--uix-white);
+
+  /* Surfaces */
+  --uix-bg-page: var(--uix-grey-25);
+  --uix-bg-surface: var(--uix-white);
+  --uix-bg-subtle: var(--uix-grey-100);
+
+  /* Lines */
+  --uix-border-subtle: var(--uix-grey-300);
+
+  /* Intent */
+  --uix-accent: var(--uix-red-600);
+  --uix-accent-soft: rgba(229, 23, 63, 0.18);
+  --uix-focus-ring: var(--uix-accent);
+  --uix-status-ok: var(--uix-green-700);
+  --uix-status-warn: var(--uix-amber-700);
+  --uix-status-off: var(--uix-slate-600);
+}

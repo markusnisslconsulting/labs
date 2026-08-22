@@ -16,13 +16,23 @@ const NAMES = [
   "Proofreader",
 ];
 
+interface NavigatorBrand {
+  brand: string;
+  version: string;
+}
+declare global {
+  interface Navigator {
+    userAgentData?: { brands: NavigatorBrand[] };
+  }
+}
+
 const browser = await chromium.launch({ channel: "chrome" });
 const page = await browser.newPage();
 await page.goto("https://example.com");
 
 const result = await page.evaluate(async (names) => {
   const version =
-    navigator.userAgentData?.brands?.find((b) => b.brand === "Google Chrome")
+    navigator.userAgentData?.brands.find((b) => b.brand === "Google Chrome")
       ?.version ?? "unknown";
   const apis: Record<string, string> = {};
   for (const name of names) {

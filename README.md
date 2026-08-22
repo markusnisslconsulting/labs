@@ -66,7 +66,12 @@ site ──▶ ui ──▶ undo-machine
 ## The design system
 
 `@labs/ui` is layered like a real system, because the demos deserve the
-same discipline as a product:
+same discipline as a product. Tokens come in three tiers — primitive
+values, semantic intent, per-component bindings — defined once in CSS
+and mirrored in `src/tokens.registry.ts`; a parity test fails when the
+two drift, so tools and AI assistants consume the registry instead of
+parsing stylesheets. Products rebrand by overriding the semantic layer
+only:
 
 ```
 styles/

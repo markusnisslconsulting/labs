@@ -1,8 +1,16 @@
+.uix-panel > :first-child {
+  margin-top: 0;
+}
+
+.uix-panel > :last-child {
+  margin-bottom: 0;
+}
+
 /* Demo surfaces: the classes the article pages print. Button,
    status and action-row rules are superseded by primitives; these
    cover tables, panes, notes, results and progress. */
 .article-demo {
-  border: 1px solid var(--color-rule);
+  border: 1px solid var(--uix-border-subtle);
   border-radius: 1rem;
   background: #fff;
   padding: 1.25rem 1.4rem 1.4rem;
@@ -25,36 +33,37 @@
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 999px;
-  background: var(--color-seal);
+  background: var(--uix-accent);
 }
 
 .demo-textarea {
   width: 100%;
-  border: 1px solid var(--color-rule);
+  border: 1px solid var(--uix-border-subtle);
   border-radius: 0.75rem;
   padding: 0.7rem 0.9rem;
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
-  min-height: 4.2rem;
+  min-height: 6rem;
+  max-width: 72ch;
 }
 
 .demo-textarea:focus {
-  outline: 2px solid var(--color-seal);
+  outline: 2px solid var(--uix-accent);
   outline-offset: 1px;
 }
 
-.article-col p.demo-note {
+.uix-panel .demo-note {
   font-size: 0.9rem;
-  color: var(--color-mute);
+  color: var(--uix-text-secondary);
   margin: 0.75rem 0 0;
 }
 
 .demo-result {
   margin-top: 0.9rem;
   padding: 0.8rem 1rem;
-  border-left: 3px solid var(--color-seal);
-  background: var(--color-feld);
+  border-left: 3px solid var(--uix-accent);
+  background: var(--uix-bg-subtle);
   border-radius: 0 0.6rem 0.6rem 0;
   font-size: 1rem;
 }
@@ -71,23 +80,23 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-mute);
+  color: var(--uix-text-secondary);
   padding: 0.4rem 0.6rem;
-  border-bottom: 1px solid var(--color-rule);
+  border-bottom: 1px solid var(--uix-border-subtle);
 }
 
 .demo-table td {
   padding: 0.55rem 0.6rem;
-  border-bottom: 1px solid var(--color-rule);
+  border-bottom: 1px solid var(--uix-border-subtle);
 }
 
 .demo-table tr.proposed td {
-  background: var(--color-seal-soft);
+  background: var(--uix-accent-soft);
 }
 
 .demo-old {
   text-decoration: line-through;
-  color: var(--color-mute);
+  color: var(--uix-text-secondary);
   margin-right: 0.5rem;
 }
 
@@ -110,7 +119,7 @@
 }
 
 .demo-pane {
-  border: 1px solid var(--color-rule);
+  border: 1px solid var(--uix-border-subtle);
   border-radius: 0.75rem;
   padding: 0.8rem 0.95rem;
   min-height: 11rem;
@@ -121,10 +130,10 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin: 0 0 0.6rem;
-  color: var(--color-mute);
+  color: var(--uix-text-secondary);
 }
 
-.article-col .demo-chat-line {
+.uix-panel .demo-chat-line {
   font-size: 0.92rem;
   margin: 0 0 0.5rem;
   line-height: 1.5;
@@ -140,7 +149,7 @@
 .demo-event {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.72rem;
-  background: var(--color-ink);
+  background: var(--uix-text-primary);
   color: #e8eef6;
   border-radius: 0.4rem;
   padding: 0.15rem 0.5rem;
@@ -148,7 +157,7 @@
 
 .demo-progress {
   height: 6px;
-  background: var(--color-feld);
+  background: var(--uix-bg-subtle);
   border-radius: 999px;
   overflow: hidden;
   margin-top: 0.75rem;
@@ -157,7 +166,7 @@
 .demo-progress span {
   display: block;
   height: 100%;
-  background: var(--color-seal);
+  background: var(--uix-accent);
   transition: width 0.2s ease;
 }
 

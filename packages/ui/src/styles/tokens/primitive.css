@@ -1,0 +1,29 @@
+/* Primitive tokens: raw values, no opinion. Never referenced by
+   components directly — components bind to semantic or component
+   tokens, which alias these. */
+
+:root {
+  /* Palette */
+  --uix-red-600: #e5173f;
+  --uix-navy-900: #172b4d;
+  --uix-slate-600: #4b5870;
+  --uix-grey-300: #d5dbe6;
+  --uix-grey-100: #e8eef6;
+  --uix-grey-25: #f7f9fc;
+  --uix-white: #ffffff;
+  --uix-green-700: #14691f;
+  --uix-amber-700: #8a5a00;
+
+  /* Radii */
+  --uix-radius-s: 0.5rem;
+  --uix-radius-m: 0.7rem;
+  --uix-radius-l: 1rem;
+
+  /* Spacing */
+  --uix-space-1: 0.25rem;
+  --uix-space-2: 0.5rem;
+  --uix-space-3: 0.75rem;
+  --uix-space-4: 1rem;
+  --uix-space-5: 1.5rem;
+  --uix-space-6: 2.5rem;
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "scripts",
+  "tags": ["scope:shared", "type:tooling"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p scripts/tsconfig.json"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint scripts --max-warnings 0"
+      }
+    }
+  }
+}

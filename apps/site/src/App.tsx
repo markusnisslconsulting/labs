@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Route, Routes, useParams } from "react-router";
-import { Chip } from "@labs/ui";
+import { Chip, LabCard, SearchInput } from "@labs/ui";
 import { allTags, labBySlug, labs } from "./labs";
 
 const Home = () => {
@@ -39,13 +39,11 @@ const Home = () => {
 
       {labs.length > 3 ? (
         <div className="lab-controls">
-          <input
-            type="search"
-            className="lab-search"
+          <SearchInput
             placeholder="Search the labs"
             aria-label="Search the labs"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => setQuery(event.currentTarget.value)}
           />
           <div className="chip-row" role="group" aria-label="Filter by tag">
             <Chip
@@ -77,29 +75,14 @@ const Home = () => {
       {visible.length > 0 ? (
         <ul className="lab-list">
           {visible.map((lab) => (
-            <li key={lab.slug} className="lab-card">
-              <h2>
-                <Link to={`/${lab.slug}`}>{lab.title}</Link>
-              </h2>
-              <p>{lab.summary}</p>
-              <ul className="card-tags" aria-label="Tags">
-                {lab.tags.map((entry) => (
-                  <li key={entry}>
-                    <Chip>{entry}</Chip>
-                  </li>
-                ))}
-              </ul>
-              <p className="lab-links">
-                <Link to={`/${lab.slug}`}>Open the lab</Link>
-                <span aria-hidden> · </span>
-                <a
-                  href={lab.article.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Read the article
-                </a>
-              </p>
+            <li key={lab.slug}>
+              <LabCard
+                title={lab.title}
+                href={`/${lab.slug}`}
+                summary={lab.summary}
+                tags={lab.tags}
+                articleHref={lab.article.href}
+              />
             </li>
           ))}
         </ul>
@@ -173,8 +156,8 @@ const LabPage = () => {
 
       {!Demo && lab.storybookPath ? (
         <>
-          <section className="lab-demo">
-            <h2>The workbench, embedded</h2>
+          <section className="uix-panel">
+            <p className="uix-panel-label">The workbench, embedded</p>
             <iframe
               title={`${lab.title} in Storybook`}
               src={`/storybook/index.html${lab.storybookPath}`}

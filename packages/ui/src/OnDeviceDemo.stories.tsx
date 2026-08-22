@@ -5,6 +5,18 @@ const meta = {
   title: "Demos/Built-in APIs",
   component: OnDeviceDemo,
   tags: ["autodocs"],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Pure view over the browser: every chip is a live `availability()` answer, every button wraps one built-in call with its fallback state designed. Source: [OnDeviceDemo.tsx](https://github.com/markusnisslconsulting/labs/tree/main/packages/ui/src/OnDeviceDemo.tsx).",
+      },
+      source: {
+        code: `if (!hasApi(name)) return set("absent");
+check().then((state) => !cancelled && set(state));`,
+      },
+    },
+  },
 } satisfies Meta<typeof OnDeviceDemo>;
 
 export default meta;

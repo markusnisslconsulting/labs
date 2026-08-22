@@ -1,0 +1,32 @@
+/* Component tokens: what a product may theme per part. Every one
+   falls back through the semantic layer; none names a raw value. */
+
+:root {
+  /* Button */
+  --uix-button-bg: var(--uix-accent);
+  --uix-button-fg: var(--uix-text-on-accent);
+  --uix-button-ghost-bg: var(--uix-bg-surface);
+  --uix-button-ghost-fg: var(--uix-text-primary);
+  --uix-button-ghost-border: var(--uix-border-subtle);
+  --uix-button-radius: var(--uix-radius-m);
+
+  /* Chip */
+  --uix-chip-bg: var(--uix-bg-subtle);
+  --uix-chip-fg: var(--uix-text-secondary);
+  --uix-chip-active-bg: var(--uix-navy-900);
+  --uix-chip-active-fg: var(--uix-white);
+
+  /* StatusPill */
+  --uix-pill-fg: var(--uix-text-primary);
+  --uix-pill-ok: var(--uix-status-ok);
+  --uix-pill-warn: var(--uix-status-warn);
+  --uix-pill-off: var(--uix-status-off);
+
+  /* Panel */
+  --uix-panel-bg: var(--uix-bg-surface);
+  --uix-panel-border: var(--uix-border-subtle);
+  --uix-panel-radius: var(--uix-radius-l);
+  --uix-panel-accent: var(--uix-accent);
+  --uix-panel-pad-x: var(--uix-space-5);
+  --uix-panel-pad-y: var(--uix-space-5);
+}
