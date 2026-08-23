@@ -75,24 +75,19 @@ h2 {
 
 .site-nav {
   display: flex;
-  gap: 1rem;
+  gap: 1.3rem;
   flex-wrap: wrap;
+  margin-left: auto;
 }
 
-.site-nav a,
-.site-back {
+.site-nav a {
   color: var(--uix-text-secondary);
   text-decoration: none;
   font-size: 0.95rem;
 }
 
-.site-nav a:hover,
-.site-back:hover {
+.site-nav a:hover {
   color: var(--uix-accent);
-}
-
-.site-back {
-  margin-left: auto;
 }
 
 main {

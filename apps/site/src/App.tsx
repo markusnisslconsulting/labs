@@ -181,22 +181,33 @@ const LabPage = () => {
 const App = () => {
   return (
     <>
+      {/* Globale Chrome-Konstante: Marke plus externe Ziele. Labor-
+          Entdeckung lebt im Ueberblick (Suche/Tags), nicht hier --
+          sonst waechst der Header mit jedem Labor. */}
       <header className="site-header">
         <div className="site-header-inner">
           <Link to="/" className="site-brand">
             Labs
           </Link>
-          <nav className="site-nav" aria-label="Labs">
-            {labs.slice(0, 4).map((lab) => (
-              <Link key={lab.slug} to={`/${lab.slug}`}>
-                {lab.title.replace("@labs/ui ", "")}
-              </Link>
-            ))}
-            {labs.length > 4 ? <Link to="/">All {labs.length}</Link> : null}
+          <nav className="site-nav" aria-label="Primary">
+            <a href="/storybook/" target="_blank" rel="noopener noreferrer">
+              Storybook ↗
+            </a>
+            <a
+              href="https://github.com/markusnisslconsulting/labs"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub ↗
+            </a>
+            <a
+              href="https://www.markusnissl.com/blog"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Writing ↗
+            </a>
           </nav>
-          <a href="https://www.markusnissl.com/blog" className="site-back">
-            Writing ↗
-          </a>
         </div>
       </header>
       <main id="main">
