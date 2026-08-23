@@ -22,8 +22,30 @@
   border-radius: var(--uix-button-radius);
 }
 
-.uix-button:hover {
-  filter: brightness(1.08);
+/* Hovers shade the existing fill via colour mixing — one small-area
+   paint, no filter, no layout, no extra tokens. */
+.uix-button[data-variant="solid"][data-tone="accent"]:hover {
+  background: color-mix(
+    in srgb,
+    var(--uix-button-accent-bg) 90%,
+    var(--uix-navy-900)
+  );
+}
+
+.uix-button[data-variant="solid"][data-tone="neutral"]:hover {
+  background: color-mix(
+    in srgb,
+    var(--uix-button-neutral-bg) 90%,
+    var(--uix-white)
+  );
+}
+
+.uix-button[data-variant="outline"]:hover {
+  background: var(--uix-bg-subtle);
+}
+
+.uix-button[data-variant="ghost"]:hover {
+  background: var(--uix-button-ghost-hover-bg);
 }
 
 .uix-button:focus-visible {

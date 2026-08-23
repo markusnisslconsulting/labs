@@ -4,7 +4,11 @@
 
 :root {
   /* Palette */
-  --uix-red-600: #e5173f;
+  /* Darkened from the original seal red (#e5173f): that value
+     reached only 4.39:1 on paper and ~4:1 under white labels. At
+     #b31234 both directions clear WCAG AA with room to spare. */
+  --uix-red-600: #b31234;
+  --uix-red-700: #8f0e29;
   --uix-navy-900: #172b4d;
   --uix-slate-600: #4b5870;
   --uix-grey-300: #d5dbe6;

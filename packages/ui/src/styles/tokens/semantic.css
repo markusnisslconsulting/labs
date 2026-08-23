@@ -18,9 +18,11 @@
 
   /* Intent */
   --uix-accent: var(--uix-red-600);
-  --uix-accent-soft: rgba(229, 23, 63, 0.18);
+  --uix-accent-soft: rgba(179, 18, 52, 0.16);
   --uix-focus-ring: var(--uix-accent);
   --uix-status-ok: var(--uix-green-700);
   --uix-status-warn: var(--uix-amber-700);
   --uix-status-off: var(--uix-slate-600);
+  --uix-status-danger: var(--uix-red-700);
+  --uix-info: var(--uix-navy-900);
 }

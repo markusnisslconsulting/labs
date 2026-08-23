@@ -44,4 +44,7 @@
 
   /* SearchInput */
   --uix-search-border: var(--uix-border-subtle);
+
+  /* Field */
+  --uix-field-radius: var(--uix-radius-m);
 }
