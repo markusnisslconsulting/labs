@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Route, Routes, useParams } from "react-router";
-import { Chip, LabCard, SearchInput } from "@labs/ui";
+import { Chip, SearchInput } from "@labs/ui";
+import { LabCard } from "./components/LabCard";
 import { allTags, labBySlug, labs } from "./labs";
 
 const Home = () => {

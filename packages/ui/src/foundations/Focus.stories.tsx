@@ -19,8 +19,10 @@ export const KeyboardRing: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "0.8rem" }}>
       <Button>First</Button>
-      <Button variant="ghost">Second</Button>
-      <Button variant="danger-mini">Third</Button>
+      <Button variant="outline">Second</Button>
+      <Button variant="outline" size="sm">
+        Third
+      </Button>
     </div>
   ),
   play: async ({ canvas }) => {

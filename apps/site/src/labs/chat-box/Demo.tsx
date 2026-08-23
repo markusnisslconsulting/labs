@@ -1,11 +1,10 @@
+import { Button, Panel } from "@labs/ui";
 import { useEffect, useRef, useState } from "react";
 import {
   createScriptedRun,
   type AgentEvent,
   type ScriptedRun,
 } from "@labs/agent-stream";
-import { Button } from "./components/Button";
-import { Panel } from "./components/Panel";
 
 type RunState = "idle" | "running" | "awaiting" | "finished";
 
@@ -112,7 +111,7 @@ const AgentStreamDemo = () => {
         >
           {runState === "idle" ? "Run the agent" : "Run it again"}
         </Button>
-        <Button variant="ghost" onClick={reset}>
+        <Button variant="outline" onClick={reset}>
           Reset
         </Button>
       </div>
@@ -153,13 +152,16 @@ const AgentStreamDemo = () => {
                       <strong>{proposed} units</strong>
                       <span className="demo-inline-actions">
                         <Button
-                          variant="confirm-mini"
+                          variant="solid"
+                          tone="neutral"
+                          size="sm"
                           onClick={() => resolve(true)}
                         >
                           Accept
                         </Button>
                         <Button
-                          variant="danger-mini"
+                          variant="outline"
+                          size="sm"
                           onClick={() => resolve(false)}
                         >
                           Undo

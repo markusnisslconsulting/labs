@@ -1,7 +1,5 @@
+import { Button, Panel, StatusPill } from "@labs/ui";
 import { useEffect, useState } from "react";
-import { Button } from "./components/Button";
-import { Panel } from "./components/Panel";
-import { StatusPill } from "./components/StatusPill";
 
 type Availability =
   "unavailable" | "downloadable" | "downloading" | "available";
@@ -294,7 +292,7 @@ const OnDeviceDemo = () => {
           </button>
         ) : null}
         {summarizer === "available" || summarizer === "downloadable" ? (
-          <Button variant="ghost" disabled={summarising} onClick={runSummary}>
+          <Button variant="outline" disabled={summarising} onClick={runSummary}>
             {summarising
               ? "Summarising…"
               : summarizer === "available"
@@ -303,7 +301,7 @@ const OnDeviceDemo = () => {
           </Button>
         ) : null}
         {prompt === "available" || prompt === "downloadable" ? (
-          <Button variant="ghost" disabled={asking} onClick={runAsk}>
+          <Button variant="outline" disabled={asking} onClick={runAsk}>
             {asking
               ? "Asking…"
               : prompt === "available"

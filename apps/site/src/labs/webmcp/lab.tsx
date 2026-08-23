@@ -1,10 +1,10 @@
 import type { LabMeta } from "../types";
-import { WebMcpDemo } from "@labs/ui";
+import Demo from "./Demo";
 
 const WebMcpLabDemo = () => (
   <section className="lab-demo">
     <h2>The declared verb, running</h2>
-    <WebMcpDemo />
+    <Demo />
   </section>
 );
 
@@ -24,7 +24,7 @@ export default {
     href: "https://www.markusnissl.com/blog/webmcp-the-page-as-a-tool-surface",
   },
   source:
-    "https://github.com/markusnisslconsulting/labs/tree/main/packages/ui/src/WebMcpDemo.tsx",
+    "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/webmcp/Demo.tsx",
   demo: WebMcpLabDemo,
   storybookPath: "?path=/docs/demos-ordering-desk--docs",
 } satisfies LabMeta;

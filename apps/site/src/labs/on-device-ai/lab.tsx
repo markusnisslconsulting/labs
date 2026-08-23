@@ -1,10 +1,10 @@
 import type { LabMeta } from "../types";
-import { OnDeviceDemo } from "@labs/ui";
+import Demo from "./Demo";
 
 const OnDeviceLabDemo = () => (
   <section className="lab-demo">
     <h2>Availability is a fact about your machine</h2>
-    <OnDeviceDemo />
+    <Demo />
   </section>
 );
 
@@ -23,7 +23,7 @@ export default {
     href: "https://www.markusnissl.com/blog/chrome-built-in-ai-apis",
   },
   source:
-    "https://github.com/markusnisslconsulting/labs/tree/main/packages/ui/src/OnDeviceDemo.tsx",
+    "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/on-device-ai/Demo.tsx",
   demo: OnDeviceLabDemo,
   storybookPath: "?path=/docs/demos-built-in-apis--docs",
 } satisfies LabMeta;

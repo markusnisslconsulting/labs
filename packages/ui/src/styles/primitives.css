@@ -1,21 +1,25 @@
-/* Accessible primitives. Every interactive element shows a
-   focus-visible ring, never removes it; every state pairs colour with
-   text, so tone is never the only carrier of meaning. */
-
-/* Button ---------------------------------------------------------------- */
+/* Button ----------------------------------------------------------------
+   Three coherent axes, every combination themed:
+     variant  solid | outline | ghost
+     tone     accent | neutral          (solid picks the fill)
+     size     sm | md | lg
+   The component renders data attributes; rules compose them. Adding a
+   tone later means adding tokens plus one block here — never touching
+   consumers. */
 
 .uix-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0.55rem 1.15rem;
-  border-radius: var(--uix-button-radius);
-  border: 1px solid transparent;
-  background: var(--uix-button-bg);
-  color: var(--uix-button-fg);
   font-weight: 700;
   cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+
+  /* md is the default step */
+  padding: var(--uix-space-2) var(--uix-space-5);
+  border-radius: var(--uix-button-radius);
 }
 
 .uix-button:hover {
@@ -33,227 +37,49 @@
   filter: none;
 }
 
-.uix-button--ghost {
-  background: #fff;
-  border-color: var(--uix-border-subtle);
-  color: var(--uix-text-primary);
-}
-
-.uix-button--ghost:hover {
-  border-color: var(--uix-text-secondary);
-  filter: none;
-}
-
-.uix-button--confirm-mini,
-.uix-button--danger-mini {
+/* Sizes */
+.uix-button[data-size="sm"] {
   padding: 0.2rem 0.6rem;
   font-size: 0.85rem;
-  border-radius: 0.5rem;
-  font-weight: 700;
+  gap: 0.3rem;
+  border-radius: var(--uix-radius-s);
 }
 
-.uix-button--confirm-mini {
-  background: var(--uix-text-primary);
-  color: #fff;
-}
-
-.uix-button--danger-mini {
-  background: #fff;
-  border-color: var(--uix-border-subtle);
-  color: var(--uix-accent);
-}
-
-.uix-button--danger-mini:hover {
-  border-color: var(--uix-accent);
-  filter: none;
-}
-
-/* Chip ------------------------------------------------------------------ */
-
-.uix-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: var(--uix-bg-subtle);
-  color: var(--uix-text-secondary);
-  border: 1px solid transparent;
-  border-radius: 999px;
-  padding: 0.15rem 0.65rem;
-  font-size: 0.82rem;
-  line-height: 1.4;
-}
-
-button.uix-chip {
-  cursor: pointer;
-}
-
-button.uix-chip:hover {
-  color: var(--uix-accent);
-}
-
-button.uix-chip[aria-pressed="true"] {
-  background: var(--uix-text-primary);
-  border-color: var(--uix-text-primary);
-  color: #fff;
-}
-
-button.uix-chip:focus-visible {
-  outline: 2px solid var(--uix-focus-ring);
-  outline-offset: 2px;
-}
-
-/* StatusPill ------------------------------------------------------------ */
-
-.uix-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.88rem;
-  color: var(--uix-text-primary);
-}
-
-.uix-pill::before {
-  content: "";
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 999px;
-  background: currentColor;
-  flex-shrink: 0;
-}
-
-.uix-pill[data-tone="ok"] {
-  color: #14691f;
-}
-
-.uix-pill[data-tone="warn"] {
-  color: #8a5a00;
-}
-
-.uix-pill[data-tone="off"] {
-  color: var(--uix-text-secondary);
-}
-
-/* Panel ----------------------------------------------------------------- */
-
-.uix-panel {
-  border: 1px solid var(--uix-border-subtle);
-  border-radius: var(--radius-surface);
-  background: #fff;
-  padding: 1.25rem 1.4rem 1.4rem;
-  margin: 0 0 1.5rem;
-}
-
-.uix-panel-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 0.9rem;
-}
-
-.uix-panel-label::before {
-  content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: var(--uix-accent);
-}
-
-/* Shared action row ------------------------------------------------------ */
-
-.uix-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 0;
-}
-
-/* LabCard + SearchInput ------------------------------------------------- */
-
-.uix-labcard {
-  position: relative;
-  background: var(--uix-bg-surface);
-  border: 1px solid var(--uix-border-subtle);
+.uix-button[data-size="lg"] {
+  padding: var(--uix-space-3) var(--uix-space-6);
+  font-size: 1.1rem;
   border-radius: var(--uix-radius-l);
-  padding: 1.3rem 1.4rem;
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
 }
 
-.uix-labcard::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  border-radius: 999px;
-  background: transparent;
+/* Solid x tone */
+.uix-button[data-variant="solid"][data-tone="accent"] {
+  background: var(--uix-button-accent-bg);
+  color: var(--uix-button-accent-fg);
 }
 
-.uix-labcard:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 30px rgba(23, 43, 77, 0.1);
+.uix-button[data-variant="solid"][data-tone="neutral"] {
+  background: var(--uix-button-neutral-bg);
+  color: var(--uix-button-neutral-fg);
 }
 
-.uix-labcard:hover::before {
-  background: var(--uix-accent);
+/* Outline x tone */
+.uix-button[data-variant="outline"] {
+  background: var(--uix-button-outline-bg);
+  border-color: var(--uix-button-outline-border);
+  color: var(--uix-button-outline-fg);
 }
 
-.uix-labcard h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
+.uix-button[data-variant="outline"]:hover {
+  filter: none;
+  border-color: var(--uix-button-outline-border-strong);
 }
 
-.uix-labcard h2 a {
-  color: var(--uix-text-primary);
-  text-decoration: none;
+/* Ghost x tone */
+.uix-button[data-variant="ghost"] {
+  color: var(--uix-button-ghost-fg);
 }
 
-.uix-labcard h2 a:hover {
-  color: var(--uix-accent);
-}
-
-.uix-labcard-tags {
-  list-style: none;
-  padding: 0;
-  margin: 0.7rem 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.uix-labcard-links {
-  font-size: 0.95rem;
-  margin: 0.7rem 0 0;
-}
-
-.uix-labcard-links a {
-  color: var(--uix-accent);
-  text-decoration: none;
-}
-
-.uix-labcard-links a:hover {
-  text-decoration: underline;
-}
-
-.uix-search {
-  flex: 1 1 14rem;
-  max-width: 22rem;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid var(--uix-border-subtle);
-  border-radius: 999px;
-  background: var(--uix-bg-surface);
-  color: var(--uix-text-primary);
-  font: inherit;
-}
-
-.uix-search:focus-visible {
-  outline: 2px solid var(--uix-focus-ring);
-  outline-offset: 1px;
+.uix-button[data-variant="ghost"]:hover {
+  filter: none;
+  background: var(--uix-button-ghost-hover-bg);
 }

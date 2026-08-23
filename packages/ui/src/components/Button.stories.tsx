@@ -9,8 +9,23 @@ const meta = {
   argTypes: {
     variant: {
       control: "radio",
-      options: ["primary", "ghost", "confirm-mini", "danger-mini"],
-      table: { category: "Appearance", defaultValue: { summary: "primary" } },
+      options: ["solid", "outline", "ghost"],
+      table: { category: "Appearance", defaultValue: { summary: "solid" } },
+    },
+    tone: {
+      control: "radio",
+      options: ["accent", "neutral"],
+      table: {
+        category: "Appearance",
+        defaultValue: { summary: "accent" },
+        description:
+          "Fill family for the solid variant; outline and ghost record it without changing their look.",
+      },
+    },
+    size: {
+      control: "radio",
+      options: ["sm", "md", "lg"],
+      table: { category: "Appearance", defaultValue: { summary: "md" } },
     },
     disabled: {
       control: "boolean",
@@ -22,20 +37,37 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+export const SolidAccent: Story = {
   args: { children: "Run the agent" },
 };
 
+export const SolidNeutral: Story = {
+  args: { tone: "neutral", children: "Accept" },
+};
+
+export const Outline: Story = {
+  args: { variant: "outline", children: "Reset" },
+};
+
 export const Ghost: Story = {
-  args: { variant: "ghost", children: "Reset" },
+  args: { variant: "ghost", children: "Skip" },
 };
 
-export const ConfirmMini: Story = {
-  args: { variant: "confirm-mini", children: "Accept" },
+export const SmallRowPair: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: "0.4rem" }}>
+      <Button size="sm" tone="neutral">
+        Accept
+      </Button>
+      <Button variant="outline" size="sm">
+        Undo
+      </Button>
+    </div>
+  ),
 };
 
-export const DangerMini: Story = {
-  args: { variant: "danger-mini", children: "Undo" },
+export const Large: Story = {
+  args: { size: "lg", children: "Get started" },
 };
 
 export const Disabled: Story = {
@@ -49,15 +81,43 @@ export const Disabled: Story = {
   },
 };
 
-export const AllVariants: Story = {
+const variants = ["solid", "outline", "ghost"] as const;
+const tones = ["accent", "neutral"] as const;
+const sizes = ["sm", "md", "lg"] as const;
+
+/**
+ * The full matrix: three variants x two tones x three sizes. Every
+ * cell is themed by component tokens; if a combination ever looks
+ * wrong, the fix belongs in tokens, not in this story.
+ */
+export const Matrix: Story = {
   render: () => (
-    <div style={{ display: "grid", gap: "0.8rem", justifyItems: "start" }}>
-      <Button>Primary</Button>
-      <Button variant="ghost">Ghost</Button>
-      <div style={{ display: "flex", gap: "0.4rem" }}>
-        <Button variant="confirm-mini">Accept</Button>
-        <Button variant="danger-mini">Undo</Button>
-      </div>
+    <div style={{ display: "grid", gap: "1.2rem" }}>
+      {variants.map((variant) => (
+        <section key={variant}>
+          <h3 style={{ margin: "0 0 0.5rem", textTransform: "capitalize" }}>
+            {variant}
+          </h3>
+          {tones.map((tone) => (
+            <div
+              key={tone}
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.5rem",
+                alignItems: "center",
+                marginBottom: "0.5rem",
+              }}
+            >
+              {sizes.map((size) => (
+                <Button key={size} variant={variant} tone={tone} size={size}>
+                  {variant} · {tone} · {size}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </section>
+      ))}
     </div>
   ),
 };

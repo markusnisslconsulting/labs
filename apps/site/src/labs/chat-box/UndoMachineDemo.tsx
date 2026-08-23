@@ -1,7 +1,6 @@
+import { Button, Panel } from "@labs/ui";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { reduceRow, type RowEvent, type RowState } from "@labs/undo-machine";
-import { Button } from "./components/Button";
-import { Panel } from "./components/Panel";
 const START_UNITS = 800;
 const PROPOSED_UNITS = 1240;
 
@@ -92,7 +91,7 @@ const UndoMachineDemo = () => {
         >
           Agent proposes
         </Button>
-        <Button variant="ghost" onClick={reset}>
+        <Button variant="outline" onClick={reset}>
           Reset
         </Button>
         <label className="demo-chat-line">
@@ -124,11 +123,17 @@ const UndoMachineDemo = () => {
                   <span className="demo-old">{state.units}</span>
                   <strong>{state.proposedUnits} units</strong>
                   <span className="demo-inline-actions">
-                    <Button variant="confirm-mini" onClick={accept}>
+                    <Button
+                      variant="solid"
+                      tone="neutral"
+                      size="sm"
+                      onClick={accept}
+                    >
                       Accept
                     </Button>
                     <Button
-                      variant="danger-mini"
+                      variant="outline"
+                      size="sm"
                       onClick={() => dispatch({ type: "person-rejected" })}
                     >
                       Reject
@@ -145,7 +150,7 @@ const UndoMachineDemo = () => {
                 <>
                   <strong>{state.units} units</strong>
                   <span className="demo-inline-actions">
-                    <Button variant="danger-mini" onClick={undo}>
+                    <Button variant="outline" size="sm" onClick={undo}>
                       Undo
                     </Button>
                   </span>

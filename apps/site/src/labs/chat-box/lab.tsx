@@ -1,7 +1,8 @@
 import type { LabMeta } from "../types";
-import { AgentStreamDemo, UndoMachineDemo } from "@labs/ui";
+import Demo from "./Demo";
+import UndoMachineDemo from "./UndoMachineDemo";
 
-const ChatBoxDemos = () => (
+const ChatBoxLabDemo = () => (
   <>
     <section className="lab-demo">
       <h2>One agent, two surfaces</h2>
@@ -10,7 +11,7 @@ const ChatBoxDemos = () => (
         it happens in a transcript, on the right on the row itself. The event
         chips are the AG-UI vocabulary from the article.
       </p>
-      <AgentStreamDemo />
+      <Demo />
     </section>
     <section className="lab-demo">
       <h2>Undo is a state machine, not a button</h2>
@@ -39,7 +40,7 @@ export default {
     href: "https://www.markusnissl.com/blog/the-chat-box-is-a-log",
   },
   source:
-    "https://github.com/markusnisslconsulting/labs/tree/main/packages/ui/src/AgentStreamDemo.tsx",
-  demo: ChatBoxDemos,
+    "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/chat-box/Demo.tsx",
+  demo: ChatBoxLabDemo,
   storybookPath: "?path=/docs/demos-agent-stream--docs",
 } satisfies LabMeta;

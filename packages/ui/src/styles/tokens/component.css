@@ -1,13 +1,25 @@
 /* Component tokens: what a product may theme per part. Every one
-   falls back through the semantic layer; none names a raw value. */
+   falls back through the semantic layer; none names a raw value.
+   Button tokens follow the variant/tone axes of the component. */
 
 :root {
-  /* Button */
-  --uix-button-bg: var(--uix-accent);
-  --uix-button-fg: var(--uix-text-on-accent);
-  --uix-button-ghost-bg: var(--uix-bg-surface);
+  /* Button · solid */
+  --uix-button-accent-bg: var(--uix-accent);
+  --uix-button-accent-fg: var(--uix-text-on-accent);
+  --uix-button-neutral-bg: var(--uix-navy-900);
+  --uix-button-neutral-fg: var(--uix-white);
+
+  /* Button · outline */
+  --uix-button-outline-bg: var(--uix-bg-surface);
+  --uix-button-outline-fg: var(--uix-text-primary);
+  --uix-button-outline-border: var(--uix-border-subtle);
+  --uix-button-outline-border-strong: var(--uix-border-strong);
+
+  /* Button · ghost */
   --uix-button-ghost-fg: var(--uix-text-primary);
-  --uix-button-ghost-border: var(--uix-border-subtle);
+  --uix-button-ghost-hover-bg: var(--uix-bg-subtle);
+
+  /* Button · shared */
   --uix-button-radius: var(--uix-radius-m);
 
   /* Chip */
@@ -29,4 +41,7 @@
   --uix-panel-accent: var(--uix-accent);
   --uix-panel-pad-x: var(--uix-space-5);
   --uix-panel-pad-y: var(--uix-space-5);
+
+  /* SearchInput */
+  --uix-search-border: var(--uix-border-subtle);
 }

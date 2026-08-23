@@ -1,12 +1,10 @@
+import { Button, Panel, StatusPill } from "@labs/ui";
 import { useEffect, useRef, useState } from "react";
 import {
   createDesk,
   reorderPointToolDescriptor,
   type DeskRow,
 } from "@labs/reorder-desk";
-import { Button } from "./components/Button";
-import { Panel } from "./components/Panel";
-import { StatusPill } from "./components/StatusPill";
 
 type Registration = "checking" | "registered" | "absent";
 
@@ -142,7 +140,7 @@ const WebMcpDemo = () => {
 
       <div className="uix-actions">
         <Button onClick={simulate}>Simulate an agent call</Button>
-        <Button variant="ghost" onClick={reset}>
+        <Button variant="outline" onClick={reset}>
           Reset
         </Button>
       </div>
