@@ -34,17 +34,19 @@ export const DangerIsAssertive: Story = {
   },
 };
 
+function DismissibleAlert() {
+  const [open, setOpen] = useState(true);
+  return open ? (
+    <Alert severity="success" title="Saved" onDismiss={() => setOpen(false)}>
+      Your reorder points were updated.
+    </Alert>
+  ) : (
+    <p>Dismissed.</p>
+  );
+}
+
 export const Dismissible: StoryObj = {
-  render: () => {
-    const [open, setOpen] = useState(true);
-    return open ? (
-      <Alert severity="success" title="Saved" onDismiss={() => setOpen(false)}>
-        Your reorder points were updated.
-      </Alert>
-    ) : (
-      <p>Dismissed.</p>
-    );
-  },
+  render: () => <DismissibleAlert />,
   play: async ({ canvas }) => {
     await canvas.getByRole("button", { name: "Dismiss" }).click();
     await expect(canvas.getByText("Dismissed.")).toBeVisible();
