@@ -17,6 +17,8 @@
   display: flex;
   align-items: center;
   gap: var(--uix-space-2);
+  padding-top: var(--uix-field-pad-y);
+  padding-bottom: var(--uix-field-pad-y);
   background: var(--uix-bg-surface);
   border: 1px solid var(--uix-border-subtle);
   border-radius: var(--uix-field-radius);
@@ -24,7 +26,8 @@
 }
 
 .uix-field-row:focus-within {
-  border-color: var(--uix-focus-ring);
+  border-color: var(--uix-border-strong);
+  box-shadow: 0 0 0 3px var(--uix-accent-soft);
 }
 
 .uix-field-row[data-invalid] {
@@ -35,7 +38,7 @@
   flex: 1;
   border: none;
   background: transparent;
-  padding: var(--uix-space-2) 0;
+  padding: 0;
   min-width: 0;
 }
 
@@ -72,6 +75,20 @@ select.uix-field-input {
 .uix-field-error {
   color: var(--uix-status-danger);
   font-weight: 700;
+}
+
+.uix-radiogroup {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--uix-space-2);
+}
+
+.uix-legend {
+  padding: 0;
+  margin-bottom: var(--uix-space-2);
+  font-weight: var(--uix-font-weight-bold);
 }
 
 /* Checkbox / Radio --------------------------------------------------------

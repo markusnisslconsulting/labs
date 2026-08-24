@@ -17,6 +17,43 @@ const labsTheme = create({
 });
 
 const preview: Preview = {
+  globalTypes: {
+    theme: {
+      name: "Theme",
+      description: "Semantic token set",
+      toolbar: {
+        icon: "mirror",
+        items: [
+          { value: "light", title: "Light", icon: "sun" },
+          { value: "dark", title: "Dark", icon: "moon" },
+        ],
+        defaultValue: "light",
+      },
+    },
+    density: {
+      name: "Density",
+      description: "Spacing multiplier",
+      toolbar: {
+        icon: "contrast",
+        items: [
+          { value: "cozy", title: "Cozy", icon: "expand" },
+          { value: "compact", title: "Compact", icon: "collapse" },
+        ],
+        defaultValue: "cozy",
+      },
+    },
+  },
+  decorators: [
+    (Story, context) => {
+      // Die Attribute sitzen am html-Element des Story-iframes, damit
+      // die semantischen Tokens (und die Density) überall greifen.
+      const root = document.documentElement;
+      root.dataset.theme = context.globals.theme ?? "light";
+      root.dataset.density =
+        context.globals.density === "compact" ? "compact" : "cozy";
+      return Story();
+    },
+  ],
   parameters: {
     layout: "padded",
     a11y: {

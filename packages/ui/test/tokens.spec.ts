@@ -14,12 +14,16 @@ const cssFiles = [
 ];
 
 function parseCss(path: string): Map<string, string> {
-  const source = readFileSync(path, "utf8");
+  let source = readFileSync(path, "utf8");
+  // Theme- und Density-Blöcke überschreiben bewusst dieselben Namen
+  // mit anderen Werten; die Registry dokumentiert die light-Werte.
+  source = source.replace(/\[data-(theme|density)="[^"]*"\]\s*\{[^}]*\}/g, "");
   const map = new Map<string, string>();
   for (const [, name, value] of source.matchAll(
     /(--uix-[\w-]+):\s*([^;]+);/g,
   )) {
-    map.set(name.trim(), value.trim());
+    // Mehrlinige Werte (font stacks) auf ein Leerzeichen normieren.
+    map.set(name.trim(), value.trim().replace(/\s+/g, " "));
   }
   return map;
 }
@@ -47,7 +51,8 @@ describe("token registry parity", () => {
 
   it("registry values match the CSS values", () => {
     for (const token of allTokens) {
-      expect(css.get(token.name), token.name).toBe(token.value);
+      const normalized = token.value.replace(/\s+/g, " ");
+      expect(css.get(token.name), token.name).toBe(normalized);
     }
   });
 

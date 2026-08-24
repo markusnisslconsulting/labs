@@ -17,6 +17,29 @@
   --uix-white: #ffffff;
   --uix-green-700: #14691f;
   --uix-amber-700: #8a5a00;
+  --uix-red-400: #ff6b85;
+  --uix-green-400: #63c47a;
+  --uix-amber-400: #e2b04a;
+  --uix-grey-700: #2c3a4f;
+  --uix-grey-800: #1d2939;
+  --uix-grey-900: #101828;
+  --uix-slate-400: #a7b4c7;
+
+  /* Typography */
+  --uix-font-sans:
+    "Atkinson Hyperlegible", -apple-system, "Segoe UI", Helvetica, Arial,
+    sans-serif;
+  --uix-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --uix-font-size-100: 0.75rem;
+  --uix-font-size-200: 0.875rem;
+  --uix-font-size-300: 1rem;
+  --uix-font-size-400: 1.15rem;
+  --uix-font-size-500: 1.35rem;
+  --uix-font-size-600: 1.75rem;
+  --uix-font-weight-regular: 400;
+  --uix-font-weight-bold: 700;
+  --uix-line-height-tight: 1.15;
+  --uix-line-height-normal: 1.55;
 
   /* Radii */
   --uix-radius-s: 0.5rem;

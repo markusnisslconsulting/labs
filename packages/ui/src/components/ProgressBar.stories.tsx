@@ -11,7 +11,26 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Determinate: Story = {
+import { useEffect, useState } from "react";
+
+function CyclingBar() {
+  const [value, setValue] = useState(10);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setValue((v) => (v >= 100 ? 10 : v + 10));
+    }, 600);
+    return () => clearInterval(timer);
+  }, []);
+  return <ProgressBar label="Uploading catalogue" value={value} />;
+}
+
+/** The fill animates via transform; this story cycles the value so
+    the transition is visible instead of a frozen frame. */
+export const Determinate: StoryObj = {
+  render: () => <CyclingBar />,
+};
+
+export const Static64: Story = {
   args: { label: "Uploading catalogue", value: 64 },
   play: async ({ canvas }) => {
     const bar = canvas.getByRole("progressbar", {

@@ -9,10 +9,18 @@
 # Prerendered pages and client-side routes cost no redirect.
 DirectorySlash Off
 
-# Single-page app: every path serves the shell, the router takes it
-# from there.
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Directory entry without the slash (DirectorySlash is off): the
+  # hosted workbench lives at /storybook/, so send /storybook to
+  # /storybook/ with one redirect. Relative asset paths stay correct.
+  RewriteCond %{REQUEST_URI} !/$
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}/index.html -f
+  RewriteRule ^(.*)$ $1/ [R=301,L]
+
+  # Single-page app: every path serves the shell, the router takes it
+  # from there.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ /index.html [L]

@@ -26,3 +26,34 @@
   --uix-status-danger: var(--uix-red-700);
   --uix-info: var(--uix-navy-900);
 }
+
+/* Density: one multiplier the components consume. Products set
+   data-density="compact" on a subtree for tighter chrome. */
+:root {
+  --uix-density: 1;
+}
+
+[data-density="compact"] {
+  --uix-density: 0.72;
+}
+
+/* Dark theme: the semantic layer remaps to the lighter primitives.
+   Component and primitive layers stay untouched. */
+[data-theme="dark"] {
+  --uix-text-primary: var(--uix-grey-25);
+  --uix-text-secondary: var(--uix-slate-400);
+  --uix-text-on-accent: var(--uix-grey-900);
+  --uix-bg-page: var(--uix-grey-900);
+  --uix-bg-surface: var(--uix-grey-800);
+  --uix-bg-subtle: var(--uix-grey-700);
+  --uix-border-subtle: var(--uix-grey-700);
+  --uix-border-strong: var(--uix-slate-400);
+  --uix-accent: var(--uix-red-400);
+  --uix-accent-soft: rgba(255, 107, 133, 0.16);
+  --uix-focus-ring: var(--uix-red-400);
+  --uix-status-ok: var(--uix-green-400);
+  --uix-status-warn: var(--uix-amber-400);
+  --uix-status-danger: var(--uix-red-400);
+  --uix-status-off: var(--uix-slate-400);
+  --uix-info: var(--uix-slate-400);
+}

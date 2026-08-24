@@ -7,14 +7,9 @@ body {
   padding: 0;
   background: var(--uix-bg-page);
   color: var(--uix-text-primary);
-  font-family:
-    "Atkinson Hyperlegible",
-    -apple-system,
-    "Segoe UI",
-    Helvetica,
-    Arial,
-    sans-serif;
-  line-height: 1.55;
+  font-family: var(--uix-font-sans);
+  font-size: var(--uix-font-size-300);
+  line-height: var(--uix-line-height-normal);
 }
 
 h1,

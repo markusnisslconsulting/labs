@@ -34,12 +34,15 @@ export function Pagination({
     }
   };
 
-  /** Up to five page numbers, edges always visible. */
+  /** Sliding window; erste und letzte Seite bleiben sichtbar. */
   const window: number[] = [];
-  const start = Math.max(1, Math.min(page - 2, pageCount - 4));
-  for (let p = start; p <= Math.min(pageCount, start + 4); p += 1) {
+  const start = Math.max(2, Math.min(page - 1, pageCount - 2));
+  const end = Math.min(pageCount - 1, Math.max(page + 1, 3));
+  for (let p = start; p <= end; p += 1) {
     window.push(p);
   }
+  const showLeadingEllipsis = start > 2;
+  const showTrailingEllipsis = end < pageCount - 1;
 
   return (
     <nav className="uix-pagination" aria-label="Pagination">
@@ -52,10 +55,22 @@ export function Pagination({
       >
         ‹
       </Button>
-      {start > 1 ? (
-        <span className="uix-pagination-ellipsis" aria-hidden>
-          …
-        </span>
+      {window[0] !== 1 ? (
+        <>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => go(1)}
+            aria-label="Page 1"
+          >
+            1
+          </Button>
+          {showLeadingEllipsis ? (
+            <span className="uix-pagination-ellipsis" aria-hidden>
+              …
+            </span>
+          ) : null}
+        </>
       ) : null}
       {window.map((p) =>
         p === page ? (
@@ -81,10 +96,20 @@ export function Pagination({
           </Button>
         ),
       )}
-      {start + 4 < pageCount ? (
+      {showTrailingEllipsis ? (
         <span className="uix-pagination-ellipsis" aria-hidden>
           …
         </span>
+      ) : null}
+      {window.at(-1) !== pageCount ? (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => go(pageCount)}
+          aria-label={`Page ${pageCount}`}
+        >
+          {pageCount}
+        </Button>
       ) : null}
       <Button
         variant="outline"

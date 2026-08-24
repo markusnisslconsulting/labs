@@ -42,5 +42,4 @@ export default {
   source:
     "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/chat-box/Demo.tsx",
   demo: ChatBoxLabDemo,
-  storybookPath: "?path=/docs/demos-agent-stream--docs",
 } satisfies LabMeta;

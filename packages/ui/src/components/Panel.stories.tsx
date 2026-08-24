@@ -1,11 +1,13 @@
 import { expect } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Badge } from "./Badge";
 import { Panel } from "./Panel";
 
 const meta = {
   title: "Components/Panel",
   component: Panel,
   tags: ["autodocs"],
+  parameters: { layout: "centered" },
 } satisfies Meta<typeof Panel>;
 
 export default meta;
@@ -24,4 +26,19 @@ export const Default: Story = {
       }),
     ).toBeVisible();
   },
+};
+
+/** Anatomy slots for richer headers, composed on the same surface. */
+export const WithSlots: StoryObj = {
+  render: () => (
+    <Panel label="Supplier · Nordwind Logistik">
+      <Panel.Header>
+        <strong>Delivery windows</strong>
+        <Badge tone="success">Active</Badge>
+      </Panel.Header>
+      <Panel.Body>
+        <p>The negotiation agent drafts changes; a person commits them.</p>
+      </Panel.Body>
+    </Panel>
+  ),
 };

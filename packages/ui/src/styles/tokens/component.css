@@ -39,12 +39,15 @@
   --uix-panel-border: var(--uix-border-subtle);
   --uix-panel-radius: var(--uix-radius-l);
   --uix-panel-accent: var(--uix-accent);
-  --uix-panel-pad-x: var(--uix-space-5);
-  --uix-panel-pad-y: var(--uix-space-5);
+  --uix-panel-pad-x: calc(var(--uix-space-5) * var(--uix-density));
+  --uix-panel-pad-y: calc(
+    var(--uix-space-4) * var(--uix-density) + var(--uix-space-1)
+  );
 
   /* SearchInput */
   --uix-search-border: var(--uix-border-subtle);
 
   /* Field */
   --uix-field-radius: var(--uix-radius-m);
+  --uix-field-pad-y: calc(var(--uix-space-2) * var(--uix-density));
 }

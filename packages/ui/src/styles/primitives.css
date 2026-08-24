@@ -12,40 +12,12 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  font-weight: 700;
+  font-weight: var(--uix-font-weight-bold);
   cursor: pointer;
   border: 1px solid transparent;
   background: transparent;
-
-  /* md is the default step */
-  padding: var(--uix-space-2) var(--uix-space-5);
+  padding: calc(var(--uix-space-2) * var(--uix-density)) var(--uix-space-5);
   border-radius: var(--uix-button-radius);
-}
-
-/* Hovers shade the existing fill via colour mixing — one small-area
-   paint, no filter, no layout, no extra tokens. */
-.uix-button[data-variant="solid"][data-tone="accent"]:hover {
-  background: color-mix(
-    in srgb,
-    var(--uix-button-accent-bg) 90%,
-    var(--uix-navy-900)
-  );
-}
-
-.uix-button[data-variant="solid"][data-tone="neutral"]:hover {
-  background: color-mix(
-    in srgb,
-    var(--uix-button-neutral-bg) 90%,
-    var(--uix-white)
-  );
-}
-
-.uix-button[data-variant="outline"]:hover {
-  background: var(--uix-bg-subtle);
-}
-
-.uix-button[data-variant="ghost"]:hover {
-  background: var(--uix-button-ghost-hover-bg);
 }
 
 .uix-button:focus-visible {
@@ -56,27 +28,34 @@
 .uix-button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
-  filter: none;
 }
 
-/* Sizes */
 .uix-button[data-size="sm"] {
-  padding: 0.2rem 0.6rem;
-  font-size: 0.85rem;
-  gap: 0.3rem;
+  padding: calc(var(--uix-space-1) * var(--uix-density)) var(--uix-space-3);
+  font-size: var(--uix-font-size-200);
+  gap: var(--uix-space-2);
   border-radius: var(--uix-radius-s);
 }
 
 .uix-button[data-size="lg"] {
-  padding: var(--uix-space-3) var(--uix-space-6);
-  font-size: 1.1rem;
+  padding: calc(var(--uix-space-3) * var(--uix-density)) var(--uix-space-6);
+  font-size: var(--uix-font-size-500);
   border-radius: var(--uix-radius-l);
 }
 
-/* Solid x tone */
+/* Hovers shade the existing fill via colour mixing — one small-area
+   paint, no filter, no layout, no extra tokens. */
 .uix-button[data-variant="solid"][data-tone="accent"] {
   background: var(--uix-button-accent-bg);
   color: var(--uix-button-accent-fg);
+}
+
+.uix-button[data-variant="solid"][data-tone="accent"]:hover {
+  background: color-mix(
+    in srgb,
+    var(--uix-button-accent-bg) 90%,
+    var(--uix-navy-900)
+  );
 }
 
 .uix-button[data-variant="solid"][data-tone="neutral"] {
@@ -84,7 +63,14 @@
   color: var(--uix-button-neutral-fg);
 }
 
-/* Outline x tone */
+.uix-button[data-variant="solid"][data-tone="neutral"]:hover {
+  background: color-mix(
+    in srgb,
+    var(--uix-button-neutral-bg) 90%,
+    var(--uix-white)
+  );
+}
+
 .uix-button[data-variant="outline"] {
   background: var(--uix-button-outline-bg);
   border-color: var(--uix-button-outline-border);
@@ -92,16 +78,160 @@
 }
 
 .uix-button[data-variant="outline"]:hover {
-  filter: none;
   border-color: var(--uix-button-outline-border-strong);
+  background: var(--uix-bg-subtle);
 }
 
-/* Ghost x tone */
 .uix-button[data-variant="ghost"] {
   color: var(--uix-button-ghost-fg);
 }
 
 .uix-button[data-variant="ghost"]:hover {
-  filter: none;
   background: var(--uix-button-ghost-hover-bg);
+}
+
+/* Chip ------------------------------------------------------------------ */
+
+.uix-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uix-space-1);
+  background: var(--uix-chip-bg);
+  color: var(--uix-chip-fg);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: calc(var(--uix-space-1) * var(--uix-density))
+    calc(var(--uix-space-2) * var(--uix-density) + var(--uix-space-2));
+  font-size: var(--uix-font-size-200);
+  line-height: var(--uix-line-height-normal);
+}
+
+button.uix-chip {
+  cursor: pointer;
+}
+
+button.uix-chip:hover {
+  color: var(--uix-accent);
+}
+
+button.uix-chip[aria-pressed="true"] {
+  background: var(--uix-chip-active-bg);
+  color: var(--uix-chip-active-fg);
+}
+
+button.uix-chip:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: 2px;
+}
+
+/* StatusPill ------------------------------------------------------------ */
+
+.uix-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uix-space-2);
+  font-size: var(--uix-font-size-200);
+  color: var(--uix-pill-fg);
+}
+
+.uix-pill::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.uix-pill[data-tone="ok"] {
+  color: var(--uix-pill-ok);
+}
+
+.uix-pill[data-tone="warn"] {
+  color: var(--uix-pill-warn);
+}
+
+.uix-pill[data-tone="off"] {
+  color: var(--uix-pill-off);
+}
+
+/* Panel -------------------------------------------------------------------
+   Compound: Panel renders the surface and its label; PanelHeader and
+   PanelBody are exported slots for richer headers/bodies. */
+
+.uix-panel {
+  border: 1px solid var(--uix-panel-border);
+  border-radius: var(--uix-panel-radius);
+  background: var(--uix-panel-bg);
+  padding: var(--uix-panel-pad-y) var(--uix-panel-pad-x);
+  margin: 0 0 var(--uix-space-5);
+}
+
+.uix-panel > :first-child {
+  margin-top: 0;
+}
+
+.uix-panel > :last-child {
+  margin-bottom: 0;
+}
+
+.uix-panel-label {
+  display: flex;
+  align-items: center;
+  gap: var(--uix-space-2);
+  font-size: var(--uix-font-size-100);
+  font-weight: var(--uix-font-weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: var(--uix-space-4);
+}
+
+.uix-panel-label::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--uix-panel-accent);
+}
+
+.uix-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--uix-space-3);
+  padding-bottom: var(--uix-space-3);
+  margin-bottom: var(--uix-space-4);
+  border-bottom: 1px solid var(--uix-panel-border);
+}
+
+.uix-panel-header h2,
+.uix-panel-header h3 {
+  margin: 0;
+  font-size: var(--uix-font-size-400);
+}
+
+.uix-panel-body > :first-child {
+  margin-top: 0;
+}
+
+.uix-panel-body > :last-child {
+  margin-bottom: 0;
+}
+
+/* SearchInput ----------------------------------------------------------- */
+
+.uix-search {
+  flex: 1 1 14rem;
+  max-width: 22rem;
+  padding: calc(var(--uix-space-2) * var(--uix-density)) var(--uix-space-4);
+  border: 1px solid var(--uix-search-border);
+  border-radius: 999px;
+  background: var(--uix-bg-surface);
+  color: var(--uix-text-primary);
+  font: inherit;
+}
+
+.uix-search:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: 1px;
 }

@@ -4,3 +4,4 @@ node_modules
 storybook-static
 pnpm-lock.yaml
 apps/site/public/.htaccess
+packages/ui/src/tokens.registry.ts
