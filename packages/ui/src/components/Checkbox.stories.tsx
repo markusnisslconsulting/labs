@@ -18,16 +18,18 @@ export const Unchecked: Story = {
 export const Checked: Story = {
   args: { label: "Email me updates", defaultChecked: true },
   play: async ({ canvas }) => {
-    await expect(canvas.getByLabelText("Email me updates")).toBeChecked();
+    await expect(
+      canvas.getByRole("checkbox", { name: "Email me updates" }),
+    ).toBeChecked();
   },
 };
 
 export const Indeterminate: Story = {
   args: { label: "Select all", indeterminate: true },
   play: async ({ canvas }) => {
-    const box = canvas.getByLabelText("Select all");
-    // Tri-state is a DOM property; toBeChecked cannot see it.
-    expect(box).toHaveAttribute("data-indeterminate", "");
+    const box = canvas.getByRole("checkbox", { name: "Select all" });
+    // Base UI announces tri-state as aria-checked="mixed".
+    await expect(box).toHaveAttribute("aria-checked", "mixed");
   },
 };
 

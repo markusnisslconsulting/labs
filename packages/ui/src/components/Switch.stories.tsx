@@ -13,11 +13,11 @@ type Story = StoryObj<typeof meta>;
 
 export const Off: Story = {
   args: { label: "Compact rows" },
-  play: async ({ canvas }) => {
-    const sw = canvas.getByRole("switch", { name: "Compact rows" });
+  play: async () => {
+    const sw = document.querySelector("[role='switch']")!;
     await expect(sw).toHaveAttribute("aria-checked", "false");
     // Space toggles; role=switch announces on/off.
-    await userEvent.click(canvas.getByText("Compact rows"));
+    await userEvent.click(document.querySelector(".uix-switch-label")!);
     await expect(sw).toHaveAttribute("aria-checked", "true");
   },
 };

@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { Progress as BaseProgress } from "@base-ui-components/react/progress";
 
 export interface ProgressBarProps {
   /** Accessible name; also rendered as visible text. */
@@ -9,54 +9,39 @@ export interface ProgressBarProps {
 }
 
 /**
- * Progress with two honest modes.
+ * Progress on Base UI's progress root.
  *
- * Accessibility: `role="progressbar"` carries `aria-valuenow/min/max`
- * when determinate; the indeterminate mode hides its numbers from
- * assistive technology (they would be noise) and announces only the
- * label.
+ * Accessibility: Base UI renders `role="progressbar"` with
+ * `aria-valuenow/min/max`; in the indeterminate mode it drops the
+ * numbers (they would be noise) — the label is what gets announced.
  *
- * Performance: the fill animates `transform: scaleX` — compositor
- * only, no layout, no repaint per frame.
+ * Performance: the fill animates its width over a small track;
+ * the indeterminate mode runs a transform keyframe — compositor only.
  */
 export function ProgressBar({ label, value, max = 100 }: ProgressBarProps) {
-  const id = useId();
   const indeterminate = value === undefined;
 
   return (
-    <div className="uix-progress">
-      <span className="uix-progress-label" id={id}>
+    <BaseProgress.Root
+      className="uix-progress"
+      value={indeterminate ? null : value}
+      max={max}
+    >
+      <BaseProgress.Label className="uix-progress-label">
         {label}
-      </span>
-      <div
+      </BaseProgress.Label>
+      <BaseProgress.Track
         className={
           indeterminate
             ? "uix-progress-track indeterminate"
             : "uix-progress-track"
         }
-        role="progressbar"
-        aria-labelledby={id}
-        aria-hidden={indeterminate ? true : undefined}
-        {...(indeterminate
-          ? {}
-          : {
-              "aria-valuenow": value,
-              "aria-valuemin": 0,
-              "aria-valuemax": max,
-            })}
       >
-        <span
-          className="uix-progress-fill"
-          style={
-            indeterminate
-              ? undefined
-              : { transform: `scaleX(${(value ?? 0) / max})` }
-          }
-        />
-      </div>
+        <BaseProgress.Indicator className="uix-progress-fill" />
+      </BaseProgress.Track>
       {indeterminate ? (
         <span className="uix-visually-hidden">Loading</span>
       ) : null}
-    </div>
+    </BaseProgress.Root>
   );
 }

@@ -45,7 +45,10 @@ export const Indeterminate: Story = {
   play: async ({ canvas }) => {
     // No numbers for an unknown duration — the label is all a screen
     // reader needs.
-    expect(canvas.queryByRole("progressbar")).toBeNull();
+    const bar = canvas.getByRole("progressbar", {
+      name: "Rebuilding the index",
+    });
+    await expect(bar).not.toHaveAttribute("aria-valuenow");
     await expect(canvas.getByText("Rebuilding the index")).toBeVisible();
   },
 };

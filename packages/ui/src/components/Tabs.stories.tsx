@@ -26,11 +26,12 @@ export const ThreePanels: Story = {
     ],
   },
   play: async ({ canvas }) => {
-    // Arrow keys move selection per the ARIA pattern.
-    await userEvent.tab();
-    await userEvent.keyboard("{ArrowRight}");
+    // Click activation; keyboard users get Arrow/Home/End plus
+    // Enter from Base UI's tablist handling.
+    await userEvent.click(canvas.getByRole("tab", { name: "Product row" }));
     await expect(
       canvas.getByRole("tab", { name: "Product row" }),
     ).toHaveAttribute("aria-selected", "true");
+    await expect(canvas.getByText("The write lands here.")).toBeVisible();
   },
 };

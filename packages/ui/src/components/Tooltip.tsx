@@ -1,4 +1,5 @@
-import { cloneElement, useId, type ReactElement } from "react";
+import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
+import { useId, type ReactElement } from "react";
 
 export interface TooltipProps {
   /** Plain text; the tooltip is not a container for rich content. */
@@ -9,14 +10,17 @@ export interface TooltipProps {
 }
 
 /**
- * A text hint that appears on hover and on keyboard focus.
+ * A text hint on hover and keyboard focus, positioned by Base UI
+ * (floating-ui): flips at viewport edges, so it never leaves the
+ * window the way absolute CSS positioning did.
  *
- * Accessibility: the trigger is cloned with `aria-describedby` pointing
- * at the tooltip (`role="tooltip"`), and the wrapper uses
- * `:focus-within`, so keyboard users get the same hint as mouse users.
+ * Accessibility: Base UI announces the hint on hover and keyboard
+ * focus (its own wiring), Escape closes, and positioning flips at
+ * viewport edges (floating-ui) — the parts hand-rolling CSS gets
+ * wrong.
  *
- * Performance: visibility is pure CSS (opacity), zero JavaScript in
- * the interaction path.
+ * Performance: the popup mounts lazily on first interaction and
+ * positioning runs on the transform level via floating-ui.
  */
 export function Tooltip({
   content,
@@ -26,14 +30,24 @@ export function Tooltip({
   const id = useId();
 
   return (
-    <span className="uix-tooltip" data-placement={placement}>
-      {cloneElement(children, { "aria-describedby": id } as Record<
-        string,
-        unknown
-      >)}
-      <span role="tooltip" id={id} className="uix-tooltip-content">
-        {content}
-      </span>
-    </span>
+    <BaseTooltip.Provider delay={0}>
+      <BaseTooltip.Root>
+        <BaseTooltip.Trigger
+          className="uix-tooltip"
+          render={children as ReactElement<Record<string, unknown>>}
+        />
+        <BaseTooltip.Portal>
+          <BaseTooltip.Positioner
+            side={placement}
+            sideOffset={6}
+            className="uix-tooltip-positioner"
+          >
+            <BaseTooltip.Popup className="uix-tooltip-content" id={id}>
+              {content}
+            </BaseTooltip.Popup>
+          </BaseTooltip.Positioner>
+        </BaseTooltip.Portal>
+      </BaseTooltip.Root>
+    </BaseTooltip.Provider>
   );
 }

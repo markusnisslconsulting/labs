@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
+import type { ReactNode } from "react";
 
 export interface AccordionItem {
   id: string;
   title: string;
-  body: React.ReactNode;
+  body: ReactNode;
 }
 
 export interface AccordionProps {
@@ -13,66 +14,34 @@ export interface AccordionProps {
 }
 
 /**
- * Disclosure sections.
+ * Disclosure sections on Base UI's accordion.
  *
- * Accessibility: headers are real buttons with `aria-expanded` +
- * `aria-controls`; the bodies are labelled regions, so screen reader
- * users hear which section a region belongs to.
+ * Accessibility: Base UI renders header triggers with
+ * `aria-expanded`/`aria-controls` and labelled regions, and handles
+ * the keyboard (Enter/Space, Arrow navigation between triggers).
  *
- * Performance: toggling flips the `hidden` attribute — the closed
- * panels render nothing and cost nothing.
+ * Performance: closed panels are unmounted — toggling costs one
+ * small mount, nothing else.
  */
 export function Accordion({ items, multiple = false }: AccordionProps) {
-  const [openIds, setOpenIds] = useState<Set<string>>(
-    () => new Set([items[0]?.id].filter(Boolean) as string[]),
-  );
-
-  const toggle = (id: string) => {
-    setOpenIds((current) => {
-      const isOpen = current.has(id);
-      if (multiple) {
-        const next = new Set(current);
-        if (isOpen) next.delete(id);
-        else next.add(id);
-        return next;
-      }
-      return isOpen ? new Set() : new Set([id]);
-    });
-  };
-
   return (
-    <div className="uix-accordion">
-      {items.map((item) => {
-        const open = openIds.has(item.id);
-        return (
-          <section key={item.id} className="uix-accordion-item">
-            <h3 className="uix-accordion-heading">
-              <button
-                type="button"
-                className="uix-accordion-trigger"
-                aria-expanded={open}
-                aria-controls={`${item.id}-body`}
-                id={`${item.id}-trigger`}
-                onClick={() => toggle(item.id)}
-              >
-                {item.title}
-                <span aria-hidden className="uix-accordion-chevron">
-                  {open ? "−" : "+"}
-                </span>
-              </button>
-            </h3>
-            <div
-              role="region"
-              id={`${item.id}-body`}
-              aria-labelledby={`${item.id}-trigger`}
-              hidden={!open}
-              className="uix-accordion-body"
-            >
-              {item.body}
-            </div>
-          </section>
-        );
-      })}
-    </div>
+    <BaseAccordion.Root className="uix-accordion" multiple={multiple}>
+      {items.map((item) => (
+        <BaseAccordion.Item key={item.id} className="uix-accordion-item">
+          <BaseAccordion.Header className="uix-accordion-heading">
+            <BaseAccordion.Trigger className="uix-accordion-trigger">
+              {item.title}
+              <span aria-hidden className="uix-accordion-chevron">
+                <span className="uix-accordion-chevron-open">−</span>
+                <span className="uix-accordion-chevron-closed">+</span>
+              </span>
+            </BaseAccordion.Trigger>
+          </BaseAccordion.Header>
+          <BaseAccordion.Panel className="uix-accordion-body">
+            {item.body}
+          </BaseAccordion.Panel>
+        </BaseAccordion.Item>
+      ))}
+    </BaseAccordion.Root>
   );
 }

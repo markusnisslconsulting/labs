@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ChangeEvent } from "react";
+import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 
 export interface CheckboxProps {
   /** Visible label; clicking it toggles, as native checkboxes do. */
@@ -7,17 +7,20 @@ export interface CheckboxProps {
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;
   disabled?: boolean;
-  /** Tri-state support: the box shows a dash until told otherwise. */
+  /** Tri-state support: aria-checked="mixed" plus a dash. */
   indeterminate?: boolean;
 }
 
 /**
- * Checkbox over a native input — the platform handles keyboard
- * (Space), form semantics and screen reader announcements.
+ * Checkbox on a Base UI headless root.
  *
- * Performance: state changes toggle one class on the box span; no
- * effect runs for the checked case, only indeterminate syncs an
- * imperative DOM property that React cannot express.
+ * Accessibility: Base UI renders the checkbox semantics (role,
+ * `aria-checked` including "mixed" for the indeterminate case), keeps
+ * the element focusable and wires Space. The visible box is
+ * decorative.
+ *
+ * Performance: state flips one data attribute on the root — the box
+ * is pure CSS on the sibling selector, no effect runs.
  */
 export function Checkbox({
   label,
@@ -27,35 +30,21 @@ export function Checkbox({
   disabled,
   indeterminate,
 }: CheckboxProps) {
-  const id = useId();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const isControlled = checked !== undefined;
-
-  useEffect(() => {
-    if (inputRef.current) {
-      // The one property that is DOM-only in HTML.
-      inputRef.current.indeterminate = Boolean(indeterminate);
-    }
-  }, [indeterminate]);
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange?.(event.target.checked);
-  };
-
   return (
     <label className="uix-check">
-      <input
-        ref={inputRef}
-        id={id}
-        type="checkbox"
-        data-indeterminate={indeterminate ? "" : undefined}
+      <BaseCheckbox.Root
+        aria-label={label}
         className="uix-check-input"
-        {...(isControlled ? { checked } : { defaultChecked })}
-        onChange={handleChange}
+        checked={checked}
+        defaultChecked={defaultChecked}
+        indeterminate={indeterminate}
+        onCheckedChange={(next) => onChange?.(Boolean(next))}
         disabled={disabled}
       />
       <span className="uix-check-box" aria-hidden />
-      <span className="uix-check-label">{label}</span>
+      <span className="uix-check-label" aria-hidden>
+        {label}
+      </span>
     </label>
   );
 }

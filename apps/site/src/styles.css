@@ -286,3 +286,86 @@ main {
   gap: 1.1rem;
   margin-top: 1.8rem;
 }
+
+/* LabCard (product component) -------------------------------------------
+   Surface, hover-lift via pseudo-element opacity, tag row reset. */
+
+.uix-labcard {
+  position: relative;
+  background: var(--uix-bg-surface);
+  border: 1px solid var(--uix-border-subtle);
+  border-radius: var(--uix-radius-l);
+  padding: var(--uix-space-5);
+  transition: transform 160ms ease;
+}
+
+.uix-labcard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 14px 30px rgba(23, 43, 77, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.uix-labcard:hover {
+  transform: translateY(-3px);
+}
+
+.uix-labcard:hover::after {
+  opacity: 1;
+}
+
+.uix-labcard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.uix-labcard:hover::before {
+  background: var(--uix-accent);
+}
+
+.uix-labcard h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.uix-labcard h2 a {
+  color: var(--uix-text-primary);
+  text-decoration: none;
+}
+
+.uix-labcard h2 a:hover {
+  color: var(--uix-accent);
+}
+
+.uix-labcard-tags {
+  list-style: none;
+  padding: 0;
+  margin: 0.7rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.uix-labcard-links {
+  font-size: 0.95rem;
+  margin: 0.7rem 0 0;
+}
+
+.uix-labcard-links a {
+  color: var(--uix-accent);
+  text-decoration: none;
+}
+
+.uix-labcard-links a:hover {
+  text-decoration: underline;
+}

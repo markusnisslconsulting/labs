@@ -120,6 +120,31 @@ select.uix-field-input {
   outline-offset: 2px;
 }
 
+/* Base UI state attributes (checkbox root is a button) */
+.uix-check-input[data-checked] + .uix-check-box {
+  background: var(--uix-accent);
+  border-color: var(--uix-accent);
+}
+
+.uix-check-input[data-checked] + .uix-check-box::before {
+  content: "";
+  display: block;
+  margin: 0.18rem;
+  width: 0.55rem;
+  height: 0.3rem;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg);
+}
+
+.uix-check-input[data-indeterminate] + .uix-check-box::before {
+  content: "";
+  display: block;
+  margin-top: 0.4rem;
+  height: 2px;
+  background: var(--uix-accent);
+}
+
 .uix-check-box {
   width: 1.1rem;
   height: 1.1rem;
@@ -205,15 +230,15 @@ select.uix-field-input {
   transition: transform 160ms ease;
 }
 
-.uix-switch-input:checked + .uix-switch-track {
+.uix-switch-input[data-checked] + .uix-switch-track {
   background: var(--uix-accent);
 }
 
-.uix-switch-input:checked + .uix-switch-track .uix-switch-knob {
+.uix-switch-input[data-checked] + .uix-switch-track .uix-switch-knob {
   transform: translateX(1.05rem);
 }
 
-.uix-switch-input:disabled + .uix-switch-track {
+.uix-switch-input[data-disabled] + .uix-switch-track {
   opacity: 0.55;
 }
 
@@ -318,8 +343,7 @@ select.uix-field-input {
   display: block;
   height: 100%;
   background: var(--uix-accent);
-  transform-origin: left center;
-  transition: transform 200ms ease;
+  transition: width 200ms ease;
 }
 
 .uix-progress-track.indeterminate .uix-progress-fill {
@@ -383,38 +407,26 @@ select.uix-field-input {
 }
 
 /* Tooltip ---------------------------------------------------------------------
-   Visibility is pure CSS on hover AND focus-within. */
+   Positioning and flip come from Base UI (floating-ui). Visibility
+   is handled by Base UI mounting the popup on hover/focus. */
 
 .uix-tooltip {
-  position: relative;
   display: inline-flex;
 }
 
-.uix-tooltip-content {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--uix-navy-900);
-  color: #fff;
-  font-size: 0.85rem;
-  padding: 0.35rem 0.6rem;
-  border-radius: var(--uix-radius-s);
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 120ms ease;
+.uix-tooltip-positioner {
   z-index: 10;
 }
 
-.uix-tooltip[data-placement="bottom"] .uix-tooltip-content {
-  bottom: auto;
-  top: calc(100% + 6px);
-}
-
-.uix-tooltip:hover .uix-tooltip-content,
-.uix-tooltip:focus-within .uix-tooltip-content {
-  opacity: 1;
+.uix-tooltip-content {
+  background: var(--uix-text-primary);
+  color: var(--uix-bg-surface);
+  font-size: var(--uix-font-size-200);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--uix-radius-s);
+  max-width: 16rem;
+  white-space: normal;
+  text-align: left;
 }
 
 /* Navigation ------------------------------------------------------------------- */
@@ -487,7 +499,7 @@ select.uix-field-input {
   color: var(--uix-accent);
 }
 
-.uix-tab[aria-selected="true"] {
+.uix-tab[data-selected] {
   color: var(--uix-accent);
   border-bottom-color: var(--uix-accent);
 }
@@ -534,6 +546,18 @@ select.uix-field-input {
 .uix-accordion-chevron {
   font-size: 1.1rem;
   line-height: 1;
+}
+
+.uix-accordion-chevron-open {
+  display: none;
+}
+
+[data-panel-open] .uix-accordion-chevron-open {
+  display: inline;
+}
+
+[data-panel-open] .uix-accordion-chevron-closed {
+  display: none;
 }
 
 /* Identity / surfaces ----------------------------------------------------------------- */
