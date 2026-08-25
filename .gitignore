@@ -6,3 +6,8 @@ dist
 *.png
 visual/__screenshots__
 .visual-output
+
+# Environment variables
+.env
+.env.*
+!.env.example
