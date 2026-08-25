@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { X } from "lucide-react";
 import { Button } from "./Button";
 
 type Severity = "info" | "success" | "warning" | "danger";
@@ -54,7 +55,7 @@ export function Alert({
           aria-label={dismissLabel}
           onClick={onDismiss}
         >
-          ✕
+          <X size={14} />
         </Button>
       ) : null}
     </div>

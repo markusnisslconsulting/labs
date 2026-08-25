@@ -36,10 +36,9 @@ jobs:
       - name: Build Storybook
         run: pnpm exec nx run ui:build-storybook --skip-nx-cache
 
+      # Direktes CLI aus dem Repo (18.x) — die Action bundelt eine
+      # aeltere Version.
       - name: Publish to Chromatic
-        uses: chromaui/action@v1
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          storybookBuildDir: dist/packages/ui-storybook
-          onlyChanged: true
-          exitZeroOnChanges: true
+        run: pnpm exec chromatic --storybook-build-dir dist/packages/ui-storybook --only-changed --exit-zero-on-changes
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

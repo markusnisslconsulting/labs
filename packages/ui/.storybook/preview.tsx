@@ -8,7 +8,7 @@ const labsTheme = create({
   brandTitle: "Labs UI · Markus Nissl",
   brandUrl: "https://labs.markusnissl.com",
   brandImage: "./logo.webp",
-  colorPrimary: "#e5173f",
+  colorPrimary: "#b31234",
   colorSecondary: "#172b4d",
   appBg: "#f7f9fc",
   appContentBg: "#ffffff",
@@ -22,15 +22,26 @@ const preview: Preview = {
   // in Chromatic-Snapshots vollständig sichtbar bleiben.
   parameters: {
     layout: "padded",
-  },
-  // Theme über @storybook/addon-themes (Klasse auf body); Density
-  // bleibt ein eigener globalType, weil es kein Theme, sondern ein
-  // Mass ist.
-  parameters: {
+    docs: {
+      theme: labsTheme,
+      toc: { headingSelector: "h2, h3" },
+    },
     themes: {
       themesList: [
-        { id: "light", title: "Light", class: "theme-light", color: "#b31234" },
-        { id: "dark", title: "Dark", class: "theme-dark", color: "#101828" },
+        {
+          id: "light",
+          title: "Light",
+          class: "theme-light",
+          color: "#b31234",
+          thumbnail: "./logo.webp",
+        },
+        {
+          id: "dark",
+          title: "Dark",
+          class: "theme-dark",
+          color: "#101828",
+          thumbnail: "./logo.webp",
+        },
       ],
       defaultTheme: "light",
     },
@@ -50,39 +61,20 @@ const preview: Preview = {
     },
   },
   decorators: [
+    // Padding als echter Container: Chromatic schneidet Snapshots
+    // auf die Komponente zu — Ringe und Schatten brauchen Raum.
+    (Story) => (
+      <div style={{ padding: "var(--uix-space-5)" }}>
+        <Story />
+      </div>
+    ),
     (Story, context) => {
-      // Die Attribute sitzen am html-Element des Story-iframes, damit
-      // die semantischen Tokens (und die Density) überall greifen.
       const root = document.documentElement;
-      root.dataset.theme = context.globals.theme ?? "light";
       root.dataset.density =
         context.globals.density === "compact" ? "compact" : "cozy";
       return Story();
     },
   ],
-  parameters: {
-    layout: "padded",
-    a11y: {
-      // Axe findings fail the test runner; they never ship as warnings.
-      test: "error",
-    },
-    docs: {
-      theme: labsTheme,
-      toc: { headingSelector: "h2, h3" },
-    },
-    options: {
-      storySort: {
-        order: [
-          "Introduction",
-          ["Page"],
-          "Foundations",
-          "Components",
-          "Demos",
-          "*",
-        ],
-      },
-    },
-  },
 };
 
 export default preview;

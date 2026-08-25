@@ -10,12 +10,12 @@ pnpm nx storybook ui      # Workbench (:4400)
 
 ## Was wohin gehört
 
-| Inhalt | Ort |
-| --- | --- |
-| Design-System-Komponenten | `packages/ui/src/components/` |
-| Token | `packages/ui/src/styles/tokens/` + `src/tokens.registry.ts` |
-| Produkt-Demos | `apps/site/src/labs/<slug>/` (Demo + Manifest) |
-| Logik mit Tests | `packages/<name>` (eigene Nx-Projekte) |
+| Inhalt                    | Ort                                                         |
+| ------------------------- | ----------------------------------------------------------- |
+| Design-System-Komponenten | `packages/ui/src/components/`                               |
+| Token                     | `packages/ui/src/styles/tokens/` + `src/tokens.registry.ts` |
+| Produkt-Demos             | `apps/site/src/labs/<slug>/` (Demo + Manifest)              |
+| Logik mit Tests           | `packages/<name>` (eigene Nx-Projekte)                      |
 
 Zwei Grenzen werden erzwungen: Apps importieren nur über
 Package-Eintrittspunkte, und Component-Tokens stehen auf der

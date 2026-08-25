@@ -18,7 +18,12 @@
     },
     {
       "description": "Storybook/React-Familie gebuendelt",
-      "matchPackagePatterns": ["^@storybook/", "^storybook$", "^react", "^@base-ui-components/"],
+      "matchPackagePatterns": [
+        "^@storybook/",
+        "^storybook$",
+        "^react",
+        "^@base-ui-components/"
+      ],
       "groupName": "ui-ecosystem"
     }
   ]

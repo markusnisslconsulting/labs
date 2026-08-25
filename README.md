@@ -82,10 +82,11 @@ environments; revisited at 1.0).
 - **A11y as a gate:** the a11y addon checks every story with
   `a11y: { test: "error" }`; `pnpm nx run ui:test-storybook` replays
   all stories headless in CI. Findings block deploys.
-- **Visual regression:** curated stories screenshot-diff against
-  committed baselines (`nx run ui:visual-test`, local gate before
-  releases; CI skips it — platform font rendering makes pixel diffs
-  unreliable without a service like Chromatic).
+- **Visual regression:** Chromatic on every push and PR
+  (Turbosnap builds only changed stories; findings reviewable in the
+  Chromatic app). A local Playwright screenshot gate
+  (`nx run ui:visual-test`) covers pre-release checks without a
+  service dependency.
 
 ## Nx workspace
 
