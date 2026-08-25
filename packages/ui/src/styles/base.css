@@ -13,6 +13,18 @@
     line-height: var(--uix-line-height-normal);
   }
 
+  a {
+    color: var(--uix-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--uix-radius-s);
+  }
+
   h1,
   h2,
   h3,

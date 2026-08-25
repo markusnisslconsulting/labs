@@ -37,12 +37,17 @@ export function Chip({
       </span>
     );
   }
+  // The interactive branch is a <button>, so the span attributes in
+  // ChipProps do not all apply; the ones that do are forwarded, and
+  // className merges here as it does above. Before this it did neither,
+  // which made the filter chip the one closed component left.
   return (
     <button
       type="button"
-      className="uix-chip"
+      className={cx("uix-chip", className)}
       aria-pressed={Boolean(active)}
       onClick={onSelect}
+      {...(rest as ComponentPropsWithoutRef<"button">)}
     >
       {children}
     </button>

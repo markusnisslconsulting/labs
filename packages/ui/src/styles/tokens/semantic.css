@@ -54,6 +54,7 @@
     --uix-text-body: var(--uix-font-size-300);
     --uix-text-heading: var(--uix-font-size-500);
     --uix-text-caption: var(--uix-font-size-100);
+    --uix-text-ui: var(--uix-font-size-200);
 
     /* Status container tints (soft surfaces per severity) */
     --uix-container-info: color-mix(

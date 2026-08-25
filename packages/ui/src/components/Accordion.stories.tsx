@@ -6,12 +6,6 @@ const meta = {
   title: "Components/Accordion",
   component: Accordion,
   tags: ["autodocs"],
-} satisfies Meta<typeof Accordion>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const SingleOpen: Story = {
   args: {
     items: [
       {
@@ -26,11 +20,24 @@ export const SingleOpen: Story = {
       },
     ],
   },
+} satisfies Meta<typeof Accordion>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const SingleOpen: Story = {};
+
+/**
+ * Interaction, not a reference state. Chromatic captures the frame after
+ * play() resolves, so snapshotting this would baseline the post-click
+ * state under a name that promises the initial one.
+ */
+export const OpeningOneClosesTheOther: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     const second = canvas.getByRole("button", { name: /Why one panel/ });
     await userEvent.click(second);
     await expect(second).toHaveAttribute("aria-expanded", "true");
-    // Single-open mode closes the first section.
     await expect(
       canvas.getByRole("button", { name: /What is pinned/ }),
     ).toHaveAttribute("aria-expanded", "false");

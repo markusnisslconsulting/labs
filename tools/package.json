@@ -1,0 +1,9 @@
+{
+  "name": "@labs/tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./vite-layer-order": "./vite-layer-order.ts"
+  }
+}

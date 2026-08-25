@@ -22,53 +22,39 @@ const Home = () => {
 
   return (
     <div className="page">
-      <section className="hero">
+      <header className="hero">
         <p className="eyebrow">Markus Nissl · Labs</p>
-        <h1>
-          Code that accompanies <span className="hero-accent">the writing</span>
-          .
-        </h1>
+        <h1>The code behind the writing, running.</h1>
         <p className="page-lede">
-          Each lab runs the exact code an article prints. Nothing here is a
-          mock-up of the argument; it is the argument, compiled.
+          Every lab here is the code an article prints, compiled and executable.
+          Open one to run it; the article next to it explains why it is built
+          that way.
         </p>
-        <ul className="hero-stats" aria-label="What this workspace guarantees">
-          <li>{labs.length} labs</li>
-          <li>4 tested packages</li>
-          <li>axe-checked components</li>
-          <li>every target cached</li>
-        </ul>
-      </section>
+      </header>
 
-      {labs.length > 3 ? (
-        <div className="lab-controls">
-          <SearchInput
-            placeholder="Search the labs"
-            aria-label="Search the labs"
-            value={query}
-            onChange={(event) => setQuery(event.currentTarget.value)}
-          />
-          <div className="chip-row" role="group" aria-label="Filter by tag">
+      <div className="lab-controls" role="search">
+        <SearchInput
+          placeholder="Search the labs"
+          aria-label="Search the labs"
+          value={query}
+          onChange={(event) => setQuery(event.currentTarget.value)}
+        />
+        <div className="chip-row" role="group" aria-label="Filter by tag">
+          <Chip interactive active={tag === null} onSelect={() => setTag(null)}>
+            All
+          </Chip>
+          {allTags.map((entry) => (
             <Chip
+              key={entry}
               interactive
-              active={tag === null}
-              onSelect={() => setTag(null)}
+              active={tag === entry}
+              onSelect={() => setTag(tag === entry ? null : entry)}
             >
-              All
+              {entry}
             </Chip>
-            {allTags.map((entry) => (
-              <Chip
-                key={entry}
-                interactive
-                active={tag === entry}
-                onSelect={() => setTag(tag === entry ? null : entry)}
-              >
-                {entry}
-              </Chip>
-            ))}
-          </div>
+          ))}
         </div>
-      ) : null}
+      </div>
 
       <p className="count-line" role="status">
         {visible.length} of {labs.length} {labs.length === 1 ? "lab" : "labs"}
@@ -85,14 +71,28 @@ const Home = () => {
                 summary={lab.summary}
                 tags={lab.tags}
                 articleHref={lab.article.href}
+                kind={lab.demo ? "demo" : "workbench"}
               />
             </li>
           ))}
         </ul>
       ) : (
-        <p className="page-lede">
-          No lab matches. Clear the search or pick another tag.
-        </p>
+        <Panel label="Nothing matched">
+          <p>
+            No lab matches “{query || tag}”.{" "}
+            <button
+              type="button"
+              className="link-button"
+              onClick={() => {
+                setQuery("");
+                setTag(null);
+              }}
+            >
+              Clear the filters
+            </button>{" "}
+            to see all {labs.length}.
+          </p>
+        </Panel>
       )}
     </div>
   );

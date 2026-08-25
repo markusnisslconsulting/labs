@@ -172,6 +172,27 @@ describe("the layering rules the architecture depends on", () => {
     }
   });
 
+  /**
+   * A literal colour is the other way round the layering: `background:
+   * #fff` never reaches a theme or a brand, and the var()-based check
+   * above cannot see it because there is no var() to inspect. The Switch
+   * knob shipped as #fff for exactly this reason.
+   */
+  it("no component stylesheet hardcodes a colour", () => {
+    const literal = /(?:^|[\s:(,])(#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\()/;
+    for (const { file, source } of componentCss) {
+      for (const [index, line] of strip(source).split("\n").entries()) {
+        // A colour inside color-mix()/oklch() built FROM a token is fine;
+        // a bare literal is not.
+        if (/var\(--uix-/.test(line)) continue;
+        expect(
+          literal.test(line),
+          `${file}:${index + 1} hardcodes a colour — bind to a token instead: ${line.trim()}`,
+        ).toBe(false);
+      }
+    }
+  });
+
   it("every component stylesheet lives in @layer components", () => {
     for (const { file, source } of componentCss) {
       expect(

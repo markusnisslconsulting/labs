@@ -6,12 +6,6 @@ const meta = {
   title: "Components/RadioGroup",
   component: RadioGroup,
   tags: ["autodocs"],
-} satisfies Meta<typeof RadioGroup>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const ShippingSpeed: Story = {
   args: {
     name: "shipping",
     legend: "Shipping speed",
@@ -22,8 +16,17 @@ export const ShippingSpeed: Story = {
       { value: "overnight", label: "Overnight" },
     ],
   },
+} satisfies Meta<typeof RadioGroup>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const ShippingSpeed: Story = {};
+
+/** Interaction only; see the note in Accordion.stories. */
+export const SelectingAnOption: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
-    // Arrow keys move selection inside the group, per the platform.
     await userEvent.click(canvas.getByLabelText("Express (1-2 days)"));
     await expect(canvas.getByLabelText("Express (1-2 days)")).toBeChecked();
     await expect(

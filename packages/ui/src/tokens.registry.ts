@@ -146,6 +146,7 @@ export const semanticTokens: TokenDescriptor[] = [
   t("--uix-text-body", "var(--uix-font-size-300)", "semantic", "typography", "Body text role"),
   t("--uix-text-heading", "var(--uix-font-size-500)", "semantic", "typography", "Heading text role"),
   t("--uix-text-caption", "var(--uix-font-size-100)", "semantic", "typography", "Caption text role"),
+  t("--uix-text-ui", "var(--uix-font-size-200)", "semantic", "typography", "Small UI text role: nav, meta, card chrome"),
   t("--uix-container-info", "color-mix( in srgb, var(--uix-info) 10%, var(--uix-bg-surface) )", "semantic", "color", "Info container tint"),
   t("--uix-container-success", "color-mix( in srgb, var(--uix-status-ok) 12%, var(--uix-bg-surface) )", "semantic", "color", "Success container tint"),
   t("--uix-container-warning", "color-mix( in srgb, var(--uix-status-warn) 14%, var(--uix-bg-surface) )", "semantic", "color", "Warning container tint"),
@@ -195,6 +196,9 @@ export const componentTokens: TokenDescriptor[] = [
   t("--uix-pill-off", "var(--uix-status-off)", "component", "color", "Status pill dot, off"),
   t("--uix-pill-ok", "var(--uix-status-ok)", "component", "color", "Status pill dot, ok"),
   t("--uix-pill-warn", "var(--uix-status-warn)", "component", "color", "Status pill dot, warn"),
+  t("--uix-switch-track-bg", "var(--uix-bg-subtle)", "component", "color", "Switch track, off"),
+  t("--uix-switch-track-on-bg", "var(--uix-accent)", "component", "color", "Switch track, on"),
+  t("--uix-switch-thumb-bg", "var(--uix-bg-surface)", "component", "color", "Switch knob"),
   t("--uix-search-border", "var(--uix-border-subtle)", "component", "color", "Search input border"),
 ];
 

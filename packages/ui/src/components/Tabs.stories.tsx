@@ -6,12 +6,6 @@ const meta = {
   title: "Components/Tabs",
   component: Tabs,
   tags: ["autodocs"],
-} satisfies Meta<typeof Tabs>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const ThreePanels: Story = {
   args: {
     label: "Sample details",
     defaultActive: 0,
@@ -25,9 +19,17 @@ export const ThreePanels: Story = {
       { id: "events", label: "Events", content: <p>The AG-UI vocabulary.</p> },
     ],
   },
+} satisfies Meta<typeof Tabs>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const ThreePanels: Story = {};
+
+/** Interaction only; see the note in Accordion.stories. */
+export const SwitchingPanels: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
-    // Click activation; keyboard users get Arrow/Home/End plus
-    // Enter from Base UI's tablist handling.
     await userEvent.click(canvas.getByRole("tab", { name: "Product row" }));
     await expect(
       canvas.getByRole("tab", { name: "Product row" }),

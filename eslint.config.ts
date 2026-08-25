@@ -38,7 +38,11 @@ export default tseslint.config(
         "error",
         {
           enforceBuildableLibDependency: true,
-          allow: [],
+          // Build tooling is not part of any library's runtime graph: a
+          // vite config importing a plugin says nothing about what the
+          // published package depends on. Allowing it by name keeps the
+          // rule strict everywhere it actually describes shipping code.
+          allow: ["@labs/tools/*"],
           depConstraints: [
             {
               sourceTag: "scope:site",

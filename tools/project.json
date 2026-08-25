@@ -1,0 +1,11 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "tools",
+  "tags": ["scope:shared", "type:tooling"],
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint tools --max-warnings 0" }
+    }
+  }
+}

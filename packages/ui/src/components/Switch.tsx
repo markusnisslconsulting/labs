@@ -25,10 +25,16 @@ export type SwitchProps = SwitchOwnProps &
 /**
  * A switch on a Base UI headless root.
  *
- * The component bridges uncontrolled use with its own state: Base
- * UI's internal checked state proved non-deterministic on first
- * render in static environments (SSR/prerender, headless runner),
- * so `aria-checked` and `data-checked` are driven from here.
+ * The component bridges uncontrolled use with its own state, so a
+ * caller can pass `checked` or leave it alone and get the same
+ * behaviour either way.
+ *
+ * A note against a previous version of this comment: it claimed Base
+ * UI's internal state was non-deterministic on first render. That was
+ * a misreading. A story whose play() clicked the label was toggling
+ * itself before anyone looked, so the control appeared to start in the
+ * wrong state. Verified in a browser: initial render is correct in both
+ * modes.
  *
  * Accessibility: `role="switch"` with a literal `aria-checked`, named
  * by `aria-labelledby` pointing at the visible label. The wrapping

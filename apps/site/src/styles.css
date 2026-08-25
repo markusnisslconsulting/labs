@@ -1,371 +1,383 @@
-/* Labs: same visual system as the articles (ink / feld / seal), as a
-   standalone sheet. The demo-* classes are the article demos' own; they
-   are kept byte-compatible so the labs show exactly what the pages
-   print. */
+/* The labs shell.
+ *
+ * This file is layout and page chrome only. Anything that looks like a
+ * component belongs in @labs/ui, and the visual language comes entirely
+ * from its tokens — there is not a colour literal in here, which is what
+ * makes the brand and theme switches reach this page too.
+ *
+ * It sits in the `overrides` layer the design system declares for exactly
+ * this purpose. Unlayered CSS outranks every layer, so while this file
+ * was outside the layers the shell silently beat the whole system.
+ */
 
-* {
-  box-sizing: border-box;
-}
+@layer overrides {
+  /* Shell ---------------------------------------------------------------- */
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--uix-bg-page);
-  color: var(--uix-text-primary);
-  font-family:
-    "Atkinson Hyperlegible",
-    -apple-system,
-    "Segoe UI",
-    Helvetica,
-    Arial,
-    sans-serif;
-  line-height: 1.55;
-}
+  .site-header {
+    background: var(--uix-bg-surface);
+    border-bottom: 1px solid var(--uix-border-subtle);
+    position: sticky;
+    top: 0;
+    z-index: var(--uix-z-dropdown);
+  }
 
-code {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.92em;
-  background: var(--uix-bg-subtle);
-  padding: 0.1em 0.35em;
-  border-radius: 0.35em;
-}
+  .site-header-inner,
+  main {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding-inline: var(--uix-gap-lg);
+  }
 
-a {
-  color: var(--uix-accent);
-}
+  .site-header-inner {
+    padding-block: var(--uix-gap-md);
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-xl);
+  }
 
-h1 {
-  font-size: clamp(1.9rem, 4vw, 2.8rem);
-  line-height: 1.12;
-  margin: 0.6em 0 0.4em;
-  letter-spacing: -0.01em;
-}
+  main {
+    padding-block: var(--uix-space-6) var(--uix-space-6);
+  }
 
-h2 {
-  margin: 1.6em 0 0.4em;
-}
+  .site-brand {
+    font-weight: var(--uix-font-weight-bold);
+    letter-spacing: 0.02em;
+    color: var(--uix-text-primary);
+    text-decoration: none;
+  }
 
-/* Shell */
+  .site-nav {
+    display: flex;
+    gap: var(--uix-gap-xl);
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
 
-.site-header {
-  background: #fff;
-  border-bottom: 1px solid var(--uix-border-subtle);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+  .site-nav a {
+    color: var(--uix-text-secondary);
+    text-decoration: none;
+    font-size: var(--uix-text-ui);
+  }
 
-.site-header-inner {
-  max-width: 62rem;
-  margin: 0 auto;
-  padding: 0.85rem 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1.4rem;
-}
+  .site-nav a:hover {
+    color: var(--uix-accent);
+  }
 
-.site-brand {
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: var(--uix-text-primary);
-  text-decoration: none;
-  font-size: 1.05rem;
-}
+  .site-footer {
+    border-top: 1px solid var(--uix-border-subtle);
+    background: var(--uix-bg-surface);
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-200);
+  }
 
-.site-nav {
-  display: flex;
-  gap: 1.3rem;
-  flex-wrap: wrap;
-  margin-left: auto;
-}
+  .site-footer > * {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: var(--uix-gap-xl) var(--uix-gap-lg);
+  }
 
-.site-nav a {
-  color: var(--uix-text-secondary);
-  text-decoration: none;
-  font-size: 0.95rem;
-}
+  /* Page furniture -------------------------------------------------------- */
 
-.site-nav a:hover {
-  color: var(--uix-accent);
-}
+  .eyebrow {
+    font-size: var(--uix-text-caption);
+    font-weight: var(--uix-font-weight-bold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--uix-text-secondary);
+    margin: 0;
+  }
 
-main {
-  max-width: 62rem;
-  margin: 0 auto;
-  padding: 2.2rem 1.25rem 3rem;
-}
+  .page-lede {
+    font-size: var(--uix-font-size-400);
+    color: var(--uix-text-secondary);
+    max-width: 42rem;
+  }
 
-.page-lede {
-  font-size: 1.12rem;
-  color: var(--uix-text-secondary);
-  max-width: 44rem;
-}
+  /* The index ------------------------------------------------------------- */
 
-.eyebrow {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--uix-text-secondary);
-  margin: 0;
-}
+  .hero {
+    padding-block: var(--uix-gap-xl) var(--uix-gap-lg);
+    border-bottom: 1px solid var(--uix-border-subtle);
+    margin-bottom: var(--uix-gap-xl);
+  }
 
-.lab-section {
-  margin-top: 2.4rem;
-}
+  .hero h1 {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    line-height: var(--uix-line-height-tight);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: var(--uix-gap-sm) 0 var(--uix-gap-md);
+    max-width: 20ch;
+  }
 
-.lab-list {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-  gap: 1.1rem;
-  margin-top: 1.8rem;
-}
+  .lab-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--uix-gap-md) var(--uix-gap-lg);
+    margin-bottom: var(--uix-gap-md);
+  }
 
-.site-footer {
-  border-top: 1px solid var(--uix-border-subtle);
-  background: #fff;
-}
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-xs);
+  }
 
-.site-footer p {
-  max-width: 62rem;
-  margin: 0 auto;
-  padding: 1.2rem 1.25rem 1.6rem;
-  color: var(--uix-text-secondary);
-  font-size: 0.95rem;
-}
+  .count-line {
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-200);
+    margin: 0 0 var(--uix-gap-lg);
+  }
 
-/* Registry controls: search and tag chips scale with the lab count. */
+  /* Cards.
+     Grid rows stretch, and each card is a column whose summary takes the
+     slack, so every card in a row ends on the same line however long its
+     text is. */
 
-.lab-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  align-items: center;
-  margin-top: 1.6rem;
-}
+  .lab-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr));
+    gap: var(--uix-gap-lg);
+  }
 
-.lab-search {
-  flex: 1 1 14rem;
-  max-width: 22rem;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid var(--uix-border-subtle);
-  border-radius: 999px;
-  background: #fff;
-  color: var(--uix-text-primary);
-  font: inherit;
-}
+  .lab-list > li {
+    display: flex;
+  }
 
-.lab-search:focus {
-  outline: 2px solid var(--uix-accent);
-  outline-offset: 1px;
-}
+  .lab-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: var(--uix-gap-lg);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-l);
+    background: var(--uix-bg-surface);
+    transition:
+      border-color var(--uix-duration-fast) var(--uix-ease-out),
+      box-shadow var(--uix-duration-fast) var(--uix-ease-out);
+  }
 
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
+  .lab-card:hover,
+  .lab-card:focus-within {
+    border-color: var(--uix-accent);
+    box-shadow: var(--uix-shadow-2);
+  }
 
-.count-line {
-  margin-top: 1rem;
-  color: var(--uix-text-secondary);
-  font-size: 0.95rem;
-}
+  .lab-card-top {
+    margin-bottom: var(--uix-gap-md);
+  }
 
-.link-row {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-  margin: 1.2rem 0 0;
-}
+  .lab-card-title {
+    margin: 0 0 var(--uix-gap-sm);
+    font-size: var(--uix-font-size-400);
+    line-height: var(--uix-line-height-tight);
+    text-wrap: balance;
+  }
 
-.link-row a {
-  font-weight: 600;
-}
+  .lab-card-title a {
+    color: var(--uix-text-primary);
+    text-decoration: none;
+  }
 
-.crumb {
-  text-decoration: none;
-}
+  .lab-card-title a:hover {
+    color: var(--uix-accent);
+  }
 
-.story-frame {
-  width: 100%;
-  height: 46rem;
-  border: 1px solid var(--uix-border-subtle);
-  border-radius: 1rem;
-  background: #fff;
-}
+  /* The one flexible row: it absorbs the difference in summary length. */
+  .lab-card-summary {
+    margin: 0 0 var(--uix-gap-lg);
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-200);
+    flex: 1;
+  }
 
-.lab-demo {
-  margin-top: 2.4rem;
-}
+  .lab-card-tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-xs);
+    padding: 0;
+    margin: 0 0 var(--uix-gap-md);
+  }
 
-/* Hero: one gradient breath behind the headline, nothing louder. */
+  .lab-card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-md);
+    margin: 0;
+    padding-top: var(--uix-gap-md);
+    border-top: 1px solid var(--uix-border-subtle);
+    font-size: var(--uix-font-size-200);
+  }
 
-.hero {
-  position: relative;
-  padding: 1.5rem 0 0.5rem;
-}
+  .link-button {
+    border: none;
+    background: none;
+    padding: 0;
+    font: inherit;
+    color: var(--uix-accent);
+    text-decoration: underline;
+    cursor: pointer;
+  }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: -2rem -3rem auto auto;
-  width: 22rem;
-  height: 14rem;
-  background: radial-gradient(
-    closest-side,
-    rgba(229, 23, 63, 0.1),
-    transparent
-  );
-  pointer-events: none;
-}
+  .link-button:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--uix-radius-s);
+  }
 
-.hero-accent {
-  box-shadow: inset 0 -0.45em 0 0 rgba(229, 23, 63, 0.18);
-}
+  /* A lab page ------------------------------------------------------------ */
 
-.hero-stats {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.4rem;
-  margin: 1.4rem 0 0;
-  font-size: 0.95rem;
-  color: var(--uix-text-secondary);
-}
+  .crumb {
+    color: var(--uix-text-secondary);
+  }
 
-.hero-stats li {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
+  .link-row {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-lg);
+    padding: 0;
+    margin: var(--uix-gap-lg) 0 var(--uix-space-6);
+    font-size: var(--uix-font-size-200);
+  }
 
-.hero-stats li::before {
-  content: "";
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--uix-accent);
-}
+  .lab-demo {
+    margin-top: var(--uix-space-6);
+  }
 
-/* Cards lift on hover; the accent bar marks the whole card. */
+  .lab-demo-loading {
+    color: var(--uix-text-secondary);
+  }
 
-.lab-card::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  border-radius: 999px;
-  background: transparent;
-}
+  .story-frame {
+    width: 100%;
+    height: 34rem;
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-m);
+    background: var(--uix-bg-surface);
+  }
 
-.lab-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 30px rgba(23, 43, 77, 0.1);
-}
+  /* Demo surfaces.
+     The article demos share these; they were shipping with no rules at
+     all, so every demo rendered as naked markup. */
 
-.lab-card:hover::before {
-  background: var(--uix-accent);
-}
+  .demo-panes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: var(--uix-gap-lg);
+  }
 
-/* Overview grid: layout only; card visuals live in @labs/ui. */
+  .demo-pane,
+  .demo-mini,
+  .demo-result,
+  .demo-note {
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-m);
+    background: var(--uix-bg-surface);
+    padding: var(--uix-gap-md);
+  }
 
-.lab-list {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-  gap: 1.1rem;
-  margin-top: 1.8rem;
-}
+  .demo-note {
+    background: var(--uix-bg-subtle);
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-200);
+  }
 
-/* LabCard (product component) -------------------------------------------
-   Surface, hover-lift via pseudo-element opacity, tag row reset. */
+  .demo-actions,
+  .demo-inline-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-sm);
+    align-items: center;
+  }
 
-.uix-labcard {
-  position: relative;
-  background: var(--uix-bg-surface);
-  border: 1px solid var(--uix-border-subtle);
-  border-radius: var(--uix-radius-l);
-  padding: var(--uix-space-5);
-  transition: transform 160ms ease;
-}
+  .demo-actions {
+    margin-top: var(--uix-gap-md);
+  }
 
-.uix-labcard::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: 0 14px 30px rgba(23, 43, 77, 0.12);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 160ms ease;
-}
+  .demo-events {
+    list-style: none;
+    padding: 0;
+    margin: var(--uix-gap-md) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--uix-gap-xs);
+  }
 
-.uix-labcard:hover {
-  transform: translateY(-3px);
-}
+  .demo-event,
+  .demo-call,
+  .demo-status {
+    font-family: var(--uix-font-mono);
+    font-size: var(--uix-font-size-100);
+    color: var(--uix-text-secondary);
+  }
 
-.uix-labcard:hover::after {
-  opacity: 1;
-}
+  .demo-chat-line {
+    padding: var(--uix-gap-sm) 0;
+    border-bottom: 1px solid var(--uix-border-subtle);
+  }
 
-.uix-labcard::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  border-radius: 999px;
-  background: transparent;
-}
+  .demo-old {
+    text-decoration: line-through;
+    color: var(--uix-text-secondary);
+  }
 
-.uix-labcard:hover::before {
-  background: var(--uix-accent);
-}
+  .demo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--uix-font-size-200);
+  }
 
-.uix-labcard h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
-}
+  .demo-table th,
+  .demo-table td {
+    text-align: left;
+    padding: var(--uix-gap-sm);
+    border-bottom: 1px solid var(--uix-border-subtle);
+  }
 
-.uix-labcard h2 a {
-  color: var(--uix-text-primary);
-  text-decoration: none;
-}
+  .demo-textarea {
+    width: 100%;
+    min-height: 6rem;
+    padding: var(--uix-gap-sm);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-m);
+    background: var(--uix-bg-surface);
+    color: inherit;
+    font: inherit;
+  }
 
-.uix-labcard h2 a:hover {
-  color: var(--uix-accent);
-}
+  .demo-progress {
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--uix-bg-subtle);
+    overflow: hidden;
+  }
 
-.uix-labcard-tags {
-  list-style: none;
-  padding: 0;
-  margin: 0.7rem 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
+  .demo-button {
+    align-self: flex-start;
+  }
 
-.uix-labcard-links {
-  font-size: 0.95rem;
-  margin: 0.7rem 0 0;
-}
+  .yes {
+    color: var(--uix-status-ok);
+  }
 
-.uix-labcard-links a {
-  color: var(--uix-accent);
-  text-decoration: none;
-}
+  .no {
+    color: var(--uix-status-danger);
+  }
 
-.uix-labcard-links a:hover {
-  text-decoration: underline;
+  .state-off,
+  .ghost {
+    color: var(--uix-text-secondary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lab-card {
+      transition: none;
+    }
+  }
 }

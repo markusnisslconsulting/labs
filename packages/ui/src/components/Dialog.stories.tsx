@@ -45,6 +45,10 @@ function DialogDemo() {
   );
 }
 
+/**
+ * These keep their snapshots deliberately: an open dialog is the state
+ * worth baselining, and it only exists after the play function opens it.
+ */
 export const Modal: Story = {
   render: () => <DialogDemo />,
   play: async ({ canvas }) => {

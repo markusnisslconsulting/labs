@@ -3,6 +3,8 @@ import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+import { layerOrder } from "@labs/tools/vite-layer-order";
+
 const src = fileURLToPath(new URL("./src", import.meta.url));
 
 /**
@@ -53,7 +55,7 @@ function keepCssImports() {
 }
 
 export default defineConfig({
-  plugins: [react(), keepCssImports()],
+  plugins: [react(), keepCssImports(), layerOrder()],
   build: {
     outDir: fileURLToPath(new URL("../../dist/packages/ui", import.meta.url)),
     emptyOutDir: true,

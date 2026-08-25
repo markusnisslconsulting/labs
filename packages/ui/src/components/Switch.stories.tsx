@@ -2,26 +2,69 @@ import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Switch } from "./Switch";
 
+/**
+ * Story policy, applied across the library:
+ *
+ * - Reference stories show a state and never change it. They are what
+ *   the docs page documents and what Chromatic baselines.
+ * - Interaction stories drive behaviour and are allowed to mutate. They
+ *   opt out of snapshots, because Chromatic captures the frame AFTER
+ *   play() resolves, so a mutating story silently baselines the state
+ *   after the interaction rather than the state it is named for.
+ *
+ * This file is the reason the policy exists: `Off` used to click its own
+ * label, so the off switch rendered, toggled itself on, and every human
+ * and every snapshot saw an on switch called Off.
+ */
 const meta = {
   title: "Components/Switch",
   component: Switch,
   tags: ["autodocs"],
+  args: { label: "Compact rows" },
 } satisfies Meta<typeof Switch>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Off: Story = {
-  args: { label: "Compact rows" },
-  play: async () => {
-    const sw = document.querySelector("[role='switch']")!;
-    await expect(sw).toHaveAttribute("aria-checked", "false");
-    // Space toggles; role=switch announces on/off.
-    await userEvent.click(document.querySelector(".uix-switch-label")!);
-    await expect(sw).toHaveAttribute("aria-checked", "true");
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("switch")).toHaveAttribute(
+      "aria-checked",
+      "false",
+    );
   },
 };
 
 export const On: Story = {
-  args: { label: "Compact rows", defaultChecked: true },
+  args: { defaultChecked: true },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("switch")).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+  },
+};
+
+export const Disabled: Story = {
+  args: { disabled: true, defaultChecked: true },
+};
+
+export const TogglesFromTheLabel: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    const control = canvas.getByRole("switch");
+    // The label text toggles too, so the whole row is the target.
+    await userEvent.click(canvas.getByText("Compact rows"));
+    await expect(control).toHaveAttribute("aria-checked", "true");
+  },
+};
+
+export const TogglesWithTheKeyboard: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    const control = canvas.getByRole("switch");
+    control.focus();
+    await userEvent.keyboard(" ");
+    await expect(control).toHaveAttribute("aria-checked", "true");
+  },
 };

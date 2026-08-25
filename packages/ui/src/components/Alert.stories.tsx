@@ -47,6 +47,16 @@ function DismissibleAlert() {
 
 export const Dismissible: StoryObj = {
   render: () => <DismissibleAlert />,
+};
+
+/**
+ * Interaction, not a reference state. Dismissing leaves the alert gone,
+ * so snapshotting this recorded an empty page under the name of the
+ * component: the story that looked broken was doing exactly what it said.
+ */
+export const DismissingRemovesIt: StoryObj = {
+  render: () => <DismissibleAlert />,
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     await canvas.getByRole("button", { name: "Dismiss" }).click();
     await expect(canvas.getByText("Dismissed.")).toBeVisible();

@@ -4,7 +4,7 @@ import { TokenTable } from "../foundations/TokenTable";
 import { Panel } from "./Panel";
 
 const meta = {
-  title: "Foundations/Tokens/Slots/Panel",
+  title: "Components/Panel/Tokens",
   component: Panel,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

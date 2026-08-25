@@ -18,12 +18,26 @@ export const Default: Story = {
     hint: "Find it in your confirmation email.",
   },
   play: async ({ canvas }) => {
-    // Label, hint and input are wired: typing into the labelled field
-    // is how we prove the for/id and describedby links exist.
+    // Assertions only, so the reference state stays empty: the hint is
+    // linked whether or not anyone has typed.
+    await expect(
+      canvas.getByLabelText("Order number"),
+    ).toHaveAccessibleDescription(/confirmation email/);
+  },
+};
+
+/**
+ * Interaction, not a reference state, so it does not snapshot: typing is
+ * how the for/id link is proven, and a filled field is not the state the
+ * name Default promises.
+ */
+export const TypingIntoTheLabelledField: Story = {
+  args: { label: "Order number", hint: "Find it in your confirmation email." },
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
     const input = canvas.getByLabelText("Order number");
     await userEvent.type(input, "4711");
     await expect(input).toHaveValue("4711");
-    await expect(input).toHaveAccessibleDescription(/confirmation email/);
   },
 };
 

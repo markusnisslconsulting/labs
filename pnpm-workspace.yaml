@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - tools
 
 # Two dependencies ship postinstall scripts that patch their own native
 # binaries; without them installs stay slower or fall back entirely.

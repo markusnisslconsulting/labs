@@ -62,6 +62,7 @@ export const Stack: Story = {
 
 export const Dismissing: Story = {
   render: () => <ToasterDemo />,
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     const closers = canvas.getAllByRole("button", { name: /Dismiss/i });
     await userEvent.click(closers[0]!);

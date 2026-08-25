@@ -4,7 +4,7 @@ import { TokenTable } from "../foundations/TokenTable";
 import { SearchInput } from "./SearchInput";
 
 const meta = {
-  title: "Foundations/Tokens/Slots/SearchInput",
+  title: "Components/SearchInput/Tokens",
   component: SearchInput,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

@@ -21,7 +21,8 @@
       "@labs/agent-stream": ["packages/agent-stream/src/index.ts"],
       "@labs/reorder-desk": ["packages/reorder-desk/src/index.ts"],
       "@labs/ui": ["packages/ui/src/index.ts"],
-      "@labs/ui/*": ["packages/ui/src/*"]
+      "@labs/ui/*": ["packages/ui/src/*"],
+      "@labs/tools/*": ["tools/*"]
     }
   },
   "include": []
