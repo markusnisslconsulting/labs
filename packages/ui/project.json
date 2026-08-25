@@ -18,7 +18,7 @@
     "build-storybook": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "storybook build -c packages/ui/.storybook --output-dir dist/packages/ui-storybook",
+        "command": "storybook build -c packages/ui/.storybook --output-dir dist/packages/ui-storybook --stats-json",
         "cwd": "."
       },
       "outputs": [
@@ -50,6 +50,28 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4411 --silent\" \"wait-on tcp:127.0.0.1:4411 && pnpm exec test-storybook --url http://127.0.0.1:4411 --config-dir packages/ui/.storybook\""
+      }
+    },
+    "tokens-baseline": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/tokens/usage.ts baseline",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "tokens-check": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "tsx scripts/tokens/usage.ts check",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "tokens-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/tokens/usage.ts report",
+        "cwd": "{workspaceRoot}"
       }
     },
     "typecheck": {

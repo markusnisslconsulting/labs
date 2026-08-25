@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SearchInput } from "./SearchInput";
 
 const meta = {
-  title: "Patterns/SearchInput",
+  title: "Components/SearchInput",
   component: SearchInput,
   tags: ["autodocs"],
 } satisfies Meta<typeof SearchInput>;

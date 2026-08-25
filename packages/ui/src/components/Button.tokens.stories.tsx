@@ -4,7 +4,7 @@ import { TokenTable } from "../foundations/TokenTable";
 import { Button } from "./Button";
 
 const meta = {
-  title: "Components/Button",
+  title: "Foundations/Tokens/Slots/Button",
   component: Button,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

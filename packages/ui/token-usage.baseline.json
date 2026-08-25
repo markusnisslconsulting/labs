@@ -1,0 +1,4 @@
+{
+  "note": "Tolerated uses of deprecated tokens. The check fails when a count rises, so a migration can proceed at each team's pace without the system losing ground. Lower these as call sites are removed; run `nx run ui:tokens-baseline` after an intentional change.",
+  "deprecated": {}
+}

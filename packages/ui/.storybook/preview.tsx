@@ -48,6 +48,30 @@ const preview: Preview = {
     layout: "padded",
     docs: { theme: labsTheme, toc: { headingSelector: "h2, h3" } },
     /**
+     * Explicit navigation order. Without it Storybook falls back to the
+     * order files happen to be discovered in, so the sidebar reorders
+     * itself whenever a file is added or renamed — the reader's map of
+     * the system changes for reasons that have nothing to do with the
+     * system. Read top to bottom: what it is, what it is made of, what
+     * it offers, how the pieces go together.
+     */
+    options: {
+      storySort: {
+        order: [
+          "Introduction",
+          "Foundations",
+          [
+            "Tokens",
+            ["Overview", "Primitive", "Semantic", "Component", "Slots"],
+            "Brands",
+            "Focus",
+          ],
+          "Components",
+          "Patterns",
+        ],
+      },
+    },
+    /**
      * A violation fails the story rather than merely reporting it. The
      * test runner asserts the same rules headless in CI, so this is a
      * gate and not a panel someone has to remember to read.

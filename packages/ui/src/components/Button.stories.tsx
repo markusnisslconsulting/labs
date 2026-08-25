@@ -121,3 +121,23 @@ export const Matrix: StoryObj = {
     </div>
   ),
 };
+
+export const AsLink: Story = {
+  args: { children: "Read the article" },
+  render: (args) => (
+    <Button
+      {...args}
+      // The anchor's content comes from Button's children, which
+      // jsx-a11y cannot see at this call site.
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      render={<a href="#anchor" />}
+    />
+  ),
+  play: async ({ canvas }) => {
+    // A link that looks like a button must still BE a link: right-click,
+    // middle-click and "open in new tab" all depend on the real element.
+    const link = canvas.getByRole("link", { name: /Read the article/ });
+    await expect(link).toHaveClass("uix-button");
+    await expect(link).toHaveAttribute("href", "#anchor");
+  },
+};

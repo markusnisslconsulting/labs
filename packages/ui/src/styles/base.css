@@ -9,7 +9,7 @@
     background: var(--uix-bg-page);
     color: var(--uix-text-primary);
     font-family: var(--uix-font-sans);
-    font-size: var(--uix-font-size-300);
+    font-size: var(--uix-text-body);
     line-height: var(--uix-line-height-normal);
   }
 

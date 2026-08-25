@@ -9,7 +9,7 @@
   }
 
   .uix-tooltip-positioner {
-    z-index: 10;
+    z-index: var(--uix-z-tooltip);
   }
 
   .uix-tooltip-content {

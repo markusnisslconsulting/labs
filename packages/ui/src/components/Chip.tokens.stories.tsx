@@ -4,7 +4,7 @@ import { TokenTable } from "../foundations/TokenTable";
 import { Chip } from "./Chip";
 
 const meta = {
-  title: "Components/Chip",
+  title: "Foundations/Tokens/Slots/Chip",
   component: Chip,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

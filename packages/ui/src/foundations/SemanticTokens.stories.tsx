@@ -1,7 +1,7 @@
 import { semanticTokens } from "../tokens.registry";
 
 const meta = {
-  title: "Foundations/Semantic tokens",
+  title: "Foundations/Tokens/Semantic",
   tags: ["autodocs"],
   parameters: { layout: "padded" },
 };

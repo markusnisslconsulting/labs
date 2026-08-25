@@ -1,7 +1,7 @@
 import { componentTokens } from "../tokens.registry";
 
 const meta = {
-  title: "Foundations/Component tokens",
+  title: "Foundations/Tokens/Component",
   tags: ["autodocs"],
   parameters: { layout: "padded" },
 };

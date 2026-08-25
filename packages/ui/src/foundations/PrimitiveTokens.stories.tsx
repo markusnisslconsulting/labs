@@ -1,7 +1,7 @@
 import { primitiveTokens, type TokenDescriptor } from "../tokens.registry";
 
 const meta = {
-  title: "Foundations/Tokens",
+  title: "Foundations/Tokens/Primitive",
   tags: ["autodocs"],
   parameters: { layout: "padded" },
 };

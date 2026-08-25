@@ -4,7 +4,7 @@ import { TokenTable } from "../foundations/TokenTable";
 import { StatusPill } from "./StatusPill";
 
 const meta = {
-  title: "Components/StatusPill",
+  title: "Foundations/Tokens/Slots/StatusPill",
   component: StatusPill,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

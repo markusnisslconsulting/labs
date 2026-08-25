@@ -7,7 +7,8 @@
     ".": "./src/index.ts",
     "./styles.css": "./src/styles.css",
     "./components/*": "./src/components/*.tsx",
-    "./styles/*": "./src/styles/*"
+    "./styles/*": "./src/styles/*",
+    "./tokens.registry": "./src/tokens.registry.ts"
   },
   "sideEffects": [
     "*.css"

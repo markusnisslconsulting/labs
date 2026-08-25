@@ -4,7 +4,7 @@ import { Button } from "./Button";
 import { Card } from "./Card";
 
 const meta = {
-  title: "Patterns/Card",
+  title: "Components/Card",
   component: Card,
   tags: ["autodocs"],
 } satisfies Meta<typeof Card>;

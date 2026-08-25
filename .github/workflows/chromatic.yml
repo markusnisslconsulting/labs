@@ -39,7 +39,28 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Snapshots cost money, so do not spend them when this commit did not
+      # touch the design system. nx knows the graph; ask it.
+      - name: Is the design system affected?
+        id: affected
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            BASE="--base=origin/${{ github.base_ref }}"
+          else
+            BASE="--base=HEAD~1"
+          fi
+          if pnpm exec nx show projects --affected $BASE 2>/dev/null | grep -qx ui; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "ui not affected — skipping the Chromatic build"
+          fi
+
+      # --stats-json is what TurboSnap traces. Without it onlyChanged has no
+      # dependency graph and quietly snapshots everything, which is the
+      # expensive failure mode: you pay full price for the flag.
       - name: Build Storybook
+        if: steps.affected.outputs.run == 'true'
         run: pnpm exec nx run ui:build-storybook --skip-nx-cache
 
       # The CLI straight from the repo (18.x); the action bundles an
@@ -48,16 +69,18 @@ jobs:
       # On a pull request a visual change BLOCKS: --exit-zero-on-changes is
       # omitted, so the job is red until the diff is accepted in Chromatic.
       # That is the difference between a visual gate and a visual report.
+      # Options live in chromatic.config.json so the local run and CI cannot
+      # drift; only the gating differs between the two invocations.
       - name: Publish to Chromatic (gate)
-        if: github.event_name == 'pull_request'
-        run: pnpm exec chromatic --storybook-build-dir dist/packages/ui-storybook --only-changed
+        if: steps.affected.outputs.run == 'true' && github.event_name == 'pull_request'
+        run: pnpm exec chromatic
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
       # On main the build only refreshes the baseline, so an accepted
       # change must not fail the deploy.
       - name: Publish to Chromatic (baseline)
-        if: github.event_name != 'pull_request'
-        run: pnpm exec chromatic --storybook-build-dir dist/packages/ui-storybook --only-changed --exit-zero-on-changes
+        if: steps.affected.outputs.run == 'true' && github.event_name != 'pull_request'
+        run: pnpm exec chromatic --exit-zero-on-changes
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

@@ -35,6 +35,11 @@
     padding: var(--uix-gap-md) var(--uix-gap-lg);
   }
 
+  .uix-toast[data-severity="info"] {
+    border-left-color: var(--uix-info);
+    background: var(--uix-container-info);
+  }
+
   .uix-toast[data-severity="success"] {
     border-left-color: var(--uix-status-ok);
     background: var(--uix-container-success);

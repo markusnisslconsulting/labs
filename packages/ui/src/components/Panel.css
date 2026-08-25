@@ -25,7 +25,7 @@
     display: flex;
     align-items: center;
     gap: var(--uix-gap-sm);
-    font-size: var(--uix-font-size-100);
+    font-size: var(--uix-text-caption);
     font-weight: var(--uix-font-weight-bold);
     letter-spacing: 0.14em;
     text-transform: uppercase;

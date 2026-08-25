@@ -3,7 +3,7 @@ import { primitiveTokens, semanticTokens } from "../tokens.registry";
 import { TokenTable } from "./TokenTable";
 
 const meta = {
-  title: "Foundations/Tokens",
+  title: "Foundations/Tokens/Overview",
   tags: ["autodocs"],
   parameters: { layout: "padded" },
 } satisfies Meta;
