@@ -93,7 +93,32 @@ function Preview({ token }: { token: TokenDescriptor }) {
         />
       );
     case "opacity":
-      return <span style={{ opacity: Number(token.value) }}>Aa</span>;
+      // Fläche statt Text: ein Opacity-Specimen aus Text verletzt die
+      // Kontrast-Regel per Konstruktion.
+      return (
+        <span
+          style={{
+            display: "inline-block",
+            width: "4rem",
+            height: "1.4rem",
+            borderRadius: "var(--uix-radius-s)",
+            background:
+              "repeating-linear-gradient(45deg, var(--uix-bg-subtle) 0 6px, var(--uix-bg-surface) 6px 12px)",
+            position: "relative",
+          }}
+          aria-hidden
+        >
+          <span
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "inherit",
+              background: "var(--uix-accent)",
+              opacity: Number(token.value),
+            }}
+          />
+        </span>
+      );
     default:
       return (
         <code style={{ fontVariantNumeric: "tabular-nums" }}>

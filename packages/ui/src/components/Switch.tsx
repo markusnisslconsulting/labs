@@ -28,6 +28,7 @@ export function Switch({
   return (
     <label className="uix-switch-row">
       <BaseSwitch.Root
+        aria-label={label}
         className="uix-switch"
         checked={checked}
         defaultChecked={defaultChecked}
