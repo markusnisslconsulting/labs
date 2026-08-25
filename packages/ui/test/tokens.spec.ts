@@ -17,7 +17,7 @@ const cssFiles = [
     die Registry dokumentiert die light-Werte. */
 function stripOverrides(source: string): string {
   return source
-    .replace(/\[data-(theme|density)="[^"]*"\]\s*\{[^}]*\}/g, "")
+    .replace(/\[data-(theme|density|brand)="[^"]*"\]\s*\{[^}]*\}/g, "")
     .replace(/\/\* Dark:[^]*?(?=\*\/\n\/\* Component|\*\/\n:root)/s, "");
 }
 

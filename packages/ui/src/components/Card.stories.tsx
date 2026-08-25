@@ -10,24 +10,28 @@ const meta = {
 } satisfies Meta<typeof Card>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const WithSlots: Story = {
-  args: {
-    header: "Supplier · Nordwind Logistik",
-    children: (
-      <p>
-        Delivery windows updated weekly. The negotiation agent drafts changes; a
-        person commits them.
-      </p>
-    ),
-    footer: (
-      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-        <Badge tone="success">Active</Badge>
-        <Button variant="outline" size="sm">
-          Open desk
-        </Button>
-      </div>
-    ),
-  },
+  render: () => (
+    <Card>
+      <Card.Header>
+        Supplier · Nordwind Logistik
+      </Card.Header>
+      <Card.Body>
+        <p>
+          Delivery windows updated weekly. The negotiation agent drafts
+          changes; a person commits them.
+        </p>
+      </Card.Body>
+      <Card.Footer>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <Badge tone="success">Active</Badge>
+          <Button variant="outline" size="sm">
+            Open desk
+          </Button>
+        </div>
+      </Card.Footer>
+    </Card>
+  ),
 };

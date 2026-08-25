@@ -1,6 +1,8 @@
 import { Switch as BaseSwitch } from "@base-ui-components/react/switch";
 
 export interface SwitchProps {
+  /** Visible label; rendered inside the control, so the whole row
+      toggles natively. */
   label: string;
   checked?: boolean;
   defaultChecked?: boolean;
@@ -9,13 +11,14 @@ export interface SwitchProps {
 }
 
 /**
- * A switch on a Base UI headless root.
+ * Switch on a Base UI headless root, following Base UI's suggested
+ * structure: `Root` is the track and carries the state attributes
+ * (`data-checked`), the `Thumb` is the knob moved via transform —
+ * compositor only.
  *
  * Accessibility: Base UI renders `role="switch"` with a literal
- * `aria-checked` and handles Space; the visible track is decorative.
- *
- * Performance: the knob moves with a `transform` transition —
- * compositor only.
+ * `aria-checked`; the label lives inside, so the whole row toggles
+ * natively and the accessible name is the label text.
  */
 export function Switch({
   label,
@@ -25,21 +28,15 @@ export function Switch({
   disabled,
 }: SwitchProps) {
   return (
-    <label className="uix-switch">
-      <BaseSwitch.Root
-        aria-label={label}
-        className="uix-switch-input"
-        checked={checked}
-        defaultChecked={defaultChecked}
-        onCheckedChange={(next) => onChange?.(Boolean(next))}
-        disabled={disabled}
-      />
-      <span className="uix-switch-track" aria-hidden>
-        <span className="uix-switch-knob" />
-      </span>
-      <span className="uix-switch-label" aria-hidden>
-        {label}
-      </span>
-    </label>
+    <BaseSwitch.Root
+      className="uix-switch"
+      checked={checked}
+      defaultChecked={defaultChecked}
+      onCheckedChange={(next) => onChange?.(Boolean(next))}
+      disabled={disabled}
+    >
+      <BaseSwitch.Thumb className="uix-switch-thumb" />
+      <span className="uix-switch-label">{label}</span>
+    </BaseSwitch.Root>
   );
 }

@@ -47,6 +47,7 @@ const t = (
 /* Primitive ---------------------------------------------------------------- */
 
 export const primitiveTokens: TokenDescriptor[] = [
+  t("--uix-blue-600", "#1d4ed8", "primitive", "color", "Ocean brand accent"),
   t("--uix-red-600", "#b31234", "primitive", "color", "Brand accent red (AA on paper and under white)"),
   t("--uix-red-700", "#8f0e29", "primitive", "color", "Destructive red"),
   t("--uix-red-400", "#ff6b85", "primitive", "color", "Accent on dark surfaces"),
@@ -105,7 +106,7 @@ export const semanticTokens: TokenDescriptor[] = [
   t("--uix-bg-subtle", "var(--uix-grey-100)", "semantic", "color", "Subtle fills: chips, code"),
   t("--uix-border-subtle", "var(--uix-grey-300)", "semantic", "color", "Hairline borders"),
   t("--uix-border-strong", "var(--uix-slate-600)", "semantic", "color", "Emphasised borders"),
-  t("--uix-accent", "var(--uix-red-600)", "semantic", "color", "Brand accent"),
+  t("--uix-accent", "var(--uix-red-600)", "semantic", "color", "Brand accent (ocean brand overrides to blue)"),
   t("--uix-accent-soft", "rgba(179, 18, 52, 0.16)", "semantic", "color", "Accent washes"),
   t("--uix-focus-ring", "var(--uix-accent)", "semantic", "color", "Keyboard focus indicator"),
   t("--uix-status-ok", "var(--uix-green-700)", "semantic", "color", "Positive status"),

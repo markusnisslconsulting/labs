@@ -1,21 +1,32 @@
 import type { ReactNode } from "react";
 
-export interface CardProps {
-  header?: ReactNode;
-  footer?: ReactNode;
-  children: ReactNode;
+/**
+ * Generic surface with compound slots.
+ *
+ * Pattern: compound components rendering in place — NOT
+ * children-type-filtering (`child.type === Title`), which breaks when
+ * a slot gets wrapped, and breaks across duplicate package copies
+ * where the type is a different function reference.
+ *
+ * Accessibility: `article` with optional labelled header; pass
+ * `aria-label` via the header's heading when the card stands alone.
+ */
+export function Card({ children }: { children: ReactNode }) {
+  return <article className="uix-card">{children}</article>;
 }
 
-/**
- * Generic surface with optional header and footer slots. Sections
- * are plain regions of content; no interactive behaviour lives here.
- */
-export function Card({ header, footer, children }: CardProps) {
-  return (
-    <article className="uix-card">
-      {header ? <div className="uix-card-header">{header}</div> : null}
-      <div className="uix-card-body">{children}</div>
-      {footer ? <div className="uix-card-footer">{footer}</div> : null}
-    </article>
-  );
+function HeaderBase({ children }: { children: ReactNode }) {
+  return <div className="uix-card-header">{children}</div>;
 }
+
+function BodyBase({ children }: { children: ReactNode }) {
+  return <div className="uix-card-body">{children}</div>;
+}
+
+function FooterBase({ children }: { children: ReactNode }) {
+  return <div className="uix-card-footer">{children}</div>;
+}
+
+Card.Header = HeaderBase;
+Card.Body = BodyBase;
+Card.Footer = FooterBase;

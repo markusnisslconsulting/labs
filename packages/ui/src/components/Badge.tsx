@@ -4,6 +4,8 @@ export interface BadgeProps {
 }
 
 /**
+ * Usage: status labels on rows and cards; never for actions (use Button).
+ *
  * A short status label. The text is the content — tone only colours
  * it, so screen readers and greyscale both work.
  */

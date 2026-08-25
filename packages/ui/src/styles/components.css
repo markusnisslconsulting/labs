@@ -499,7 +499,7 @@ select.uix-field-input {
   color: var(--uix-accent);
 }
 
-.uix-tab[data-selected] {
+.uix-tab[data-active] {
   color: var(--uix-accent);
   border-bottom-color: var(--uix-accent);
 }

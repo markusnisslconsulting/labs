@@ -65,6 +65,19 @@
   --uix-density: 0.72;
 }
 
+/* Brand override: zweites Produkt-Theme, nur semantische Schicht.
+   data-brand="ocean" am html-Element aktiviert es. */
+[data-brand="ocean"] {
+  --uix-accent: var(--uix-blue-600);
+  --uix-accent-soft: rgba(29, 78, 216, 0.14);
+  --uix-focus-ring: var(--uix-blue-600);
+}
+
+[data-brand="ocean"][data-theme="dark"] {
+  --uix-accent: #7aa5f7;
+  --uix-focus-ring: #7aa5f7;
+}
+
 /* Dark theme: the semantic layer remaps to the lighter primitives.
    Component and primitive layers stay untouched. */
 [data-theme="dark"] {

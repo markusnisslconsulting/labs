@@ -6,103 +6,105 @@ Running companions to the articles on
 exact code an article prints: the state machine you read about is the
 state machine that runs.
 
-| Lab                                                                    | Article                                                                                                     |
-| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| [The transcript versus the row](https://labs.markusnissl.com/chat-box) | [The Chat Box Is a Log](https://www.markusnissl.com/blog/the-chat-box-is-a-log)                             |
-| [A page-registered tool](https://labs.markusnissl.com/webmcp)          | [Declare Your Product's Verbs](https://www.markusnissl.com/blog/webmcp-the-page-as-a-tool-surface)          |
-| [Seven APIs, checked live](https://labs.markusnissl.com/on-device-ai)  | [On-Device AI in Chrome: What You Can Ship Today](https://www.markusnissl.com/blog/chrome-built-in-ai-apis) |
+| Lab | Article |
+| --- | --- |
+| [The transcript versus the row](https://labs.markusnissl.com/chat-box) | [The Chat Box Is a Log](https://www.markusnissl.com/blog/the-chat-box-is-a-log) |
+| [A page-registered tool](https://labs.markusnissl.com/webmcp) | [Declare Your Product's Verbs](https://www.markusnissl.com/blog/webmcp-the-page-as-a-tool-surface) |
+| [Seven APIs, checked live](https://labs.markusnissl.com/on-device-ai) | [On-Device AI in Chrome: What You Can Ship Today](https://www.markusnissl.com/blog/chrome-built-in-ai-apis) |
 
-## Architecture
+## The design system (`@labs/ui`)
 
-An Nx monorepo on pnpm workspaces, arranged so that logic and views
-cannot blur:
+A token-driven component library on
+[Base UI](https://base-ui.com) headless parts.
 
-```
-apps/
-  site/                 composition shell + the lab registry
-    src/labs/<slug>/    one folder per lab: manifest, demo, links
-packages/
-  ui/                   @labs/ui — demo components, stories, tokens;
-                        Storybook instance and hosted workbench
-  undo-machine/         @labs/undo-machine — write lifecycle, vitest
-  agent-stream/         @labs/agent-stream — typed event run, vitest
-  reorder-desk/         @labs/reorder-desk — desk state + tool descriptor
-scripts/
-  probe.ts              browser API probes behind the WebMCP article
-  probe-flags.ts        same probe with Chrome's feature flags enabled
-```
+### Token hierarchy
 
-The layering is enforced, not aspirational. Every project carries a
-`scope` tag, and `@nx/enforce-module-boundaries` fails lint when an app
-imports into a package's internals or a package reaches across scopes.
-The dependency graph matches the articles' own argument: views are
-thin, every behaviour lives in a small tested package.
+Three tiers, each with one job — components bind only to the upper
+two:
 
-```
-site ──▶ ui ──▶ undo-machine
-          ui ──▶ agent-stream
-          ui ──▶ reorder-desk
-```
+- **Primitive** — raw values, no opinion: palette, radii, spacing
+  scale, typography scale (sizes, weights, line heights, font
+  families). Defined in `styles/tokens/primitive.css`.
+- **Semantic** — intent: `--uix-text-primary`, `--uix-bg-page`,
+  `--uix-accent`, `--uix-status-*`, `--uix-density`. **This is the
+  layer a product overrides** — dark mode and the density switch are
+  both just semantic remaps (`data-theme="dark"`,
+  `data-density="compact"`), and a second brand is one more override
+  block (`data-brand="ocean"` ships as the proof).
+- **Component** — per-part bindings: `--uix-button-accent-bg`,
+  `--uix-chip-active-bg`, `--uix-panel-radius`. What a product themes
+  on one component without touching any other.
 
-## Nx usage
+The machine-readable registry (`src/tokens.registry.ts`) mirrors the
+CSS one-to-one; a parity test fails the build when they drift, so
+code generators and AI assistants consume the registry instead of
+parsing stylesheets.
 
-- **Inferred targets.** `@nx/vite/plugin` infers `build`, `serve` and
-  `test` for the app from its Vite config; packages declare explicit,
-  cached targets.
-- **Task pipeline.** `typecheck`, `build` and `build-storybook` depend
-  on `^build`: change the state machine and every consumer rebuilds in
-  order before anything else runs.
-- **Named inputs.** Stories, tests and Storybook config are excluded
-  from production inputs, so shipping code does not invalidate caches
-  because a story moved a pixel.
-- **Affected CI.** Pull requests run only what changed, against the
-  merge base (`fetch-depth: 0`).
-- **Module boundaries.** Scope tags plus the boundary rule keep the
-  graph acyclic by construction.
-- **Storybook per library.** `pnpm nx storybook ui` serves the
-  components in isolation; `build-storybook` is a cached target like
-  any other.
+### Components
 
-## The design system
+23 components, in two groups:
 
-`@labs/ui` is layered like a real system, because the demos deserve the
-same discipline as a product. Tokens come in three tiers — primitive
-values, semantic intent, per-component bindings — defined once in CSS
-and mirrored in `src/tokens.registry.ts`; a parity test fails when the
-two drift, so tools and AI assistants consume the registry instead of
-parsing stylesheets. Products rebrand by overriding the semantic layer
-only:
+- **System primitives** — `Button` (variant × tone × size matrix),
+  `Checkbox`, `Switch`, `RadioGroup`, `TextField`, `Select`,
+  `NumberField`, `Combobox`, `Slider`, `Switch`, `Tabs`, `Accordion`,
+  `Dialog`/`AlertDialog`, `Popover`, `Menu`, `Tooltip`, `Toaster`,
+  `Progress Bar`, `Spinner`, `Skeleton`, `Badge`, `Avatar`,
+  `StatusPill`, `Chip`, `Divider`, `Breadcrumb`, `Pagination`,
+  `IconButton`, `Card` (compound slots), `Panel` (compound slots).
+- **Product compositions** — the lab demos live with their labs in
+  `apps/site/src/labs/<slug>/`, built FROM the primitives. The
+  Storybook workbench documents the system; the labs site hosts the
+  products.
 
-```
-styles/
-  tokens.css        colour, focus ring, radius — no component names
-  base.css          element defaults shared by site and Storybook
-  primitives.css    Button, Chip, StatusPill, Panel (.uix-*)
-  surfaces.css      demo-table/pane/note classes the articles print
-components/
-  Button.tsx        native button, four variants, focus-visible ring
-  Chip.tsx          static tag or filter button with aria-pressed
-  StatusPill.tsx    tone dot hidden from AT; the words carry the state
-  Panel.tsx         named landmark per live example
-```
+### Headless foundation
 
-The demos compose these primitives; nothing in a demo hand-rolls its
-own button styles.
+Interactive components sit on
+[`@base-ui-components/react`](https://base-ui.com) — focus
+management, roving tabindex, ARIA wiring and tooltip positioning come
+from its tested parts; this system owns tokens and styling via
+Base UI's `data-*` state attributes.
+
+Native platform elements stay where they win: `Button`,
+`RadioGroup` (fieldset/legend), `TextField`, `Select`,
+`Breadcrumb`, `Pagination` — the platform widget is the best
+accessibility there. Two adoptions are deferred with documented
+reasons: Slider and Combobox (Base UI rc error #62 in test
+environments; revisited at 1.0).
 
 ## Testing
 
-- **Unit:** vitest over every logic package (`nx run-many -t test`).
+- **Unit:** vitest over every logic package (`nx run-many -t test`),
+  plus the token registry parity test.
 - **Stories as tests:** play functions assert semantics — a disabled
   button keeps its accessible name, a filter chip toggles
-  `aria-pressed`, a panel resolves as a named region.
+  `aria-pressed`, tabs activate on Enter, an alert with a title is a
+  named `alert` region.
 - **A11y as a gate:** the a11y addon checks every story with
-  `a11y: { test: "error" }`, so an axe finding fails the story, and
-  `pnpm nx run ui:test-storybook` replays all of them headless against
-  the built Storybook in CI. Findings block deploys; they never ship
-  as warnings.
-- **Foundations documented:** colour tokens render as swatches with
-  their computed contrast ratios against paper; keyboard focus is
-  asserted by a play function that tabs through real controls.
+  `a11y: { test: "error" }`; `pnpm nx run ui:test-storybook` replays
+  all stories headless in CI. Findings block deploys.
+- **Visual regression:** curated stories screenshot-diff against
+  committed baselines (`nx run ui:visual-test`, local gate before
+  releases; CI skips it — platform font rendering makes pixel diffs
+  unreliable without a service like Chromatic).
+
+## Nx workspace
+
+```
+apps/
+  site/                 composition shell + lab registry
+    src/labs/<slug>/    one folder per lab: manifest + demo
+packages/
+  ui/                   @labs/ui design system + Storybook
+  undo-machine/         write lifecycle state machine
+  agent-stream/         typed event run
+  reorder-desk/         desk state + tool descriptor
+scripts/                browser API probes (Nx project)
+```
+
+Nx features in use: `@nx/vite` target inference, task pipeline with
+`^build` dependencies, named inputs, local caching, affected-based
+CI, module boundaries via scope tags, `nx release` configuration for
+the packages.
 
 ## Commands
 
@@ -110,37 +112,32 @@ own button styles.
 pnpm install
 pnpm nx serve site            # dev server on :4300
 pnpm nx storybook ui          # component workbench on :4400
-pnpm nx graph                 # the dependency graph
+pnpm nx graph                 # dependency graph
 
 pnpm nx affected -t lint      # only what changed against main
 pnpm nx run-many -t test      # everything with tests
-pnpm nx run-many -t build     # everything buildable
 
 pnpm format                   # prettier over the workspace
 ```
 
 ## Adding a lab
 
-The registry scans `apps/site/src/labs/*/lab.tsx` at build time, so a
-lab registers itself by existing:
+The registry scans `apps/site/src/labs/*/lab.tsx` at build time:
 
-1. Create `apps/site/src/labs/<slug>/lab.tsx` exporting a `LabMeta`:
-   title, summary, explanation paragraphs, tags, article link, GitHub
-   source link, and optionally a live demo component.
-2. Logic first: if the demo has behaviour worth pinning, that behaviour
-   becomes a package under `packages/` with its own tests; the view in
-   `@labs/ui` stays thin.
-3. Add a colocated story so the component appears in the workbench.
-
-The overview, search, tag filter, lab page and footer all read from
-the registry. Lab hundred costs what lab one cost.
+1. Create the folder, export a `LabMeta` manifest (title, summary,
+   explanation, tags, article link, source link, optional demo).
+2. Logic first: behaviour worth pinning becomes a package under
+   `packages/` with its own tests.
+3. The demo composes `@labs/ui` primitives; add a colocated story if
+   the demo has a system-relevant component.
 
 ## Deployment
 
 Pushes to `main` build everything and deploy the site over FTPS to
-labs.markusnissl.com. The `.htaccess` shipped with the app disables
-mod_pagespeed (the host otherwise recombines scripts into two copies
-of React) and routes unknown paths to the SPA shell.
+labs.markusnissl.com (the Storybook workbench ships to
+`/storybook/`). The `.htaccess` disables mod_pagespeed, redirects
+directory entries to their trailing slash, and routes unknown paths
+to the SPA shell.
 
 ## License
 

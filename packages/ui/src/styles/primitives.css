@@ -262,3 +262,131 @@ button.uix-chip:focus-visible {
   color: var(--uix-text-secondary);
   font-variant-numeric: tabular-nums;
 }
+
+/* Checkbox (Base UI: Root + Indicator) -----------------------------------
+   Root trägt data-checked/data-indeterminate; der Indicator ist die
+   sichtbare Box (keepMounted), Checkmark und Dash sind SVG-Pfade. */
+
+.uix-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uix-space-2);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--uix-text-primary);
+}
+
+.uix-checkbox:disabled {
+  opacity: var(--uix-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.uix-checkbox:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: 2px;
+}
+
+.uix-checkbox-indicator {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid var(--uix-border-strong);
+  border-radius: var(--uix-radius-s);
+  background: var(--uix-bg-surface);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.uix-checkbox-indicator svg {
+  width: 0.7rem;
+  height: 0.7rem;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  visibility: hidden;
+}
+
+.uix-checkbox-indicator .uix-checkbox-check {
+  stroke: #fff;
+}
+
+.uix-checkbox-indicator .uix-checkbox-dash {
+  stroke: var(--uix-accent);
+}
+
+.uix-checkbox[data-checked] .uix-checkbox-indicator {
+  background: var(--uix-accent);
+  border-color: var(--uix-accent);
+}
+
+.uix-checkbox[data-checked] .uix-checkbox-check {
+  visibility: visible;
+}
+
+.uix-checkbox[data-indeterminate] .uix-checkbox-indicator {
+  border-color: var(--uix-accent);
+}
+
+.uix-checkbox[data-indeterminate] .uix-checkbox-dash {
+  visibility: visible;
+}
+
+.uix-checkbox-label {
+  color: var(--uix-text-primary);
+}
+
+/* Switch (Base UI: Root = Track, Thumb = Knob) -----------------------------
+   Root trägt data-checked; der Thumb bewegt sich per transform. */
+
+.uix-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--uix-space-2);
+  cursor: pointer;
+  background: var(--uix-border-subtle);
+  border: none;
+  border-radius: 999px;
+  padding: 0.15rem;
+  width: 2.55rem;
+  height: 1.3rem;
+  position: relative;
+  flex-shrink: 0;
+  transition: background var(--uix-duration-fast) var(--uix-ease-out);
+}
+
+.uix-switch:disabled {
+  opacity: var(--uix-opacity-disabled);
+  cursor: not-allowed;
+}
+
+.uix-switch:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: 2px;
+}
+
+.uix-switch-thumb {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--uix-shadow-1);
+  transform: translateX(0);
+  transition: transform var(--uix-duration-fast) var(--uix-ease-out);
+}
+
+.uix-switch[data-checked] {
+  background: var(--uix-accent);
+}
+
+.uix-switch[data-checked] .uix-switch-thumb {
+  transform: translateX(1.25rem);
+}
+
+.uix-switch-label {
+  color: var(--uix-text-primary);
+}

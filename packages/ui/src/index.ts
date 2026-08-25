@@ -5,7 +5,7 @@ import { Badge, type BadgeProps } from "./components/Badge";
 import { Banner, type BannerProps } from "./components/Banner";
 import { Breadcrumb, type BreadcrumbItem } from "./components/Breadcrumb";
 import { Button, type ButtonProps } from "./components/Button";
-import { Card, type CardProps } from "./components/Card";
+import { Card } from "./components/Card";
 import { Checkbox, type CheckboxProps } from "./components/Checkbox";
 import { Chip, type ChipProps } from "./components/Chip";
 import { Combobox, type ComboboxProps } from "./components/Combobox";
@@ -52,7 +52,7 @@ export {
   Breadcrumb,
   type BreadcrumbItem,
   Button, type ButtonProps,
-  Card, type CardProps,
+  Card,
   Checkbox, type CheckboxProps,
   Chip, type ChipProps,
   Combobox, type ComboboxProps,

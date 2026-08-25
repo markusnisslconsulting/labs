@@ -1,8 +1,13 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
+    "sharedGlobals": [
+      "{workspaceRoot}/tsconfig.base.json"
+    ],
     "production": [
       "default",
       "!{projectRoot}/**/*.spec.ts",
@@ -22,26 +27,44 @@
   ],
   "targetDefaults": {
     "typecheck": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": true,
-      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
+      "inputs": [
+        "default",
+        "{workspaceRoot}/tsconfig.base.json"
+      ]
     },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": true,
-      "inputs": ["production", "{workspaceRoot}/tsconfig.base.json"]
+      "inputs": [
+        "production",
+        "{workspaceRoot}/tsconfig.base.json"
+      ]
     },
     "test": {
       "cache": true,
-      "inputs": ["default", "^production"]
+      "inputs": [
+        "default",
+        "^production"
+      ]
     },
     "lint": {
       "cache": true
     },
     "build-storybook": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "cache": true,
-      "inputs": ["production", "{workspaceRoot}/tsconfig.base.json"]
+      "inputs": [
+        "production",
+        "{workspaceRoot}/tsconfig.base.json"
+      ]
     },
     "storybook": {
       "cache": false
@@ -50,5 +73,23 @@
       "cache": false
     }
   },
-  "defaultBase": "main"
+  "defaultBase": "main",
+  "release": {
+    "projects": [
+      "ui",
+      "undo-machine",
+      "agent-stream",
+      "reorder-desk"
+    ],
+    "version": {
+      "generatorOptions": {
+        "currentVersionResolver": "git-tag"
+      }
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": false
+      }
+    }
+  }
 }
