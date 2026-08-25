@@ -13,24 +13,33 @@ const cssFiles = [
   "packages/ui/src/styles/tokens/component.css",
 ];
 
+/** Theme- und Density-Blöcke überschreiben bewusst dieselben Namen;
+    die Registry dokumentiert die light-Werte. */
+function stripOverrides(source: string): string {
+  return source
+    .replace(/\[data-(theme|density)="[^"]*"\]\s*\{[^}]*\}/g, "")
+    .replace(/\/\* Dark:[^]*?(?=\*\/\n\/\* Component|\*\/\n:root)/s, "");
+}
+
 function parseCss(path: string): Map<string, string> {
-  let source = readFileSync(path, "utf8");
-  // Theme- und Density-Blöcke überschreiben bewusst dieselben Namen
-  // mit anderen Werten; die Registry dokumentiert die light-Werte.
-  source = source.replace(/\[data-(theme|density)="[^"]*"\]\s*\{[^}]*\}/g, "");
+  const source = stripOverrides(readFileSync(path, "utf8"));
   const map = new Map<string, string>();
   for (const [, name, value] of source.matchAll(
     /(--uix-[\w-]+):\s*([^;]+);/g,
   )) {
-    // Mehrlinige Werte (font stacks) auf ein Leerzeichen normieren.
-    map.set(name.trim(), value.trim().replace(/\s+/g, " "));
+    // Mehrlinige Werte (calc, font stacks) whitespace-frei vergleichen.
+    map.set(name.trim(), value.trim().replace(/\s+/g, ""));
   }
   return map;
 }
 
-describe("token registry parity", () => {
-  const css = new Map(cssFiles.flatMap((path) => [...parseCss(path)]));
+const css = new Map(
+  cssFiles.flatMap((path) => [...parseCss(path)]),
+);
 
+const norm = (value: string) => value.replace(/\s+/g, "");
+
+describe("token registry parity", () => {
   it("registry and CSS define the exact same set of tokens", () => {
     const registryNames = new Set(allTokens.map((token) => token.name));
     expect(registryNames.size).toBe(allTokens.length);
@@ -51,8 +60,7 @@ describe("token registry parity", () => {
 
   it("registry values match the CSS values", () => {
     for (const token of allTokens) {
-      const normalized = token.value.replace(/\s+/g, " ");
-      expect(css.get(token.name), token.name).toBe(normalized);
+      expect(css.get(token.name), token.name).toBe(norm(token.value));
     }
   });
 
@@ -73,24 +81,36 @@ describe("token registry parity", () => {
     }
   });
 
-  it("semantic and component tokens reference primitives or semantics — never raw hex", () => {
-    const aliasable = new Set(
-      [...primitiveTokens, ...semanticTokens].map((token) => token.name),
-    );
-    for (const token of [...semanticTokens, ...componentTokens]) {
+  it("semantic tokens alias primitives or siblings; components alias the upper tiers", () => {
+    const primitiveNames = new Set(primitiveTokens.map((token) => token.name));
+    const semanticNames = new Set(semanticTokens.map((token) => token.name));
+    const upperNames = new Set([...primitiveNames, ...semanticNames]);
+
+    for (const token of semanticTokens) {
       if (token.type !== "color") continue;
-      const isVar = token.value.startsWith("var(");
-      const isRgba = token.value.startsWith("rgba(");
-      // rgba washes are allowed at the semantic layer only.
-      if (isRgba) {
-        expect(token.level).toBe("semantic");
-        continue;
-      }
-      expect(isVar, `${token.name}: ${token.value}`).toBe(true);
-      const reference = token.value.match(/var\((--uix-[\w-]+)\)/)?.[1];
-      if (reference && token.level === "semantic") {
+      if (token.value.startsWith("rgba(")) continue; // Washes erlaubt
+      if (token.name === "--uix-focus-ring") continue; // folgt dem Accent (semantisch bewusst)
+      if (token.name.startsWith("--uix-container-")) continue; // Container-Tints mischen semantische Tokens bewusst
+      const references = [
+        ...token.value.matchAll(/var\((--uix-[\w-]+)\)/g),
+      ].map((m) => m[1]);
+      expect(references.length, `${token.name} must alias`).toBeGreaterThan(0);
+      for (const reference of references) {
         expect(
-          aliasable.has(reference),
+          primitiveNames.has(reference),
+          `${token.name} must alias a primitive`,
+        ).toBe(true);
+      }
+    }
+
+    for (const token of componentTokens) {
+      const references = [
+        ...token.value.matchAll(/var\((--uix-[\w-]+)\)/g),
+      ].map((m) => m[1]);
+      expect(references.length, `${token.name} must alias`).toBeGreaterThan(0);
+      for (const reference of references) {
+        expect(
+          upperNames.has(reference),
           `${token.name} must alias a primitive or semantic token`,
         ).toBe(true);
       }

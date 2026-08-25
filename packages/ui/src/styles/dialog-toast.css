@@ -1,0 +1,246 @@
+/* Dialog / AlertDialog ----------------------------------------------------
+   Mounts only when open; backdrop and popup animate opacity/transform
+   (compositor). Base UI traps focus and restores it. */
+
+.uix-dialog-backdrop {
+  background: color-mix(in srgb, var(--uix-navy-900) 45%, transparent);
+  z-index: var(--uix-z-modal);
+}
+
+.uix-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(32rem, calc(100vw - 2 * var(--uix-space-5)));
+  max-height: calc(100vh - 2 * var(--uix-space-6));
+  overflow: auto;
+  background: var(--uix-bg-surface);
+  border: 1px solid var(--uix-border-subtle);
+  border-radius: var(--uix-radius-l);
+  box-shadow: var(--uix-shadow-3);
+  padding: var(--uix-space-5);
+  z-index: var(--uix-z-modal);
+  outline: none;
+}
+
+.uix-dialog-title {
+  margin: 0 0 var(--uix-space-2);
+  font-size: var(--uix-text-heading);
+  line-height: var(--uix-line-height-tight);
+}
+
+.uix-dialog-description {
+  margin: 0 0 var(--uix-space-4);
+  color: var(--uix-text-secondary);
+}
+
+.uix-dialog-body > :first-child {
+  margin-top: 0;
+}
+.uix-dialog-body > :last-child {
+  margin-bottom: 0;
+}
+
+.uix-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--uix-space-2);
+  margin-top: var(--uix-space-5);
+}
+
+/* Toaster -------------------------------------------------------------------
+   One labelled stack; toasts animate in via transform/opacity. */
+
+.uix-toaster {
+  position: fixed;
+  display: grid;
+  gap: var(--uix-space-2);
+  width: min(22rem, calc(100vw - 2 * var(--uix-space-4)));
+  z-index: var(--uix-z-toast);
+}
+
+.uix-toaster--bottom-right {
+  right: var(--uix-space-4);
+  bottom: var(--uix-space-4);
+}
+
+.uix-toaster--top-center {
+  top: var(--uix-space-4);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.uix-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--uix-space-2);
+  background: var(--uix-bg-surface);
+  border: 1px solid var(--uix-panel-border);
+  border-left: 4px solid var(--uix-info);
+  border-radius: var(--uix-radius-m);
+  box-shadow: var(--uix-shadow-2);
+  padding: var(--uix-space-3) var(--uix-space-4);
+}
+
+.uix-toast[data-severity="success"] {
+  border-left-color: var(--uix-status-ok);
+  background: var(--uix-container-success);
+}
+.uix-toast[data-severity="warning"] {
+  border-left-color: var(--uix-status-warn);
+  background: var(--uix-container-warning);
+}
+.uix-toast[data-severity="danger"] {
+  border-left-color: var(--uix-status-danger);
+  background: var(--uix-container-danger);
+}
+
+.uix-toast-title {
+  display: block;
+}
+
+.uix-toast-description {
+  color: var(--uix-text-secondary);
+  font-size: var(--uix-font-size-200);
+}
+
+.uix-toast-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--uix-text-secondary);
+  cursor: pointer;
+  padding: var(--uix-space-1);
+}
+
+.uix-toast-close:hover {
+  color: var(--uix-text-primary);
+}
+
+.uix-toast-close:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Skeleton --------------------------------------------------------------------
+   Shimmer on a pseudo-element (transform), respects reduced motion. */
+
+.uix-skeleton {
+  display: block;
+  height: var(--uix-space-4);
+  border-radius: var(--uix-radius-s);
+  background: var(--uix-bg-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.uix-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--uix-bg-surface) 70%, transparent),
+    transparent
+  );
+  animation: uix-skeleton-shimmer var(--uix-duration-slow) ease-in-out infinite;
+}
+
+.uix-skeleton--circle {
+  border-radius: 999px;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.uix-skeleton--block {
+  border-radius: var(--uix-radius-m);
+  height: 6rem;
+}
+
+@keyframes uix-skeleton-shimmer {
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uix-skeleton::after {
+    animation: none;
+  }
+}
+
+/* Divider ----------------------------------------------------------------------- */
+
+.uix-divider--horizontal {
+  border: none;
+  border-top: 1px solid var(--uix-border-subtle);
+  margin: var(--uix-space-4) 0;
+}
+
+.uix-divider--vertical {
+  align-self: stretch;
+  width: 1px;
+  background: var(--uix-border-subtle);
+  margin: 0 var(--uix-space-3);
+}
+
+/* Button loading spinner ---------------------------------------------------------- */
+
+.uix-button-spinner {
+  display: inline-flex;
+}
+
+.uix-button-spinner .uix-spinner-wheel {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-width: 2px;
+  border-top-color: currentColor;
+}
+
+/* Skeleton ---------------------------------------------------------------------
+   Shimmer on a pseudo-element (transform), respects reduced motion. */
+
+.uix-skeleton {
+  display: block;
+  height: var(--uix-space-4);
+  border-radius: var(--uix-radius-s);
+  background: var(--uix-bg-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.uix-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--uix-bg-surface) 70%, transparent),
+    transparent
+  );
+  animation: uix-skeleton-shimmer var(--uix-duration-slow) ease-in-out infinite;
+}
+
+.uix-skeleton--circle {
+  border-radius: 999px;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.uix-skeleton--block {
+  border-radius: var(--uix-radius-m);
+  height: 6rem;
+}
+
+@keyframes uix-skeleton-shimmer {
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uix-skeleton::after {
+    animation: none;
+  }
+}

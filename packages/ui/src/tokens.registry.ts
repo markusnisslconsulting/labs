@@ -22,7 +22,11 @@ export type TokenType =
   | "radius"
   | "space"
   | "typography"
-  | "density";
+  | "density"
+  | "elevation"
+  | "motion"
+  | "opacity"
+  | "z-index";
 
 export interface TokenDescriptor {
   name: string;
@@ -81,6 +85,13 @@ export const primitiveTokens: TokenDescriptor[] = [
   t("--uix-font-weight-bold", "700", "primitive", "typography", "Bold weight"),
   t("--uix-line-height-tight", "1.15", "primitive", "typography", "Heading line height"),
   t("--uix-line-height-normal", "1.55", "primitive", "typography", "Body line height"),
+  t("--uix-shadow-1", "0 1px 3px rgba(16, 24, 40, 0.10)", "primitive", "elevation", "Resting card"),
+  t("--uix-shadow-2", "0 8px 20px rgba(16, 24, 40, 0.12)", "primitive", "elevation", "Hover / dropdown"),
+  t("--uix-shadow-3", "0 18px 45px rgba(16, 24, 40, 0.20)", "primitive", "elevation", "Dialog"),
+  t("--uix-duration-fast", "120ms", "primitive", "motion", "Micro transitions"),
+  t("--uix-duration-base", "200ms", "primitive", "motion", "Standard transitions"),
+  t("--uix-duration-slow", "400ms", "primitive", "motion", "Large surfaces"),
+  t("--uix-ease-out", "cubic-bezier(0.16, 1, 0.3, 1)", "primitive", "motion", "Standard easing"),
 ];
 
 /* Semantic ----------------------------------------------------------------- */
@@ -102,6 +113,19 @@ export const semanticTokens: TokenDescriptor[] = [
   t("--uix-status-danger", "var(--uix-red-700)", "semantic", "color", "Destructive status"),
   t("--uix-status-off", "var(--uix-slate-600)", "semantic", "color", "Neutral or absent status"),
   t("--uix-info", "var(--uix-navy-900)", "semantic", "color", "Informational intent"),
+  t("--uix-opacity-disabled", "0.55", "semantic", "opacity", "Disabled controls"),
+  t("--uix-text-body", "var(--uix-font-size-300)", "semantic", "typography", "Body text role"),
+  t("--uix-text-heading", "var(--uix-font-size-500)", "semantic", "typography", "Heading text role"),
+  t("--uix-text-caption", "var(--uix-font-size-100)", "semantic", "typography", "Caption text role"),
+  t("--uix-container-info", "color-mix(in srgb, var(--uix-info) 10%, var(--uix-bg-surface))", "semantic", "color", "Info container tint"),
+  t("--uix-container-success", "color-mix(in srgb, var(--uix-status-ok) 12%, var(--uix-bg-surface))", "semantic", "color", "Success container tint"),
+  t("--uix-container-warning", "color-mix(in srgb, var(--uix-status-warn) 14%, var(--uix-bg-surface))", "semantic", "color", "Warning container tint"),
+  t("--uix-container-danger", "color-mix(in srgb, var(--uix-status-danger) 10%, var(--uix-bg-surface))", "semantic", "color", "Danger container tint"),
+  t("--uix-z-dropdown", "100", "semantic", "z-index", "Menus"),
+  t("--uix-z-popover", "150", "semantic", "z-index", "Popovers"),
+  t("--uix-z-modal", "200", "semantic", "z-index", "Dialogs"),
+  t("--uix-z-toast", "300", "semantic", "z-index", "Toasts"),
+  t("--uix-z-tooltip", "400", "semantic", "z-index", "Tooltips"),
   t("--uix-density", "1", "semantic", "density", "Spacing multiplier; data-density=compact sets 0.72"),
 ];
 

@@ -3,10 +3,11 @@
  *
  *   tokens/primitive.css   raw values (palette, radii, spacing)
  *   tokens/semantic.css    intent: text, surface, border, focus, status
- *   tokens/component.css   per-part theming surface (Button, Chip, …)
+ *   tokens/component.css   per-part theming surface (Button, Chip, ...)
+ *   components.css          form/feedback/navigation components
+ *   dialog-toast.css        dialog, toaster, skeleton
  *   base.css               element defaults shared by site and Storybook
  *   primitives.css         the .uix-* component classes
- *   surfaces.css           demo-table/pane/note classes the articles print
  *
  * Components bind ONLY to semantic or component tokens. A product
  * rebrands by overriding the semantic layer — one file, no forks.
@@ -17,4 +18,4 @@
 @import "./styles/base.css";
 @import "./styles/primitives.css";
 @import "./styles/components.css";
-@import "./styles/surfaces.css";
+@import "./styles/dialog-toast.css";

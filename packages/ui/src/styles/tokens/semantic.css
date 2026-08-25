@@ -25,6 +25,34 @@
   --uix-status-off: var(--uix-slate-600);
   --uix-status-danger: var(--uix-red-700);
   --uix-info: var(--uix-navy-900);
+  --uix-opacity-disabled: 0.55;
+
+  /* Typography roles */
+  --uix-text-body: var(--uix-font-size-300);
+  --uix-text-heading: var(--uix-font-size-500);
+  --uix-text-caption: var(--uix-font-size-100);
+
+  /* Status container tints (soft surfaces per severity) */
+  --uix-container-info: color-mix(in srgb, var(--uix-info) 10%, var(--uix-bg-surface));
+  --uix-container-success: color-mix(in srgb, var(--uix-status-ok) 12%, var(--uix-bg-surface));
+  --uix-container-warning: color-mix(in srgb, var(--uix-status-warn) 14%, var(--uix-bg-surface));
+  --uix-container-danger: color-mix(in srgb, var(--uix-status-danger) 10%, var(--uix-bg-surface));
+}
+
+/* Z-index scale: eine Achse, dokumentiert. */
+:root {
+  --uix-z-dropdown: 100;
+  --uix-z-popover: 150;
+  --uix-z-modal: 200;
+  --uix-z-toast: 300;
+  --uix-z-tooltip: 400;
+}
+
+/* Dark: Schatten wirken als Kanten, nicht als Wolken. */
+[data-theme="dark"] {
+  --uix-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --uix-shadow-2: 0 8px 20px rgba(0, 0, 0, 0.45);
+  --uix-shadow-3: 0 18px 45px rgba(0, 0, 0, 0.6);
 }
 
 /* Density: one multiplier the components consume. Products set

@@ -213,7 +213,7 @@ select.uix-field-input {
   height: 1.3rem;
   border-radius: 999px;
   background: var(--uix-border-subtle);
-  transition: background 160ms ease;
+  transition: background var(--uix-duration-fast) var(--uix-ease-out);
   position: relative;
   flex-shrink: 0;
 }
@@ -227,7 +227,7 @@ select.uix-field-input {
   border-radius: 999px;
   background: #fff;
   box-shadow: 0 1px 3px rgba(23, 43, 77, 0.25);
-  transition: transform 160ms ease;
+  transition: transform var(--uix-duration-fast) var(--uix-ease-out);
 }
 
 .uix-switch-input[data-checked] + .uix-switch-track {

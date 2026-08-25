@@ -53,4 +53,15 @@
   --uix-space-4: 1rem;
   --uix-space-5: 1.5rem;
   --uix-space-6: 2.5rem;
+
+  /* Elevation */
+  --uix-shadow-1: 0 1px 3px rgba(16, 24, 40, 0.10);
+  --uix-shadow-2: 0 8px 20px rgba(16, 24, 40, 0.12);
+  --uix-shadow-3: 0 18px 45px rgba(16, 24, 40, 0.20);
+
+  /* Motion */
+  --uix-duration-fast: 120ms;
+  --uix-duration-base: 200ms;
+  --uix-duration-slow: 400ms;
+  --uix-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }

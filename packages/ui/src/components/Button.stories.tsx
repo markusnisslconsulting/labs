@@ -53,7 +53,7 @@ export const Ghost: Story = {
   args: { variant: "ghost", children: "Skip" },
 };
 
-export const SmallRowPair: Story = {
+export const SmallRowPair: StoryObj = {
   render: () => (
     <div style={{ display: "flex", gap: "0.4rem" }}>
       <Button size="sm" tone="neutral">
@@ -90,7 +90,7 @@ const sizes = ["sm", "md", "lg"] as const;
  * cell is themed by component tokens; if a combination ever looks
  * wrong, the fix belongs in tokens, not in this story.
  */
-export const Matrix: Story = {
+export const Matrix: StoryObj = {
   render: () => (
     <div style={{ display: "grid", gap: "1.2rem" }}>
       {variants.map((variant) => (

@@ -7,6 +7,8 @@ export interface TooltipProps {
   /** The focusable trigger. It receives `aria-describedby` automatically. */
   children: ReactElement;
   placement?: "top" | "bottom";
+  /** Mount the popup open (for tests and docs). */
+  defaultOpen?: boolean;
 }
 
 /**
@@ -26,12 +28,13 @@ export function Tooltip({
   content,
   children,
   placement = "top",
+  defaultOpen,
 }: TooltipProps) {
   const id = useId();
 
   return (
     <BaseTooltip.Provider delay={0}>
-      <BaseTooltip.Root>
+      <BaseTooltip.Root defaultOpen={defaultOpen}>
         <BaseTooltip.Trigger
           className="uix-tooltip"
           render={children as ReactElement<Record<string, unknown>>}

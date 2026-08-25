@@ -1,51 +1,75 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { Spinner } from "./Spinner";
 
 type Variant = "solid" | "outline" | "ghost";
 type Tone = "accent" | "neutral";
 type Size = "sm" | "md" | "lg";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Fill strategy. All three are themed via component tokens. */
+export interface ButtonProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  children: ReactNode;
   variant?: Variant;
-  /**
-   * Fill colour family for the solid variant; outline and ghost use
-   * text/border tokens, so the tone is recorded but does not change
-   * their look.
-   */
   tone?: Tone;
-  /** sm for controls inside rows, md as default, lg for heroes. */
   size?: Size;
+  /** Icon/content before the label. */
+  leading?: ReactNode;
+  /** Icon/content after the label. */
+  trailing?: ReactNode;
+  /**
+   * Shows an inline spinner, sets `aria-busy` and blocks interaction.
+   * The label stays visible and readable.
+   */
+  loading?: boolean;
 }
 
 /**
  * The one button of the design system.
  *
- * The API is three coherent axes — `variant`, `tone`, `size` — every
- * combination of which is themed by component tokens. Emphasis never
- * comes from per-use-case variants.
+ * API: three coherent axes — `variant`, `tone`, `size` — every
+ * combination themed by component tokens, plus `leading`/`trailing`
+ * slots and a `loading` state that keeps the label readable.
  *
  * Accessibility: native `<button>`; focus ring is `focus-visible`
- * only; a visible `children` label is required, so the accessible
- * name can never be empty.
+ * only; `loading` sets `aria-busy` and disables interaction while
+ * keeping the accessible name.
  */
 export function Button({
   variant = "solid",
   tone = "accent",
   size = "md",
-  type = "button",
+  leading,
+  trailing,
+  loading = false,
+  disabled,
   children,
   ...rest
 }: ButtonProps) {
   return (
     <button
-      type={type}
+      type="button"
       className="uix-button"
       data-variant={variant}
       data-tone={tone}
       data-size={size}
+      aria-busy={loading || undefined}
+      disabled={disabled || loading}
       {...rest}
     >
+      {loading ? (
+        <span className="uix-button-spinner" aria-hidden>
+          <Spinner size="sm" label="" />
+        </span>
+      ) : leading ? (
+        <span className="uix-button-leading" aria-hidden>
+          {leading}
+        </span>
+      ) : null}
       {children}
+      {trailing && !loading ? (
+        <span className="uix-button-trailing" aria-hidden>
+          {trailing}
+        </span>
+      ) : null}
     </button>
   );
 }
