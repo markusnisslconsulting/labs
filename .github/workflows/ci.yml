@@ -48,4 +48,6 @@ jobs:
           pnpm exec nx affected --target=test
           pnpm exec nx affected --target=build
           pnpm exec nx affected --target=build-storybook
+      - name: Bundle budget
+        run: pnpm run size-check
           pnpm exec nx affected --target=test-storybook

@@ -48,7 +48,7 @@
 
 select.uix-field-input {
   appearance: none;
-  padding-right: var(--uix-space-5);
+  padding-inline-end: var(--uix-space-5);
   cursor: pointer;
 }
 
@@ -254,16 +254,16 @@ select.uix-field-input {
 }
 
 .uix-alert[data-severity="info"] {
-  border-left: 4px solid var(--uix-info);
+  border-inline-start: 4px solid var(--uix-info);
 }
 .uix-alert[data-severity="success"] {
-  border-left: 4px solid var(--uix-status-ok);
+  border-inline-start: 4px solid var(--uix-status-ok);
 }
 .uix-alert[data-severity="warning"] {
-  border-left: 4px solid var(--uix-status-warn);
+  border-inline-start: 4px solid var(--uix-status-warn);
 }
 .uix-alert[data-severity="danger"] {
-  border-left: 4px solid var(--uix-status-danger);
+  border-inline-start: 4px solid var(--uix-status-danger);
 }
 
 .uix-alert-body > :first-child {
@@ -279,18 +279,18 @@ select.uix-field-input {
 
 .uix-banner {
   padding: var(--uix-space-3) var(--uix-space-4);
-  border-left: 4px solid var(--uix-info);
+  border-inline-start: 4px solid var(--uix-info);
   background: var(--uix-bg-subtle);
 }
 
 .uix-banner[data-severity="warning"] {
-  border-left-color: var(--uix-status-warn);
+  border-inline-start-color: var(--uix-status-warn);
 }
 .uix-banner[data-severity="danger"] {
-  border-left-color: var(--uix-status-danger);
+  border-inline-start-color: var(--uix-status-danger);
 }
 .uix-banner[data-severity="success"] {
-  border-left-color: var(--uix-status-ok);
+  border-inline-start-color: var(--uix-status-ok);
 }
 
 .uix-badge {
@@ -426,7 +426,7 @@ select.uix-field-input {
   border-radius: var(--uix-radius-s);
   max-width: 16rem;
   white-space: normal;
-  text-align: left;
+  text-align: start;
 }
 
 /* Navigation ------------------------------------------------------------------- */
@@ -536,7 +536,7 @@ select.uix-field-input {
   color: var(--uix-text-primary);
   font-weight: 700;
   cursor: pointer;
-  text-align: left;
+  text-align: start;
 }
 
 .uix-accordion-trigger:hover {
@@ -681,7 +681,7 @@ select.uix-field-input {
   background: none;
   color: var(--uix-text-primary);
   font-size: var(--uix-font-size-200);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 
@@ -781,7 +781,8 @@ select.uix-field-input {
 
 .uix-slider-indicator {
   position: absolute;
-  inset: 0 auto 0 0;
+  inset-block: 0;
+  inset-inline-start: 0;
   border-radius: inherit;
   background: var(--uix-accent);
 }
@@ -891,7 +892,7 @@ select.uix-field-input {
 }
 
 .uix-table th {
-  text-align: left;
+  text-align: start;
   font-weight: var(--uix-font-weight-bold);
   color: var(--uix-text-secondary);
   border-bottom: 1px solid var(--uix-border-subtle);

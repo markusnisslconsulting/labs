@@ -18,6 +18,11 @@ const labsTheme = create({
 });
 
 const preview: Preview = {
+  // Padded global: Fokusringe mit outline-offset und Schatten müssen
+  // in Chromatic-Snapshots vollständig sichtbar bleiben.
+  parameters: {
+    layout: "padded",
+  },
   // Theme über @storybook/addon-themes (Klasse auf body); Density
   // bleibt ein eigener globalType, weil es kein Theme, sondern ein
   // Mass ist.

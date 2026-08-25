@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "storybook": "nx run ui:storybook",
-    "chromatic": "nx build-storybook ui && chromatic --storybook-build-dir dist/packages/ui-storybook"
+    "chromatic": "nx build-storybook ui && chromatic --storybook-build-dir dist/packages/ui-storybook",
+    "size-check": "node scripts/check-size.mjs"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
