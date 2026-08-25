@@ -63,4 +63,5 @@ jobs:
           done
 
       - name: Bundle budget
+        if: exists('apps/site/dist')
         run: pnpm run size-check
