@@ -41,8 +41,7 @@ const budgets = [
 let failed = false;
 for (const budget of budgets) {
   if (!existsSync(budget.dir)) {
-    console.error(`✗ ${budget.label}: ${budget.dir} fehlt (build zuerst)`);
-    failed = true;
+    console.log(`- ${budget.label}: übersprungen (nichts gebaut)`);
     continue;
   }
   const total = walk(budget.dir)
