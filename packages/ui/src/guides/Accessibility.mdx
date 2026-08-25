@@ -1,0 +1,55 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Guides/Accessibility" />
+
+# Accessibility
+
+## What is enforced
+
+- **axe on every story**, with `test: "error"`. The test runner replays
+  all stories headless in CI and a violation fails the run.
+- **axe on every page of the labs site**, separately. Components can be
+  individually perfect and compose into a broken page; landmark and
+  heading-order failures only exist at page level. The first run of that
+  suite found a heading that jumped from `h2` to `h4`.
+- **A keyboard story per operable component.** Derived from the type, not
+  from goodwill: if a component renders something focusable and no story
+  drives it from the keyboard, the build fails. Turning this on found 33
+  of 34 components with no keyboard test.
+- **Contrast for every pairing, in every theme and brand.** 84 pairings
+  against WCAG AA, including non-text contrast for focus rings and for
+  surfaces against the surface behind them.
+
+## What is not enforced, and cannot be
+
+Automated checks find a minority of real accessibility problems. They
+cannot tell you whether the focus order matches the reading order,
+whether an error message says what to do, or whether a live region
+announces at a useful moment. Treat green as the floor.
+
+## Conventions the components follow
+
+**Colour is never the only channel.** `StatusPill` puts the state in
+words and leaves the dot decorative; `Badge` and `Banner` do the same.
+Deuteranopia and protanopia collapse exactly the red/green distinction
+status colours lean on hardest, so a tone is always an addition to a
+word, never a replacement for one.
+
+**Disabled means `aria-disabled` when the control is still relevant.**
+`Button`'s `loading` state does not use the native attribute, because a
+disabled button leaves the tab order: a user tabbing through a form would
+lose their place the moment a button started loading.
+
+**A label must actually name the control.** Implicit label association
+only works for real form elements. A wrapping `<label>` around a
+`role="switch"` span makes the text clickable and names nothing, which is
+how every switch in this system once reached assistive technology
+unnamed. Where the control is not a native input, the name is explicit.
+
+**Live regions are announced from their content.** A `role="status"`
+takes no accessible name from its children, so tests assert the announced
+text rather than a name.
+
+**Focus is visible and its ring has contrast.** `:focus-visible` only, so
+pointer users do not see rings, and the ring's non-text contrast against
+both the page and a surface is part of the contrast gate.

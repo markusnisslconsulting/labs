@@ -1,0 +1,98 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Guides/Theming" />
+
+# Theming
+
+Four independent axes, all attributes on the root element. They compose;
+none of them is a separate build.
+
+| Axis      | Attribute      | Values                   |
+| --------- | -------------- | ------------------------ |
+| Brand     | `data-brand`   | absent (Labs), `ocean`   |
+| Theme     | `data-theme`   | absent (light), `dark`   |
+| Density   | `data-density` | absent (cozy), `compact` |
+| Direction | `dir`          | `ltr`, `rtl`             |
+
+Flip all four from the toolbar above. Nothing here is a preview trick:
+the toolbar sets the same attributes a product sets.
+
+## Adding a brand
+
+One file, and no core file changes. That last part is the property that
+makes multi-brand scale — brands cannot collide in a shared file, so two
+teams adding two brands never touch the same line.
+
+```css
+/* src/styles/brands/harbour.css */
+@layer tokens {
+  [data-brand="harbour"] {
+    --uix-accent: var(--uix-teal-600);
+  }
+
+  [data-brand="harbour"][data-theme="dark"] {
+    --uix-accent: var(--uix-teal-400);
+  }
+}
+```
+
+Import it from `styles.css` and you are done. Two gates then apply:
+
+- **A brand may only re-point semantic tokens.** A test reads the brand
+  file and fails on anything else. Reaching into a primitive would change
+  every brand; reaching into a component token would fix one component
+  and leave its siblings behind.
+- **Contrast is measured for the new brand automatically.** The check
+  walks every declared pairing in every theme for every brand it finds on
+  disk. A brand that cannot clear WCAG AA fails the build rather than
+  shipping.
+
+## What follows the accent on its own
+
+`ocean` overrides exactly one token. Everything derived from the accent
+moves with it:
+
+- `--uix-accent-soft` is a `color-mix` of the accent, not a second hex
+  value someone has to remember to update.
+- `--uix-focus-ring` aliases the accent.
+- Hover and active states mix the fill toward `--uix-ink` or
+  `--uix-paper`, which flip per theme, so a hover deepens on light and
+  brightens on dark without either being written down twice.
+
+That is the test of a semantic layer: how few values a brand has to
+supply before the rest is implied.
+
+## Theming one component without touching another
+
+Component tokens are override slots. They are not declared anywhere; each
+is referenced with its semantic default inline:
+
+```css
+.uix-button[data-tone="accent"] {
+  background: var(--uix-button-accent-bg, var(--uix-accent));
+}
+```
+
+So a product that needs a different button fill sets one custom property
+and inherits everything else. The slot costs nothing until it is used,
+which is why the tier can cover every component without the stylesheet
+growing.
+
+```css
+/* a product, not the design system */
+@layer overrides {
+  .checkout {
+    --uix-button-accent-bg: var(--uix-status-ok);
+  }
+}
+```
+
+Use the `overrides` layer for this. Unlayered CSS outranks every layer,
+so styling from outside the layers silently beats the whole system.
+
+## Density
+
+`data-density="compact"` sets one multiplier, and the semantic
+`--uix-gap-*` roles carry it into padding, gaps and margins. At the
+default density they resolve to the raw scale exactly, so cozy rendering
+is byte-identical to no density at all.

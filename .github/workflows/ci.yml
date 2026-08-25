@@ -64,7 +64,7 @@ jobs:
 
       - name: Typecheck, test, build
         run: |
-          for target in typecheck test build build-storybook test-storybook tokens-check contrast-check story-coverage a11y; do
+          for target in typecheck test build build-storybook test-storybook tokens-check contrast-check story-coverage snapshot-budget a11y; do
             pnpm exec nx affected --target=$target ${{ steps.base.outputs.args }}
           done
 

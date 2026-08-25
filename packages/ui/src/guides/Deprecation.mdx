@@ -1,0 +1,74 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Guides/Deprecation" />
+
+# Deprecating a token
+
+Tokens are a public API. Two questions get asked constantly and are
+usually answered with grep, which answers both wrongly.
+
+## "Is anyone still using this?"
+
+Tokens alias each other, so usage is **transitive**. A primitive with no
+direct reference in any component stylesheet is very much alive if a
+semantic token aliases it. The correct question is reachability over the
+alias graph:
+
+```
+nodes  every declared token
+edges  "A's value references B"
+roots  referenced from component CSS, element defaults, product code,
+       or from inside a theme or brand override block
+live   reachable(roots)        dead = declared \ live
+```
+
+`nx run ui:tokens-report` prints that, plus the tokens referenced but
+never declared — which is how a typo like `--uix-text-primry` is caught.
+
+## "Can I delete it?"
+
+Not yet. Unused _here_ is not unused: a consuming product holds
+references this repository cannot see. The path is deprecate, wait,
+remove.
+
+Mark it in the registry, with a reason and a replacement:
+
+```ts
+t(
+  "--uix-z-popover",
+  "150",
+  "semantic",
+  "z-index",
+  "Popovers",
+  "Redundant since Menu and Popover share one positioner. Use --uix-z-dropdown.",
+),
+```
+
+That mirrors DTCG's `$deprecated`, so it is data a tool can read rather
+than a comment a person has to notice.
+
+## The ratchet
+
+A hard ban breaks another team's roadmap. A warning gets ignored and the
+count keeps climbing. So enforcement is a ratchet:
+
+- `snapshot-budget.json`'s sibling, `token-usage.baseline.json`, records
+  how many uses of each deprecated token are tolerated.
+- The check fails when a count **rises** — a new use does not get in.
+- It also fails when a count has **dropped** without the baseline being
+  tightened, so progress cannot quietly roll back.
+
+Existing uses block nobody. Each team migrates on its own schedule, and
+the system does not lose ground while they do.
+
+```
+nx run ui:tokens-check      # the gate
+nx run ui:tokens-baseline   # after an intentional change
+```
+
+## Renaming instead of removing
+
+If the token still means something and only its name is wrong, add the
+new name, point the old one at it, and deprecate the old one. Consumers
+keep working, the ratchet stops new uses of the old spelling, and the
+alias disappears when the count reaches zero.

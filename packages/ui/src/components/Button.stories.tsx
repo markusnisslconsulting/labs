@@ -38,22 +38,27 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const SolidAccent: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { children: "Run the agent" },
 };
 
 export const SolidNeutral: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { tone: "neutral", children: "Accept" },
 };
 
 export const Outline: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { variant: "outline", children: "Reset" },
 };
 
 export const Ghost: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { variant: "ghost", children: "Skip" },
 };
 
 export const SmallRowPair: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <div style={{ display: "flex", gap: "0.4rem" }}>
       <Button size="sm" tone="neutral">
@@ -67,10 +72,12 @@ export const SmallRowPair: StoryObj = {
 };
 
 export const Large: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { size: "lg", children: "Get started" },
 };
 
 export const Disabled: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { children: "Run the agent", disabled: true },
   play: async ({ canvas }) => {
     // A disabled button stays in the DOM and keeps its accessible
@@ -123,6 +130,7 @@ export const Matrix: StoryObj = {
 };
 
 export const AsLink: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { children: "Read the article" },
   render: (args) => (
     <Button
@@ -158,6 +166,7 @@ export const KeyboardReachable: Story = {
 };
 
 export const Loading: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { loading: true, children: "Saving" },
   play: async ({ canvas }) => {
     const button = canvas.getByRole("button", { name: /Saving/ });

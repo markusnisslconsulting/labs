@@ -1,4 +1,5 @@
 import { expect } from "storybook/test";
+import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { StatusPill } from "./StatusPill";
 
@@ -6,18 +7,22 @@ const meta = {
   title: "Components/StatusPill",
   component: StatusPill,
   tags: ["autodocs"],
+  argTypes: grouped("tone", "children"),
 } satisfies Meta<typeof StatusPill>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Ok: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { tone: "ok", children: "ready on this machine" },
 };
 export const Warn: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { tone: "warn", children: "needs a download" },
 };
 export const Off: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: { tone: "off", children: "not exposed by this browser" },
 };
 

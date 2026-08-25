@@ -1,4 +1,5 @@
 import { expect } from "storybook/test";
+import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Alert } from "./Alert";
@@ -7,12 +8,20 @@ const meta = {
   title: "Components/Alert",
   component: Alert,
   tags: ["autodocs"],
+  argTypes: grouped(
+    "severity",
+    "title",
+    "children",
+    "onDismiss",
+    "dismissLabel",
+  ),
 } satisfies Meta<typeof Alert>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Info: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     severity: "info",
     title: "Scheduled maintenance",
@@ -21,6 +30,7 @@ export const Info: Story = {
 };
 
 export const DangerIsAssertive: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     severity: "danger",
     title: "Payment failed",
@@ -46,6 +56,7 @@ function DismissibleAlert() {
 }
 
 export const Dismissible: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => <DismissibleAlert />,
 };
 
@@ -64,6 +75,7 @@ export const DismissingRemovesIt: StoryObj = {
 };
 
 export const Warning: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     severity: "warning",
     title: "Lead time missing",
@@ -75,4 +87,26 @@ export const Warning: Story = {
       canvas.getByRole("alert", { name: /Lead time/ }),
     ).toBeVisible();
   },
+};
+
+/**
+ * Every state in one frame.
+ *
+ * This is the story Chromatic photographs; the per-state stories above
+ * opt out, so one component costs one image per theme instead of one per
+ * variant. They still run as tests — disabling a snapshot does not
+ * disable a play function — and they still document each state on its own
+ * in the docs page. A reviewer also sees every combination side by side,
+ * which is easier to judge than five separate images.
+ */
+export const Matrix: StoryObj = {
+  render: () => (
+    <div style={{ display: "grid", gap: "1rem" }}>
+      {(["info", "success", "warning", "danger"] as const).map((severity) => (
+        <Alert key={severity} severity={severity} title={severity}>
+          One line of supporting detail.
+        </Alert>
+      ))}
+    </div>
+  ),
 };

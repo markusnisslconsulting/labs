@@ -39,6 +39,28 @@
         "command": "eslint packages/ui --max-warnings 0"
       }
     },
+    "snapshot-budget": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "tsx scripts/stories/snapshots.ts check",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "snapshot-budget-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/stories/snapshots.ts report",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "snapshot-budget-write": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/stories/snapshots.ts write-budget",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "story-coverage": {
       "executor": "nx:run-commands",
       "cache": true,

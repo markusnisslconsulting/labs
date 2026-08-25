@@ -1,4 +1,5 @@
 import { expect, userEvent } from "storybook/test";
+import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextField } from "./TextField";
 
@@ -6,6 +7,7 @@ const meta = {
   title: "Components/TextField",
   component: TextField,
   tags: ["autodocs"],
+  argTypes: grouped("label", "hint", "error", "prefix", "suffix"),
 } satisfies Meta<typeof TextField>;
 
 export default meta;

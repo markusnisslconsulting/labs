@@ -6,6 +6,8 @@ import { Panel } from "./Panel";
 const meta = {
   title: "Components/Panel",
   component: Panel,
+  // Slots are part of the API, so they belong in the props table.
+  subcomponents: { Header: Panel.Header, Body: Panel.Body },
   tags: ["autodocs"],
   parameters: { layout: "centered" },
 } satisfies Meta<typeof Panel>;

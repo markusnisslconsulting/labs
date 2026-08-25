@@ -1,0 +1,79 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Guides/Contributing" />
+
+# Contributing
+
+Every rule here is a build gate, so none of it depends on being
+remembered.
+
+## Stories: reference or interaction, never both
+
+A **reference story** shows a state and does not change it. It is the
+documentation and the visual baseline.
+
+An **interaction story** drives behaviour and opts out of snapshots:
+
+```ts
+export const TogglesFromTheLabel: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    /* ... */
+  },
+};
+```
+
+Why the split: Chromatic captures the frame **after** `play()` resolves.
+A story that clicks its own control baselines the state after the click
+under a name that promised the state before it. `Switch/Off` used to
+click its own label, so the off switch was photographed on.
+
+Two deliberate exceptions keep their snapshots — `Focus` and `Dialog` —
+because the focus ring and the open dialog are the picture worth having.
+
+## What a component owes Storybook
+
+Derived from its own types, not negotiated:
+
+1. Every union value rendered and every state boolean shown somewhere.
+2. At least one assertion. A story with no `expect` is a picture.
+3. A keyboard story if the component is operable.
+
+Values the component itself defaults to count as shown. Exceptions live
+in `scripts/stories/coverage.ts` with a reason, so an exemption is a
+decision in the repository rather than a silence.
+
+## One matrix, not one image per variant
+
+Snapshots are billed and they multiply by modes. A component with five
+tones does not need five images: one `Matrix` story renders every
+combination in one frame, and the per-state stories opt out. They still
+run as tests and still document each state on its own.
+
+A committed ceiling in `snapshot-budget.json` fails the build when the
+projected total rises, so a bigger bill arrives as a diff someone
+reviewed. Every component must still have at least one snapshotted story.
+
+## Tokens
+
+- Components bind to semantic or component tokens. **No colour
+  primitive** and no colour literal in a component stylesheet — both are
+  checked.
+- A new component token is an override slot: reference it with its
+  semantic default inline and register it. Do not declare it.
+- Removing a token is a two-step move. Mark it `deprecated` in the
+  registry with a reason and a replacement, let the ratchet stop new
+  uses, then delete it once the count reaches zero. "Unused here" is not
+  "safe to delete": a consuming product holds references this repository
+  cannot see.
+
+## Before opening a pull request
+
+```
+pnpm nx run-many -t lint typecheck test build build-storybook \
+  test-storybook tokens-check contrast-check story-coverage snapshot-budget
+pnpm nx run site:a11y
+```
+
+Reports, when you want to see rather than gate: `ui:contrast-report`,
+`ui:tokens-report`, `ui:story-coverage-report`, `ui:snapshot-budget-report`.

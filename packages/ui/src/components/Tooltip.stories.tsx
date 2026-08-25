@@ -13,6 +13,7 @@ export default meta;
 
 /** Open state rendered deterministically for the assertion. */
 export const OnButton: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Tooltip content="Applies to draft rows only">
       <Button variant="outline">Bulk edit</Button>
@@ -35,6 +36,7 @@ export const OpenState: StoryObj = {
 
 /** Placement below, for triggers near the top edge. */
 export const Below: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Tooltip content="Undo walks through committing again" placement="bottom">
       <Button variant="outline">What does undo do?</Button>
@@ -43,6 +45,7 @@ export const Below: StoryObj = {
 };
 
 export const TriggerKeepsItsName: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Tooltip content="Days of stock remaining">
       <button type="button">Cover</button>

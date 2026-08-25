@@ -7,6 +7,8 @@ import { Card } from "./Card";
 const meta = {
   title: "Components/Card",
   component: Card,
+  // Slots are part of the API, so they belong in the props table.
+  subcomponents: { Header: Card.Header, Body: Card.Body, Footer: Card.Footer },
   tags: ["autodocs"],
 } satisfies Meta<typeof Card>;
 
