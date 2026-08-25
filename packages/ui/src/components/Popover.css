@@ -1,0 +1,38 @@
+/* Popover styles, shipped with the component.
+   A page that never imports Popover never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-popover {
+    width: min(18rem, calc(100vw - 2 * var(--uix-space-5)));
+    background: var(--uix-bg-surface);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-m);
+    box-shadow: var(--uix-shadow-2);
+    padding: var(--uix-gap-lg);
+  }
+
+  .uix-popover-title {
+    margin: 0 0 var(--uix-gap-sm);
+    font-weight: var(--uix-font-weight-bold);
+  }
+
+  .uix-popover-body {
+    color: var(--uix-text-primary);
+  }
+
+  .uix-popover-body > :first-child {
+    margin-top: 0;
+  }
+
+  .uix-popover-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .uix-popover-footer {
+    margin-top: var(--uix-gap-md);
+    display: flex;
+    justify-content: flex-end;
+  }
+}

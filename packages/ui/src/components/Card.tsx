@@ -1,5 +1,10 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 
+import { cx } from "../cx";
+import "./Card.css";
+
+export type CardProps = ComponentPropsWithoutRef<"article">;
+export type CardSlotProps = ComponentPropsWithoutRef<"div">;
 /**
  * Generic surface with compound slots.
  *
@@ -8,23 +13,40 @@ import type { ReactNode } from "react";
  * a slot gets wrapped, and breaks across duplicate package copies
  * where the type is a different function reference.
  *
- * Accessibility: `article` with optional labelled header; pass
- * `aria-label` via the header's heading when the card stands alone.
+ * Accessibility: `article` with an optional labelled header. Every
+ * slot forwards its attributes, so `aria-label`, `id` and `role` can
+ * be set where they belong instead of being unreachable.
  */
-export function Card({ children }: { children: ReactNode }) {
-  return <article className="uix-card">{children}</article>;
+export function Card({ children, className, ...rest }: CardProps) {
+  return (
+    <article className={cx("uix-card", className)} {...rest}>
+      {children}
+    </article>
+  );
 }
 
-function HeaderBase({ children }: { children: ReactNode }) {
-  return <div className="uix-card-header">{children}</div>;
+function HeaderBase({ children, className, ...rest }: CardSlotProps) {
+  return (
+    <div className={cx("uix-card-header", className)} {...rest}>
+      {children}
+    </div>
+  );
 }
 
-function BodyBase({ children }: { children: ReactNode }) {
-  return <div className="uix-card-body">{children}</div>;
+function BodyBase({ children, className, ...rest }: CardSlotProps) {
+  return (
+    <div className={cx("uix-card-body", className)} {...rest}>
+      {children}
+    </div>
+  );
 }
 
-function FooterBase({ children }: { children: ReactNode }) {
-  return <div className="uix-card-footer">{children}</div>;
+function FooterBase({ children, className, ...rest }: CardSlotProps) {
+  return (
+    <div className={cx("uix-card-footer", className)} {...rest}>
+      {children}
+    </div>
+  );
 }
 
 Card.Header = HeaderBase;

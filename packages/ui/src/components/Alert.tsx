@@ -1,10 +1,12 @@
-import type { ReactNode } from "react";
+import type { ReactNode, ComponentPropsWithoutRef } from "react";
 import { X } from "lucide-react";
 import { Button } from "./Button";
 
+import { cx } from "../cx";
+import "./Alert.css";
 type Severity = "info" | "success" | "warning" | "danger";
 
-export interface AlertProps {
+interface AlertOwnProps {
   severity: Severity;
   title?: string;
   children: ReactNode;
@@ -12,6 +14,14 @@ export interface AlertProps {
   onDismiss?: () => void;
   dismissLabel?: string;
 }
+
+/**
+ * Accepts every attribute of `<div>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type AlertProps = AlertOwnProps &
+  Omit<ComponentPropsWithoutRef<"div">, keyof AlertOwnProps>;
 
 const roleFor: Record<Severity, "status" | "alert"> = {
   info: "status",
@@ -36,13 +46,16 @@ export function Alert({
   children,
   onDismiss,
   dismissLabel = "Dismiss",
+  className,
+  ...rest
 }: AlertProps) {
   return (
     <div
-      className="uix-alert"
+      className={cx("uix-alert", className)}
       data-severity={severity}
       role={roleFor[severity]}
       aria-label={title}
+      {...rest}
     >
       <div className="uix-alert-body">
         {title ? <strong className="uix-alert-title">{title}</strong> : null}

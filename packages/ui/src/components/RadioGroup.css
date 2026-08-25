@@ -1,0 +1,38 @@
+/* RadioGroup styles, shipped with the component.
+   A page that never imports RadioGroup never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-radiogroup {
+    border: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--uix-gap-sm);
+  }
+
+  .uix-legend {
+    padding: 0;
+    margin-bottom: var(--uix-gap-sm);
+    font-weight: var(--uix-font-weight-bold);
+  }
+
+  .uix-radio-dot {
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 1px solid var(--uix-border-strong);
+    border-radius: 999px;
+    background: var(--uix-bg-surface);
+    flex-shrink: 0;
+  }
+
+  .uix-radio-input:checked + .uix-radio-dot {
+    border-color: var(--uix-accent);
+    background: radial-gradient(
+      circle,
+      var(--uix-accent) 0 35%,
+      transparent 40%
+    );
+  }
+}

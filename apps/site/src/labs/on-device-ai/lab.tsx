@@ -1,12 +1,4 @@
 import type { LabMeta } from "../types";
-import Demo from "./Demo";
-
-const OnDeviceLabDemo = () => (
-  <section className="lab-demo">
-    <h2>Availability is a fact about your machine</h2>
-    <Demo />
-  </section>
-);
 
 export default {
   slug: "on-device-ai",
@@ -24,5 +16,5 @@ export default {
   },
   source:
     "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/on-device-ai/Demo.tsx",
-  demo: OnDeviceLabDemo,
+  demo: () => import("./LabDemo"),
 } satisfies LabMeta;

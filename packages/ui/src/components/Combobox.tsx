@@ -1,12 +1,23 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { useId, useState } from "react";
 
-export interface ComboboxProps {
+import { cx } from "../cx";
+import "./_field.css";
+interface ComboboxOwnProps {
   label: string;
   options: string[];
   value?: string | null;
   onValueChange?: (value: string | null) => void;
   placeholder?: string;
 }
+
+/**
+ * Accepts every attribute of `<div>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type ComboboxProps = ComboboxOwnProps &
+  Omit<ComponentPropsWithoutRef<"div">, keyof ComboboxOwnProps>;
 
 /**
  * Filterable single-select on native primitives: an input bound to a
@@ -24,6 +35,8 @@ export function Combobox({
   value,
   onValueChange,
   placeholder,
+  className,
+  ...rest
 }: ComboboxProps) {
   const id = useId();
   const [query, setQuery] = useState("");
@@ -33,7 +46,7 @@ export function Combobox({
   );
 
   return (
-    <div className="uix-field">
+    <div className={cx("uix-field", className)} {...rest}>
       <label className="uix-field-label" htmlFor={id}>
         {label}
       </label>

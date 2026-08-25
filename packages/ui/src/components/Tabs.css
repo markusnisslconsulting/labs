@@ -1,0 +1,40 @@
+/* Tabs styles, shipped with the component.
+   A page that never imports Tabs never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-tablist {
+    display: flex;
+    gap: var(--uix-gap-sm);
+    border-bottom: 1px solid var(--uix-border-subtle);
+  }
+
+  .uix-tab {
+    padding: var(--uix-gap-sm) var(--uix-gap-lg);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--uix-text-secondary);
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .uix-tab:hover {
+    color: var(--uix-accent);
+  }
+
+  .uix-tab[data-active] {
+    color: var(--uix-accent);
+    border-bottom-color: var(--uix-accent);
+  }
+
+  .uix-tab:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: -2px;
+  }
+
+  .uix-tabpanel {
+    padding-top: var(--uix-gap-lg);
+  }
+}

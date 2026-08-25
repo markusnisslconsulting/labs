@@ -1,0 +1,19 @@
+/* Divider styles, shipped with the component.
+   A page that never imports Divider never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-divider--horizontal {
+    border: none;
+    border-top: 1px solid var(--uix-border-subtle);
+    margin: var(--uix-gap-lg) 0;
+  }
+
+  .uix-divider--vertical {
+    align-self: stretch;
+    width: 1px;
+    background: var(--uix-border-subtle);
+    margin: 0 var(--uix-gap-md);
+  }
+}

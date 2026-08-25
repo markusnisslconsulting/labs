@@ -1,6 +1,9 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 
-export interface CheckboxProps {
+import { cxState } from "../cx";
+import "./Checkbox.css";
+interface CheckboxOwnProps {
   /** Visible label; rendered inside the control, so the whole row
       toggles natively. */
   label: string;
@@ -11,6 +14,17 @@ export interface CheckboxProps {
   /** Tri-state support: aria-checked="mixed" plus a dash. */
   indeterminate?: boolean;
 }
+
+/**
+ * Accepts every prop of Base UI's BaseCheckbox.Root in addition to those below;
+ * `className` merges with the component's own class and the rest land
+ * on the root element.
+ */
+export type CheckboxProps = CheckboxOwnProps &
+  Omit<
+    ComponentPropsWithoutRef<typeof BaseCheckbox.Root>,
+    keyof CheckboxOwnProps
+  >;
 
 /**
  * Checkbox on a Base UI headless root, following Base UI's suggested
@@ -29,15 +43,18 @@ export function Checkbox({
   onChange,
   disabled,
   indeterminate,
+  className,
+  ...rest
 }: CheckboxProps) {
   return (
     <BaseCheckbox.Root
-      className="uix-checkbox"
+      className={cxState("uix-checkbox", className)}
       checked={checked}
       defaultChecked={defaultChecked}
       indeterminate={indeterminate}
       onCheckedChange={(next) => onChange?.(Boolean(next))}
       disabled={disabled}
+      {...rest}
     >
       <BaseCheckbox.Indicator keepMounted className="uix-checkbox-indicator">
         <svg viewBox="0 0 12 12" aria-hidden>

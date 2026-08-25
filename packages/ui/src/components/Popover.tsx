@@ -1,12 +1,26 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 
-export interface PopoverProps {
+import { cxState } from "../cx";
+import "./_positioner.css";
+import "./Button.css";
+import "./Popover.css";
+interface PopoverOwnProps {
   /** Trigger label. */
   trigger: string;
   title?: string;
   children: ReactNode;
 }
+
+/**
+ * Extra props land on the trigger, the only part that sits in the page
+ * layout; the popup is positioned in a portal.
+ */
+export type PopoverProps = PopoverOwnProps &
+  Omit<
+    ComponentPropsWithoutRef<typeof BasePopover.Trigger>,
+    keyof PopoverOwnProps
+  >;
 
 /**
  * A non-modal floating container (details, forms, filters) on Base
@@ -16,14 +30,21 @@ export interface PopoverProps {
  *
  * Performance: the popup mounts lazily on first open.
  */
-export function Popover({ trigger, title, children }: PopoverProps) {
+export function Popover({
+  trigger,
+  title,
+  children,
+  className,
+  ...rest
+}: PopoverProps) {
   return (
     <BasePopover.Root>
       <BasePopover.Trigger
-        className="uix-button"
+        className={cxState("uix-button", className)}
         data-variant="outline"
         data-size="md"
         aria-haspopup="dialog"
+        {...rest}
       >
         {trigger}
       </BasePopover.Trigger>

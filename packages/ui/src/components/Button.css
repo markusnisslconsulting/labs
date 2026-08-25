@@ -1,0 +1,101 @@
+/* Button styles, shipped with the component.
+   A page that never imports Button never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    font-weight: var(--uix-font-weight-bold);
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: var(--uix-gap-sm) var(--uix-gap-xl);
+    border-radius: var(--uix-button-radius, var(--uix-radius-m));
+  }
+
+  .uix-button:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .uix-button:disabled {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  .uix-button[data-size="sm"] {
+    padding: var(--uix-gap-xs) var(--uix-gap-md);
+    font-size: var(--uix-font-size-200);
+    gap: var(--uix-gap-sm);
+    border-radius: var(--uix-radius-s);
+  }
+
+  .uix-button[data-size="lg"] {
+    padding: var(--uix-gap-md) var(--uix-gap-2xl);
+    font-size: var(--uix-font-size-500);
+    border-radius: var(--uix-radius-l);
+  }
+
+  .uix-button[data-variant="solid"][data-tone="accent"] {
+    background: var(--uix-button-accent-bg, var(--uix-accent));
+    color: var(--uix-button-accent-fg, var(--uix-text-on-accent));
+  }
+
+  .uix-button[data-variant="solid"][data-tone="accent"]:hover {
+    background: color-mix(
+      in srgb,
+      var(--uix-button-accent-bg, var(--uix-accent)) 90%,
+      var(--uix-ink)
+    );
+  }
+
+  .uix-button[data-variant="solid"][data-tone="neutral"] {
+    background: var(--uix-button-neutral-bg, var(--uix-surface-inverse));
+    color: var(--uix-button-neutral-fg, var(--uix-text-on-inverse));
+  }
+
+  .uix-button[data-variant="solid"][data-tone="neutral"]:hover {
+    background: color-mix(
+      in srgb,
+      var(--uix-button-neutral-bg, var(--uix-surface-inverse)) 90%,
+      var(--uix-paper)
+    );
+  }
+
+  .uix-button[data-variant="outline"] {
+    background: var(--uix-button-outline-bg, var(--uix-bg-surface));
+    border-color: var(--uix-button-outline-border, var(--uix-border-subtle));
+    color: var(--uix-button-outline-fg, var(--uix-text-primary));
+  }
+
+  .uix-button[data-variant="outline"]:hover {
+    border-color: var(
+      --uix-button-outline-border-strong,
+      var(--uix-border-strong)
+    );
+    background: var(--uix-bg-subtle);
+  }
+
+  .uix-button[data-variant="ghost"] {
+    color: var(--uix-button-ghost-fg, var(--uix-text-primary));
+  }
+
+  .uix-button[data-variant="ghost"]:hover {
+    background: var(--uix-button-ghost-hover-bg, var(--uix-bg-subtle));
+  }
+
+  .uix-button-spinner {
+    display: inline-flex;
+  }
+
+  .uix-button-spinner .uix-spinner-wheel {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-width: 2px;
+    border-top-color: currentColor;
+  }
+}

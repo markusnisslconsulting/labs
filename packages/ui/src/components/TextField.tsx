@@ -1,5 +1,7 @@
 import { useId, type InputHTMLAttributes, type ReactNode } from "react";
 
+import { cx } from "../cx";
+import "./_field.css";
 export interface TextFieldProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "id" | "prefix"
@@ -31,6 +33,7 @@ export function TextField({
   error,
   prefix,
   suffix,
+  className,
   ...rest
 }: TextFieldProps) {
   const id = useId();
@@ -39,7 +42,7 @@ export function TextField({
     .join(" ");
 
   return (
-    <div className="uix-field">
+    <div className={cx("uix-field", className)}>
       <label className="uix-field-label" htmlFor={id}>
         {label}
       </label>

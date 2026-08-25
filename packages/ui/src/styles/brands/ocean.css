@@ -1,0 +1,17 @@
+/* Ocean — a brand, expressed only as semantic overrides.
+   Adding a brand means adding a file like this one and importing it.
+   No core stylesheet is edited, which is the property that makes
+   multi-brand scale: brands cannot collide in a shared file.
+
+   Note what is NOT here: --uix-accent-soft and --uix-focus-ring follow
+   --uix-accent on their own, so a brand cannot forget to update them. */
+
+@layer tokens {
+  [data-brand="ocean"] {
+    --uix-accent: var(--uix-blue-600);
+  }
+
+  [data-brand="ocean"][data-theme="dark"] {
+    --uix-accent: var(--uix-blue-400);
+  }
+}

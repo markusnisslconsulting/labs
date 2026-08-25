@@ -1,5 +1,8 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { useEffect } from "react";
 
+import { cx } from "../cx";
+import "./Toaster.css";
 type Severity = "info" | "success" | "warning" | "danger";
 
 export interface ToastItem {
@@ -11,12 +14,20 @@ export interface ToastItem {
   timeout?: number;
 }
 
-export interface ToasterProps {
+interface ToasterOwnProps {
   toasts: ToastItem[];
   onDismiss: (id: string) => void;
   /** Position of the stack. Default: bottom-right. */
   position?: "bottom-right" | "top-center";
 }
+
+/**
+ * Accepts every attribute of `<div>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type ToasterProps = ToasterOwnProps &
+  Omit<ComponentPropsWithoutRef<"div">, keyof ToasterOwnProps>;
 
 const roleFor: Record<Severity, "status" | "alert"> = {
   info: "status",
@@ -71,11 +82,17 @@ export function Toaster({
   toasts,
   onDismiss,
   position = "bottom-right",
+  className,
+  ...rest
 }: ToasterProps) {
   return (
     <div
-      className={`uix-toaster uix-toaster--${position.replace("-", "-")}`}
+      className={cx(
+        `uix-toaster uix-toaster--${position.replace("-", "-")}`,
+        className,
+      )}
       aria-label="Notifications"
+      {...rest}
     >
       {toasts.map((toast) => (
         <ToastWithTimeout key={toast.id} toast={toast} onDismiss={onDismiss} />

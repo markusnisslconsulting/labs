@@ -1,0 +1,78 @@
+/* Checkbox styles, shipped with the component.
+   A page that never imports Checkbox never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--uix-text-primary);
+  }
+
+  .uix-checkbox:disabled {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  .uix-checkbox:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .uix-checkbox-indicator {
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 1px solid var(--uix-border-strong);
+    border-radius: var(--uix-radius-s);
+    background: var(--uix-bg-surface);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .uix-checkbox-indicator svg {
+    width: 0.7rem;
+    height: 0.7rem;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    visibility: hidden;
+  }
+
+  .uix-checkbox-indicator .uix-checkbox-check {
+    stroke: #fff;
+  }
+
+  .uix-checkbox-indicator .uix-checkbox-dash {
+    stroke: var(--uix-accent);
+  }
+
+  .uix-checkbox[data-checked] .uix-checkbox-indicator {
+    background: var(--uix-accent);
+    border-color: var(--uix-accent);
+  }
+
+  .uix-checkbox[data-checked] .uix-checkbox-check {
+    visibility: visible;
+  }
+
+  .uix-checkbox[data-indeterminate] .uix-checkbox-indicator {
+    border-color: var(--uix-accent);
+  }
+
+  .uix-checkbox[data-indeterminate] .uix-checkbox-dash {
+    visibility: visible;
+  }
+
+  .uix-checkbox-label {
+    color: var(--uix-text-primary);
+  }
+}

@@ -1,4 +1,5 @@
-import { Button, Panel } from "@labs/ui";
+import { Button } from "@labs/ui/components/Button";
+import { Panel } from "@labs/ui/components/Panel";
 import { useEffect, useRef, useState } from "react";
 import {
   createScriptedRun,

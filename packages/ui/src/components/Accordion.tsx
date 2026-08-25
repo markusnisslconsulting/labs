@@ -1,17 +1,31 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
 import type { ReactNode } from "react";
 
+import { cxState } from "../cx";
+import "./Accordion.css";
 export interface AccordionItem {
   id: string;
   title: string;
   body: ReactNode;
 }
 
-export interface AccordionProps {
+interface AccordionOwnProps {
   items: AccordionItem[];
   /** Allow several open sections at once. Default: one at a time. */
   multiple?: boolean;
 }
+
+/**
+ * Accepts every prop of Base UI's BaseAccordion.Root in addition to those below;
+ * `className` merges with the component's own class and the rest land
+ * on the root element.
+ */
+export type AccordionProps = AccordionOwnProps &
+  Omit<
+    ComponentPropsWithoutRef<typeof BaseAccordion.Root>,
+    keyof AccordionOwnProps
+  >;
 
 /**
  * Disclosure sections on Base UI's accordion.
@@ -23,9 +37,18 @@ export interface AccordionProps {
  * Performance: closed panels are unmounted — toggling costs one
  * small mount, nothing else.
  */
-export function Accordion({ items, multiple = false }: AccordionProps) {
+export function Accordion({
+  items,
+  multiple = false,
+  className,
+  ...rest
+}: AccordionProps) {
   return (
-    <BaseAccordion.Root className="uix-accordion" multiple={multiple}>
+    <BaseAccordion.Root
+      className={cxState("uix-accordion", className)}
+      multiple={multiple}
+      {...rest}
+    >
       {items.map((item) => (
         <BaseAccordion.Item key={item.id} className="uix-accordion-item">
           <BaseAccordion.Header className="uix-accordion-heading">

@@ -1,6 +1,7 @@
 import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
 import { useId, type ReactElement } from "react";
 
+import "./Tooltip.css";
 export interface TooltipProps {
   /** Plain text; the tooltip is not a container for rich content. */
   content: string;
@@ -23,6 +24,11 @@ export interface TooltipProps {
  *
  * Performance: the popup mounts lazily on first interaction and
  * positioning runs on the transform level via floating-ui.
+ *
+ * API note: this is the one component that takes no `className` or
+ * pass-through attributes, because it renders no element of its own —
+ * the trigger IS the caller's element, handed to Base UI's `render`.
+ * Style the trigger where you create it.
  */
 export function Tooltip({
   content,

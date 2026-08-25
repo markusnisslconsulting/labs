@@ -20,8 +20,14 @@ export interface LabMeta {
   };
   /** Where the code for this lab lives in the public repository. */
   source: string;
-  /** Live example, if the lab showcases something running in a browser. */
-  demo?: ComponentType;
+  /**
+   * Live example, if the lab showcases something running in a browser.
+   *
+   * A loader, not a component: the demo and every design-system
+   * component it renders — and therefore their CSS — arrive only when
+   * someone opens this lab, not when the overview page loads.
+   */
+  demo?: () => Promise<{ default: ComponentType }>;
   /** Path into the hosted Storybook, if the lab has stories. */
   storybookPath?: string;
 }

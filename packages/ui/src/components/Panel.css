@@ -1,0 +1,66 @@
+/* Panel styles, shipped with the component.
+   A page that never imports Panel never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-panel {
+    border: 1px solid var(--uix-panel-border, var(--uix-border-subtle));
+    border-radius: var(--uix-panel-radius, var(--uix-radius-l));
+    background: var(--uix-panel-bg, var(--uix-bg-surface));
+    padding: var(--uix-panel-pad-y, calc(var(--uix-gap-lg) + var(--uix-gap-xs)))
+      var(--uix-panel-pad-x, var(--uix-gap-xl));
+    margin: 0 0 var(--uix-gap-xl);
+  }
+
+  .uix-panel > :first-child {
+    margin-top: 0;
+  }
+
+  .uix-panel > :last-child {
+    margin-bottom: 0;
+  }
+
+  .uix-panel-label {
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    font-size: var(--uix-font-size-100);
+    font-weight: var(--uix-font-weight-bold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--uix-gap-lg);
+  }
+
+  .uix-panel-label::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--uix-panel-accent, var(--uix-accent));
+  }
+
+  .uix-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--uix-gap-md);
+    padding-bottom: var(--uix-gap-md);
+    margin-bottom: var(--uix-gap-lg);
+    border-bottom: 1px solid var(--uix-panel-border, var(--uix-border-subtle));
+  }
+
+  .uix-panel-header h2,
+  .uix-panel-header h3 {
+    margin: 0;
+    font-size: var(--uix-font-size-400);
+  }
+
+  .uix-panel-body > :first-child {
+    margin-top: 0;
+  }
+
+  .uix-panel-body > :last-child {
+    margin-bottom: 0;
+  }
+}

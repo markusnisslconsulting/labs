@@ -1,0 +1,36 @@
+/* SegmentedControl styles, shipped with the component.
+   A page that never imports SegmentedControl never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-segmented {
+    display: inline-flex;
+    background: var(--uix-bg-subtle);
+    border-radius: var(--uix-radius-m);
+    padding: var(--uix-gap-xs);
+    gap: var(--uix-gap-xs);
+  }
+
+  .uix-segment {
+    border: none;
+    background: transparent;
+    color: var(--uix-text-secondary);
+    padding: var(--uix-gap-sm) var(--uix-gap-lg);
+    border-radius: calc(var(--uix-radius-m) - var(--uix-space-1));
+    font-size: var(--uix-font-size-200);
+    font-weight: var(--uix-font-weight-bold);
+    cursor: pointer;
+  }
+
+  .uix-segment[aria-pressed="true"] {
+    background: var(--uix-bg-surface);
+    color: var(--uix-text-primary);
+    box-shadow: var(--uix-shadow-1);
+  }
+
+  .uix-segment:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+  }
+}

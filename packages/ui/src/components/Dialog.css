@@ -1,0 +1,54 @@
+/* Dialog styles, shipped with the component.
+   A page that never imports Dialog never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-dialog-backdrop {
+    background: color-mix(in srgb, var(--uix-ink) 45%, transparent);
+    z-index: var(--uix-z-modal);
+  }
+
+  .uix-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(32rem, calc(100vw - 2 * var(--uix-space-5)));
+    max-height: calc(100vh - 2 * var(--uix-space-6));
+    overflow: auto;
+    background: var(--uix-bg-surface);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-l);
+    box-shadow: var(--uix-shadow-3);
+    padding: var(--uix-gap-xl);
+    z-index: var(--uix-z-modal);
+    outline: none;
+  }
+
+  .uix-dialog-title {
+    margin: 0 0 var(--uix-gap-sm);
+    font-size: var(--uix-text-heading);
+    line-height: var(--uix-line-height-tight);
+  }
+
+  .uix-dialog-description {
+    margin: 0 0 var(--uix-gap-lg);
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-dialog-body > :first-child {
+    margin-top: 0;
+  }
+
+  .uix-dialog-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .uix-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--uix-gap-sm);
+    margin-top: var(--uix-gap-xl);
+  }
+}

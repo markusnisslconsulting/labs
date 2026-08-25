@@ -1,6 +1,10 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { useId } from "react";
 
-export interface SliderProps {
+import { cx } from "../cx";
+import "./_field.css";
+import "./Slider.css";
+interface SliderOwnProps {
   label: string;
   min?: number;
   max?: number;
@@ -11,6 +15,14 @@ export interface SliderProps {
   /** Show the live value next to the label. */
   showValue?: boolean;
 }
+
+/**
+ * Accepts every attribute of `<div>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type SliderProps = SliderOwnProps &
+  Omit<ComponentPropsWithoutRef<"div">, keyof SliderOwnProps>;
 
 /**
  * Native range input.
@@ -31,12 +43,14 @@ export function Slider({
   value,
   onValueChange,
   showValue = true,
+  className,
+  ...rest
 }: SliderProps) {
   const isControlled = value !== undefined;
   const id = useId();
 
   return (
-    <div className="uix-slider">
+    <div className={cx("uix-slider", className)} {...rest}>
       <div className="uix-slider-head">
         <label className="uix-field-label" htmlFor={id}>
           {label}

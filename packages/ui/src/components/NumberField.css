@@ -1,0 +1,47 @@
+/* NumberField styles, shipped with the component.
+   A page that never imports NumberField never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-numberfield {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-m);
+    background: var(--uix-bg-surface);
+    overflow: hidden;
+  }
+
+  .uix-numberfield:focus-within {
+    border-color: var(--uix-border-strong);
+  }
+
+  .uix-numberfield-step {
+    width: 2.2rem;
+    height: 2.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--uix-bg-subtle);
+    border: none;
+    color: var(--uix-text-primary);
+    font-size: var(--uix-font-size-400);
+    cursor: pointer;
+  }
+
+  .uix-numberfield-step:hover {
+    color: var(--uix-accent);
+  }
+
+  .uix-numberfield-step:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: -2px;
+  }
+
+  .uix-numberfield .uix-field-input {
+    text-align: center;
+    padding: var(--uix-gap-sm) var(--uix-gap-md);
+    font-variant-numeric: tabular-nums;
+  }
+}

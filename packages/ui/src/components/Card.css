@@ -1,0 +1,29 @@
+/* Card styles, shipped with the component.
+   A page that never imports Card never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-card {
+    background: var(--uix-panel-bg, var(--uix-bg-surface));
+    border: 1px solid var(--uix-panel-border, var(--uix-border-subtle));
+    border-radius: var(--uix-panel-radius, var(--uix-radius-l));
+    overflow: hidden;
+  }
+
+  .uix-card-header {
+    padding: var(--uix-gap-lg) var(--uix-gap-xl);
+    border-bottom: 1px solid var(--uix-border-subtle);
+    font-weight: 700;
+  }
+
+  .uix-card-body {
+    padding: var(--uix-gap-xl);
+  }
+
+  .uix-card-footer {
+    padding: var(--uix-gap-md) var(--uix-gap-xl);
+    border-top: 1px solid var(--uix-border-subtle);
+    color: var(--uix-text-secondary);
+  }
+}

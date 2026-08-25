@@ -1,0 +1,47 @@
+/* Spinner styles, shipped with the component.
+   A page that never imports Spinner never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-spinner {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+  }
+
+  .uix-spinner-wheel {
+    display: block;
+    border-radius: 999px;
+    border: 2px solid var(--uix-border-subtle);
+    border-top-color: var(--uix-accent);
+    animation: uix-spin 0.7s linear infinite;
+  }
+
+  .uix-spinner[data-size="sm"] .uix-spinner-wheel {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .uix-spinner[data-size="md"] .uix-spinner-wheel {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .uix-spinner[data-size="lg"] .uix-spinner-wheel {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  @keyframes uix-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .uix-spinner-wheel {
+      animation-duration: 2s; /* slower, still visible */
+    }
+  }
+}

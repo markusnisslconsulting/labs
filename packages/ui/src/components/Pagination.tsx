@@ -1,11 +1,22 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { useState } from "react";
 import { Button } from "./Button";
 
-export interface PaginationProps {
+import { cx } from "../cx";
+import "./Pagination.css";
+interface PaginationOwnProps {
   pageCount: number;
   defaultPage?: number;
   onChange?: (page: number) => void;
 }
+
+/**
+ * Accepts every attribute of `<nav>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type PaginationProps = PaginationOwnProps &
+  Omit<ComponentPropsWithoutRef<"nav">, keyof PaginationOwnProps>;
 
 /**
  * Numeric pagination with a sliding window.
@@ -21,6 +32,8 @@ export function Pagination({
   pageCount,
   defaultPage = 1,
   onChange,
+  className,
+  ...rest
 }: PaginationProps) {
   const [page, setPage] = useState(
     Math.min(Math.max(defaultPage, 1), pageCount),
@@ -45,7 +58,11 @@ export function Pagination({
   const showTrailingEllipsis = end < pageCount - 1;
 
   return (
-    <nav className="uix-pagination" aria-label="Pagination">
+    <nav
+      className={cx("uix-pagination", className)}
+      aria-label="Pagination"
+      {...rest}
+    >
       <Button
         variant="outline"
         size="sm"

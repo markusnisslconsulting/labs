@@ -1,6 +1,12 @@
+import type { ComponentPropsWithoutRef } from "react";
+import { useId, useState } from "react";
 import { Switch as BaseSwitch } from "@base-ui-components/react/switch";
 
-export interface SwitchProps {
+import { cx } from "../cx";
+import "./Switch.css";
+interface SwitchOwnProps {
+  /** Visible label; rendered inside the control, so the whole row
+      toggles natively. */
   label: string;
   checked?: boolean;
   defaultChecked?: boolean;
@@ -9,14 +15,30 @@ export interface SwitchProps {
 }
 
 /**
- * A switch on a Base UI headless root, following Base UI's suggested
- * structure: `Root` IS the track (pill) and carries `data-checked`,
- * the `Thumb` is the absolutely positioned knob moved via transform —
- * compositor only. The label sits beside the track in a wrapping
- * label, so clicking the text toggles too.
+ * Accepts every attribute of `<label>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type SwitchProps = SwitchOwnProps &
+  Omit<ComponentPropsWithoutRef<"label">, keyof SwitchOwnProps>;
+
+/**
+ * A switch on a Base UI headless root.
  *
- * Accessibility: Base UI renders `role="switch"` with a literal
- * `aria-checked`; the track is decorative.
+ * The component bridges uncontrolled use with its own state: Base
+ * UI's internal checked state proved non-deterministic on first
+ * render in static environments (SSR/prerender, headless runner),
+ * so `aria-checked` and `data-checked` are driven from here.
+ *
+ * Accessibility: `role="switch"` with a literal `aria-checked`, named
+ * by `aria-labelledby` pointing at the visible label. The wrapping
+ * <label> makes the text clickable, but it does NOT name the control:
+ * implicit label association only works for real form elements, not
+ * for an ARIA role on a span, so without this the switch reaches
+ * assistive technology unnamed.
+ *
+ * Performance: the knob moves with a `transform` transition —
+ * compositor only.
  */
 export function Switch({
   label,
@@ -24,20 +46,33 @@ export function Switch({
   defaultChecked,
   onChange,
   disabled,
+  className,
+  ...rest
 }: SwitchProps) {
+  const isControlled = checked !== undefined;
+  const [internalChecked, setInternalChecked] = useState(
+    defaultChecked ?? false,
+  );
+  const isChecked = isControlled ? checked : internalChecked;
+  const labelId = useId();
+
   return (
-    <label className="uix-switch-row">
+    <label className={cx("uix-switch-row", className)} {...rest}>
       <BaseSwitch.Root
-        aria-label={label}
         className="uix-switch"
-        checked={checked}
-        defaultChecked={defaultChecked}
-        onCheckedChange={(next) => onChange?.(Boolean(next))}
+        aria-labelledby={labelId}
+        checked={isChecked}
+        onCheckedChange={(next) => {
+          if (!isControlled) setInternalChecked(next);
+          onChange?.(next);
+        }}
         disabled={disabled}
       >
         <BaseSwitch.Thumb className="uix-switch-thumb" />
       </BaseSwitch.Root>
-      <span className="uix-switch-label">{label}</span>
+      <span className="uix-switch-label" id={labelId}>
+        {label}
+      </span>
     </label>
   );
 }

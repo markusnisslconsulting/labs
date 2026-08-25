@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Link, Route, Routes, useParams } from "react-router";
-import { Chip, SearchInput } from "@labs/ui";
+import { Chip } from "@labs/ui/components/Chip";
+import { Panel } from "@labs/ui/components/Panel";
+import { SearchInput } from "@labs/ui/components/SearchInput";
 import { LabCard } from "./components/LabCard";
-import { allTags, labBySlug, labs } from "./labs";
+import { allTags, labBySlug, labDemos, labs } from "./labs";
 
 const Home = () => {
   const [query, setQuery] = useState("");
@@ -115,7 +117,7 @@ const LabPage = () => {
     return <NotFound />;
   }
 
-  const Demo = lab.demo;
+  const Demo = labDemos[lab.slug];
 
   return (
     <article className="page">
@@ -153,19 +155,24 @@ const LabPage = () => {
         ) : null}
       </ul>
 
-      {Demo ? <Demo /> : null}
+      {Demo ? (
+        <Suspense
+          fallback={<p className="lab-demo-loading">Loading the demo…</p>}
+        >
+          <Demo />
+        </Suspense>
+      ) : null}
 
       {!Demo && lab.storybookPath ? (
         <>
-          <section className="uix-panel">
-            <p className="uix-panel-label">The workbench, embedded</p>
+          <Panel label="The workbench, embedded">
             <iframe
               title={`${lab.title} in Storybook`}
               src={`/storybook/index.html${lab.storybookPath}`}
               loading="lazy"
               className="story-frame"
             />
-          </section>
+          </Panel>
           <p>
             The frame above is the hosted Storybook;{" "}
             <a href={`/storybook/index.html${lab.storybookPath}`}>

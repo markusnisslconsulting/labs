@@ -1,4 +1,6 @@
-import { Button, Panel, StatusPill } from "@labs/ui";
+import { Button } from "@labs/ui/components/Button";
+import { Panel } from "@labs/ui/components/Panel";
+import { StatusPill } from "@labs/ui/components/StatusPill";
 import { useEffect, useRef, useState } from "react";
 import {
   createDesk,

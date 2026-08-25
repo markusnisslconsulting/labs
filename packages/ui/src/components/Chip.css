@@ -1,0 +1,37 @@
+/* Chip styles, shipped with the component.
+   A page that never imports Chip never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    background: var(--uix-chip-bg, var(--uix-bg-subtle));
+    color: var(--uix-chip-fg, var(--uix-text-secondary));
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: var(--uix-gap-xs) calc(var(--uix-gap-sm) + var(--uix-space-2));
+    font-size: var(--uix-font-size-200);
+    line-height: var(--uix-line-height-normal);
+  }
+
+  button.uix-chip {
+    cursor: pointer;
+  }
+
+  button.uix-chip:hover {
+    color: var(--uix-accent);
+  }
+
+  button.uix-chip[aria-pressed="true"] {
+    background: var(--uix-chip-active-bg, var(--uix-surface-inverse));
+    color: var(--uix-chip-active-fg, var(--uix-text-on-inverse));
+  }
+
+  button.uix-chip:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+  }
+}

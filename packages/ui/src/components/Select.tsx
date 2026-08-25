@@ -1,5 +1,8 @@
 import { useId, type SelectHTMLAttributes } from "react";
 
+import { cx } from "../cx";
+import "./_field.css";
+import "./Select.css";
 export interface SelectOption {
   value: string;
   label: string;
@@ -19,12 +22,18 @@ export interface SelectProps extends Omit<
  * is a styled span (aria-hidden) — the element stays a real select,
  * so pickers, keyboards and forms behave like the platform.
  */
-export function Select({ label, options, hint, ...rest }: SelectProps) {
+export function Select({
+  label,
+  options,
+  hint,
+  className,
+  ...rest
+}: SelectProps) {
   const id = useId();
   const hintId = `${id}-hint`;
 
   return (
-    <div className="uix-field">
+    <div className={cx("uix-field", className)}>
       <label className="uix-field-label" htmlFor={id}>
         {label}
       </label>

@@ -1,0 +1,53 @@
+/* Skeleton styles, shipped with the component.
+   A page that never imports Skeleton never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-skeleton {
+    display: block;
+    height: var(--uix-space-4);
+    border-radius: var(--uix-radius-s);
+    background: var(--uix-bg-subtle);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .uix-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--uix-bg-surface) 70%, transparent),
+      transparent
+    );
+    animation: uix-skeleton-shimmer var(--uix-duration-slow) ease-in-out
+      infinite;
+  }
+
+  .uix-skeleton--circle {
+    border-radius: 999px;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .uix-skeleton--block {
+    border-radius: var(--uix-radius-m);
+    height: 6rem;
+  }
+
+  @keyframes uix-skeleton-shimmer {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .uix-skeleton::after {
+      animation: none;
+    }
+  }
+}

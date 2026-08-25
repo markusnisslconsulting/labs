@@ -1,0 +1,43 @@
+/* Alert styles, shipped with the component.
+   A page that never imports Alert never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-alert {
+    display: flex;
+    gap: var(--uix-gap-md);
+    align-items: flex-start;
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-m);
+    padding: var(--uix-gap-md) var(--uix-gap-lg);
+  }
+
+  .uix-alert[data-severity="info"] {
+    border-inline-start: 4px solid var(--uix-info);
+  }
+
+  .uix-alert[data-severity="success"] {
+    border-inline-start: 4px solid var(--uix-status-ok);
+  }
+
+  .uix-alert[data-severity="warning"] {
+    border-inline-start: 4px solid var(--uix-status-warn);
+  }
+
+  .uix-alert[data-severity="danger"] {
+    border-inline-start: 4px solid var(--uix-status-danger);
+  }
+
+  .uix-alert-body > :first-child {
+    margin-top: 0;
+  }
+
+  .uix-alert-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .uix-alert-title {
+    display: block;
+  }
+}

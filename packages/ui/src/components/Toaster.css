@@ -1,0 +1,79 @@
+/* Toaster styles, shipped with the component.
+   A page that never imports Toaster never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-toaster {
+    position: fixed;
+    display: grid;
+    gap: var(--uix-gap-sm);
+    width: min(22rem, calc(100vw - 2 * var(--uix-space-4)));
+    z-index: var(--uix-z-toast);
+  }
+
+  .uix-toaster--bottom-right {
+    right: var(--uix-gap-lg);
+    bottom: var(--uix-gap-lg);
+  }
+
+  .uix-toaster--top-center {
+    top: var(--uix-gap-lg);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .uix-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--uix-gap-sm);
+    background: var(--uix-bg-surface);
+    border: 1px solid var(--uix-panel-border, var(--uix-border-subtle));
+    border-left: 4px solid var(--uix-info);
+    border-radius: var(--uix-radius-m);
+    box-shadow: var(--uix-shadow-2);
+    padding: var(--uix-gap-md) var(--uix-gap-lg);
+  }
+
+  .uix-toast[data-severity="success"] {
+    border-left-color: var(--uix-status-ok);
+    background: var(--uix-container-success);
+  }
+
+  .uix-toast[data-severity="warning"] {
+    border-left-color: var(--uix-status-warn);
+    background: var(--uix-container-warning);
+  }
+
+  .uix-toast[data-severity="danger"] {
+    border-left-color: var(--uix-status-danger);
+    background: var(--uix-container-danger);
+  }
+
+  .uix-toast-title {
+    display: block;
+  }
+
+  .uix-toast-description {
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-200);
+  }
+
+  .uix-toast-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--uix-text-secondary);
+    cursor: pointer;
+    padding: var(--uix-gap-xs);
+  }
+
+  .uix-toast-close:hover {
+    color: var(--uix-text-primary);
+  }
+
+  .uix-toast-close:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+  }
+}

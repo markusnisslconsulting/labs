@@ -1,0 +1,49 @@
+/* Slider styles, shipped with the component.
+   A page that never imports Slider never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-range {
+    accent-color: var(--uix-accent);
+    width: 100%;
+    max-width: 24rem;
+    cursor: pointer;
+  }
+
+  .uix-range:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .uix-slider-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    max-width: 24rem;
+  }
+
+  .uix-slider-value {
+    font-size: var(--uix-font-size-200);
+    color: var(--uix-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .uix-slider {
+    display: grid;
+    gap: var(--uix-gap-sm);
+    max-width: 24rem;
+  }
+
+  .uix-slider-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .uix-slider-value {
+    font-size: var(--uix-font-size-200);
+    color: var(--uix-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+}

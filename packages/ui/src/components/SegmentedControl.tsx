@@ -1,16 +1,26 @@
-import type { ReactNode } from "react";
+import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
+import { cx } from "../cx";
+import "./SegmentedControl.css";
 export interface SegmentedOption {
   value: string;
   label: ReactNode;
 }
 
-export interface SegmentedControlProps {
+interface SegmentedControlOwnProps {
   label: string;
   options: SegmentedOption[];
   value: string;
   onChange: (value: string) => void;
 }
+
+/**
+ * Accepts every attribute of `<div>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type SegmentedControlProps = SegmentedControlOwnProps &
+  Omit<ComponentPropsWithoutRef<"div">, keyof SegmentedControlOwnProps>;
 
 /**
  * Exclusive single choice, visible at a glance.
@@ -26,9 +36,16 @@ export function SegmentedControl({
   options,
   value,
   onChange,
+  className,
+  ...rest
 }: SegmentedControlProps) {
   return (
-    <div className="uix-segmented" role="group" aria-label={label}>
+    <div
+      className={cx("uix-segmented", className)}
+      role="group"
+      aria-label={label}
+      {...rest}
+    >
       {options.map((option) => (
         <button
           key={option.value}

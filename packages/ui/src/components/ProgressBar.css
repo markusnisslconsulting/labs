@@ -1,0 +1,52 @@
+/* ProgressBar styles, shipped with the component.
+   A page that never imports ProgressBar never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-progress {
+    display: grid;
+    gap: var(--uix-gap-sm);
+    max-width: 24rem;
+  }
+
+  .uix-progress-label {
+    font-size: 0.92rem;
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-progress-track {
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--uix-bg-subtle);
+    overflow: hidden;
+  }
+
+  .uix-progress-fill {
+    display: block;
+    height: 100%;
+    background: var(--uix-accent);
+    transition: width 200ms ease;
+  }
+
+  .uix-progress-track.indeterminate .uix-progress-fill {
+    width: 40%;
+    animation: uix-indeterminate 1.2s ease-in-out infinite;
+  }
+
+  @keyframes uix-indeterminate {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(350%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .uix-progress-track.indeterminate .uix-progress-fill {
+      animation: none;
+      transform: scaleX(0.3);
+    }
+  }
+}

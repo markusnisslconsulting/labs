@@ -1,12 +1,16 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { useId, type ChangeEvent } from "react";
 
+import { cx } from "../cx";
+import "./_choice.css";
+import "./RadioGroup.css";
 export interface RadioOption {
   value: string;
   label: string;
   disabled?: boolean;
 }
 
-export interface RadioGroupProps {
+interface RadioGroupOwnProps {
   name: string;
   legend: string;
   options: RadioOption[];
@@ -15,6 +19,14 @@ export interface RadioGroupProps {
   onChange?: (value: string) => void;
   disabled?: boolean;
 }
+
+/**
+ * Accepts every attribute of `<fieldset>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type RadioGroupProps = RadioGroupOwnProps &
+  Omit<ComponentPropsWithoutRef<"fieldset">, keyof RadioGroupOwnProps>;
 
 /**
  * Radio group as a `fieldset` with a real `legend` — the platform's
@@ -28,12 +40,18 @@ export function RadioGroup({
   value,
   onChange,
   disabled,
+  className,
+  ...rest
 }: RadioGroupProps) {
   const isControlled = value !== undefined;
   const baseId = useId();
 
   return (
-    <fieldset className="uix-radiogroup" disabled={disabled}>
+    <fieldset
+      className={cx("uix-radiogroup", className)}
+      disabled={disabled}
+      {...rest}
+    >
       <legend className="uix-legend">{legend}</legend>
       {options.map((option) => {
         const id = `${baseId}-${option.value}`;

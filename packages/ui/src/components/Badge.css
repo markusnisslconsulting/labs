@@ -1,0 +1,33 @@
+/* Badge styles, shipped with the component.
+   A page that never imports Badge never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: var(--uix-chip-bg, var(--uix-bg-subtle));
+    color: var(--uix-chip-fg, var(--uix-text-secondary));
+  }
+
+  .uix-badge[data-tone="accent"] {
+    background: var(--uix-accent);
+    color: var(--uix-paper);
+  }
+
+  .uix-badge[data-tone="success"] {
+    background: none;
+    color: var(--uix-status-ok);
+    border: 1px solid currentColor;
+  }
+
+  .uix-badge[data-tone="danger"] {
+    background: none;
+    color: var(--uix-status-danger);
+    border: 1px solid currentColor;
+  }
+}

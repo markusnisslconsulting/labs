@@ -5,45 +5,127 @@ Welcome to the component workbench for the labs at
 scrapbook of one-off demos; it is the design system those demos are
 built from, reviewed in isolation.
 
+Everything this page claims is enforced by a test. That is the point:
+a design system is persuasive exactly as far as its promises are
+executable, and prose is not a guarantee.
+
 ## The token hierarchy
 
-Three tiers, each with one job. Components bind only to the top two;
-a product rebrands by overriding the semantic layer in one file.
+Three tiers, each with one job.
 
-- **Primitive** — raw values, no opinion: the palette, radii and
-  spacing scale. Never referenced by components directly.
+- **Primitive** — raw values, no opinion: the palette, radii, spacing,
+  type and motion scales. No component may name a primitive **colour**;
+  colour is what themes and brands remap, so naming one escapes both.
+  The spacing, radius and type scales are shared and may be used
+  directly. A test reads the component stylesheets and fails on a
+  colour primitive, so the rule is checked where it actually breaks
+  rather than in the registry's own declarations.
 - **Semantic** — intent: `--uix-text-primary`, `--uix-bg-page`,
-  `--uix-accent`, `--uix-status-ok`. This is the layer a product
-  overrides to rebrand without forking the system.
-- **Component** — per-part bindings: `--uix-button-bg`,
-  `--uix-chip-active-bg`, `--uix-panel-radius`. What a product may
-  theme on one component without touching any other.
+  `--uix-accent`, `--uix-status-ok`. This is the only layer a brand
+  touches. `--uix-ink` and `--uix-paper` name the two ends of the
+  neutral ramp for the current theme, so a component can shade a fill
+  by mixing toward them and get the right result on light and dark
+  without naming either colour.
+- **Component** — per-part override slots: `--uix-button-accent-bg`,
+  `--uix-chip-active-bg`, `--uix-panel-radius`. These are deliberately
+  **not declared** anywhere. Each is referenced as
+  `var(--uix-button-accent-bg, var(--uix-accent))`, so the slot exists
+  as an override point and costs nothing until something fills it. It
+  is why the tier can grow to cover every component without the
+  stylesheet growing with it.
 
-The machine-readable registry lives in `src/tokens.registry.ts`, and
-a parity test fails the build when the registry and the CSS drift
-apart — so code generators and AI assistants can consume tokens
-without parsing stylesheets.
+`src/tokens.registry.ts` is the machine-readable counterpart — name,
+value, tier, intent, and an optional `deprecated` note mirroring
+DTCG's `$deprecated`. A parity test fails the build when the registry
+and the CSS disagree, in either direction.
 
-## The parts
+## Brands
 
-- **Components** — the accessible primitives: `Button`, `Chip`,
-  `StatusPill`, `Panel`, `SearchInput`. Each documents its keyboard
-  behaviour and what assistive technology hears.
-- **Demos** — they live on the labs site, not in this workbench:
-  product compositions are the product's own code, built FROM these
-  primitives.
+A brand is data, not a stylesheet edit. One file under
+`styles/brands/`, containing only semantic overrides, imported from
+`styles.css`. Adding a brand touches no core file, which is the
+property that makes multi-brand scale — brands cannot collide in a
+shared file.
+
+`ocean` overrides exactly one token, `--uix-accent`. Everything that
+should follow the accent already does: `--uix-accent-soft` mixes from
+it and `--uix-focus-ring` aliases it, so a new brand cannot forget
+them. A test asserts that a brand file declares nothing but semantic
+tokens.
+
+Switch brand, theme and density from the toolbar above; each is an
+independent axis on the root element (`data-brand`, `data-theme`,
+`data-density`) rather than a separate build.
+
+## Density
+
+`data-density="compact"` sets one multiplier, and the semantic
+`--uix-gap-*` roles carry it into padding, gaps and margins alike — not
+only the inside of controls. At the default density they resolve to the
+raw scale exactly, so cozy rendering is unchanged.
+
+## CSS ships with the component
+
+There is no single stylesheet to import. `styles.css` is the global
+floor and nothing more: the token tiers, the brands, and element
+defaults. Every component imports its own CSS, so a page that renders
+a `Badge` downloads `Badge.css` and nothing else.
+
+That works because `styles.css` declares the cascade order once:
+
+```css
+@layer tokens, base, components, overrides;
+```
+
+A component stylesheet arriving late — in a lazily loaded route chunk —
+still lands in `@layer components`. It cannot out-rank the tokens, and
+it cannot beat a product's `overrides`, whatever order the network
+happens to deliver. Without that declaration, split CSS would be
+decided by load order, which is the kind of bug that only reproduces on
+a cold cache.
+
+Import per component to keep the benefit:
+
+```ts
+import { Button } from "@labs/ui/components/Button";
+```
+
+The barrel (`@labs/ui`) re-exports everything and is convenient, but a
+CSS import is a side effect, so the barrel pulls every component's
+styles. Use it for prototypes, not for pages you measure.
+
+## The component API
+
+Every component takes the attributes of the element it renders.
+`className` **merges** with the component's own class rather than
+replacing it, and everything else lands on the root, so `id`,
+`data-*`, `aria-*`, event handlers and refs all work. Base UI roots
+keep their function form of `className` too.
+
+The one exception is `Tooltip`, which renders no element of its own —
+its trigger is the caller's element, so there is nothing to pass
+attributes to. That is documented on the component.
 
 ## Accessibility
 
-The a11y addon checks every story with `test: "error"` — a finding
-fails the story. The test runner replays all stories headless in CI,
-so violations block deploys instead of shipping. Interaction tests
-assert semantics directly: a disabled button keeps its accessible
-name, a filter chip toggles `aria-pressed`, a panel is reachable as
-a named region.
+The a11y addon runs with `test: "error"`, and the test runner replays
+every story headless in CI with axe injected, failing the run on a
+violation. Stories opt out per story with `parameters.a11y.disable`
+and narrow rules with `parameters.a11y.config.rules` — the same shape
+the panel reads, so CI and the panel never disagree.
+
+Interaction tests assert semantics directly: a filter chip toggles
+`aria-pressed`, a panel is reachable as a named region, a disabled
+button keeps its accessible name. Colour is never the only channel —
+`StatusPill` puts the state in words and leaves the dot decorative.
+
+`Button`'s `loading` state uses `aria-disabled`, not the native
+attribute: a disabled button leaves the tab order, so a user tabbing a
+form would lose their place the moment a button started loading.
 
 ## Where to start
 
-Open **Foundations / Tokens** to see all three tiers, then
-**Components / Button** for a full state matrix, then any entry under
-**Demos** — each links back to the article it belongs to.
+Open **Foundations / Tokens** for all three tiers, then
+**Components / Button** for a full state matrix. Flip the brand and
+theme toolbars on any story — that is the whole multi-brand mechanism,
+visible.

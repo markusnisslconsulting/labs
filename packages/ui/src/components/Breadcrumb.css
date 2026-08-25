@@ -1,0 +1,35 @@
+/* Breadcrumb styles, shipped with the component.
+   A page that never imports Breadcrumb never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-sm);
+    font-size: 0.92rem;
+  }
+
+  .uix-breadcrumb li:not(:last-child)::after {
+    content: "/";
+    margin-left: var(--uix-gap-sm);
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-breadcrumb a {
+    color: var(--uix-accent);
+    text-decoration: none;
+  }
+
+  .uix-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .uix-breadcrumb [aria-current="page"] {
+    color: var(--uix-text-primary);
+  }
+}

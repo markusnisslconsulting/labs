@@ -1,0 +1,22 @@
+/* SearchInput styles, shipped with the component.
+   A page that never imports SearchInput never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-search {
+    flex: 1 1 14rem;
+    max-width: 22rem;
+    padding: var(--uix-gap-sm) var(--uix-gap-lg);
+    border: 1px solid var(--uix-search-border, var(--uix-border-subtle));
+    border-radius: 999px;
+    background: var(--uix-bg-surface);
+    color: var(--uix-text-primary);
+    font: inherit;
+  }
+
+  .uix-search:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 1px;
+  }
+}

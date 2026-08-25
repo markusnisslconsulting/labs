@@ -1,6 +1,9 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, MouseEvent, ReactNode } from "react";
+
+import { cx } from "../cx";
 import { Spinner } from "./Spinner";
 
+import "./Button.css";
 type Variant = "solid" | "outline" | "ghost";
 type Tone = "accent" | "neutral";
 type Size = "sm" | "md" | "lg";
@@ -44,17 +47,30 @@ export function Button({
   loading = false,
   disabled,
   children,
+  className,
+  onClick,
   ...rest
 }: ButtonProps) {
+  // `loading` uses aria-disabled, not the native attribute: a disabled
+  // button leaves the tab order, so a user tabbing through a form loses
+  // their place the moment a button starts loading. This keeps it
+  // focusable and still refuses the activation.
+  const busy = loading && !disabled;
   return (
     <button
       type="button"
-      className="uix-button"
+      className={cx("uix-button", className)}
       data-variant={variant}
       data-tone={tone}
       data-size={size}
       aria-busy={loading || undefined}
-      disabled={disabled || loading}
+      aria-disabled={busy || undefined}
+      disabled={disabled}
+      onClick={
+        busy
+          ? (event: MouseEvent<HTMLButtonElement>) => event.preventDefault()
+          : onClick
+      }
       {...rest}
     >
       {loading ? (

@@ -1,6 +1,10 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { NumberField as BaseNumberField } from "@base-ui-components/react/number-field";
 
-export interface NumberFieldProps {
+import { cx } from "../cx";
+import "./_field.css";
+import "./NumberField.css";
+interface NumberFieldOwnProps {
   label: string;
   min?: number;
   max?: number;
@@ -9,6 +13,14 @@ export interface NumberFieldProps {
   value?: number;
   onValueChange?: (value: number | null) => void;
 }
+
+/**
+ * Accepts every attribute of `<div>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type NumberFieldProps = NumberFieldOwnProps &
+  Omit<ComponentPropsWithoutRef<"div">, keyof NumberFieldOwnProps>;
 
 /**
  * Numeric input with stepper buttons on Base UI's number field.
@@ -27,9 +39,11 @@ export function NumberField({
   defaultValue,
   value,
   onValueChange,
+  className,
+  ...rest
 }: NumberFieldProps) {
   return (
-    <div className="uix-field">
+    <div className={cx("uix-field", className)} {...rest}>
       <label className="uix-field-label">{label}</label>
       <BaseNumberField.Root
         value={value}

@@ -1,7 +1,10 @@
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
-import { useId, type ReactNode } from "react";
+import { useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
-export interface DialogProps {
+import { cxState } from "../cx";
+
+import "./Dialog.css";
+interface DialogOwnProps {
   open: boolean;
   onOpenChange?: (open: boolean) => void;
   title: string;
@@ -10,6 +13,13 @@ export interface DialogProps {
   /** Footer slot, typically action buttons. */
   footer?: ReactNode;
 }
+
+/**
+ * Extra props land on the popup — the dialog surface itself, since the
+ * root renders no element of its own.
+ */
+export type DialogProps = DialogOwnProps &
+  Omit<ComponentPropsWithoutRef<typeof BaseDialog.Popup>, keyof DialogOwnProps>;
 
 /**
  * Modal dialog on Base UI's dialog root.
@@ -27,6 +37,8 @@ export function Dialog({
   description,
   children,
   footer,
+  className,
+  ...rest
 }: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
@@ -38,7 +50,10 @@ export function Dialog({
     >
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className="uix-dialog-backdrop" />
-        <BaseDialog.Popup className="uix-dialog">
+        <BaseDialog.Popup
+          className={cxState("uix-dialog", className)}
+          {...rest}
+        >
           <BaseDialog.Title className="uix-dialog-title" id={titleId}>
             {title}
           </BaseDialog.Title>
@@ -58,7 +73,7 @@ export function Dialog({
   );
 }
 
-export interface AlertDialogProps {
+interface AlertDialogOwnProps {
   open: boolean;
   onOpenChange?: (open: boolean) => void;
   title: string;
@@ -66,6 +81,13 @@ export interface AlertDialogProps {
   children?: ReactNode;
   footer?: ReactNode;
 }
+
+/** Extra props land on the popup, as with Dialog. */
+export type AlertDialogProps = AlertDialogOwnProps &
+  Omit<
+    ComponentPropsWithoutRef<typeof BaseDialog.Popup>,
+    keyof AlertDialogOwnProps
+  >;
 
 /**
  * The confirm pattern: like Dialog, but `role="alertdialog"`, no
@@ -78,6 +100,8 @@ export function AlertDialog({
   description,
   children,
   footer,
+  className,
+  ...rest
 }: AlertDialogProps) {
   const titleId = useId();
   const descriptionId = useId();
@@ -91,10 +115,11 @@ export function AlertDialog({
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className="uix-dialog-backdrop" />
         <BaseDialog.Popup
-          className="uix-dialog"
+          className={cxState("uix-dialog", className)}
           role="alertdialog"
           aria-labelledby={titleId}
           aria-describedby={description ? descriptionId : undefined}
+          {...rest}
         >
           <BaseDialog.Title className="uix-dialog-title" id={titleId}>
             {title}

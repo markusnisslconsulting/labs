@@ -12,6 +12,12 @@ on:
 permissions:
   contents: read
 
+# Three pushes in five minutes used to run three full pipelines to
+# completion. Only the newest commit on a ref is worth testing.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest

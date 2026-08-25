@@ -1,11 +1,21 @@
-import type { ReactNode } from "react";
+import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
+import { cx } from "../cx";
+import "./Banner.css";
 type Severity = "info" | "success" | "warning" | "danger";
 
-export interface BannerProps {
+interface BannerOwnProps {
   severity: Severity;
   children: ReactNode;
 }
+
+/**
+ * Accepts every attribute of `<div>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type BannerProps = BannerOwnProps &
+  Omit<ComponentPropsWithoutRef<"div">, keyof BannerOwnProps>;
 
 const roleFor: Record<Severity, "status" | "alert"> = {
   info: "status",
@@ -19,12 +29,18 @@ const roleFor: Record<Severity, "status" | "alert"> = {
  * Same role semantics as Alert; the difference is placement and
  * weight, not behaviour.
  */
-export function Banner({ severity, children }: BannerProps) {
+export function Banner({
+  severity,
+  children,
+  className,
+  ...rest
+}: BannerProps) {
   return (
     <div
-      className="uix-banner"
+      className={cx("uix-banner", className)}
       data-severity={severity}
       role={roleFor[severity]}
+      {...rest}
     >
       {children}
     </div>

@@ -1,0 +1,26 @@
+/* Shared choice styles.
+   Imported by every component that renders these classes, so the
+   rules arrive once however many of them a page uses. */
+
+@layer components {
+  .uix-check {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    cursor: pointer;
+  }
+
+  .uix-radio-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .uix-radiogroup:disabled .uix-check {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}

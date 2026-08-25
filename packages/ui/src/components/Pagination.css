@@ -1,0 +1,21 @@
+/* Pagination styles, shipped with the component.
+   A page that never imports Pagination never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+  }
+
+  .uix-pagination-ellipsis {
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-pagination [aria-current="page"] {
+    cursor: default;
+  }
+}

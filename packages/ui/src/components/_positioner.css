@@ -1,0 +1,9 @@
+/* Shared positioner styles.
+   Imported by every component that renders these classes, so the
+   rules arrive once however many of them a page uses. */
+
+@layer components {
+  .uix-menu-positioner {
+    z-index: var(--uix-z-dropdown);
+  }
+}

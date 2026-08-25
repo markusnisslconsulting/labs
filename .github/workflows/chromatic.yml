@@ -10,6 +10,12 @@ on:
 permissions:
   contents: read
 
+# Snapshots are the unit of cost, and a superseded build's snapshots are
+# wasted. Cancelling in progress is the single largest saving available.
+concurrency:
+  group: chromatic-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   chromatic:
     runs-on: ubuntu-latest
@@ -36,9 +42,22 @@ jobs:
       - name: Build Storybook
         run: pnpm exec nx run ui:build-storybook --skip-nx-cache
 
-      # Direktes CLI aus dem Repo (18.x) — die Action bundelt eine
-      # aeltere Version.
-      - name: Publish to Chromatic
+      # The CLI straight from the repo (18.x); the action bundles an
+      # older version.
+      #
+      # On a pull request a visual change BLOCKS: --exit-zero-on-changes is
+      # omitted, so the job is red until the diff is accepted in Chromatic.
+      # That is the difference between a visual gate and a visual report.
+      - name: Publish to Chromatic (gate)
+        if: github.event_name == 'pull_request'
+        run: pnpm exec chromatic --storybook-build-dir dist/packages/ui-storybook --only-changed
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+
+      # On main the build only refreshes the baseline, so an accepted
+      # change must not fail the deploy.
+      - name: Publish to Chromatic (baseline)
+        if: github.event_name != 'pull_request'
         run: pnpm exec chromatic --storybook-build-dir dist/packages/ui-storybook --only-changed --exit-zero-on-changes
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

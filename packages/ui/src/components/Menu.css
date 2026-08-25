@@ -1,0 +1,45 @@
+/* Menu styles, shipped with the component.
+   A page that never imports Menu never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-menu {
+    min-width: 12rem;
+    background: var(--uix-bg-surface);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-m);
+    box-shadow: var(--uix-shadow-2);
+    padding: var(--uix-gap-sm);
+    max-height: min(20rem, var(--uix-space-6) * 8);
+    overflow: auto;
+  }
+
+  .uix-menu-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: var(--uix-gap-sm) var(--uix-gap-md);
+    border: none;
+    border-radius: var(--uix-radius-s);
+    background: none;
+    color: var(--uix-text-primary);
+    font-size: var(--uix-font-size-200);
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .uix-menu-item:hover,
+  .uix-menu-item[data-highlighted] {
+    background: var(--uix-bg-subtle);
+  }
+
+  .uix-menu-item[data-danger] {
+    color: var(--uix-status-danger);
+  }
+
+  .uix-menu-item:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: -2px;
+  }
+}

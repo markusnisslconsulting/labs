@@ -1,4 +1,5 @@
-import { Button, Panel } from "@labs/ui";
+import { Button } from "@labs/ui/components/Button";
+import { Panel } from "@labs/ui/components/Panel";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { reduceRow, type RowEvent, type RowState } from "@labs/undo-machine";
 const START_UNITS = 800;

@@ -1,5 +1,8 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
+import { cx } from "../cx";
+
+import "./IconButton.css";
 type Variant = "solid" | "outline" | "ghost";
 type Size = "sm" | "md";
 
@@ -29,6 +32,7 @@ export function IconButton({
   children,
   variant = "ghost",
   size = "md",
+  className,
   ...rest
 }: IconButtonProps) {
   const variantClass =
@@ -40,7 +44,7 @@ export function IconButton({
   return (
     <button
       type="button"
-      className={`uix-iconbutton ${variantClass}`}
+      className={cx("uix-iconbutton", variantClass, className)}
       data-size={size}
       aria-label={label}
       {...rest}

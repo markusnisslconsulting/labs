@@ -1,0 +1,35 @@
+/* StatusPill styles, shipped with the component.
+   A page that never imports StatusPill never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    font-size: var(--uix-font-size-200);
+    color: var(--uix-pill-fg, var(--uix-text-primary));
+  }
+
+  .uix-pill::before {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  .uix-pill[data-tone="ok"] {
+    color: var(--uix-pill-ok, var(--uix-status-ok));
+  }
+
+  .uix-pill[data-tone="warn"] {
+    color: var(--uix-pill-warn, var(--uix-status-warn));
+  }
+
+  .uix-pill[data-tone="off"] {
+    color: var(--uix-pill-off, var(--uix-status-off));
+  }
+}

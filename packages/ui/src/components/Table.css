@@ -1,0 +1,33 @@
+/* Table styles, shipped with the component.
+   A page that never imports Table never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-table-wrap {
+    overflow-x: auto;
+  }
+
+  .uix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--uix-font-size-200);
+  }
+
+  .uix-table th {
+    text-align: start;
+    font-weight: var(--uix-font-weight-bold);
+    color: var(--uix-text-secondary);
+    border-bottom: 1px solid var(--uix-border-subtle);
+    padding: var(--uix-gap-sm) var(--uix-gap-md);
+  }
+
+  .uix-table td {
+    padding: var(--uix-gap-sm) var(--uix-gap-md);
+    border-bottom: 1px solid var(--uix-border-subtle);
+  }
+
+  .uix-table tbody tr:hover td {
+    background: var(--uix-bg-subtle);
+  }
+}

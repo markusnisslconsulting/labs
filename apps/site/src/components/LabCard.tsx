@@ -1,4 +1,4 @@
-import { Chip } from "@labs/ui";
+import { Chip } from "@labs/ui/components/Chip";
 
 export interface LabCardProps {
   title: string;

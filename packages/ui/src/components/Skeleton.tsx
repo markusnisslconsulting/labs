@@ -1,9 +1,21 @@
-export interface SkeletonProps {
+import type { ComponentPropsWithoutRef } from "react";
+import { cx } from "../cx";
+import "./Skeleton.css";
+
+interface SkeletonOwnProps {
   /** Text-line placeholder by default; circle for avatars. */
   shape?: "line" | "circle" | "block";
   width?: string;
   height?: string;
 }
+
+/**
+ * Accepts every attribute of `<span>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type SkeletonProps = SkeletonOwnProps &
+  Omit<ComponentPropsWithoutRef<"span">, keyof SkeletonOwnProps>;
 
 /**
  * Loading placeholder.
@@ -15,12 +27,19 @@ export interface SkeletonProps {
  * Performance: the shimmer is a `transform` keyframe on a
  * pseudo-element — compositor only, one layer.
  */
-export function Skeleton({ shape = "line", width, height }: SkeletonProps) {
+export function Skeleton({
+  shape = "line",
+  width,
+  height,
+  className,
+  ...rest
+}: SkeletonProps) {
   return (
     <span
-      className={`uix-skeleton uix-skeleton--${shape}`}
+      className={cx(`uix-skeleton uix-skeleton--${shape}`, className)}
       style={{ width, height }}
       aria-hidden
+      {...rest}
     />
   );
 }

@@ -1,0 +1,35 @@
+/* Avatar styles, shipped with the component.
+   A page that never imports Avatar never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--uix-bg-subtle);
+    color: var(--uix-text-primary);
+    font-weight: 700;
+    object-fit: cover;
+  }
+
+  .uix-avatar[data-size="sm"] {
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: 0.72rem;
+  }
+
+  .uix-avatar[data-size="md"] {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.95rem;
+  }
+
+  .uix-avatar[data-size="lg"] {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.3rem;
+  }
+}

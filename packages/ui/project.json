@@ -1,13 +1,29 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "ui",
-  "tags": ["scope:shared", "type:ui"],
+  "tags": [
+    "scope:shared",
+    "type:ui"
+  ],
   "targets": {
-    "typecheck": {
+    "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsc -p packages/ui/tsconfig.json --noEmit"
-      }
+        "command": "vite build --config packages/ui/vite.config.ts"
+      },
+      "outputs": [
+        "{workspaceRoot}/dist/packages/ui"
+      ]
+    },
+    "build-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "storybook build -c packages/ui/.storybook --output-dir dist/packages/ui-storybook",
+        "cwd": "."
+      },
+      "outputs": [
+        "{workspaceRoot}/dist/packages/ui-storybook"
+      ]
     },
     "lint": {
       "executor": "nx:run-commands",
@@ -21,19 +37,25 @@
         "command": "storybook dev -c packages/ui/.storybook -p 4400"
       }
     },
-    "build-storybook": {
+    "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "storybook build -c packages/ui/.storybook --output-dir dist/packages/ui-storybook",
-        "cwd": "."
-      },
-      "outputs": ["{workspaceRoot}/dist/packages/ui-storybook"]
+        "command": "vitest run packages/ui/test --root ."
+      }
     },
     "test-storybook": {
-      "dependsOn": ["build-storybook"],
+      "dependsOn": [
+        "build-storybook"
+      ],
       "executor": "nx:run-commands",
       "options": {
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4411 --silent\" \"wait-on tcp:127.0.0.1:4411 && pnpm exec test-storybook --url http://127.0.0.1:4411 --config-dir packages/ui/.storybook\""
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p packages/ui/tsconfig.json --noEmit"
       }
     },
     "visual-serve": {
@@ -42,18 +64,22 @@
         "command": "http-server dist/packages/ui-storybook -p 4520 --silent"
       }
     },
-    "visual-update": {
-      "dependsOn": ["build-storybook"],
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "pnpm exec playwright test --config visual/playwright.config.ts --update-snapshots"
-      }
-    },
     "visual-test": {
-      "dependsOn": ["build-storybook"],
+      "dependsOn": [
+        "build-storybook"
+      ],
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec playwright test --config visual/playwright.config.ts"
+      }
+    },
+    "visual-update": {
+      "dependsOn": [
+        "build-storybook"
+      ],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec playwright test --config visual/playwright.config.ts --update-snapshots"
       }
     }
   }

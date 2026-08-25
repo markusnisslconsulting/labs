@@ -1,119 +1,127 @@
 /* Semantic tokens: intent, not appearance. Products rebrand by
    overriding these — never the primitives, never the components. */
 
-:root {
-  /* Text */
-  --uix-text-primary: var(--uix-navy-900);
-  --uix-text-secondary: var(--uix-slate-600);
-  --uix-text-on-accent: var(--uix-white);
+@layer tokens {
+  :root {
+    /* Text */
+    --uix-text-primary: var(--uix-navy-900);
+    --uix-text-secondary: var(--uix-slate-600);
+    --uix-text-on-accent: var(--uix-white);
 
-  /* Surfaces */
-  --uix-bg-page: var(--uix-grey-25);
-  --uix-bg-surface: var(--uix-white);
-  --uix-bg-subtle: var(--uix-grey-100);
+    /* Surfaces */
+    --uix-bg-page: var(--uix-grey-25);
+    --uix-bg-surface: var(--uix-white);
+    --uix-bg-subtle: var(--uix-grey-100);
 
-  /* Lines */
-  --uix-border-subtle: var(--uix-grey-300);
-  --uix-border-strong: var(--uix-slate-600);
+    /* Lines */
+    --uix-border-subtle: var(--uix-grey-300);
+    --uix-border-strong: var(--uix-slate-600);
 
-  /* Intent */
-  --uix-accent: var(--uix-red-600);
-  --uix-accent-soft: rgba(179, 18, 52, 0.16);
-  --uix-focus-ring: var(--uix-accent);
-  --uix-status-ok: var(--uix-green-700);
-  --uix-status-warn: var(--uix-amber-700);
-  --uix-status-off: var(--uix-slate-600);
-  --uix-status-danger: var(--uix-red-700);
-  --uix-info: var(--uix-navy-900);
-  --uix-opacity-disabled: 0.55;
+    /* Intent */
+    --uix-accent: var(--uix-red-600);
+    --uix-accent-soft: color-mix(in srgb, var(--uix-accent) 16%, transparent);
+    --uix-focus-ring: var(--uix-accent);
+    --uix-status-ok: var(--uix-green-700);
+    --uix-status-warn: var(--uix-amber-700);
+    --uix-status-off: var(--uix-slate-600);
+    --uix-status-danger: var(--uix-red-700);
+    --uix-info: var(--uix-navy-900);
+    --uix-opacity-disabled: 0.55;
 
-  /* Typography roles */
-  --uix-text-body: var(--uix-font-size-300);
-  --uix-text-heading: var(--uix-font-size-500);
-  --uix-text-caption: var(--uix-font-size-100);
+    /* Density-scaled spacing. Components consume these, never the raw
+     scale, so data-density="compact" tightens gaps and margins too and
+     not merely the inside of controls. At the default density of 1 they
+     resolve to the scale exactly, so cozy rendering is unchanged. */
+    --uix-gap-xs: calc(var(--uix-space-1) * var(--uix-density));
+    --uix-gap-sm: calc(var(--uix-space-2) * var(--uix-density));
+    --uix-gap-md: calc(var(--uix-space-3) * var(--uix-density));
+    --uix-gap-lg: calc(var(--uix-space-4) * var(--uix-density));
+    --uix-gap-xl: calc(var(--uix-space-5) * var(--uix-density));
+    --uix-gap-2xl: calc(var(--uix-space-6) * var(--uix-density));
 
-  /* Status container tints (soft surfaces per severity) */
-  --uix-container-info: color-mix(
-    in srgb,
-    var(--uix-info) 10%,
-    var(--uix-bg-surface)
-  );
-  --uix-container-success: color-mix(
-    in srgb,
-    var(--uix-status-ok) 12%,
-    var(--uix-bg-surface)
-  );
-  --uix-container-warning: color-mix(
-    in srgb,
-    var(--uix-status-warn) 14%,
-    var(--uix-bg-surface)
-  );
-  --uix-container-danger: color-mix(
-    in srgb,
-    var(--uix-status-danger) 10%,
-    var(--uix-bg-surface)
-  );
-}
+    /* The two ends of the neutral ramp for this theme. Components mix
+     toward these to shade a fill, so a hover deepens on light and
+     brightens on dark without either naming a palette value. */
+    --uix-ink: var(--uix-navy-900);
+    --uix-paper: var(--uix-white);
 
-/* Z-index scale: eine Achse, dokumentiert. */
-:root {
-  --uix-z-dropdown: 100;
-  --uix-z-popover: 150;
-  --uix-z-modal: 200;
-  --uix-z-toast: 300;
-  --uix-z-tooltip: 400;
-}
+    /* An inverted surface (dark chip on light, light chip on dark).
+     Defined once: both themes want ink-on-paper flipped. */
+    --uix-surface-inverse: var(--uix-ink);
+    --uix-text-on-inverse: var(--uix-paper);
 
-/* Dark: Schatten wirken als Kanten, nicht als Wolken. */
-[data-theme="dark"],
-body.theme-dark {
-  --uix-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --uix-shadow-2: 0 8px 20px rgba(0, 0, 0, 0.45);
-  --uix-shadow-3: 0 18px 45px rgba(0, 0, 0, 0.6);
-}
+    /* Typography roles */
+    --uix-text-body: var(--uix-font-size-300);
+    --uix-text-heading: var(--uix-font-size-500);
+    --uix-text-caption: var(--uix-font-size-100);
 
-/* Density: one multiplier the components consume. Products set
-   data-density="compact" on a subtree for tighter chrome. */
-:root {
-  --uix-density: 1;
-}
+    /* Status container tints (soft surfaces per severity) */
+    --uix-container-info: color-mix(
+      in srgb,
+      var(--uix-info) 10%,
+      var(--uix-bg-surface)
+    );
+    --uix-container-success: color-mix(
+      in srgb,
+      var(--uix-status-ok) 12%,
+      var(--uix-bg-surface)
+    );
+    --uix-container-warning: color-mix(
+      in srgb,
+      var(--uix-status-warn) 14%,
+      var(--uix-bg-surface)
+    );
+    --uix-container-danger: color-mix(
+      in srgb,
+      var(--uix-status-danger) 10%,
+      var(--uix-bg-surface)
+    );
+  }
 
-[data-density="compact"] {
-  --uix-density: 0.72;
-}
+  /* Z-index scale: eine Achse, dokumentiert. */
+  :root {
+    --uix-z-dropdown: 100;
+    --uix-z-popover: 150;
+    --uix-z-modal: 200;
+    --uix-z-toast: 300;
+    --uix-z-tooltip: 400;
+  }
 
-/* Brand override: zweites Produkt-Theme, nur semantische Schicht.
-   data-brand="ocean" am html-Element aktiviert es. */
-[data-brand="ocean"] {
-  --uix-accent: var(--uix-blue-600);
-  --uix-accent-soft: rgba(29, 78, 216, 0.14);
-  --uix-focus-ring: var(--uix-blue-600);
-}
+  /* Dark: Schatten wirken als Kanten, nicht als Wolken. */
+  [data-theme="dark"] {
+    --uix-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --uix-shadow-2: 0 8px 20px rgba(0, 0, 0, 0.45);
+    --uix-shadow-3: 0 18px 45px rgba(0, 0, 0, 0.6);
+  }
 
-[data-brand="ocean"][data-theme="dark"],
-body.theme-dark {
-  --uix-accent: #7aa5f7;
-  --uix-focus-ring: #7aa5f7;
-}
+  /* Density: one multiplier the components consume. Products set
+     data-density="compact" on a subtree for tighter chrome. */
+  :root {
+    --uix-density: 1;
+  }
 
-/* Dark theme: the semantic layer remaps to the lighter primitives.
-   Component and primitive layers stay untouched. */
-[data-theme="dark"],
-body.theme-dark {
-  --uix-text-primary: var(--uix-grey-25);
-  --uix-text-secondary: var(--uix-slate-400);
-  --uix-text-on-accent: var(--uix-grey-900);
-  --uix-bg-page: var(--uix-grey-900);
-  --uix-bg-surface: var(--uix-grey-800);
-  --uix-bg-subtle: var(--uix-grey-700);
-  --uix-border-subtle: var(--uix-grey-700);
-  --uix-border-strong: var(--uix-slate-400);
-  --uix-accent: var(--uix-red-400);
-  --uix-accent-soft: rgba(255, 107, 133, 0.16);
-  --uix-focus-ring: var(--uix-red-400);
-  --uix-status-ok: var(--uix-green-400);
-  --uix-status-warn: var(--uix-amber-400);
-  --uix-status-danger: var(--uix-red-400);
-  --uix-status-off: var(--uix-slate-400);
-  --uix-info: var(--uix-slate-400);
+  [data-density="compact"] {
+    --uix-density: 0.72;
+  }
+
+  /* Dark theme: the semantic layer remaps to the lighter primitives.
+     Component and primitive layers stay untouched. */
+  [data-theme="dark"] {
+    --uix-text-primary: var(--uix-grey-25);
+    --uix-text-secondary: var(--uix-slate-400);
+    --uix-text-on-accent: var(--uix-grey-900);
+    --uix-bg-page: var(--uix-grey-900);
+    --uix-bg-surface: var(--uix-grey-800);
+    --uix-bg-subtle: var(--uix-grey-700);
+    --uix-border-subtle: var(--uix-grey-700);
+    --uix-border-strong: var(--uix-slate-400);
+    --uix-accent: var(--uix-red-400);
+    --uix-accent-soft: color-mix(in srgb, var(--uix-accent) 16%, transparent);
+    --uix-focus-ring: var(--uix-red-400);
+    --uix-status-ok: var(--uix-green-400);
+    --uix-status-warn: var(--uix-amber-400);
+    --uix-status-danger: var(--uix-red-400);
+    --uix-status-off: var(--uix-slate-400);
+    --uix-info: var(--uix-slate-400);
+  }
 }

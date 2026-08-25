@@ -1,8 +1,20 @@
-export interface SpinnerProps {
+import type { ComponentPropsWithoutRef } from "react";
+import { cx } from "../cx";
+import "./Spinner.css";
+
+interface SpinnerOwnProps {
   /** Announced via role="status"; changes re-announce politely. */
   label?: string;
   size?: "sm" | "md" | "lg";
 }
+
+/**
+ * Accepts every attribute of `<span>` in addition to the props below;
+ * `className` merges with the component's own class rather than
+ * replacing it, and the rest land on the root element.
+ */
+export type SpinnerProps = SpinnerOwnProps &
+  Omit<ComponentPropsWithoutRef<"span">, keyof SpinnerOwnProps>;
 
 /**
  * Waiting indicator.
@@ -13,9 +25,19 @@ export interface SpinnerProps {
  * Performance: pure `transform: rotate` keyframes — compositor only,
  * constant cost regardless of page complexity.
  */
-export function Spinner({ label = "Loading", size = "md" }: SpinnerProps) {
+export function Spinner({
+  label = "Loading",
+  size = "md",
+  className,
+  ...rest
+}: SpinnerProps) {
   return (
-    <span className="uix-spinner" data-size={size} role="status">
+    <span
+      className={cx("uix-spinner", className)}
+      data-size={size}
+      role="status"
+      {...rest}
+    >
       <span className="uix-visually-hidden">{label}</span>
       <span className="uix-spinner-wheel" aria-hidden />
     </span>

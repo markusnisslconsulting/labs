@@ -1,12 +1,4 @@
 import type { LabMeta } from "../types";
-import Demo from "./Demo";
-
-const WebMcpLabDemo = () => (
-  <section className="lab-demo">
-    <h2>The declared verb, running</h2>
-    <Demo />
-  </section>
-);
 
 export default {
   slug: "webmcp",
@@ -25,5 +17,5 @@ export default {
   },
   source:
     "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/webmcp/Demo.tsx",
-  demo: WebMcpLabDemo,
+  demo: () => import("./LabDemo"),
 } satisfies LabMeta;

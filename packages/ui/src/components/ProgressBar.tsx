@@ -1,12 +1,26 @@
+import type { ComponentPropsWithoutRef } from "react";
 import { Progress as BaseProgress } from "@base-ui-components/react/progress";
 
-export interface ProgressBarProps {
+import { cxState } from "../cx";
+import "./ProgressBar.css";
+interface ProgressBarOwnProps {
   /** Accessible name; also rendered as visible text. */
   label: string;
   /** Omit for an indeterminate bar. */
   value?: number;
   max?: number;
 }
+
+/**
+ * Accepts every prop of Base UI's BaseProgress.Root in addition to those below;
+ * `className` merges with the component's own class and the rest land
+ * on the root element.
+ */
+export type ProgressBarProps = ProgressBarOwnProps &
+  Omit<
+    ComponentPropsWithoutRef<typeof BaseProgress.Root>,
+    keyof ProgressBarOwnProps
+  >;
 
 /**
  * Progress on Base UI's progress root.
@@ -18,14 +32,22 @@ export interface ProgressBarProps {
  * Performance: the fill animates its width over a small track;
  * the indeterminate mode runs a transform keyframe — compositor only.
  */
-export function ProgressBar({ label, value, max = 100 }: ProgressBarProps) {
+export function ProgressBar({
+  label,
+  value,
+  max = 100,
+  className,
+  ...rest
+}: ProgressBarProps) {
   const indeterminate = value === undefined;
 
   return (
     <BaseProgress.Root
-      className="uix-progress"
+      className={cxState("uix-progress", className)}
       value={indeterminate ? null : value}
       max={max}
+
+      {...rest}
     >
       <BaseProgress.Label className="uix-progress-label">
         {label}

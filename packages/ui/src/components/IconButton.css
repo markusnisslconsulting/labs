@@ -1,0 +1,47 @@
+/* IconButton styles, shipped with the component.
+   A page that never imports IconButton never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-iconbutton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: var(--uix-radius-m);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--uix-text-primary);
+    cursor: pointer;
+  }
+
+  .uix-iconbutton[data-size="sm"] {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .uix-iconbutton:hover {
+    background: var(--uix-bg-subtle);
+  }
+
+  .uix-iconbutton--solid {
+    background: var(--uix-accent);
+    color: var(--uix-paper);
+  }
+
+  .uix-iconbutton--solid:hover {
+    background: color-mix(in srgb, var(--uix-accent) 90%, var(--uix-ink));
+  }
+
+  .uix-iconbutton--outline {
+    border-color: var(--uix-border-subtle);
+    background: var(--uix-bg-surface);
+  }
+
+  .uix-iconbutton:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+  }
+}

@@ -1,0 +1,11 @@
+/* Select styles, shipped with the component.
+   A page that never imports Select never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-select-chevron {
+    color: var(--uix-text-secondary);
+    pointer-events: none;
+  }
+}

@@ -1,21 +1,27 @@
 /*
- * @labs/ui stylesheet, in layers:
+ * @labs/ui — the global floor.
  *
- *   tokens/primitive.css   raw values (palette, radii, spacing)
- *   tokens/semantic.css    intent: text, surface, border, focus, status
- *   tokens/component.css   per-part theming surface (Button, Chip, ...)
- *   components.css          form/feedback/navigation components
- *   dialog-toast.css        dialog, toaster, skeleton
- *   base.css               element defaults shared by site and Storybook
- *   primitives.css         the .uix-* component classes
+ * This is everything a page pays for regardless of which components it
+ * renders: the token tiers and the element defaults. Component rules are
+ * NOT here — each component imports its own stylesheet, so a page that
+ * renders a Badge downloads Badge.css and nothing else.
  *
- * Components bind ONLY to semantic or component tokens. A product
- * rebrands by overriding the semantic layer — one file, no forks.
+ * The layer order is declared here, once, and it is the reason that
+ * works: a component stylesheet arriving late in a lazily loaded chunk
+ * still lands in @layer components and cannot out-rank the tokens or
+ * out-rank a product's overrides, whatever order the network delivers.
+ *
+ *   tokens      primitive + semantic values, and the brands
+ *   base        element defaults
+ *   components  every component stylesheet
+ *   overrides   reserved for the consuming product; always wins
+ *
+ * Adding a brand means adding a file under styles/brands/ and importing
+ * it below. No other file changes.
  */
+@layer tokens, base, components, overrides;
+
 @import "./styles/tokens/primitive.css";
 @import "./styles/tokens/semantic.css";
-@import "./styles/tokens/component.css";
+@import "./styles/brands/ocean.css";
 @import "./styles/base.css";
-@import "./styles/primitives.css";
-@import "./styles/components.css";
-@import "./styles/dialog-toast.css";

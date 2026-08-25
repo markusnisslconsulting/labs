@@ -1,0 +1,74 @@
+/* Shared field styles.
+   Imported by every component that renders these classes, so the
+   rules arrive once however many of them a page uses. */
+
+@layer components {
+  .uix-field {
+    display: grid;
+    gap: var(--uix-gap-sm);
+    max-width: 24rem;
+  }
+
+  .uix-field-label {
+    font-weight: 700;
+  }
+
+  .uix-field-row {
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    padding-top: var(--uix-field-pad-y, var(--uix-gap-sm));
+    padding-bottom: var(--uix-field-pad-y, var(--uix-gap-sm));
+    background: var(--uix-bg-surface);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-field-radius, var(--uix-radius-m));
+    padding: 0 var(--uix-gap-md);
+  }
+
+  .uix-field-row:focus-within {
+    border-color: var(--uix-border-strong);
+    box-shadow: 0 0 0 3px var(--uix-accent-soft);
+  }
+
+  .uix-field-row[data-invalid] {
+    border-color: var(--uix-status-danger);
+  }
+
+  .uix-field-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .uix-field-input:focus {
+    outline: none; /* the row carries the focus ring */
+  }
+
+  select.uix-field-input {
+    appearance: none;
+    padding-inline-end: var(--uix-gap-xl);
+    cursor: pointer;
+  }
+
+  .uix-field-adornment {
+    color: var(--uix-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .uix-field-hint,
+  .uix-field-error {
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  .uix-field-hint {
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-field-error {
+    color: var(--uix-status-danger);
+    font-weight: 700;
+  }
+}

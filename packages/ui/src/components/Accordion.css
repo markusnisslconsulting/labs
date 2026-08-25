@@ -1,0 +1,51 @@
+/* Accordion styles, shipped with the component.
+   A page that never imports Accordion never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-accordion-item {
+    border-bottom: 1px solid var(--uix-border-subtle);
+  }
+
+  .uix-accordion-heading {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .uix-accordion-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--uix-gap-md);
+    padding: var(--uix-gap-md) 0;
+    background: none;
+    border: none;
+    color: var(--uix-text-primary);
+    font-weight: 700;
+    cursor: pointer;
+    text-align: start;
+  }
+
+  .uix-accordion-trigger:hover {
+    color: var(--uix-accent);
+  }
+
+  .uix-accordion-chevron {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .uix-accordion-chevron-open {
+    display: none;
+  }
+
+  [data-panel-open] .uix-accordion-chevron-open {
+    display: inline;
+  }
+
+  [data-panel-open] .uix-accordion-chevron-closed {
+    display: none;
+  }
+}

@@ -1,0 +1,25 @@
+/* Tooltip styles, shipped with the component.
+   A page that never imports Tooltip never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-tooltip {
+    display: inline-flex;
+  }
+
+  .uix-tooltip-positioner {
+    z-index: 10;
+  }
+
+  .uix-tooltip-content {
+    background: var(--uix-text-primary);
+    color: var(--uix-bg-surface);
+    font-size: var(--uix-font-size-200);
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--uix-radius-s);
+    max-width: 16rem;
+    white-space: normal;
+    text-align: start;
+  }
+}
