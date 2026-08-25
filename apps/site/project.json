@@ -7,16 +7,23 @@
     "vite.config.ts; typecheck and lint are explicit."
   ],
   "targets": {
-    "typecheck": {
+    "a11y": {
       "executor": "nx:run-commands",
+      "dependsOn": ["build"],
       "options": {
-        "command": "tsc -p apps/site/tsconfig.json --noEmit"
+        "command": "concurrently -k -s first \"http-server apps/site/dist -p 4620 --silent --proxy http://127.0.0.1:4620?\" \"wait-on tcp:127.0.0.1:4620 && pnpm exec playwright test --config apps/site/playwright.config.ts\""
       }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
         "command": "eslint apps/site/src --max-warnings 0"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p apps/site/tsconfig.json --noEmit"
       }
     }
   }

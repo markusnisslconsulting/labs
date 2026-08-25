@@ -34,3 +34,26 @@ export const SelectingAnOption: Story = {
     ).not.toBeChecked();
   },
 };
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("radio")[0]!;
+    await expect(target).toHaveFocus();
+  },
+};
+
+export const Disabled: Story = {
+  args: { disabled: true },
+  play: async ({ canvas }) => {
+    for (const radio of canvas.getAllByRole("radio")) {
+      await expect(radio).toBeDisabled();
+    }
+  },
+};

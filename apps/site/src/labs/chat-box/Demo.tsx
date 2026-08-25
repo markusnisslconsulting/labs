@@ -119,7 +119,7 @@ const AgentStreamDemo = () => {
 
       <div className="demo-panes">
         <div className="demo-pane">
-          <h4>The transcript: a log</h4>
+          <h3>The transcript: a log</h3>
           {transcript.length === 0 ? (
             <p className="demo-chat-line">
               <em>Nothing yet. Start the run.</em>
@@ -133,7 +133,7 @@ const AgentStreamDemo = () => {
           )}
         </div>
         <div className="demo-pane">
-          <h4>The product: the ordering desk</h4>
+          <h3>The product: the ordering desk</h3>
           <table className="demo-table">
             <thead>
               <tr>

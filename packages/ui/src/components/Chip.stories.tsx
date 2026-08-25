@@ -1,4 +1,4 @@
-import { expect, fn } from "storybook/test";
+import { expect, fn, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Chip } from "./Chip";
 
@@ -38,5 +38,15 @@ export const FilterActive: Story = {
   play: async ({ canvas }) => {
     const chip = canvas.getByRole("button", { name: "agents" });
     await expect(chip).toHaveAttribute("aria-pressed", "true");
+  },
+};
+
+/** Reachable from the keyboard. Interaction only, so it does not snapshot. */
+export const KeyboardReachable: Story = {
+  args: FilterOff.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
   },
 };

@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SearchInput } from "./SearchInput";
 
@@ -18,5 +18,20 @@ export const Default: Story = {
     await expect(
       canvas.getByRole("searchbox", { name: "Search the labs" }),
     ).toBeVisible();
+  },
+};
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  args: Default.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("searchbox")[0]!;
+    await expect(target).toHaveFocus();
   },
 };

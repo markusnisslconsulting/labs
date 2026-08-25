@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Breadcrumb } from "./Breadcrumb";
 
@@ -26,5 +26,20 @@ export const Trail: Story = {
       "page",
     );
     await expect(canvas.getByRole("link", { name: "Chat box" })).toBeVisible();
+  },
+};
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  args: Trail.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("link")[0]!;
+    await expect(target).toHaveFocus();
   },
 };

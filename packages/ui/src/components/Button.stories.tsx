@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 
@@ -139,5 +139,32 @@ export const AsLink: Story = {
     const link = canvas.getByRole("link", { name: /Read the article/ });
     await expect(link).toHaveClass("uix-button");
     await expect(link).toHaveAttribute("href", "#anchor");
+  },
+};
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  args: SolidAccent.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("button")[0]!;
+    await expect(target).toHaveFocus();
+  },
+};
+
+export const Loading: Story = {
+  args: { loading: true, children: "Saving" },
+  play: async ({ canvas }) => {
+    const button = canvas.getByRole("button", { name: /Saving/ });
+    // aria-disabled, not the native attribute: the button stays in the
+    // tab order so a keyboard user does not lose their place mid-form.
+    await expect(button).toHaveAttribute("aria-busy", "true");
+    await expect(button).toHaveAttribute("aria-disabled", "true");
+    await expect(button).not.toBeDisabled();
   },
 };

@@ -17,8 +17,7 @@ const stories = [
   "components-button--matrix",
   "components-alert--info",
   "components-statuspill--all-tones",
-  "foundations-primitivetokens-story--primitive-tokens-story",
-  "patterns-labcard--default",
+  "foundations-tokens-primitive--primitive-tokens-story",
 ] as const;
 
 const baselineDir = path.resolve(

@@ -1,3 +1,4 @@
+import { expect } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Badge } from "./Badge";
 
@@ -14,3 +15,12 @@ export const Neutral: Story = { args: { tone: "neutral", children: "Draft" } };
 export const Accent: Story = { args: { tone: "accent", children: "New" } };
 export const Success: Story = { args: { tone: "success", children: "Active" } };
 export const Danger: Story = { args: { tone: "danger", children: "Failed" } };
+
+export const ToneIsNeverTheOnlySignal: Story = {
+  args: { tone: "danger", children: "Failed" },
+  play: async ({ canvas }) => {
+    // Colour distinguishes tones for sighted users; the word is what
+    // reaches everyone else and greyscale print.
+    await expect(canvas.getByText("Failed")).toBeVisible();
+  },
+};

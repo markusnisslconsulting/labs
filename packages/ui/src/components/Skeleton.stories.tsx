@@ -1,3 +1,4 @@
+import { expect } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Skeleton } from "./Skeleton";
 
@@ -30,4 +31,14 @@ export const CardPlaceholder: Story = {
       <Skeleton shape="line" />
     </div>
   ),
+};
+
+export const HiddenFromAssistiveTechnology: Story = {
+  args: { shape: "line" },
+  play: async ({ canvasElement }) => {
+    // The waiting state belongs to the region that is loading, so the
+    // placeholder itself must not be announced.
+    const skeleton = canvasElement.querySelector(".uix-skeleton");
+    await expect(skeleton).toHaveAttribute("aria-hidden", "true");
+  },
 };

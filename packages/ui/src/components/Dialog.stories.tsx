@@ -105,3 +105,23 @@ export const Confirm: Story = {
     ).toBeVisible();
   },
 };
+
+/**
+ * Opened from the keyboard, which is the part that matters: a dialog you
+ * can only reach with a mouse is not reachable. Interaction only.
+ */
+export const KeyboardReachable: StoryObj = {
+  render: () => <DialogDemo />,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const trigger = canvas.getByRole("button", { name: /Edit reorder/ });
+    await expect(trigger).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+    await expect(
+      await within(document.body).findByRole("dialog", {
+        name: /Edit reorder point/,
+      }),
+    ).toBeVisible();
+  },
+};

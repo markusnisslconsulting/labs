@@ -1,3 +1,4 @@
+import { expect } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
@@ -32,4 +33,22 @@ export const WithSlots: Story = {
       </Card.Footer>
     </Card>
   ),
+};
+
+export const SlotsForwardTheirProps: Story = {
+  render: () => (
+    <Card aria-label="Supplier card">
+      <Card.Header id="supplier-header">Nordwind Logistik</Card.Header>
+      <Card.Body>
+        <p>Every slot takes the attributes of the element it renders.</p>
+      </Card.Body>
+    </Card>
+  ),
+  play: async ({ canvas }) => {
+    // article + aria-label, which was unreachable while the slots took
+    // only children.
+    await expect(
+      canvas.getByRole("article", { name: "Supplier card" }),
+    ).toBeVisible();
+  },
 };

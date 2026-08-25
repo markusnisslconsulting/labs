@@ -37,3 +37,17 @@ export const SwitchingPanels: Story = {
     await expect(canvas.getByText("The write lands here.")).toBeVisible();
   },
 };
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("tab")[0]!;
+    await expect(target).toHaveFocus();
+  },
+};

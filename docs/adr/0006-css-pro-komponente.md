@@ -38,3 +38,29 @@ CSS-Import ein Side Effect ist und nicht wegoptimiert werden kann.
   genau die Kopplung, die der Split beseitigen soll.
 - `@layer` ist Pflicht, nicht Kosmetik. Ohne die Deklaration wäre der
   Fehler intermittierend und nur bei kaltem Cache reproduzierbar.
+
+## Nachtrag (2026-08): die Deklaration allein genügt nicht
+
+Die `@layer`-Deklaration stand in `styles.css` und galt im Bundle
+trotzdem nicht. Die Reihenfolge der Ebenen steht fest, sobald ein Name
+das erste Mal auftaucht — und im Bundle taucht `components` zuerst auf,
+weil Komponenten-CSS über JS-Imports kommt und vor den `@import`s der
+Entry-Datei landet. Die Deklaration stand zwei Kilobyte später und war
+damit wirkungslos.
+
+Die Folge war still und vollständig: `components` rangierte **unter**
+`base`, also schlug `button { color: inherit }` jede Komponentenfarbe.
+Sichtbar wurde es an einer Stelle, an einem aktiven Chip mit navy Text
+auf navy Fläche.
+
+Zwei Korrekturen:
+
+- `tools/vite-layer-order.ts` stellt die Deklaration an den Anfang jedes
+  emittierten Stylesheets und prüft das Ergebnis danach.
+- lightningcss schrieb `@layer a, b, c;` auf die eine Ebene zusammen,
+  für die es keinen Block fand. Die App minifiziert CSS deshalb mit
+  esbuild.
+
+Die Lehre für den Artikel: eine Zusicherung, die nicht im Artefakt
+geprüft wird, ist keine. Der Test prüfte die Quelldatei; kaputt war das
+Bundle.

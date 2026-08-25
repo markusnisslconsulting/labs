@@ -62,3 +62,17 @@ export const DismissingRemovesIt: StoryObj = {
     await expect(canvas.getByText("Dismissed.")).toBeVisible();
   },
 };
+
+export const Warning: Story = {
+  args: {
+    severity: "warning",
+    title: "Lead time missing",
+    children: "Two suppliers have no lead time on file.",
+  },
+  play: async ({ canvas }) => {
+    // warning is assertive, like danger: it interrupts.
+    await expect(
+      canvas.getByRole("alert", { name: /Lead time/ }),
+    ).toBeVisible();
+  },
+};

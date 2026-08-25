@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Combobox } from "./Combobox";
 
@@ -23,5 +23,20 @@ export const SupplierRegion: Story = {
     await expect(
       canvas.getByRole("combobox", { name: "Supplier region" }),
     ).toBeVisible();
+  },
+};
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  args: SupplierRegion.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("combobox")[0]!;
+    await expect(target).toHaveFocus();
   },
 };

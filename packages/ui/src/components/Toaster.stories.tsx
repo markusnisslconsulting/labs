@@ -75,3 +75,20 @@ export const Dismissing: Story = {
 export const TopCentre: Story = {
   render: () => <ToasterDemo position="top-center" />,
 };
+
+/** Reachable from the keyboard. Interaction only, so it does not snapshot. */
+export const KeyboardReachable: Story = {
+  render: () => <ToasterDemo />,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    // The demo's own button comes first; the toast close buttons follow.
+    await expect(
+      canvas.getByRole("button", { name: /Show toasts/ }),
+    ).toHaveFocus();
+    await userEvent.tab();
+    await expect(
+      canvas.getAllByRole("button", { name: /Dismiss/ })[0]!,
+    ).toHaveFocus();
+  },
+};

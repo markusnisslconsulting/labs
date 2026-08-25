@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NumberField } from "./NumberField";
 
@@ -24,5 +24,17 @@ export const ReorderPoint: Story = {
     await expect(
       canvas.getByRole("textbox", { name: "Reorder point" }),
     ).toHaveValue("810");
+  },
+};
+
+/** Reachable from the keyboard. Interaction only, so it does not snapshot. */
+export const KeyboardReachable: Story = {
+  args: ReorderPoint.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    // Base UI renders a text input with inputmode numeric rather than a
+    // spinbutton, so the role to expect is textbox.
+    await expect(canvas.getByRole("textbox")).toHaveFocus();
   },
 };

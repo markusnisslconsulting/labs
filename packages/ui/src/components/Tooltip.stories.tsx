@@ -1,3 +1,4 @@
+import { expect } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 import { Tooltip } from "./Tooltip";
@@ -39,4 +40,20 @@ export const Below: StoryObj = {
       <Button variant="outline">What does undo do?</Button>
     </Tooltip>
   ),
+};
+
+export const TriggerKeepsItsName: StoryObj = {
+  render: () => (
+    <Tooltip content="Days of stock remaining">
+      <button type="button">Cover</button>
+    </Tooltip>
+  ),
+  args: {
+    content: "Days of stock remaining",
+    children: <button>Cover</button>,
+  },
+  play: async ({ canvas }) => {
+    // The tooltip describes the trigger; it must not replace its name.
+    await expect(canvas.getByRole("button", { name: "Cover" })).toBeVisible();
+  },
 };

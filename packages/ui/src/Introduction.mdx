@@ -106,6 +106,46 @@ The one exception is `Tooltip`, which renders no element of its own —
 its trigger is the caller's element, so there is nothing to pass
 attributes to. That is documented on the component.
 
+## What the build refuses
+
+Six gates, each closing a claim this page used to make in prose:
+
+- **Token parity** — the registry and the CSS cannot disagree, in either
+  direction, and no component stylesheet may name a colour primitive or
+  hardcode a colour literal.
+- **Contrast** — every declared pairing is measured in every theme and
+  every brand, 84 of them, against WCAG AA. A brand may pick a hue; it
+  may not pick a pairing nobody can read. This caught an inverted
+  surface that was legible inside itself and invisible against the page
+  it sat on.
+- **Token usage** — reachability over the alias graph, so "is anyone
+  still using this" is answered by the graph rather than by grep, plus a
+  ratchet that fails on a new use of a deprecated token and on a
+  baseline that was not tightened after one was removed.
+- **Story coverage** — derived from each component's own types: every
+  union value rendered, every state boolean shown, one assertion, and a
+  keyboard story if the component is operable. Turning it on found 33 of
+  34 components with no keyboard test.
+- **Accessibility** — axe on every story, and separately on every page
+  of the labs site, because composition is where component-level
+  accessibility stops seeing.
+- **Cascade order** — the layer declaration is prepended to every
+  emitted stylesheet and then asserted, because the source having it
+  was not the same as the bundle having it.
+
+## Stories: reference or interaction, never both
+
+A reference story shows a state and does not change it. An interaction
+story drives behaviour and opts out of snapshots, because Chromatic
+captures the frame after `play()` resolves — a story that clicks its own
+control baselines the state after the click under a name that promised
+the state before it. Two deliberate exceptions keep their snapshots:
+Focus and Dialog, where the ring and the open dialog are the picture
+worth having.
+
+Every story is snapshotted in both themes. Brand coverage is set on
+Foundations / Brands, where a brand difference is the subject.
+
 ## Accessibility
 
 The a11y addon runs with `test: "error"`, and the test runner replays

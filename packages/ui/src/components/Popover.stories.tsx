@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Popover } from "./Popover";
 
@@ -30,5 +30,20 @@ export const Details: Story = {
     const trigger = canvas.getByRole("button", { name: /Delivery details/ });
     await expect(trigger).toBeVisible();
     await expect(trigger).toHaveClass("uix-button");
+  },
+};
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  args: Details.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("button")[0]!;
+    await expect(target).toHaveFocus();
   },
 };

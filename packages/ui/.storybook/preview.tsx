@@ -77,6 +77,26 @@ const preview: Preview = {
      * gate and not a panel someone has to remember to read.
      */
     a11y: { test: "error" },
+    /**
+     * Snapshot every story in both themes.
+     *
+     * Dark mode was unreachable for months and then, once reachable,
+     * still had zero visual coverage: the contrast gate can prove a
+     * pairing is legible, but only a picture catches a component that
+     * forgot to remap. Modes drive the same globals the toolbar does,
+     * so what Chromatic captures is what a reader sees.
+     *
+     * Cost is deliberate: this doubles snapshots per changed story, and
+     * TurboSnap keeps that to the stories a commit actually touches.
+     * Brand coverage is not global for the same reason — it is set on
+     * the Brands story, where a brand difference is the subject.
+     */
+    chromatic: {
+      modes: {
+        light: { theme: "light" },
+        dark: { theme: "dark" },
+      },
+    },
   },
   globalTypes: {
     brand: {

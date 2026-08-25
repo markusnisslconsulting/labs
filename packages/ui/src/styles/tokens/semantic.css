@@ -117,7 +117,12 @@
     --uix-border-subtle: var(--uix-grey-700);
     --uix-border-strong: var(--uix-slate-400);
     --uix-accent: var(--uix-red-400);
-    --uix-accent-soft: color-mix(in srgb, var(--uix-accent) 16%, transparent);
+    /* The neutral ramp flips: the strongest ink on a dark page is light,
+       and the brightest surface is dark. Everything built on ink/paper —
+       the inverted chip, the neutral button, the hover mixes — inverts
+       with it, which is the whole point of naming them by role. */
+    --uix-ink: var(--uix-grey-25);
+    --uix-paper: var(--uix-grey-900);
     --uix-focus-ring: var(--uix-red-400);
     --uix-status-ok: var(--uix-green-400);
     --uix-status-warn: var(--uix-amber-400);

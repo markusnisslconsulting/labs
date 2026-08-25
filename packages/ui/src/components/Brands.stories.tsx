@@ -5,7 +5,20 @@ import { Switch } from "./Switch";
 
 const meta = {
   title: "Foundations/Brands",
-  parameters: { layout: "padded" },
+  parameters: {
+    layout: "padded",
+    // Brand is the subject on this page, so it is the one place worth
+    // paying for the extra dimension. Everywhere else the global modes
+    // in preview.tsx cover light and dark only.
+    chromatic: {
+      modes: {
+        "labs light": { theme: "light", brand: "default" },
+        "labs dark": { theme: "dark", brand: "default" },
+        "ocean light": { theme: "light", brand: "ocean" },
+        "ocean dark": { theme: "dark", brand: "ocean" },
+      },
+    },
+  },
 } satisfies Meta;
 
 export default meta;

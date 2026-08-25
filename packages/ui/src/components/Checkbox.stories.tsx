@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Checkbox } from "./Checkbox";
 
@@ -35,4 +35,19 @@ export const Indeterminate: Story = {
 
 export const Disabled: Story = {
   args: { label: "Email me updates", disabled: true },
+};
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  args: Unchecked.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("checkbox")[0]!;
+    await expect(target).toHaveFocus();
+  },
 };

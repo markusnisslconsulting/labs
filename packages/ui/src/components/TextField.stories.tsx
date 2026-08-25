@@ -57,3 +57,18 @@ export const WithPrefixAndSuffix: Story = {
     defaultValue: 1240,
   },
 };
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  args: Default.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("textbox")[0]!;
+    await expect(target).toHaveFocus();
+  },
+};

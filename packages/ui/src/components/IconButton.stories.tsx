@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Settings, X } from "lucide-react";
 import { IconButton } from "./IconButton";
@@ -27,4 +27,27 @@ export const Solid: Story = {
     variant: "solid",
     children: <Settings size={14} />,
   },
+};
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot: the frame after tabbing is a focus state, not the
+ * component's resting appearance.
+ */
+export const KeyboardReachable: Story = {
+  args: Close.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const target = canvas.getAllByRole("button")[0]!;
+    await expect(target).toHaveFocus();
+  },
+};
+
+export const Outline: Story = {
+  args: { ...Close.args, variant: "outline" },
+};
+
+export const Small: Story = {
+  args: { ...Close.args, size: "sm" },
 };

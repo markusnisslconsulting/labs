@@ -1,19 +1,14 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "ui",
-  "tags": [
-    "scope:shared",
-    "type:ui"
-  ],
+  "tags": ["scope:shared", "type:ui"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "vite build --config packages/ui/vite.config.ts"
       },
-      "outputs": [
-        "{workspaceRoot}/dist/packages/ui"
-      ]
+      "outputs": ["{workspaceRoot}/dist/packages/ui"]
     },
     "build-storybook": {
       "executor": "nx:run-commands",
@@ -21,14 +16,42 @@
         "command": "storybook build -c packages/ui/.storybook --output-dir dist/packages/ui-storybook --stats-json",
         "cwd": "."
       },
-      "outputs": [
-        "{workspaceRoot}/dist/packages/ui-storybook"
-      ]
+      "outputs": ["{workspaceRoot}/dist/packages/ui-storybook"]
+    },
+    "contrast-check": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "tsx scripts/tokens/contrast.ts check",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "contrast-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/tokens/contrast.ts report",
+        "cwd": "{workspaceRoot}"
+      }
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
         "command": "eslint packages/ui --max-warnings 0"
+      }
+    },
+    "story-coverage": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "tsx scripts/stories/coverage.ts check",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "story-coverage-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/stories/coverage.ts report",
+        "cwd": "{workspaceRoot}"
       }
     },
     "storybook": {
@@ -44,9 +67,7 @@
       }
     },
     "test-storybook": {
-      "dependsOn": [
-        "build-storybook"
-      ],
+      "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4411 --silent\" \"wait-on tcp:127.0.0.1:4411 && pnpm exec test-storybook --url http://127.0.0.1:4411 --config-dir packages/ui/.storybook\""
@@ -87,18 +108,14 @@
       }
     },
     "visual-test": {
-      "dependsOn": [
-        "build-storybook"
-      ],
+      "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec playwright test --config visual/playwright.config.ts"
       }
     },
     "visual-update": {
-      "dependsOn": [
-        "build-storybook"
-      ],
+      "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec playwright test --config visual/playwright.config.ts --update-snapshots"
