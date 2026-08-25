@@ -5,8 +5,10 @@ type Variant = "solid" | "outline" | "ghost";
 type Tone = "accent" | "neutral";
 type Size = "sm" | "md" | "lg";
 
-export interface ButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+export interface ButtonProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "children"
+> {
   children: ReactNode;
   variant?: Variant;
   tone?: Tone;

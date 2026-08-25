@@ -21,8 +21,8 @@ export const Details: Story = {
     title: "Nordwind Logistik",
     children: (
       <p>
-        Windows update weekly. The negotiation agent drafts changes; a
-        person commits them.
+        Windows update weekly. The negotiation agent drafts changes; a person
+        commits them.
       </p>
     ),
   },

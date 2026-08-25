@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Tooltip } from "./Tooltip";
+import { Button } from "./Button";
 
 const meta = {
   title: "Components/Tooltip",
@@ -13,7 +14,7 @@ export default meta;
 export const OnButton: StoryObj = {
   render: () => (
     <Tooltip content="Applies to draft rows only">
-      <button type="button">Bulk edit</button>
+      <Button variant="outline">Bulk edit</Button>
     </Tooltip>
   ),
 };
@@ -35,7 +36,7 @@ export const OpenState: StoryObj = {
 export const Below: StoryObj = {
   render: () => (
     <Tooltip content="Undo walks through committing again" placement="bottom">
-      <button type="button">What does undo do?</button>
+      <Button variant="outline">What does undo do?</Button>
     </Tooltip>
   ),
 };

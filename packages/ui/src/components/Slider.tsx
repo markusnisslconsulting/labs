@@ -43,7 +43,7 @@ export function Slider({
         </label>
         {showValue ? (
           <span className="uix-slider-value">
-            {isControlled ? value : defaultValue ?? min}
+            {isControlled ? value : (defaultValue ?? min)}
           </span>
         ) : null}
       </div>
@@ -61,4 +61,3 @@ export function Slider({
     </div>
   );
 }
-

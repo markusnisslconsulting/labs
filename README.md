@@ -6,11 +6,11 @@ Running companions to the articles on
 exact code an article prints: the state machine you read about is the
 state machine that runs.
 
-| Lab | Article |
-| --- | --- |
-| [The transcript versus the row](https://labs.markusnissl.com/chat-box) | [The Chat Box Is a Log](https://www.markusnissl.com/blog/the-chat-box-is-a-log) |
-| [A page-registered tool](https://labs.markusnissl.com/webmcp) | [Declare Your Product's Verbs](https://www.markusnissl.com/blog/webmcp-the-page-as-a-tool-surface) |
-| [Seven APIs, checked live](https://labs.markusnissl.com/on-device-ai) | [On-Device AI in Chrome: What You Can Ship Today](https://www.markusnissl.com/blog/chrome-built-in-ai-apis) |
+| Lab                                                                    | Article                                                                                                     |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| [The transcript versus the row](https://labs.markusnissl.com/chat-box) | [The Chat Box Is a Log](https://www.markusnissl.com/blog/the-chat-box-is-a-log)                             |
+| [A page-registered tool](https://labs.markusnissl.com/webmcp)          | [Declare Your Product's Verbs](https://www.markusnissl.com/blog/webmcp-the-page-as-a-tool-surface)          |
+| [Seven APIs, checked live](https://labs.markusnissl.com/on-device-ai)  | [On-Device AI in Chrome: What You Can Ship Today](https://www.markusnissl.com/blog/chrome-built-in-ai-apis) |
 
 ## The design system (`@labs/ui`)
 

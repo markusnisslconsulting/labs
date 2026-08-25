@@ -15,13 +15,11 @@ type Story = StoryObj;
 export const WithSlots: Story = {
   render: () => (
     <Card>
-      <Card.Header>
-        Supplier · Nordwind Logistik
-      </Card.Header>
+      <Card.Header>Supplier · Nordwind Logistik</Card.Header>
       <Card.Body>
         <p>
-          Delivery windows updated weekly. The negotiation agent drafts
-          changes; a person commits them.
+          Delivery windows updated weekly. The negotiation agent drafts changes;
+          a person commits them.
         </p>
       </Card.Body>
       <Card.Footer>

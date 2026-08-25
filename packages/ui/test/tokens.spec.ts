@@ -33,9 +33,7 @@ function parseCss(path: string): Map<string, string> {
   return map;
 }
 
-const css = new Map(
-  cssFiles.flatMap((path) => [...parseCss(path)]),
-);
+const css = new Map(cssFiles.flatMap((path) => [...parseCss(path)]));
 
 const norm = (value: string) => value.replace(/\s+/g, "");
 

@@ -188,6 +188,13 @@ const App = () => {
       <header className="site-header">
         <div className="site-header-inner">
           <Link to="/" className="site-brand">
+            <img
+              src="/logo.webp"
+              alt=""
+              width={28}
+              height={12}
+              style={{ height: "0.85rem", width: "auto" }}
+            />
             Labs
           </Link>
           <nav className="site-nav" aria-label="Primary">

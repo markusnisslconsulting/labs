@@ -1,10 +1,7 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "ui",
-  "tags": [
-    "scope:shared",
-    "type:ui"
-  ],
+  "tags": ["scope:shared", "type:ui"],
   "targets": {
     "typecheck": {
       "executor": "nx:run-commands",
@@ -30,14 +27,10 @@
         "command": "storybook build -c packages/ui/.storybook --output-dir dist/packages/ui-storybook",
         "cwd": "."
       },
-      "outputs": [
-        "{workspaceRoot}/dist/packages/ui-storybook"
-      ]
+      "outputs": ["{workspaceRoot}/dist/packages/ui-storybook"]
     },
     "test-storybook": {
-      "dependsOn": [
-        "build-storybook"
-      ],
+      "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4411 --silent\" \"wait-on tcp:127.0.0.1:4411 && pnpm exec test-storybook --url http://127.0.0.1:4411 --config-dir packages/ui/.storybook\""
@@ -50,18 +43,14 @@
       }
     },
     "visual-update": {
-      "dependsOn": [
-        "build-storybook"
-      ],
+      "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec playwright test --config visual/playwright.config.ts --update-snapshots"
       }
     },
     "visual-test": {
-      "dependsOn": [
-        "build-storybook"
-      ],
+      "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm exec playwright test --config visual/playwright.config.ts"

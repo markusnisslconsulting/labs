@@ -18,7 +18,9 @@ type Story = StoryObj;
  */
 export const SideBySide: Story = {
   render: () => (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.2rem" }}>
+    <div
+      style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.2rem" }}
+    >
       <div style={{ display: "grid", gap: "0.8rem", justifyItems: "start" }}>
         <strong>Default (red)</strong>
         <Button>Primary action</Button>
@@ -27,7 +29,10 @@ export const SideBySide: Story = {
         </Alert>
         <Switch label="Compact rows" defaultChecked />
       </div>
-      <div data-brand="ocean" style={{ display: "grid", gap: "0.8rem", justifyItems: "start" }}>
+      <div
+        data-brand="ocean"
+        style={{ display: "grid", gap: "0.8rem", justifyItems: "start" }}
+      >
         <strong>Ocean (blue)</strong>
         <Button>Primary action</Button>
         <Alert severity="info" title="Info">

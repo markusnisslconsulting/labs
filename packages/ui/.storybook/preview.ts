@@ -7,6 +7,7 @@ const labsTheme = create({
   base: "light",
   brandTitle: "Labs UI · Markus Nissl",
   brandUrl: "https://labs.markusnissl.com",
+  brandImage: "./logo.webp",
   colorPrimary: "#e5173f",
   colorSecondary: "#172b4d",
   appBg: "#f7f9fc",
@@ -17,19 +18,19 @@ const labsTheme = create({
 });
 
 const preview: Preview = {
-  globalTypes: {
-    theme: {
-      name: "Theme",
-      description: "Semantic token set",
-      toolbar: {
-        icon: "mirror",
-        items: [
-          { value: "light", title: "Light", icon: "sun" },
-          { value: "dark", title: "Dark", icon: "moon" },
-        ],
-        defaultValue: "light",
-      },
+  // Theme über @storybook/addon-themes (Klasse auf body); Density
+  // bleibt ein eigener globalType, weil es kein Theme, sondern ein
+  // Mass ist.
+  parameters: {
+    themes: {
+      themesList: [
+        { id: "light", title: "Light", class: "theme-light", color: "#b31234" },
+        { id: "dark", title: "Dark", class: "theme-dark", color: "#101828" },
+      ],
+      defaultTheme: "light",
     },
+  },
+  globalTypes: {
     density: {
       name: "Density",
       description: "Spacing multiplier",

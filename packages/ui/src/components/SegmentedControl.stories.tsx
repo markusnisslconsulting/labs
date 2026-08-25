@@ -31,11 +31,13 @@ export const ViewSwitcher: StoryObj = {
   render: () => <ViewSwitcherDemo />,
   play: async ({ canvas }) => {
     await canvas.getByRole("button", { name: "Board" }).click();
-    await expect(
-      canvas.getByRole("button", { name: "Board" }),
-    ).toHaveAttribute("aria-pressed", "true");
-    await expect(
-      canvas.getByRole("button", { name: "List" }),
-    ).toHaveAttribute("aria-pressed", "false");
+    await expect(canvas.getByRole("button", { name: "Board" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(canvas.getByRole("button", { name: "List" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
   },
 };

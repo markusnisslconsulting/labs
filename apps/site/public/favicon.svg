@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><style>
+    #light-icon {
+      display: inline;
+    }
+    #dark-icon {
+      display: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      #light-icon {
+        display: none;
+      }
+      #dark-icon {
+        display: inline;
+      }
+    }
+  </style><g id="light-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><g clip-path="url(#SvgjsClipPath1161)"><rect width="1000" height="1000" fill="#ffffff"></rect><g transform="matrix(0.8908527242276307,0,0,0.8908527242276307,0,146.46449506467587)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1122.52" height="793.70135"><svg width="1122.52" height="793.70135" viewBox="0 0 1122.52 793.70135" xmlns="http://www.w3.org/2000/svg">
+    <path d="m 0,0 162.79,275.693 h 70.893 l 51.638,-90.147 24.486,39.385 h 64.714 L 286.196,75.269 196.924,227.556 63.891,0 Z" style="fill:#e31c4a;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1.3333333,0,0,-1.3333333,182.97987,580.64653)"></path>
+    <path d="M 0,0 31.045,54.329 98.309,-62.327 h -64.03 z" style="fill:#e31c4a;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1.3333333,0,0,-1.3333333,404.27093,497.5444)"></path>
+    <path d="M 0,0 128.496,223.091 259.534,0 H 195.285 L 129.767,114.467 62.115,0 Z" style="fill:#e31c4a;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1.3333333,0,0,-1.3333333,593.49413,580.64653)"></path>
+</svg></svg></g></g><defs><clipPath id="SvgjsClipPath1161"><rect width="1000" height="1000" x="0" y="0" rx="350" ry="350"></rect></clipPath></defs></svg></g><g id="dark-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><g><g transform="matrix(0.8908527242276307,0,0,0.8908527242276307,0,146.46449506467587)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1122.52" height="793.70135"><svg width="1122.52" height="793.70135" viewBox="0 0 1122.52 793.70135" xmlns="http://www.w3.org/2000/svg">
+    <path d="m 0,0 162.79,275.693 h 70.893 l 51.638,-90.147 24.486,39.385 h 64.714 L 286.196,75.269 196.924,227.556 63.891,0 Z" style="fill:#e31c4a;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1.3333333,0,0,-1.3333333,182.97987,580.64653)"></path>
+    <path d="M 0,0 31.045,54.329 98.309,-62.327 h -64.03 z" style="fill:#e31c4a;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1.3333333,0,0,-1.3333333,404.27093,497.5444)"></path>
+    <path d="M 0,0 128.496,223.091 259.534,0 H 195.285 L 129.767,114.467 62.115,0 Z" style="fill:#e31c4a;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(1.3333333,0,0,-1.3333333,593.49413,580.64653)"></path>
+</svg></svg></g></g></svg></g></svg>

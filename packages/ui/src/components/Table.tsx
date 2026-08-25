@@ -14,7 +14,9 @@ export function Table({ caption, children }: TableProps) {
   return (
     <div className="uix-table-wrap">
       <table className="uix-table">
-        {caption ? <caption className="uix-visually-hidden">{caption}</caption> : null}
+        {caption ? (
+          <caption className="uix-visually-hidden">{caption}</caption>
+        ) : null}
         {children}
       </table>
     </div>

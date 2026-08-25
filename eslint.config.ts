@@ -1,5 +1,6 @@
 import tseslint from "typescript-eslint";
 import reactHooks from "eslint-plugin-react-hooks";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 import { FlatCompat } from "@eslint/eslintrc";
 import nxPlugin from "@nx/eslint-plugin";
 
@@ -26,6 +27,7 @@ export default tseslint.config(
     ],
   },
   ...tseslint.configs.recommended,
+  jsxA11y.flatConfigs.recommended,
   ...hooksEntries,
   {
     // The module-boundary rule lives in the Nx plugin; registering it

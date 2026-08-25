@@ -38,10 +38,9 @@ test.describe("visual regression", () => {
         "keine Baseline für diese Plattform",
       );
 
-      await page.goto(
-        `${server}/iframe.html?id=${story}&viewMode=story`,
-        { waitUntil: "load" },
-      );
+      await page.goto(`${server}/iframe.html?id=${story}&viewMode=story`, {
+        waitUntil: "load",
+      });
       await page.waitForTimeout(600);
       await expect(page.locator("#root").first()).toHaveScreenshot(
         `${story}.png`,

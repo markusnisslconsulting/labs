@@ -33,10 +33,26 @@
   --uix-text-caption: var(--uix-font-size-100);
 
   /* Status container tints (soft surfaces per severity) */
-  --uix-container-info: color-mix(in srgb, var(--uix-info) 10%, var(--uix-bg-surface));
-  --uix-container-success: color-mix(in srgb, var(--uix-status-ok) 12%, var(--uix-bg-surface));
-  --uix-container-warning: color-mix(in srgb, var(--uix-status-warn) 14%, var(--uix-bg-surface));
-  --uix-container-danger: color-mix(in srgb, var(--uix-status-danger) 10%, var(--uix-bg-surface));
+  --uix-container-info: color-mix(
+    in srgb,
+    var(--uix-info) 10%,
+    var(--uix-bg-surface)
+  );
+  --uix-container-success: color-mix(
+    in srgb,
+    var(--uix-status-ok) 12%,
+    var(--uix-bg-surface)
+  );
+  --uix-container-warning: color-mix(
+    in srgb,
+    var(--uix-status-warn) 14%,
+    var(--uix-bg-surface)
+  );
+  --uix-container-danger: color-mix(
+    in srgb,
+    var(--uix-status-danger) 10%,
+    var(--uix-bg-surface)
+  );
 }
 
 /* Z-index scale: eine Achse, dokumentiert. */
@@ -49,7 +65,8 @@
 }
 
 /* Dark: Schatten wirken als Kanten, nicht als Wolken. */
-[data-theme="dark"] {
+[data-theme="dark"],
+body.theme-dark {
   --uix-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.5);
   --uix-shadow-2: 0 8px 20px rgba(0, 0, 0, 0.45);
   --uix-shadow-3: 0 18px 45px rgba(0, 0, 0, 0.6);
@@ -73,14 +90,16 @@
   --uix-focus-ring: var(--uix-blue-600);
 }
 
-[data-brand="ocean"][data-theme="dark"] {
+[data-brand="ocean"][data-theme="dark"],
+body.theme-dark {
   --uix-accent: #7aa5f7;
   --uix-focus-ring: #7aa5f7;
 }
 
 /* Dark theme: the semantic layer remaps to the lighter primitives.
    Component and primitive layers stay untouched. */
-[data-theme="dark"] {
+[data-theme="dark"],
+body.theme-dark {
   --uix-text-primary: var(--uix-grey-25);
   --uix-text-secondary: var(--uix-slate-400);
   --uix-text-on-accent: var(--uix-grey-900);
