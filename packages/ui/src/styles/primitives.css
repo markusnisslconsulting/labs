@@ -235,3 +235,30 @@ button.uix-chip:focus-visible {
   outline: 2px solid var(--uix-focus-ring);
   outline-offset: 1px;
 }
+
+/* Range (native slider) --------------------------------------------------- */
+
+.uix-range {
+  accent-color: var(--uix-accent);
+  width: 100%;
+  max-width: 24rem;
+  cursor: pointer;
+}
+
+.uix-range:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: 2px;
+}
+
+.uix-slider-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  max-width: 24rem;
+}
+
+.uix-slider-value {
+  font-size: var(--uix-font-size-200);
+  color: var(--uix-text-secondary);
+  font-variant-numeric: tabular-nums;
+}

@@ -652,3 +652,257 @@ select.uix-field-input {
   border-top: 1px solid var(--uix-border-subtle);
   color: var(--uix-text-secondary);
 }
+
+/* Menu -----------------------------------------------------------------------
+   Lazy popup, Base UI keyboard handling, z from the scale. */
+
+.uix-menu-positioner {
+  z-index: var(--uix-z-dropdown);
+}
+
+.uix-menu {
+  min-width: 12rem;
+  background: var(--uix-bg-surface);
+  border: 1px solid var(--uix-border-subtle);
+  border-radius: var(--uix-radius-m);
+  box-shadow: var(--uix-shadow-2);
+  padding: var(--uix-space-2);
+  max-height: min(20rem, var(--uix-space-6) * 8);
+  overflow: auto;
+}
+
+.uix-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--uix-space-2) var(--uix-space-3);
+  border: none;
+  border-radius: var(--uix-radius-s);
+  background: none;
+  color: var(--uix-text-primary);
+  font-size: var(--uix-font-size-200);
+  text-align: left;
+  cursor: pointer;
+}
+
+.uix-menu-item:hover,
+.uix-menu-item[data-highlighted] {
+  background: var(--uix-bg-subtle);
+}
+
+.uix-menu-item[data-danger] {
+  color: var(--uix-status-danger);
+}
+
+.uix-menu-item:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: -2px;
+}
+
+.uix-menu-empty {
+  padding: var(--uix-space-3);
+  color: var(--uix-text-secondary);
+  font-size: var(--uix-font-size-200);
+}
+
+.uix-combobox-list {
+  display: grid;
+  gap: 2px;
+}
+
+/* Popover ---------------------------------------------------------------------- */
+
+.uix-popover {
+  width: min(18rem, calc(100vw - 2 * var(--uix-space-5)));
+  background: var(--uix-bg-surface);
+  border: 1px solid var(--uix-border-subtle);
+  border-radius: var(--uix-radius-m);
+  box-shadow: var(--uix-shadow-2);
+  padding: var(--uix-space-4);
+}
+
+.uix-popover-title {
+  margin: 0 0 var(--uix-space-2);
+  font-weight: var(--uix-font-weight-bold);
+}
+
+.uix-popover-body {
+  color: var(--uix-text-primary);
+}
+
+.uix-popover-body > :first-child {
+  margin-top: 0;
+}
+.uix-popover-body > :last-child {
+  margin-bottom: 0;
+}
+
+.uix-popover-footer {
+  margin-top: var(--uix-space-3);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Slider ------------------------------------------------------------------------- */
+
+.uix-slider {
+  display: grid;
+  gap: var(--uix-space-2);
+  max-width: 24rem;
+}
+
+.uix-slider-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.uix-slider-value {
+  font-size: var(--uix-font-size-200);
+  color: var(--uix-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.uix-slider-control {
+  display: flex;
+  align-items: center;
+  height: 1.2rem;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.uix-slider-track {
+  position: relative;
+  width: 100%;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--uix-bg-subtle);
+}
+
+.uix-slider-indicator {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--uix-accent);
+}
+
+.uix-slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  background: var(--uix-bg-surface);
+  border: 2px solid var(--uix-accent);
+  transform: translate(-50%, -50%);
+  box-shadow: var(--uix-shadow-1);
+}
+
+.uix-slider-thumb:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: 2px;
+}
+
+/* NumberField ---------------------------------------------------------------------- */
+
+.uix-numberfield {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--uix-border-subtle);
+  border-radius: var(--uix-radius-m);
+  background: var(--uix-bg-surface);
+  overflow: hidden;
+}
+
+.uix-numberfield:focus-within {
+  border-color: var(--uix-border-strong);
+}
+
+.uix-numberfield-step {
+  width: 2.2rem;
+  height: 2.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--uix-bg-subtle);
+  border: none;
+  color: var(--uix-text-primary);
+  font-size: var(--uix-font-size-400);
+  cursor: pointer;
+}
+
+.uix-numberfield-step:hover {
+  color: var(--uix-accent);
+}
+
+.uix-numberfield-step:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: -2px;
+}
+
+.uix-numberfield .uix-field-input {
+  text-align: center;
+  padding: var(--uix-space-2) var(--uix-space-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* SegmentedControl -------------------------------------------------------------------- */
+
+.uix-segmented {
+  display: inline-flex;
+  background: var(--uix-bg-subtle);
+  border-radius: var(--uix-radius-m);
+  padding: var(--uix-space-1);
+  gap: var(--uix-space-1);
+}
+
+.uix-segment {
+  border: none;
+  background: transparent;
+  color: var(--uix-text-secondary);
+  padding: var(--uix-space-2) var(--uix-space-4);
+  border-radius: calc(var(--uix-radius-m) - var(--uix-space-1));
+  font-size: var(--uix-font-size-200);
+  font-weight: var(--uix-font-weight-bold);
+  cursor: pointer;
+}
+
+.uix-segment[aria-pressed="true"] {
+  background: var(--uix-bg-surface);
+  color: var(--uix-text-primary);
+  box-shadow: var(--uix-shadow-1);
+}
+
+.uix-segment:focus-visible {
+  outline: 2px solid var(--uix-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Table ---------------------------------------------------------------------------- */
+
+.uix-table-wrap {
+  overflow-x: auto;
+}
+
+.uix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--uix-font-size-200);
+}
+
+.uix-table th {
+  text-align: left;
+  font-weight: var(--uix-font-weight-bold);
+  color: var(--uix-text-secondary);
+  border-bottom: 1px solid var(--uix-border-subtle);
+  padding: var(--uix-space-2) var(--uix-space-3);
+}
+
+.uix-table td {
+  padding: var(--uix-space-2) var(--uix-space-3);
+  border-bottom: 1px solid var(--uix-border-subtle);
+}
+
+.uix-table tbody tr:hover td {
+  background: var(--uix-bg-subtle);
+}

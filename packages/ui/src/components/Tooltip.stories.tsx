@@ -8,10 +8,9 @@ const meta = {
 } satisfies Meta<typeof Tooltip>;
 
 export default meta;
-type Story = StoryObj;
 
 /** Open state rendered deterministically for the assertion. */
-export const OnButton: Story = {
+export const OnButton: StoryObj = {
   render: () => (
     <Tooltip content="Applies to draft rows only">
       <button type="button">Bulk edit</button>
@@ -24,7 +23,7 @@ export const OnButton: Story = {
     focus, Escape, edge flipping) is Base UI's own tested surface;
     the headless runner's synthetic hover does not reach it, so this
     suite asserts markup and styling only. */
-export const OpenState: Story = {
+export const OpenState: StoryObj = {
   render: () => (
     <Tooltip content="Applies to draft rows only" defaultOpen>
       <button type="button">Bulk edit</button>
@@ -33,7 +32,7 @@ export const OpenState: Story = {
 };
 
 /** Placement below, for triggers near the top edge. */
-export const Below: Story = {
+export const Below: StoryObj = {
   render: () => (
     <Tooltip content="Undo walks through committing again" placement="bottom">
       <button type="button">What does undo do?</button>
