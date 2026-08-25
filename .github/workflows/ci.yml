@@ -36,24 +36,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # PRs laufen affected (Merge-Base existiert). Pushes auf main
-      # bauen alles — affected hat dort ohne Nx Cloud keine Basis.
-      - name: Lint
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      # Affected überall: PRs gegen die Merge-Base, Pushes auf main
+      # gegen HEAD~1 (alles seit dem letzten Push). Beim ersten Commit
+      # ohne Vorgänger fällt der Lauf auf das ganze Graph zurück.
+      - name: Determine base
+        id: base
         run: |
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-            pnpm exec nx affected --target=lint
+            echo "args=" >> "$GITHUB_OUTPUT"
+          elif git rev-parse HEAD~1 >/dev/null 2>&1; then
+            echo "args=--base=HEAD~1" >> "$GITHUB_OUTPUT"
           else
-            pnpm exec nx run-many -t lint
+            echo "args=--base=main" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Lint
+        run: pnpm exec nx affected --target=lint ${{ steps.base.outputs.args }}
 
       - name: Typecheck, test, build
         run: |
           for target in typecheck test build build-storybook test-storybook; do
-            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-              pnpm exec nx affected --target=$target
-            else
-              pnpm exec nx run-many -t $target
-            fi
+            pnpm exec nx affected --target=$target ${{ steps.base.outputs.args }}
           done
 
       - name: Bundle budget
