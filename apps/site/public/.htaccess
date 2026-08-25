@@ -2,7 +2,7 @@
 
 # The host otherwise recombines scripts into two copies of React and
 # breaks hydration on any page with a lazy chunk.
-<IfModule mod_pagespeed_module>
+<IfModule pagespeed_module>
   ModPagespeed off
 </IfModule>
 
