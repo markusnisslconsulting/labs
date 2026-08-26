@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
@@ -110,4 +110,32 @@ export const Matrix: StoryObj = {
       ))}
     </div>
   ),
+};
+
+/**
+ * The dismiss control is reachable and works from the keyboard.
+ *
+ * Interaction only, so it does not snapshot. Alert was never asked for
+ * this: the coverage gate looked for a lowercase `<button>` and Alert's
+ * dismiss is a `<Button>`, so a component whose only interactive part is
+ * a button counted as having none.
+ */
+export const DismissFromTheKeyboard: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  render: function Render() {
+    const [gone, setGone] = useState(false);
+    if (gone) return <p>Dismissed.</p>;
+    return (
+      <Alert severity="info" title="Heads up" onDismiss={() => setGone(true)}>
+        The negotiation agent drafted three changes.
+      </Alert>
+    );
+  },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const dismiss = canvas.getByRole("button", { name: "Dismiss" });
+    await expect(dismiss).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+    await expect(await canvas.findByText("Dismissed.")).toBeVisible();
+  },
 };

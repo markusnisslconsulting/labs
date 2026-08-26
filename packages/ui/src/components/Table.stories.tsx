@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Table } from "./Table";
@@ -109,5 +109,25 @@ export const WideColumns: Story = {
         </tbody>
       </>
     ),
+  },
+};
+
+/**
+ * The scroll container is reachable from the keyboard.
+ *
+ * `overflow-x: auto` creates a region only a pointer can reach, so a
+ * keyboard-only user could not scroll a wide table sideways at all. The
+ * wrapper has a tabindex, a role and a focus ring; this is the test that
+ * says so.
+ */
+export const ScrollRegionIsReachable: Story = {
+  args: WideColumns.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    const region = canvas.getByRole("region", {
+      name: /Suppliers by region/,
+    });
+    await expect(region).toHaveFocus();
   },
 };

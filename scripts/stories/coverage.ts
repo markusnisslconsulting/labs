@@ -184,7 +184,13 @@ function isOperable(source: string): boolean {
     /<(button|input|select|textarea)\b/.test(body) ||
     /tabIndex/.test(body) ||
     /Base\w+\.(Root|Trigger)/.test(body) ||
-    /<a\s/.test(body)
+    /<a\s/.test(body) ||
+    // A component that composes one of ours is operable too. Looking only
+    // for the lowercase element missed Alert, whose dismiss control is a
+    // <Button>, and Pagination, which is nothing but Buttons — so two
+    // components with real keyboard surfaces were never asked for a
+    // keyboard test.
+    /<(Button|IconButton)\b/.test(body)
   );
 }
 

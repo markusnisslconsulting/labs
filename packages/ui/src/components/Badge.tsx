@@ -36,6 +36,12 @@ export type BadgeProps = BadgeOwnProps &
  *
  * A short status label. The text is the content — tone only colours
  * it, so screen readers and greyscale both work.
+ *
+ * Accessibility: a `span` with no role, because a badge is text. Colour
+ * is never the only channel — the tone changes the fill and the word
+ * inside it still says what it means, so "12 overdue" reads the same to
+ * someone who cannot see that it is red. A badge that only shows a number
+ * needs the noun beside it in the markup, not in the colour.
  */
 export function Badge({
   tone = "neutral",

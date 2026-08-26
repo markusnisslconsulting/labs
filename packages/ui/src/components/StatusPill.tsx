@@ -46,6 +46,11 @@ export type StatusPillProps = StatusPillOwnProps &
  * | `--uix-pill-off` | `var(--uix-status-off)` | Status pill dot, off |
  * | `--uix-pill-ok` | `var(--uix-status-ok)` | Status pill dot, ok |
  * | `--uix-pill-warn` | `var(--uix-status-warn)` | Status pill dot, warn |
+ *
+ * Accessibility: the dot is `aria-hidden` and the words carry the state,
+ * so the pill means the same thing to someone who cannot distinguish the
+ * colours. This is the component that exists to make that rule concrete:
+ * a coloured dot on its own is a state only some readers can read.
  */
 export function StatusPill({
   tone,

@@ -42,7 +42,7 @@ function FilterBar() {
       >
         <SearchInput
           placeholder="Search the labs"
-          aria-label="Search the labs"
+          label="Search the labs"
           style={{ flex: 1 }}
         />
         <IconButton label="Clear filters" variant="outline">

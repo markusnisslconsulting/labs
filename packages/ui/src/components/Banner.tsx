@@ -30,6 +30,11 @@ const roleFor: Record<Severity, "status" | "alert"> = {
  * Page-level strip for announcements that concern the whole view.
  * Same role semantics as Alert; the difference is placement and
  * weight, not behaviour.
+ *
+ * Accessibility: the role follows the severity — `status` for
+ * information, `alert` for danger — so a danger banner interrupts and an
+ * informational one waits its turn. A banner that appears after page load
+ * is announced; one present at load is read in document order.
  */
 export function Banner({
   severity,

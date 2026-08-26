@@ -1,4 +1,4 @@
-import { expect } from "storybook/test";
+import { expect, userEvent } from "storybook/test";
 import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LabsStrings } from "../i18n";
@@ -81,4 +81,25 @@ export const Localized: StoryObj = {
       <Pagination pageCount={9} defaultPage={4} />
     </LabsStrings>
   ),
+};
+
+/**
+ * Reachable and operable from the keyboard. Interaction only, so it does
+ * not snapshot.
+ */
+export const KeyboardReachable: Story = {
+  args: NinePages.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.tab();
+    // The first stop is Previous, which is disabled on page 4? No — page 4
+    // has a previous page, so it is the first reachable control.
+    const first = canvas.getByRole("button", { name: "Previous page" });
+    await expect(first).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByLabelText("Page 3")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  },
 };

@@ -13,7 +13,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
-  args: { placeholder: "Search the labs", "aria-label": "Search the labs" },
+  args: { placeholder: "Search the labs", label: "Search the labs" },
   play: async ({ canvas }) => {
     // The accessible name comes from the label, never the placeholder.
     await expect(
@@ -31,9 +31,9 @@ export const Matrix: StoryObj = {
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "1.2rem", maxWidth: "22rem" }}>
-      <SearchInput aria-label="Rest" placeholder="Search the labs" />
-      <SearchInput aria-label="Filled" defaultValue="reorder point" />
-      <SearchInput aria-label="Disabled" placeholder="Unavailable" disabled />
+      <SearchInput label="Rest" placeholder="Search the labs" />
+      <SearchInput label="Filled" defaultValue="reorder point" />
+      <SearchInput label="Disabled" placeholder="Unavailable" disabled />
     </div>
   ),
 };

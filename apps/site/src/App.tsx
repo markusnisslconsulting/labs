@@ -35,7 +35,7 @@ const Home = () => {
       <div className="lab-controls" role="search">
         <SearchInput
           placeholder="Search the labs"
-          aria-label="Search the labs"
+          label="Search the labs"
           value={query}
           onChange={(event) => setQuery(event.currentTarget.value)}
         />

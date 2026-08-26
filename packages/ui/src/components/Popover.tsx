@@ -34,6 +34,12 @@ export type PopoverProps = PopoverOwnProps &
  * at viewport edges.
  *
  * Performance: the popup mounts lazily on first open.
+ *
+ * Accessibility: Base UI wires the trigger's `aria-haspopup` and
+ * `aria-expanded`, moves focus into the popup, traps it while open,
+ * closes on Escape and returns focus to the trigger. The popup is
+ * labelled by its title when there is one. It is non-modal: the page
+ * behind stays readable, which is the difference from Dialog.
  */
 export function Popover({
   trigger,

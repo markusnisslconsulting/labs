@@ -63,6 +63,11 @@ export type ChipProps = ChipOwnProps &
  * | `--uix-chip-active-fg` | `var(--uix-text-on-inverse)` | Active chip label |
  * | `--uix-chip-bg` | `var(--uix-bg-subtle)` | Chip background |
  * | `--uix-chip-fg` | `var(--uix-text-secondary)` | Chip label |
+ *
+ * Accessibility: a static chip is a `span` and says nothing on its own; a
+ * filter chip is a native `button` with `aria-pressed`, so its state
+ * reaches assistive technology without a hidden checkbox. It is a toggle
+ * rather than a link because activating it changes this page.
  */
 export function Chip({
   children,

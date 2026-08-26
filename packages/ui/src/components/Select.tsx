@@ -41,6 +41,12 @@ export type SelectGroupProps = ComponentPropsWithoutRef<"optgroup">;
  * Native `<select>` with a bound label and optional hint. The chevron
  * is a styled span (aria-hidden) — the element stays a real select,
  * so pickers, keyboards and forms behave like the platform.
+ *
+ * Accessibility: a native `select`, so the picker, the typeahead, the
+ * keyboard and the form participation are the platform's. The chevron is
+ * `aria-hidden` decoration over the real control rather than a
+ * replacement for it, and the hint is linked with `aria-describedby`
+ * rather than left floating near the field.
  */
 export function Select({
   label,

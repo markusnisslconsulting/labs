@@ -52,6 +52,11 @@ export type RadioGroupProps = RadioGroupOwnProps &
  *
  * Radio group as a `fieldset` with a real `legend` — the platform's
  * own grouping semantics. Arrow keys move between options natively.
+ *
+ * Accessibility: a real `fieldset` with a real `legend`, so the group's
+ * name is announced once and each option inherits it. The platform gives
+ * arrow-key navigation and the single-tab-stop behaviour for free, which
+ * is why this is not a set of buttons with `aria-checked`.
  */
 export function RadioGroup({
   name,

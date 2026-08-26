@@ -286,22 +286,75 @@ describe("component API contract", () => {
     }
   });
 
-  it("every part merges the caller's className rather than replacing it", () => {
-    // Passing className used to strip a component's own styling. The roots
-    // were fixed long ago; the parts are new, and this is the rule they
-    // have to inherit.
+  it("every component documents what it is for and how it behaves", () => {
+    /*
+     * Ten of the thirty-four had no accessibility section, and they were
+     * the ones where it matters most: Table, Select, RadioGroup, Popover,
+     * SearchInput. Writing the missing ten found four real defects — a
+     * scroll container no keyboard could reach, an avatar whose two
+     * branches announced different things, an avatar branch that dropped
+     * the caller's className, and a search field that asked callers to
+     * remember an aria-label instead of requiring a name.
+     *
+     * That is the argument for the gate. Writing the sentence is what
+     * makes someone check whether it is true.
+     */
+    const REQUIRED = [
+      ["**Use it for**", "when to reach for it, and when not to"],
+      ["Accessibility:", "what it guarantees and what the caller still owes"],
+    ] as const;
+    for (const [file, text] of source) {
+      for (const [marker, what] of REQUIRED) {
+        expect(
+          text.includes(marker),
+          `${file} has no "${marker}" section — ${what}`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("every branch of a component merges className", () => {
+    /*
+     * Passing className used to strip a component's own styling. The rule
+     * was then written for compound parts only, which missed Avatar:
+     * with `src` it merged, without `src` it rendered
+     * `className="uix-avatar"` flat and dropped the caller's class and
+     * every other prop. One component, two branches, two contracts, and
+     * the accessibility differed between them too.
+     *
+     * So the unit is the branch, not the component. A first attempt
+     * matched any literal `uix-*` class and flagged Menu's popup, which
+     * is an internal element the caller does not address — the root there
+     * is the trigger, and it merges. Naming the wrong thing is how a gate
+     * gets switched off.
+     */
     for (const [file, text] of source) {
       const name = file.replace(/\.tsx$/, "");
-      if (!new RegExp(`${name}\\.\\w+\\s*=`).test(text)) continue;
-      // Every function that destructures className must pass it through cx.
-      for (const hit of text.matchAll(
-        /function (\w+)\(\{([^}]*)\}[^)]*\)\s*\{([\s\S]*?)\n\}/g,
-      )) {
-        const [, fnName, params, body] = hit;
-        if (!/\bclassName\b/.test(params!)) continue;
+      const body = code(text);
+      const start = body.search(
+        new RegExp(`export function ${name}\\(|export const ${name} =`),
+      );
+      if (start === -1) continue;
+      // Up to the next top-level declaration.
+      const rest = body.slice(start);
+      const end = rest.search(/\n(?:function|export|const) /);
+      const fn = end === -1 ? rest : rest.slice(0, end);
+
+      // Nothing to merge if the component does not *accept* a className.
+      // Tooltip renders no element of its own — it wraps the caller's —
+      // so its literal class sits on a trigger the caller never
+      // addresses. Testing for the word anywhere in the function matched
+      // `className="uix-tooltip"` and defeated the exemption; the
+      // question is whether it is in the parameter list.
+      const params = /\(\{([\s\S]*?)\}:/.exec(fn)?.[1] ?? "";
+      if (!/^\s*className,?\s*$/m.test(params)) continue;
+
+      const branches = [...fn.matchAll(/\n\s*return \(([\s\S]*?)\n\s*\);/g)];
+      for (const [, branch] of branches) {
         expect(
-          /cx\(|cxState\(/.test(body!),
-          `${file}: ${fnName} takes className and does not merge it through cx`,
+          /cx\(|cxState\(|renderAsElement\(/.test(branch!),
+          `${file}: one return branch renders without merging className, so a ` +
+            `caller's class is dropped on that path`,
         ).toBe(true);
       }
     }

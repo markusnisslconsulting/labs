@@ -40,4 +40,11 @@
   .uix-table tbody tr:hover td {
     background: var(--uix-bg-subtle);
   }
+
+  /* The wrapper is focusable now, so it needs a visible focus ring — a
+     focusable element without one is a keyboard user losing their place. */
+  .uix-table-wrap:focus-visible {
+    outline: 2px solid var(--uix-focus-ring);
+    outline-offset: 2px;
+  }
 }
