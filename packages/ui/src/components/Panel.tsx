@@ -59,7 +59,7 @@ function PanelBodyBase({ children }: PanelBodyProps) {
  * | `--uix-panel-border` | `var(--uix-border-subtle)` | Panel border |
  * | `--uix-panel-pad-x` | `var(--uix-gap-xl)` | Panel horizontal padding, density-aware |
  * | `--uix-panel-pad-y` | `calc(var(--uix-gap-lg) + var(--uix-gap-xs))` | Panel vertical padding, density-aware |
- * | `--uix-panel-radius` | `var(--uix-radius-l)` | Panel corner radius |
+ * | `--uix-panel-radius` | `var(--uix-radius-container)` | Panel corner radius |
  */
 export function Panel({ label, children, className, ...rest }: PanelProps) {
   return (

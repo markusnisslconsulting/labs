@@ -59,6 +59,7 @@ export type SwitchProps = SwitchOwnProps &
  * | `--uix-switch-thumb-bg` | `var(--uix-bg-surface)` | Switch knob |
  * | `--uix-switch-track-bg` | `var(--uix-bg-subtle)` | Switch track, off |
  * | `--uix-switch-track-on-bg` | `var(--uix-accent)` | Switch track, on |
+ * | `--uix-switch-travel` | `1.3rem` | How far the knob travels; negated under dir=rtl |
  */
 export function Switch({
   label,

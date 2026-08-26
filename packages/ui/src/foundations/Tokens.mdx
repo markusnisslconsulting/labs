@@ -3,7 +3,6 @@ import { TokenTable } from "./TokenTable";
 import {
   primitiveTokens,
   semanticTokens,
-  componentTokens,
 } from "../tokens.registry";
 
 <Meta title="Foundations/Tokens" />
@@ -22,17 +21,26 @@ what ships. Click a token name to copy it.
 ## Primitive
 
 Raw values with no opinion: the palette, the scales. **No component may
-name a primitive colour** — colour is what themes and brands remap, so a
-component that names one escapes both. Spacing, radius, type and motion
-are a shared scale and may be used directly.
+name a primitive colour, radius, typeface or shadow.** Those four are
+what a theme or a brand remaps, so a component that names one has put
+itself out of their reach permanently — which is exactly why the `ocean`
+brand could only ever re-point a hue. Spacing and font size are a shared
+rhythm and may be used directly.
 
 <TokenTable tokens={primitiveTokens} />
 
 ## Semantic
 
-Intent, not appearance. This is the only layer a brand touches, and it is
-deliberately a closed vocabulary: adding one is an API change, not a
-convenience.
+Intent, not appearance, and not only colour: the shape roles
+(`--uix-radius-control`, `--uix-radius-container`, `--uix-radius-pill`),
+the type roles (`--uix-font-body`, `--uix-font-display`) and the
+elevation roles live here too, because a brand has to be able to change
+a corner and a typeface without touching a component.
+
+This is the only layer a brand touches, and it is deliberately a closed
+vocabulary: adding one is an API change, not a convenience. Whatever a
+brand must be able to change has to have a role here — that is the whole
+constraint, and it is why the list is not longer.
 
 `--uix-ink` and `--uix-paper` are the two ends of the neutral ramp for the
 current theme. A component shades a fill by mixing toward them, so a hover
@@ -53,7 +61,16 @@ until a product fills it.
 ```
 
 That is why the tier can grow to cover every component without the
-stylesheet growing with it. Each component's own docs page lists the slots
-that apply to it; this is the whole set.
+stylesheet growing with it.
 
-<TokenTable tokens={componentTokens} />
+**The slots themselves are documented on the components**, under a
+Theming heading on each component's docs page. They used to be listed
+here as one table of every slot in the library, which is the wrong place
+twice over: a reader looking at Button had to leave the page to find out
+what they could override, and a list of every component's slots together
+is a list nobody reads.
+
+A test keeps that honest in both directions: every component-tier token
+in the registry appears in some component's table, and every default
+printed there is the value the registry holds. It caught three tables
+still naming `--uix-radius-m` after the shape roles landed.

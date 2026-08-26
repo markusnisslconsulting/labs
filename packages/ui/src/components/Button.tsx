@@ -90,7 +90,7 @@ export type ButtonProps = ButtonOwnProps &
  * | `--uix-button-outline-border` | `var(--uix-border-subtle)` | Outline button border, rest |
  * | `--uix-button-outline-border-strong` | `var(--uix-border-strong)` | Button outline border strong |
  * | `--uix-button-outline-fg` | `var(--uix-text-primary)` | Outline button label |
- * | `--uix-button-radius` | `var(--uix-radius-m)` | Button corner radius, md |
+ * | `--uix-button-radius` | `var(--uix-radius-control)` | Button corner radius, md |
  */
 export function Button({
   variant = "solid",

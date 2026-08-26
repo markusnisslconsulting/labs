@@ -415,6 +415,61 @@ describe("the layering rules the architecture depends on", () => {
     }
   });
 
+  /**
+   * Component tokens are documented on the component, and the table
+   * cannot drift from the registry.
+   *
+   * They used to live on a Foundations page, which is the wrong place
+   * twice over: a reader looking at Button has to leave to find out what
+   * they can override, and a page listing every component's slots is a
+   * list nobody reads. The table sits in the component's own TSDoc, so
+   * autodocs renders it on the component's page.
+   *
+   * A hand-written table is also a copy, and a copy goes stale. This
+   * checks both directions: every component-tier token appears in some
+   * component's table, and every default printed there is the value the
+   * registry holds.
+   */
+  it("every component token is documented on its component, with the registry's default", () => {
+    const dir = "packages/ui/src/components";
+    const documented = new Map<string, { file: string; value: string }>();
+    for (const file of readdirSync(dir).filter(
+      (f) => f.endsWith(".tsx") && !f.includes(".stories."),
+    )) {
+      const source = readFileSync(join(dir, file), "utf8");
+      for (const row of source.matchAll(
+        /\|\s*`(--uix-[\w-]+)`\s*\|\s*`([^`]+)`\s*\|/g,
+      )) {
+        documented.set(row[1]!, { file, value: row[2]!.trim() });
+      }
+    }
+
+    for (const token of componentTokens) {
+      const entry = documented.get(token.name);
+      expect(
+        entry,
+        `${token.name} is in the registry but no component's Theming table lists it`,
+      ).toBeDefined();
+      expect(
+        entry!.value,
+        `${entry!.file} documents ${token.name} as "${entry!.value}", the registry says "${token.value}"`,
+      ).toBe(token.value);
+    }
+
+    // The other direction, so a table cannot invent a slot.
+    const known = new Set(componentTokens.map((token) => token.name));
+    for (const [name, entry] of documented) {
+      if (!name.startsWith("--uix-")) continue;
+      if (known.has(name)) continue;
+      // A table may cite a semantic or primitive token as a default's
+      // origin, but not present one as this component's own slot.
+      expect(
+        allTokens.some((token) => token.name === name),
+        `${entry.file} documents ${name}, which is in no tier of the registry`,
+      ).toBe(true);
+    }
+  });
+
   it("every component stylesheet lives in @layer components", () => {
     for (const { file, source } of componentCss) {
       expect(

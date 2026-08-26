@@ -38,7 +38,7 @@ export interface TextFieldProps extends Omit<
  * | Token | Default | Meaning |
  * | --- | --- | --- |
  * | `--uix-field-pad-y` | `0` | Extra vertical padding inside a field; height comes from --uix-control-md |
- * | `--uix-field-radius` | `var(--uix-radius-m)` | Field corner radius |
+ * | `--uix-field-radius` | `var(--uix-radius-control)` | Field corner radius |
  */
 export function TextField({
   label,
