@@ -27,6 +27,16 @@
     border-bottom: 1px solid var(--uix-border-subtle);
   }
 
+  /* A column of numbers is compared down the column, not read across the
+     row, so it aligns to the inline end and uses figures of one width.
+     Without this, 800 and 1200 do not line up under each other and the
+     eye cannot compare them at all. Marked per cell rather than guessed,
+     because "looks like a number" is not something CSS can know. */
+  .uix-table [data-numeric] {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+
   .uix-table tbody tr:hover td {
     background: var(--uix-bg-subtle);
   }

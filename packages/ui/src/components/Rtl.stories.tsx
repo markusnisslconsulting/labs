@@ -12,6 +12,14 @@ export default meta;
 type Story = StoryObj;
 
 /**
+ * The direction axis, composed.
+ *
+ * Individual components are checked for physical properties by a test
+ * that reads their stylesheets, and that test cannot see what happens
+ * when a mirrored breadcrumb sits beside a mirrored field. This page is
+ * where that shows, and it is the reason the breadcrumb separator, the
+ * toast edges and the switch knob's travel are written on logical axes.
+ *
  * Right-to-left smoke test: logical CSS properties keep layout,
  * breadcrumbs and fields readable under `dir="rtl"`. Components use
  * logical properties where direction matters; anything hard-coded
