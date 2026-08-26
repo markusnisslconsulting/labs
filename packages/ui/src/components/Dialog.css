@@ -51,4 +51,12 @@
     gap: var(--uix-gap-sm);
     margin-top: var(--uix-gap-xl);
   }
+
+  /* The shadow was the only thing separating the dialog from the page
+     behind it, and shadows are not painted here. */
+  @media (forced-colors: active) {
+    .uix-dialog {
+      border: 1px solid CanvasText;
+    }
+  }
 }

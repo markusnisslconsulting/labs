@@ -21,11 +21,53 @@ const componentCss = readdirSync(COMPONENTS)
   }));
 
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
-const norm = (value: string) => value.replace(/\s+/g, " ").trim();
+// Collapse whitespace, and also the space prettier inserts after "(" and
+// before ")" when it wraps a long function call. light-dark() made those
+// wraps common, and the registry cannot be expected to mirror them.
+const norm = (value: string) =>
+  value
+    .replace(/\s+/g, " ")
+    .replace(/\(\s+/g, "(")
+    .replace(/\s+\)/g, ")")
+    .replace(/\s*,\s*/g, ", ")
+    .trim();
 
 /** Declarations in a file's base `:root` only — not theme or brand overrides. */
+/**
+ * Drop conditional at-rule blocks, keeping their surroundings.
+ *
+ * `@layer tokens { … }` must survive, because everything lives inside it,
+ * but a `:root` inside `@media (prefers-contrast: more)` is not the
+ * default value of anything — and reading it as one made parity compare
+ * the registry against the high contrast override.
+ */
+function withoutConditionals(source: string): string {
+  let out = "";
+  let i = 0;
+  while (i < source.length) {
+    const at = source.slice(i).search(/@(media|supports|container)\b/);
+    if (at === -1) return out + source.slice(i);
+    out += source.slice(i, i + at);
+    let j = i + at;
+    while (j < source.length && source[j] !== "{") j += 1;
+    let depth = 0;
+    for (; j < source.length; j += 1) {
+      if (source[j] === "{") depth += 1;
+      else if (source[j] === "}") {
+        depth -= 1;
+        if (depth === 0) {
+          j += 1;
+          break;
+        }
+      }
+    }
+    i = j;
+  }
+  return out;
+}
+
 function rootDeclarations(path: string): Map<string, string> {
-  const source = strip(readFileSync(path, "utf8"));
+  const source = withoutConditionals(strip(readFileSync(path, "utf8")));
   const map = new Map<string, string>();
   // Anchored on :root, then any comma-separated companions. The previous
   // pattern required the brace to follow :root directly, so a selector
@@ -372,13 +414,23 @@ describe("the layering rules the architecture depends on", () => {
       "packages/ui/src/styles/tokens/semantic.css",
       "utf8",
     );
+    // color-scheme is not decoration here: every theme-dependent role is a
+    // light-dark(), and light-dark() reads the used color-scheme. Losing
+    // one of these does not merely change a scrollbar, it picks the wrong
+    // half of twenty declarations.
     expect(
-      /:root\s*\{[^}]*color-scheme:\s*light/.test(source),
-      "the light theme must declare color-scheme: light",
+      /:root,\s*\[data-theme="light"\]\s*\{[^}]*color-scheme:\s*only light/.test(
+        source,
+      ),
+      "the default and explicit light theme must declare color-scheme: only light",
     ).toBe(true);
     expect(
-      /\[data-theme="dark"\]\s*\{[^}]*color-scheme:\s*dark/.test(source),
-      "the dark theme must declare color-scheme: dark",
+      /\[data-theme="dark"\]\s*\{[^}]*color-scheme:\s*only dark/.test(source),
+      "the dark theme must declare color-scheme: only dark",
+    ).toBe(true);
+    expect(
+      /\[data-theme="auto"\]\s*\{[^}]*color-scheme:\s*light dark/.test(source),
+      "the auto theme must declare color-scheme: light dark so it follows the system",
     ).toBe(true);
   });
 
@@ -481,7 +533,9 @@ describe("the layering rules the architecture depends on", () => {
 
   it("the entry declares the layer order before importing anything", () => {
     const entry = readFileSync("packages/ui/src/styles.css", "utf8");
-    const order = entry.indexOf("@layer tokens, base, components, overrides;");
+    const order = entry.indexOf(
+      "@layer tokens, base, components, print, overrides;",
+    );
     expect(order, "styles.css must declare the layer order").toBeGreaterThan(
       -1,
     );

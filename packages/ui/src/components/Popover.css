@@ -35,4 +35,10 @@
     display: flex;
     justify-content: flex-end;
   }
+
+  @media (forced-colors: active) {
+    .uix-popover {
+      border: 1px solid CanvasText;
+    }
+  }
 }

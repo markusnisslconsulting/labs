@@ -42,4 +42,17 @@
     opacity: var(--uix-opacity-disabled);
     cursor: not-allowed;
   }
+
+  @media (forced-colors: active) {
+    .uix-segment[aria-pressed="true"] {
+      background: Highlight;
+      color: HighlightText;
+    }
+
+    /* The selected segment was lifted by a shadow, and shadows are not
+       painted in this mode. */
+    .uix-segmented {
+      border: 1px solid CanvasText;
+    }
+  }
 }

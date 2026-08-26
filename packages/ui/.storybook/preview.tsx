@@ -170,6 +170,7 @@ const preview: Preview = {
         items: [
           { value: "default", title: "Cozy", icon: "expand" },
           { value: "compact", title: "Compact", icon: "collapse" },
+          { value: "comfortable", title: "Comfortable", icon: "grow" },
         ],
         dynamicTitle: true,
       },
@@ -197,7 +198,10 @@ const preview: Preview = {
      * addon and this one reads its list from the decorator instead.
      */
     withThemeByDataAttribute({
-      themes: { light: "light", dark: "dark" },
+      // "auto" is a real value, not a Storybook convenience: it sets
+      // data-theme="auto", which sets color-scheme: light dark, which is
+      // what every light-dark() in the token layer reads.
+      themes: { light: "light", dark: "dark", auto: "auto" },
       defaultTheme: "light",
       attributeName: "data-theme",
     }),

@@ -46,7 +46,10 @@ function parseColour(value: string): Rgb | null {
   }
   const rgb = value.match(/^rgba?\(([^)]+)\)$/i);
   if (rgb) {
-    const parts = rgb[1]!.split(/[,/\s]+/).filter(Boolean).map(Number);
+    const parts = rgb[1]!
+      .split(/[,/\s]+/)
+      .filter(Boolean)
+      .map(Number);
     if (parts.length >= 3) return { r: parts[0]!, g: parts[1]!, b: parts[2]! };
   }
   return null;
@@ -94,37 +97,75 @@ function collect(css: string, accept: (selector: string) => boolean): Scope {
   return out;
 }
 
+/**
+ * Replace every light-dark(a, b) with the half this theme uses.
+ *
+ * The dark theme used to be a second block of declarations under
+ * [data-theme="dark"], and this script picked it up by selector. Now each
+ * theme-dependent role is one light-dark() declaration read by the used
+ * color-scheme, which a stylesheet parser has no notion of — so the theme
+ * is applied here, where the scope is built and the theme is known.
+ * Without this the check silently measured light values against dark
+ * backgrounds and reported eight failures that were its own.
+ */
+function pickScheme(value: string, theme: "light" | "dark"): string {
+  let out = "";
+  let rest = value;
+  for (;;) {
+    const at = rest.search(/light-dark\(/i);
+    if (at === -1) return out + rest;
+    out += rest.slice(0, at);
+    // Walk to the matching bracket rather than trusting a regex: the
+    // branches are var() and rgba() calls with commas of their own.
+    let depth = 0;
+    let end = -1;
+    const open = at + rest.slice(at).indexOf("(");
+    for (let i = open; i < rest.length; i += 1) {
+      if (rest[i] === "(") depth += 1;
+      else if (rest[i] === ")") {
+        depth -= 1;
+        if (depth === 0) {
+          end = i;
+          break;
+        }
+      }
+    }
+    if (end === -1) return out + rest;
+    const parts = splitTop(rest.slice(open + 1, end));
+    const chosen = theme === "dark" ? parts[1] : parts[0];
+    out += pickScheme((chosen ?? "").trim(), theme);
+    rest = rest.slice(end + 1);
+  }
+}
+
 function scopeFor(theme: "light" | "dark", brand: string): Scope {
   const scope: Scope = new Map();
-  const add = (from: Scope) => from.forEach((v, k) => scope.set(k, v));
+  const add = (from: Scope) =>
+    from.forEach((value, name) => scope.set(name, pickScheme(value, theme)));
 
   const primitive = readFileSync(join(TOKENS, "primitive.css"), "utf8");
   const semantic = readFileSync(join(TOKENS, "semantic.css"), "utf8");
 
   add(collect(primitive, (s) => s === ":root"));
   add(collect(semantic, (s) => s === ":root"));
-  if (theme === "dark") {
-    add(collect(semantic, (s) => s.includes('[data-theme="dark"]')));
-  }
   if (brand !== "default") {
     const file = join(BRANDS, `${brand}.css`);
     if (existsSync(file)) {
       const css = readFileSync(file, "utf8");
       add(collect(css, (s) => s === `[data-brand="${brand}"]`));
-      if (theme === "dark") {
-        add(
-          collect(css, (s) =>
-            s.includes(`[data-brand="${brand}"][data-theme="dark"]`),
-          ),
-        );
-      }
+      // A brand no longer needs a theme selector: its theme-dependent
+      // values are light-dark() and pickScheme has already chosen.
     }
   }
   return scope;
 }
 
 /** Resolve a token to an rgb value, following var() and color-mix(). */
-function resolve(name: string, scope: Scope, seen = new Set<string>()): Rgb | null {
+function resolve(
+  name: string,
+  scope: Scope,
+  seen = new Set<string>(),
+): Rgb | null {
   if (seen.has(name)) return null;
   seen.add(name);
   const raw = scope.get(name);
@@ -150,7 +191,11 @@ function evaluate(value: string, scope: Scope, seen: Set<string>): Rgb | null {
     const parts = splitTop(cm[1]!);
     if (parts.length !== 2) return null;
     const first = parts[0]!.trim().match(/^([\s\S]+?)\s+(\d+(?:\.\d+)?)%$/);
-    const a = evaluate((first ? first[1]! : parts[0]!).trim(), scope, new Set(seen));
+    const a = evaluate(
+      (first ? first[1]! : parts[0]!).trim(),
+      scope,
+      new Set(seen),
+    );
     const weight = first ? Number(first[2]) / 100 : 0.5;
     const secondRaw = parts[1]!.trim().replace(/\s+\d+(\.\d+)?%$/, "");
     // `transparent` over an unknown ground cannot be measured; the caller
@@ -192,37 +237,157 @@ interface Pairing {
 }
 
 const PAIRINGS: Pairing[] = [
-  { what: "body text on the page", fg: "--uix-text-primary", bg: "--uix-bg-page", target: 4.5 },
-  { what: "body text on a surface", fg: "--uix-text-primary", bg: "--uix-bg-surface", target: 4.5 },
-  { what: "body text on a subtle fill", fg: "--uix-text-primary", bg: "--uix-bg-subtle", target: 4.5 },
-  { what: "secondary text on the page", fg: "--uix-text-secondary", bg: "--uix-bg-page", target: 4.5 },
-  { what: "secondary text on a surface", fg: "--uix-text-secondary", bg: "--uix-bg-surface", target: 4.5 },
-  { what: "secondary text on a subtle fill", fg: "--uix-text-secondary", bg: "--uix-bg-subtle", target: 4.5 },
+  {
+    what: "body text on the page",
+    fg: "--uix-text-primary",
+    bg: "--uix-bg-page",
+    target: 4.5,
+  },
+  {
+    what: "body text on a surface",
+    fg: "--uix-text-primary",
+    bg: "--uix-bg-surface",
+    target: 4.5,
+  },
+  {
+    what: "body text on a subtle fill",
+    fg: "--uix-text-primary",
+    bg: "--uix-bg-subtle",
+    target: 4.5,
+  },
+  {
+    what: "secondary text on the page",
+    fg: "--uix-text-secondary",
+    bg: "--uix-bg-page",
+    target: 4.5,
+  },
+  {
+    what: "secondary text on a surface",
+    fg: "--uix-text-secondary",
+    bg: "--uix-bg-surface",
+    target: 4.5,
+  },
+  {
+    what: "secondary text on a subtle fill",
+    fg: "--uix-text-secondary",
+    bg: "--uix-bg-subtle",
+    target: 4.5,
+  },
   // WCAG exempts an inactive control, and axe honours that for a native
   // disabled element. It cannot honour it for label and value text beside
   // a control, so disabled text keeps the full 4.5 target.
-  { what: "disabled text on the page", fg: "--uix-text-disabled", bg: "--uix-bg-page", target: 4.5 },
-  { what: "disabled text on a surface", fg: "--uix-text-disabled", bg: "--uix-bg-surface", target: 4.5 },
-  { what: "disabled text on a subtle fill", fg: "--uix-text-disabled", bg: "--uix-bg-subtle", target: 4.5 },
-  { what: "label on an accent fill", fg: "--uix-text-on-accent", bg: "--uix-accent", target: 4.5 },
-  { what: "label on an inverted surface", fg: "--uix-text-on-inverse", bg: "--uix-surface-inverse", target: 4.5 },
-  { what: "positive status on a surface", fg: "--uix-status-ok", bg: "--uix-bg-surface", target: 4.5 },
-  { what: "caution status on a surface", fg: "--uix-status-warn", bg: "--uix-bg-surface", target: 4.5 },
-  { what: "danger status on a surface", fg: "--uix-status-danger", bg: "--uix-bg-surface", target: 4.5 },
-  { what: "neutral status on a surface", fg: "--uix-status-off", bg: "--uix-bg-surface", target: 4.5 },
-  { what: "info text on its container", fg: "--uix-text-primary", bg: "--uix-container-info", target: 4.5 },
-  { what: "text on the success container", fg: "--uix-text-primary", bg: "--uix-container-success", target: 4.5 },
-  { what: "text on the warning container", fg: "--uix-text-primary", bg: "--uix-container-warning", target: 4.5 },
-  { what: "text on the danger container", fg: "--uix-text-primary", bg: "--uix-container-danger", target: 4.5 },
+  {
+    what: "disabled text on the page",
+    fg: "--uix-text-disabled",
+    bg: "--uix-bg-page",
+    target: 4.5,
+  },
+  {
+    what: "disabled text on a surface",
+    fg: "--uix-text-disabled",
+    bg: "--uix-bg-surface",
+    target: 4.5,
+  },
+  {
+    what: "disabled text on a subtle fill",
+    fg: "--uix-text-disabled",
+    bg: "--uix-bg-subtle",
+    target: 4.5,
+  },
+  {
+    what: "label on an accent fill",
+    fg: "--uix-text-on-accent",
+    bg: "--uix-accent",
+    target: 4.5,
+  },
+  {
+    what: "label on an inverted surface",
+    fg: "--uix-text-on-inverse",
+    bg: "--uix-surface-inverse",
+    target: 4.5,
+  },
+  {
+    what: "positive status on a surface",
+    fg: "--uix-status-ok",
+    bg: "--uix-bg-surface",
+    target: 4.5,
+  },
+  {
+    what: "caution status on a surface",
+    fg: "--uix-status-warn",
+    bg: "--uix-bg-surface",
+    target: 4.5,
+  },
+  {
+    what: "danger status on a surface",
+    fg: "--uix-status-danger",
+    bg: "--uix-bg-surface",
+    target: 4.5,
+  },
+  {
+    what: "neutral status on a surface",
+    fg: "--uix-status-off",
+    bg: "--uix-bg-surface",
+    target: 4.5,
+  },
+  {
+    what: "info text on its container",
+    fg: "--uix-text-primary",
+    bg: "--uix-container-info",
+    target: 4.5,
+  },
+  {
+    what: "text on the success container",
+    fg: "--uix-text-primary",
+    bg: "--uix-container-success",
+    target: 4.5,
+  },
+  {
+    what: "text on the warning container",
+    fg: "--uix-text-primary",
+    bg: "--uix-container-warning",
+    target: 4.5,
+  },
+  {
+    what: "text on the danger container",
+    fg: "--uix-text-primary",
+    bg: "--uix-container-danger",
+    target: 4.5,
+  },
   // An inverted surface has to be visible against what it sits on, not
   // merely legible inside itself. Checking only the label on it missed a
   // dark-mode chip that read perfectly and disappeared into the page.
-  { what: "inverted surface against the page", fg: "--uix-surface-inverse", bg: "--uix-bg-page", target: 3 },
-  { what: "inverted surface against a surface", fg: "--uix-surface-inverse", bg: "--uix-bg-surface", target: 3 },
+  {
+    what: "inverted surface against the page",
+    fg: "--uix-surface-inverse",
+    bg: "--uix-bg-page",
+    target: 3,
+  },
+  {
+    what: "inverted surface against a surface",
+    fg: "--uix-surface-inverse",
+    bg: "--uix-bg-surface",
+    target: 3,
+  },
   // Non-text contrast: a focus ring nobody can see is not a focus ring.
-  { what: "focus ring against the page", fg: "--uix-focus-ring", bg: "--uix-bg-page", target: 3 },
-  { what: "focus ring against a surface", fg: "--uix-focus-ring", bg: "--uix-bg-surface", target: 3 },
-  { what: "accent fill against the page", fg: "--uix-accent", bg: "--uix-bg-page", target: 3 },
+  {
+    what: "focus ring against the page",
+    fg: "--uix-focus-ring",
+    bg: "--uix-bg-page",
+    target: 3,
+  },
+  {
+    what: "focus ring against a surface",
+    fg: "--uix-focus-ring",
+    bg: "--uix-bg-surface",
+    target: 3,
+  },
+  {
+    what: "accent fill against the page",
+    fg: "--uix-accent",
+    bg: "--uix-bg-page",
+    target: 3,
+  },
 ];
 
 const THEMES = ["light", "dark"] as const;
@@ -276,9 +441,10 @@ if (mode === "report") {
       console.log(`\n${group}`);
     }
     const value = r.value === null ? "  n/a" : r.value.toFixed(2).padStart(5);
-    const mark =
-      r.value === null ? "?" : r.value < r.target ? "FAIL" : "ok";
-    console.log(`  ${value}:1  (needs ${r.target})  ${mark.padEnd(4)} ${r.what}`);
+    const mark = r.value === null ? "?" : r.value < r.target ? "FAIL" : "ok";
+    console.log(
+      `  ${value}:1  (needs ${r.target})  ${mark.padEnd(4)} ${r.what}`,
+    );
   }
   console.log(
     `\n${results.length} pairings across ${brands().length} brand(s) x ${THEMES.length} themes` +

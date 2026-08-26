@@ -81,4 +81,35 @@
       transition: none;
     }
   }
+
+  /* The whole control is a picture of a state drawn in colour, which is
+     the one thing this mode takes away. Highlight for on, and an explicit
+     border so the track has an edge at all. */
+  @media (forced-colors: active) {
+    .uix-switch {
+      border: 1px solid CanvasText;
+    }
+
+    .uix-switch[data-checked] {
+      background: Highlight;
+    }
+
+    .uix-switch-thumb {
+      background: CanvasText;
+    }
+
+    .uix-switch[data-checked] .uix-switch-thumb {
+      background: HighlightText;
+    }
+
+    .uix-switch:disabled,
+    .uix-switch[data-disabled] {
+      border-color: GrayText;
+    }
+
+    .uix-switch:disabled .uix-switch-thumb,
+    .uix-switch[data-disabled] .uix-switch-thumb {
+      background: GrayText;
+    }
+  }
 }

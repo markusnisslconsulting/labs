@@ -76,4 +76,16 @@
   .uix-checkbox-label {
     color: var(--uix-text-primary);
   }
+
+  @media (forced-colors: active) {
+    .uix-checkbox[data-checked] .uix-checkbox-indicator {
+      background: Highlight;
+      border-color: Highlight;
+    }
+
+    .uix-checkbox[data-checked] .uix-checkbox-check,
+    .uix-checkbox[data-checked] .uix-checkbox-dash {
+      stroke: HighlightText;
+    }
+  }
 }

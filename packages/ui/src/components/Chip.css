@@ -39,4 +39,15 @@
     outline: 2px solid var(--uix-focus-ring);
     outline-offset: 2px;
   }
+
+  /* A high contrast theme replaces every background with one of its own,
+     so an active chip and an inactive one become the same box. Highlight
+     is the colour the user picked for "this one is chosen". */
+  @media (forced-colors: active) {
+    button.uix-chip[aria-pressed="true"] {
+      background: Highlight;
+      color: HighlightText;
+      border-color: Highlight;
+    }
+  }
 }

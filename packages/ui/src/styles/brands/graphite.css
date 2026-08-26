@@ -11,6 +11,11 @@
  * stylesheet edited. If a component ever reaches below the semantic
  * layer again, this brand stops looking like itself and the gate in
  * tokens.spec.ts fails.
+ *
+ * Its theme-dependent values are single light-dark() declarations, so
+ * there is no [data-theme] selector here and no way to get the nesting
+ * wrong. The hairline elevations hold in both themes because they are
+ * drawn with --uix-border-strong, which is itself theme-aware.
  */
 
 @layer tokens {
@@ -31,16 +36,6 @@
     --uix-elevation-overlay: 0 0 0 1px var(--uix-border-strong);
     --uix-elevation-modal: 0 0 0 1px var(--uix-border-strong);
 
-    --uix-accent: var(--uix-slate-600);
-  }
-
-  /* Both spellings, for the same reason ocean.css gives: a brand is often
-     scoped to a subtree while the theme sits on the root, so a single
-     compound selector never matches a nested brand. */
-  [data-brand="graphite"][data-theme="dark"],
-  [data-theme="dark"] [data-brand="graphite"] {
-    --uix-accent: var(--uix-slate-400);
-    --uix-elevation-overlay: 0 0 0 1px var(--uix-border-strong);
-    --uix-elevation-modal: 0 0 0 1px var(--uix-border-strong);
+    --uix-accent: light-dark(var(--uix-slate-600), var(--uix-slate-400));
   }
 }

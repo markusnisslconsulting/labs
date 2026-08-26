@@ -19,7 +19,7 @@
  * Adding a brand means adding a file under styles/brands/ and importing
  * it below. No other file changes.
  */
-@layer tokens, base, components, overrides;
+@layer tokens, base, components, print, overrides;
 
 @import "./styles/tokens/typed.css";
 @import "./styles/tokens/primitive.css";
@@ -28,3 +28,4 @@
 @import "./styles/brands/graphite.css";
 @import "./styles/reset.css";
 @import "./styles/base.css";
+@import "./styles/print.css";

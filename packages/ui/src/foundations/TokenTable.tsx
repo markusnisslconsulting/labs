@@ -13,11 +13,17 @@ function Preview({ token }: { token: TokenDescriptor }) {
           style={{
             width: "2.6rem",
             height: "2.6rem",
-            borderRadius: "var(--uix-radius-s)",
+            borderRadius: "var(--uix-radius-inset)",
             border: "1px solid var(--uix-border-subtle)",
             background: token.value,
             display: "inline-block",
             flexShrink: 0,
+            // The one place in the library that opts out of forced
+            // colours. Everywhere else the user's high contrast theme
+            // should win; here the swatch *is* the colour being
+            // documented, and a page of identical squares documents
+            // nothing.
+            forcedColorAdjust: "none",
           }}
           aria-hidden
         />
@@ -47,7 +53,7 @@ function Preview({ token }: { token: TokenDescriptor }) {
             width: "100%",
             height: "0.9rem",
             background: "var(--uix-bg-subtle)",
-            borderRadius: "var(--uix-radius-s)",
+            borderRadius: "var(--uix-radius-inset)",
             position: "relative",
           }}
           aria-hidden
@@ -86,7 +92,7 @@ function Preview({ token }: { token: TokenDescriptor }) {
           style={{
             width: "3rem",
             height: "2rem",
-            borderRadius: "var(--uix-radius-s)",
+            borderRadius: "var(--uix-radius-inset)",
             background: "var(--uix-bg-surface)",
             boxShadow: token.value,
             display: "inline-block",
@@ -103,7 +109,7 @@ function Preview({ token }: { token: TokenDescriptor }) {
             display: "inline-block",
             width: "4rem",
             height: "1.4rem",
-            borderRadius: "var(--uix-radius-s)",
+            borderRadius: "var(--uix-radius-inset)",
             background:
               "repeating-linear-gradient(45deg, var(--uix-bg-subtle) 0 6px, var(--uix-bg-surface) 6px 12px)",
             position: "relative",
@@ -148,7 +154,7 @@ export function TokenTable({ tokens }: { tokens: TokenDescriptor[] }) {
             gap: "var(--uix-space-3)",
             alignItems: "center",
             padding: "0.35rem 0.5rem",
-            borderRadius: "var(--uix-radius-s)",
+            borderRadius: "var(--uix-radius-inset)",
           }}
         >
           <button

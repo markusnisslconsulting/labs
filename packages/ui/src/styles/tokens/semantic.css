@@ -4,39 +4,42 @@
 @layer tokens {
   :root {
     /* Text */
-    --uix-text-primary: var(--uix-navy-900);
-    --uix-text-secondary: var(--uix-slate-600);
+    --uix-text-primary: light-dark(var(--uix-navy-900), var(--uix-grey-25));
+    --uix-text-secondary: light-dark(
+      var(--uix-slate-600),
+      var(--uix-slate-400)
+    );
     /* Readable, not invisible. Measured against page, surface and subtle
        in both themes by scripts/tokens/contrast.ts, because a disabled
        label a user cannot read is still a label they need. */
-    --uix-text-disabled: var(--uix-slate-500);
-    --uix-text-on-accent: var(--uix-white);
+    --uix-text-disabled: light-dark(var(--uix-slate-500), var(--uix-slate-450));
+    --uix-text-on-accent: light-dark(var(--uix-white), var(--uix-grey-900));
 
     /* Surfaces */
-    --uix-bg-page: var(--uix-grey-25);
-    --uix-bg-surface: var(--uix-white);
-    --uix-bg-subtle: var(--uix-grey-100);
+    --uix-bg-page: light-dark(var(--uix-grey-25), var(--uix-grey-900));
+    --uix-bg-surface: light-dark(var(--uix-white), var(--uix-grey-800));
+    --uix-bg-subtle: light-dark(var(--uix-grey-100), var(--uix-grey-700));
 
     /* Lines */
-    --uix-border-subtle: var(--uix-grey-300);
-    --uix-border-strong: var(--uix-slate-600);
+    --uix-border-subtle: light-dark(var(--uix-grey-300), var(--uix-grey-700));
+    --uix-border-strong: light-dark(var(--uix-slate-600), var(--uix-slate-400));
 
     /* Intent */
-    --uix-accent: var(--uix-red-600);
+    --uix-accent: light-dark(var(--uix-red-600), var(--uix-red-400));
     --uix-accent-soft: color-mix(in srgb, var(--uix-accent) 16%, transparent);
     --uix-focus-ring: var(--uix-accent);
-    --uix-status-ok: var(--uix-green-700);
-    --uix-status-warn: var(--uix-amber-700);
-    --uix-status-off: var(--uix-slate-600);
-    --uix-status-danger: var(--uix-red-700);
-    --uix-info: var(--uix-navy-900);
+    --uix-status-ok: light-dark(var(--uix-green-700), var(--uix-green-400));
+    --uix-status-warn: light-dark(var(--uix-amber-700), var(--uix-amber-400));
+    --uix-status-off: light-dark(var(--uix-slate-600), var(--uix-slate-400));
+    --uix-status-danger: light-dark(var(--uix-red-700), var(--uix-red-400));
+    --uix-info: light-dark(var(--uix-navy-900), var(--uix-slate-400));
     --uix-opacity-disabled: 0.55;
 
     /* The two ends of the neutral ramp for this theme. Components mix
      toward these to shade a fill, so a hover deepens on light and
      brightens on dark without either naming a palette value. */
-    --uix-ink: var(--uix-navy-900);
-    --uix-paper: var(--uix-white);
+    --uix-ink: light-dark(var(--uix-navy-900), var(--uix-grey-25));
+    --uix-paper: light-dark(var(--uix-white), var(--uix-grey-900));
 
     /* An inverted surface (dark chip on light, light chip on dark).
      Defined once: both themes want ink-on-paper flipped. */
@@ -67,9 +70,12 @@
 
     /* Elevation by what is being lifted. A flat brand re-points all
        three to none. */
-    --uix-elevation-raised: var(--uix-shadow-1);
-    --uix-elevation-overlay: var(--uix-shadow-2);
-    --uix-elevation-modal: var(--uix-shadow-3);
+    --uix-elevation-raised: 0 1px 3px
+      light-dark(rgba(16, 24, 40, 0.1), rgba(0, 0, 0, 0.5));
+    --uix-elevation-overlay: 0 8px 20px
+      light-dark(rgba(16, 24, 40, 0.12), rgba(0, 0, 0, 0.45));
+    --uix-elevation-modal: 0 18px 45px
+      light-dark(rgba(16, 24, 40, 0.2), rgba(0, 0, 0, 0.6));
 
     --uix-text-body: var(--uix-font-size-300);
     --uix-text-heading: var(--uix-font-size-500);
@@ -109,22 +115,35 @@
   }
 
   /* Dark: Schatten wirken als Kanten, nicht als Wolken. */
-  [data-theme="dark"] {
-    --uix-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.5);
-    --uix-shadow-2: 0 8px 20px rgba(0, 0, 0, 0.45);
-    --uix-shadow-3: 0 18px 45px rgba(0, 0, 0, 0.6);
+  /* color-scheme is the theme switch, not just a hint to the engine.
+     Every theme-dependent role above is one light-dark() declaration, and
+     light-dark() reads the used color-scheme — so setting it here picks a
+     side for all of them at once. It also makes the scrollbars, the text
+     caret, the spellcheck underline and every native control the library
+     does not own follow the theme, which a dark page otherwise does not
+     get.
+
+     Before this the dark theme was a second block of twenty-three
+     declarations under [data-theme="dark"]. It was never checked against
+     the registry, because parity only reads the default scope, and it
+     could not be extended to a "follow the system" option without a
+     third copy. One declaration per role replaced all of it.
+
+     "only" matters: a bare `light` still lets a UA in forced-dark mode
+     flip it. */
+  :root,
+  [data-theme="light"] {
+    color-scheme: only light;
   }
 
-  /* Tells the engine which theme it is painting, so the scrollbars, the
-     text caret, the spellcheck underline and every native control the
-     library does not own follow it too. Without this a dark page keeps a
-     light scrollbar and a white date picker. */
-  :root {
-    color-scheme: light;
+  [data-theme="dark"] {
+    color-scheme: only dark;
   }
 
-  [data-theme="dark"] {
-    color-scheme: dark;
+  /* Follow the operating system. This is what the second block could not
+     express. */
+  [data-theme="auto"] {
+    color-scheme: light dark;
   }
 
   /* Density: one multiplier the components consume. Products set
@@ -135,6 +154,13 @@
 
   [data-density="compact"] {
     --uix-density: 0.72;
+  }
+
+  /* For reading-heavy products and for anyone who finds the default
+     tight. It is not the same request as a larger font: this loosens the
+     chrome and leaves the type alone. */
+  [data-density="comfortable"] {
+    --uix-density: 1.15;
   }
 
   /* Everything derived from the multiplier is declared here, and the
@@ -186,30 +212,25 @@
     --uix-control-lg: max(24px, calc(3rem * var(--uix-density)));
   }
 
-  /* Dark theme: the semantic layer remaps to the lighter primitives.
-     Component and primitive layers stay untouched. */
-  [data-theme="dark"] {
-    --uix-text-primary: var(--uix-grey-25);
-    --uix-text-secondary: var(--uix-slate-400);
-    --uix-text-disabled: var(--uix-slate-450);
-    --uix-text-on-accent: var(--uix-grey-900);
-    --uix-bg-page: var(--uix-grey-900);
-    --uix-bg-surface: var(--uix-grey-800);
-    --uix-bg-subtle: var(--uix-grey-700);
-    --uix-border-subtle: var(--uix-grey-700);
-    --uix-border-strong: var(--uix-slate-400);
-    --uix-accent: var(--uix-red-400);
-    /* The neutral ramp flips: the strongest ink on a dark page is light,
-       and the brightest surface is dark. Everything built on ink/paper —
-       the inverted chip, the neutral button, the hover mixes — inverts
-       with it, which is the whole point of naming them by role. */
-    --uix-ink: var(--uix-grey-25);
-    --uix-paper: var(--uix-grey-900);
-    --uix-focus-ring: var(--uix-red-400);
-    --uix-status-ok: var(--uix-green-400);
-    --uix-status-warn: var(--uix-amber-400);
-    --uix-status-danger: var(--uix-red-400);
-    --uix-status-off: var(--uix-slate-400);
-    --uix-info: var(--uix-slate-400);
+  /* A user who asked their system for more contrast. Not the same request
+     as a high contrast *theme*, which replaces the palette outright and
+     is handled with forced-colors in the components: here we still choose
+     the colours, so the answer is to stop being subtle. Hairlines become
+     the strong border, secondary text stops being secondary, and the
+     disabled tone moves up one step on the ramp while staying dimmer than
+     live text.
+
+     Placed last in the layer deliberately: every rule above has the same
+     specificity, so this only wins by being later. */
+  @media (prefers-contrast: more) {
+    :root {
+      --uix-border-subtle: var(--uix-border-strong);
+      --uix-text-secondary: var(--uix-text-primary);
+      --uix-text-disabled: light-dark(
+        var(--uix-slate-600),
+        var(--uix-slate-400)
+      );
+      --uix-opacity-disabled: 0.75;
+    }
   }
 }

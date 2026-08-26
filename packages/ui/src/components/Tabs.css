@@ -54,4 +54,13 @@
     opacity: var(--uix-opacity-disabled);
     cursor: not-allowed;
   }
+
+  /* Colour alone marks the active tab, and colour is exactly what gets
+     replaced. The underline carries it instead. */
+  @media (forced-colors: active) {
+    .uix-tab[data-active] {
+      border-bottom-color: Highlight;
+      border-bottom-width: 3px;
+    }
+  }
 }

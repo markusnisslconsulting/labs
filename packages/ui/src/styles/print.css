@@ -1,0 +1,101 @@
+/* Print.
+ *
+ * A layer of its own, and it has to be: these rules undo what components
+ * declare, and a component sits in @layer components. Put them in `base`
+ * and every component out-ranks them; put them in `overrides` and a
+ * product's own CSS can no longer win. So the order is
+ * tokens, base, components, print, overrides.
+ *
+ * Everything here is about paper: ink is expensive, a page has edges that
+ * a screen does not, and nothing on paper is interactive.
+ */
+
+@layer print {
+  @media print {
+    /* Ink. A filled surface costs a page of toner and buys nothing on
+       white paper; the borders below carry the structure instead. */
+    html,
+    body,
+    .uix-card,
+    .uix-panel,
+    .uix-alert,
+    .uix-banner,
+    .uix-table th,
+    .uix-chip,
+    .uix-badge {
+      background: none;
+    }
+
+    /* Shadows do not print, and a printer that tries wastes toner on a
+       grey smear. */
+    .uix-card,
+    .uix-panel,
+    .uix-dialog,
+    .uix-popover,
+    .uix-menu,
+    .uix-toast,
+    .uix-segmented,
+    .uix-switch {
+      box-shadow: none;
+    }
+
+    /* Structure has to come from lines once the fills are gone. */
+    .uix-card,
+    .uix-panel,
+    .uix-chip,
+    .uix-badge {
+      border: 1px solid currentColor;
+    }
+
+    /* Nothing here can be operated on paper, and each of them would print
+       over the content it floats above. */
+    .uix-toaster,
+    .uix-tooltip,
+    .uix-dialog-backdrop {
+      display: none;
+    }
+
+    /* A sticky element repeats on every page or covers the first one. */
+    .uix-toaster,
+    [style*="position: sticky"] {
+      position: static;
+    }
+
+    /* A box split across a page break is a box read twice. */
+    .uix-card,
+    .uix-panel,
+    .uix-alert,
+    .uix-banner,
+    tr {
+      break-inside: avoid;
+    }
+
+    /* The header repeats on each page of a long table, which is the whole
+       reason thead exists. */
+    thead {
+      display: table-header-group;
+    }
+
+    /* A heading at the foot of a page belongs to the next one. */
+    h1,
+    h2,
+    h3,
+    h4 {
+      break-after: avoid;
+      break-inside: avoid;
+    }
+
+    p,
+    li {
+      orphans: 3;
+      widows: 3;
+    }
+
+    /* A tab panel prints; the tablist that switched to it does not, and
+       the panels the reader never opened are simply absent from the page,
+       which is a limitation worth knowing rather than a bug. */
+    .uix-tablist {
+      display: none;
+    }
+  }
+}

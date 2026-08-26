@@ -103,4 +103,15 @@
     border-width: 2px;
     border-top-color: currentColor;
   }
+
+  /* opacity still applies here, so a disabled button is dimmed but not
+     obviously unavailable. GrayText is the convention the platform uses,
+     and the user chose it. */
+  @media (forced-colors: active) {
+    .uix-button:disabled,
+    .uix-button[aria-disabled="true"] {
+      color: GrayText;
+      border-color: GrayText;
+    }
+  }
 }

@@ -42,4 +42,15 @@
     outline: 2px solid var(--uix-focus-ring);
     outline-offset: -2px;
   }
+
+  @media (forced-colors: active) {
+    .uix-menu {
+      border: 1px solid CanvasText;
+    }
+
+    .uix-menu-item[data-highlighted] {
+      background: Highlight;
+      color: HighlightText;
+    }
+  }
 }

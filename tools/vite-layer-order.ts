@@ -22,7 +22,7 @@ import type { Plugin } from "vite";
  * This prepends the declaration to each CSS asset and then asserts the
  * result, because a guarantee that is not checked is a comment.
  */
-const ORDER = "@layer tokens, base, components, overrides;";
+const ORDER = "@layer tokens, base, components, print, overrides;";
 
 export function layerOrder(): Plugin {
   return {
