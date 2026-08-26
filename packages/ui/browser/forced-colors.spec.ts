@@ -178,3 +178,38 @@ test("a disabled button reads as disabled", async ({ page }) => {
       "opacity alone is not a disabled state here",
   ).not.toBe(pair.enabled);
 });
+
+/**
+ * The scrim covers the page, not nothing.
+ *
+ * `.uix-dialog-backdrop` carried a background and a z-index and no
+ * position, so Base UI's unstyled div laid out in flow at height 0:
+ * measured 868×0 at position static, with a 45% ink fill nobody had ever
+ * seen. Every modal in this library opened over an undimmed page.
+ *
+ * This asserts the geometry rather than the declaration, because the
+ * declaration was there the whole time.
+ */
+test("the modal scrim covers the viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 600 });
+  await open(page, "components-dialog--open-with-page-behind");
+  await expect(page.locator(".uix-dialog")).toBeVisible();
+
+  const measured = await page.evaluate(() => {
+    const backdrop = document.querySelector(".uix-dialog-backdrop")!;
+    const box = backdrop.getBoundingClientRect();
+    return {
+      width: box.width,
+      height: box.height,
+      position: getComputedStyle(backdrop).position,
+      viewport: { width: innerWidth, height: innerHeight },
+    };
+  });
+
+  expect(
+    measured.height,
+    "the scrim has no height, so the page behind the modal is undimmed",
+  ).toBeGreaterThanOrEqual(measured.viewport.height);
+  expect(measured.width).toBeGreaterThanOrEqual(measured.viewport.width);
+  expect(measured.position).toBe("fixed");
+});

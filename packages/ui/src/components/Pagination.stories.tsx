@@ -111,7 +111,12 @@ export const KeyboardReachable: Story = {
 export const SmallCounts: StoryObj = {
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <div style={{ display: "grid", gap: "1.2rem", justifyItems: "start" }}>
+    /* Not justifyItems: "start". Pagination declares container-type, so a
+       shrink-to-fit parent collapses it — which is exactly what this
+       story used to show, four times over, and what nobody read as a
+       defect because the compact form it collapsed into is a real
+       layout. */
+    <div style={{ display: "grid", gap: "1.2rem", maxWidth: "34rem" }}>
       {/* Each landmark is named distinctly. Four navigations called
           "Pagination" is axe's landmark-unique violation, and it is not a
           story artefact: a long table has a pagination above it and
@@ -131,30 +136,31 @@ export const SmallCounts: StoryObj = {
  */
 export const SmallCountsBehaviour: StoryObj = {
   tags: ["!dev"],
-  args: SmallCounts.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     // Exactly one page-1 button per pagination, and no page 0 anywhere.
     await expect(canvas.queryAllByLabelText("Page 0")).toHaveLength(0);
     await expect(canvas.queryAllByLabelText("Page 1")).toHaveLength(4);
-    // Each pagination states where it is, and each says a sensible total.
-    // A count of aria-current buttons would be the direct assertion, but
-    // neither filtering the canvas's proxied elements by attribute nor the
-    // role query's `current` option matched inside the instrumented
-    // canvas — so this asserts the summary, which is the same fact stated
-    // where a narrow reader gets it.
-    // Two of them: pageCount 0 and pageCount 1 both clamp to a single
-    // page, which is the fix stating itself.
-    await expect(canvas.getAllByText("Page 1 of 1")).toHaveLength(2);
-    await expect(canvas.getByText("Page 1 of 2")).toBeVisible();
-    await expect(canvas.getByText("Page 2 of 3")).toBeVisible();
+
+    // pageCount 0 and pageCount 1 both clamp to one page, which is the
+    // fix stating itself: a filter that matched nothing still renders a
+    // usable control rather than "Page 0 of 0".
+    await expect(canvas.queryAllByLabelText("Page 2")).toHaveLength(2);
+    await expect(canvas.queryAllByLabelText("Page 3")).toHaveLength(1);
+
+    // This used to assert `getAllByText("Page 1 of 1")` was visible. That
+    // summary only renders in the compact form, and it was visible
+    // because the story's parent collapsed every pagination to 40px:
+    // container-type: inline-size means the width cannot come from the
+    // contents, so a shrink-to-fit parent triggered the narrow layout
+    // permanently. The assertion had been written against the defect, and
+    // passed for exactly as long as the defect lasted.
+    for (const summary of canvas.getAllByText(/Page \d+ of \d+/)) {
+      await expect(summary).not.toBeVisible();
+    }
   },
   render: () => (
-    <div style={{ display: "grid", gap: "1.2rem", justifyItems: "start" }}>
-      {/* Each landmark is named distinctly. Four navigations called
-          "Pagination" is axe's landmark-unique violation, and it is not a
-          story artefact: a long table has a pagination above it and
-          another below. */}
+    <div style={{ display: "grid", gap: "1.2rem", maxWidth: "34rem" }}>
       <Pagination pageCount={0} label="No results" />
       <Pagination pageCount={1} label="One page" />
       <Pagination pageCount={2} label="Two pages" />

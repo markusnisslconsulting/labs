@@ -12,6 +12,21 @@
     align-items: center;
     gap: var(--uix-gap-sm);
     container-type: inline-size;
+    /* Required by the line above it, not a layout preference.
+     *
+     * `container-type: inline-size` applies size containment on the inline
+     * axis: the element's width stops depending on its contents. Put one
+     * in a shrink-to-fit parent — a grid with justify-items: start, a flex
+     * row, a table cell — and the width resolves to nearly nothing, the
+     * `max-width: 25rem` query below matches, the compact form applies,
+     * and it stays collapsed. Measured in the small-counts story: four
+     * paginations about 40px wide, each reading "Page / 1 / of / 1" down
+     * four lines.
+     *
+     * A container query needs a container whose size comes from outside
+     * it. Pagination is a full-width control — it spans the table it
+     * pages — so saying so is both the fix and the truth. */
+    width: 100%;
   }
 
   .uix-pagination-summary {
@@ -41,7 +56,6 @@
 
     .uix-pagination {
       justify-content: space-between;
-      width: 100%;
     }
   }
 

@@ -4,6 +4,7 @@ import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Progress as BaseProgress } from "@base-ui-components/react/progress";
 
 import { cxState } from "../cx";
+import { useStrings } from "../i18n";
 import "./ProgressBar.css";
 interface ProgressBarOwnProps {
   /** Accessible name; also rendered as visible text. */
@@ -44,6 +45,8 @@ export function ProgressBar({
   className,
   ...rest
 }: ProgressBarProps) {
+  const strings = useStrings();
+
   const indeterminate = value === undefined;
 
   return (
@@ -67,7 +70,7 @@ export function ProgressBar({
         <BaseProgress.Indicator className="uix-progress-fill" />
       </BaseProgress.Track>
       {indeterminate ? (
-        <span className="uix-visually-hidden">Loading</span>
+        <span className="uix-visually-hidden">{strings.loading}</span>
       ) : null}
     </BaseProgress.Root>
   );

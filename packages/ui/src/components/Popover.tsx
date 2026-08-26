@@ -4,6 +4,7 @@ import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 
 import { cxState } from "../cx";
+import { useStrings } from "../i18n";
 import "./_positioner.css";
 import "./Button.css";
 import "./Popover.css";
@@ -68,6 +69,8 @@ export function Popover({
   align = "end",
   ...rest
 }: PopoverProps) {
+  const strings = useStrings();
+
   return (
     <BasePopover.Root
       open={open}
@@ -96,7 +99,16 @@ export function Popover({
                 {title}
               </BasePopover.Title>
             ) : null}
-            <BasePopover.Description className="uix-popover-body">
+            {/* Rendered as a div, not the <p> Base UI defaults to. Any
+                popover body with structure in it — a paragraph, a list, a
+                small form — produced <p> inside <p>, which React reports
+                as a hydration error and the parser silently repairs into
+                two siblings. The aria-describedby association is what
+                Description is for and it survives the swap. */}
+            <BasePopover.Description
+              className="uix-popover-body"
+              render={<div />}
+            >
               {children}
             </BasePopover.Description>
             <div className="uix-popover-footer">
@@ -105,7 +117,7 @@ export function Popover({
                 data-variant="outline"
                 data-size="sm"
               >
-                Close
+                {strings.close}
               </BasePopover.Close>
             </div>
           </BasePopover.Popup>

@@ -4,9 +4,33 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
+  /* The scrim, which had a colour and no box.
+   *
+   * Base UI's Backdrop renders an unstyled div, and this rule gave it a
+   * background and a z-index but never a position — so it laid out in
+   * flow at height 0 and painted nothing. Measured: position static,
+   * height 0px, and a 45% ink fill nobody has ever seen. Every modal in
+   * this library has opened over an undimmed page since the component was
+   * written.
+   *
+   * It matters beyond appearance: the scrim is what tells a sighted
+   * reader the page behind is out of reach, which is the same thing
+   * `inert` tells a screen reader. One of the two was doing its job. */
   .uix-dialog-backdrop {
+    position: fixed;
+    inset: 0;
     background: color-mix(in srgb, var(--uix-ink) 45%, transparent);
     z-index: var(--uix-z-modal);
+  }
+
+  /* Forced colours drops the fill, so the scrim disappears and the dialog
+     floats on a page that still looks reachable. A backdrop cannot be
+     drawn in that mode; the dialog's own border is what separates it, and
+     it is declared at the end of this file. */
+  @media (prefers-reduced-transparency: reduce) {
+    .uix-dialog-backdrop {
+      background: var(--uix-ink);
+    }
   }
 
   .uix-dialog {

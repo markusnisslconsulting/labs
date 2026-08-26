@@ -106,6 +106,15 @@ const ACCESSIBLE_NAME: Record<string, string> = {
     "a node.",
 };
 
+/**
+ * Text between tags that is not a message to a reader.
+ *
+ * Kept short and specific on purpose: every addition is a decision that
+ * some English will ship, so it has to be a word that is not English —
+ * a type name in a docstring's shape, a unit that is the same everywhere.
+ */
+const ALLOWED_TEXT = new Set<string>([]);
+
 /** Prop names that describe content a caller may want to enrich. */
 const SLOTS = [
   "label",
@@ -262,6 +271,33 @@ describe("component API contract", () => {
         `${file} hardcodes ${literals.join(", ")}. Add the string to Strings ` +
           `in src/i18n.tsx and read it through useStrings, so an application ` +
           `can translate it.`,
+      ).toEqual([]);
+    }
+  });
+
+  it("no component compiles in a word a reader can see", () => {
+    /*
+     * The rule above only read attributes — aria-label, title,
+     * placeholder — so it never looked at the half of the problem a
+     * sighted reader also gets. Popover shipped a Close button whose
+     * label was the English word Close, written between two tags, for as
+     * long as the component existed. The gate ran green on it every time.
+     *
+     * Text between JSX tags, then: two or more letters, no interpolation.
+     * The asterisk on a required field is not a word and is paired with
+     * one from the table, which is why it is not caught here.
+     */
+    for (const [file, text] of source) {
+      const words = [
+        ...code(text).matchAll(/>\s*([A-Za-z][A-Za-z'’ ]{2,})\s*</g),
+      ]
+        .map((hit) => hit[1]!.trim())
+        .filter((word) => !ALLOWED_TEXT.has(word));
+      expect(
+        words,
+        `${file} renders the visible text ${words.join(", ")}. A reader in a ` +
+          `second market cannot change it. Put it in Strings in ` +
+          `src/i18n.tsx and read it through useStrings.`,
       ).toEqual([]);
     }
   });

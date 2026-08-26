@@ -45,6 +45,14 @@ export interface Strings {
   decrease: string;
   /** Announced when a field is required. */
   required: string;
+  /**
+   * The close control on a popover or a dialog.
+   *
+   * Separate from `dismiss`: dismissing a toast throws the message away,
+   * closing a popover leaves everything as it was. Two different promises
+   * to the reader, and translators need to be able to tell them apart.
+   */
+  close: string;
 }
 
 export const defaultStrings: Strings = {
@@ -59,6 +67,7 @@ export const defaultStrings: Strings = {
   increase: "Increase",
   decrease: "Decrease",
   required: "required",
+  close: "Close",
 };
 
 const StringsContext = createContext<Strings>(defaultStrings);

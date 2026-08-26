@@ -77,3 +77,44 @@ for (const { id, row } of CASES) {
     ).toBeLessThanOrEqual(measured!.tallest + 2);
   });
 }
+
+/**
+ * Pagination does not collapse in a shrink-to-fit parent.
+ *
+ * `container-type: inline-size` applies inline-axis size containment, so
+ * the element's width stops depending on its contents. Dropped into a
+ * grid with `justify-items: start`, it resolved to about 40px, the
+ * compact container query matched, and the control rendered as "Page / 1
+ * / of / 1" down four lines. It looked like a deliberate narrow layout,
+ * which is why it survived: the collapse and the feature look the same.
+ */
+test("pagination keeps its width where the parent would shrink it", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1100, height: 700 });
+  await page.goto(
+    "/iframe.html?id=components-pagination--nine-pages&viewMode=story",
+    {
+      waitUntil: "networkidle",
+    },
+  );
+
+  const width = await page.evaluate(() => {
+    const nav = document.querySelector(".uix-pagination")!;
+    // A parent that sizes its child to fit-content, which is what a
+    // toolbar, a table footer cell and a start-aligned grid all do.
+    const host = document.createElement("div");
+    host.style.display = "grid";
+    host.style.justifyItems = "start";
+    host.style.width = "1000px";
+    document.body.appendChild(host);
+    host.appendChild(nav);
+    return nav.getBoundingClientRect().width;
+  });
+
+  expect(
+    width,
+    `pagination collapsed to ${Math.round(width)}px inside a shrink-to-fit ` +
+      `parent; container-type means its width has to come from outside it`,
+  ).toBeGreaterThan(400);
+});
