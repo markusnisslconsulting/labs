@@ -15,3 +15,7 @@ visual/__screenshots__
 # Playwright
 test-results
 playwright-report
+
+# Screenshot sweeps are for looking at, not for keeping.
+.sweep-output/
+.visual-sweep/
