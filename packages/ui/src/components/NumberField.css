@@ -14,7 +14,7 @@
        input left a strip of the group's background under it. */
     align-items: stretch;
     border: 1px solid var(--uix-border-subtle);
-    border-radius: var(--uix-radius-m);
+    border-radius: var(--uix-radius-control);
     background: var(--uix-bg-surface);
     overflow: hidden;
   }

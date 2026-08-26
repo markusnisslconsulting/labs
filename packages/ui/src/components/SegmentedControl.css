@@ -7,7 +7,7 @@
   .uix-segmented {
     display: inline-flex;
     background: var(--uix-bg-subtle);
-    border-radius: var(--uix-radius-m);
+    border-radius: var(--uix-radius-control);
     padding: var(--uix-gap-xs);
     gap: var(--uix-gap-xs);
   }
@@ -21,7 +21,7 @@
     padding-inline: var(--uix-gap-lg);
     /* radius-s, not a calc: the calc produced 7.2px, the only radius in
        the library that was not on the scale. */
-    border-radius: var(--uix-radius-s);
+    border-radius: var(--uix-radius-inset);
     font-size: var(--uix-font-size-200);
     font-weight: var(--uix-font-weight-bold);
     cursor: pointer;
@@ -30,7 +30,7 @@
   .uix-segment[aria-pressed="true"] {
     background: var(--uix-bg-surface);
     color: var(--uix-text-primary);
-    box-shadow: var(--uix-shadow-1);
+    box-shadow: var(--uix-elevation-raised);
   }
 
   .uix-segment:focus-visible {

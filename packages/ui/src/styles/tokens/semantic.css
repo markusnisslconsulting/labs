@@ -65,6 +65,33 @@
     --uix-text-on-inverse: var(--uix-paper);
 
     /* Typography roles */
+    /* Shape. A brand is not only a hue: a sharp brand and a pill brand
+       are the same components with a different corner. These four roles
+       are what a brand re-points; components never name the radius
+       scale, because a primitive is invisible to the brand layer and
+       that is exactly what kept `ocean` down to one token. */
+    --uix-radius-inset: var(--uix-radius-s);
+    --uix-radius-control: var(--uix-radius-m);
+    --uix-radius-surface: var(--uix-radius-m);
+    --uix-radius-container: var(--uix-radius-l);
+    /* A chip, a badge, a status pill and a search field are round
+       because the brand says so, and a squarer brand re-points this one
+       token. An avatar and a spinner are round because they are circles,
+       so those stay at 50% and are not a brand's business. */
+    --uix-radius-pill: 999px;
+
+    /* Type, by role rather than by family, so a brand can set a display
+       face without touching a component. */
+    --uix-font-body: var(--uix-font-sans);
+    --uix-font-display: var(--uix-font-sans);
+    --uix-font-code: var(--uix-font-mono);
+
+    /* Elevation by what is being lifted. A flat brand re-points all
+       three to none. */
+    --uix-elevation-raised: var(--uix-shadow-1);
+    --uix-elevation-overlay: var(--uix-shadow-2);
+    --uix-elevation-modal: var(--uix-shadow-3);
+
     --uix-text-body: var(--uix-font-size-300);
     --uix-text-heading: var(--uix-font-size-500);
     --uix-text-caption: var(--uix-font-size-100);

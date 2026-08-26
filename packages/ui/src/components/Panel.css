@@ -6,7 +6,7 @@
 @layer components {
   .uix-panel {
     border: 1px solid var(--uix-panel-border, var(--uix-border-subtle));
-    border-radius: var(--uix-panel-radius, var(--uix-radius-l));
+    border-radius: var(--uix-panel-radius, var(--uix-radius-container));
     background: var(--uix-panel-bg, var(--uix-bg-surface));
     padding: var(--uix-panel-pad-y, calc(var(--uix-gap-lg) + var(--uix-gap-xs)))
       var(--uix-panel-pad-x, var(--uix-gap-xl));
@@ -36,7 +36,7 @@
     content: "";
     width: 0.5rem;
     height: 0.5rem;
-    border-radius: 999px;
+    border-radius: 50%; /* a circle, not a brandable pill */
     background: var(--uix-panel-accent, var(--uix-accent));
   }
 

@@ -11,7 +11,7 @@
     background: var(--uix-chip-bg, var(--uix-bg-subtle));
     color: var(--uix-chip-fg, var(--uix-text-secondary));
     border: 1px solid transparent;
-    border-radius: 999px;
+    border-radius: var(--uix-radius-pill);
     /* On the control scale like every other interactive box; padding
        alone put it at 31.7px, which is nearly right and therefore worse
        than wrong. */

@@ -12,7 +12,7 @@
 
   .uix-spinner-wheel {
     display: block;
-    border-radius: 999px;
+    border-radius: 50%; /* a circle, not a brandable pill */
     border: 2px solid var(--uix-border-subtle);
     border-top-color: var(--uix-accent);
     animation: uix-spin 0.7s linear infinite;

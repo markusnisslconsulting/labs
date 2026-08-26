@@ -22,7 +22,7 @@
     width: 1.1rem;
     height: 1.1rem;
     border: 1px solid var(--uix-border-strong);
-    border-radius: 999px;
+    border-radius: 50%; /* a circle, not a brandable pill */
     background: var(--uix-bg-surface);
     flex-shrink: 0;
   }

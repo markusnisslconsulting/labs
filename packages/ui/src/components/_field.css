@@ -26,7 +26,7 @@
     padding-inline: var(--uix-gap-md);
     background: var(--uix-bg-surface);
     border: 1px solid var(--uix-border-subtle);
-    border-radius: var(--uix-field-radius, var(--uix-radius-m));
+    border-radius: var(--uix-field-radius, var(--uix-radius-control));
   }
 
   .uix-field-row:focus-within {

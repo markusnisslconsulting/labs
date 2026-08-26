@@ -372,6 +372,39 @@ describe("the layering rules the architecture depends on", () => {
     ).toBe(true);
   });
 
+  /**
+   * A component may not name a shape, a face or an elevation primitive.
+   *
+   * The rule used to cover colour only, and the Introduction said the
+   * radius and type scales "may be used directly". That single sentence
+   * is why the `ocean` brand could re-point exactly one token: a brand
+   * only sees the semantic layer, so anything a component reaches for
+   * below it is out of the brand's reach forever. A sharp-cornered brand
+   * or one with a display face was not expressible, which is most of
+   * what multi-brand means.
+   *
+   * Font *sizes* stay allowed. The type scale is a rhythm the whole
+   * library shares, and a brand that wants different sizes changes the
+   * scale itself rather than each component.
+   */
+  it("no component names a shape, face or elevation primitive", () => {
+    const FORBIDDEN = [
+      /var\(--uix-radius-(s|m|l)\)/,
+      /var\(--uix-shadow-\d\)/,
+      /var\(--uix-font-(sans|serif|mono)\)/,
+      /border-radius:\s*\d+px/,
+    ];
+    for (const { file, source } of componentCss) {
+      for (const pattern of FORBIDDEN) {
+        const hit = pattern.exec(source);
+        expect(
+          hit?.[0],
+          `${file} uses ${hit?.[0]}; reach for a semantic role so a brand can re-point it`,
+        ).toBeUndefined();
+      }
+    }
+  });
+
   it("every component stylesheet lives in @layer components", () => {
     for (const { file, source } of componentCss) {
       expect(

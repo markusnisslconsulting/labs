@@ -16,7 +16,7 @@
     min-height: var(--uix-control-md);
     padding-block: 0;
     padding-inline: var(--uix-gap-xl);
-    border-radius: var(--uix-button-radius, var(--uix-radius-m));
+    border-radius: var(--uix-button-radius, var(--uix-radius-control));
   }
 
   .uix-button:focus-visible {
@@ -35,14 +35,14 @@
     padding-inline: var(--uix-gap-md);
     font-size: var(--uix-font-size-200);
     gap: var(--uix-gap-sm);
-    border-radius: var(--uix-radius-s);
+    border-radius: var(--uix-radius-inset);
   }
 
   .uix-button[data-size="lg"] {
     min-height: var(--uix-control-lg);
     padding-inline: var(--uix-gap-2xl);
     font-size: var(--uix-font-size-500);
-    border-radius: var(--uix-radius-l);
+    border-radius: var(--uix-radius-container);
   }
 
   .uix-button[data-variant="solid"][data-tone="accent"] {

@@ -144,7 +144,7 @@
   kbd,
   samp,
   pre {
-    font-family: var(--uix-font-mono);
+    font-family: var(--uix-font-code);
     font-size: 1em;
   }
 

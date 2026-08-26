@@ -17,7 +17,7 @@
 
   .uix-progress-track {
     height: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--uix-radius-pill);
     background: var(--uix-bg-subtle);
     overflow: hidden;
   }

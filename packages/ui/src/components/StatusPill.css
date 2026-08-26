@@ -16,7 +16,7 @@
     content: "";
     width: 0.55rem;
     height: 0.55rem;
-    border-radius: 999px;
+    border-radius: var(--uix-radius-pill);
     background: currentColor;
     flex-shrink: 0;
   }

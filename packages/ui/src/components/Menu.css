@@ -8,8 +8,8 @@
     min-width: 12rem;
     background: var(--uix-bg-surface);
     border: 1px solid var(--uix-border-subtle);
-    border-radius: var(--uix-radius-m);
-    box-shadow: var(--uix-shadow-2);
+    border-radius: var(--uix-radius-surface);
+    box-shadow: var(--uix-elevation-overlay);
     padding: var(--uix-gap-sm);
     max-height: min(20rem, var(--uix-space-6) * 8);
     overflow: auto;
@@ -21,7 +21,7 @@
     width: 100%;
     padding: var(--uix-gap-sm) var(--uix-gap-md);
     border: none;
-    border-radius: var(--uix-radius-s);
+    border-radius: var(--uix-radius-inset);
     background: none;
     color: var(--uix-text-primary);
     font-size: var(--uix-font-size-200);

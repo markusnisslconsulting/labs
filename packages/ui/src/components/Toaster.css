@@ -30,8 +30,8 @@
     background: var(--uix-bg-surface);
     border: 1px solid var(--uix-panel-border, var(--uix-border-subtle));
     border-inline-start: 4px solid var(--uix-info);
-    border-radius: var(--uix-radius-m);
-    box-shadow: var(--uix-shadow-2);
+    border-radius: var(--uix-radius-surface);
+    box-shadow: var(--uix-elevation-overlay);
     padding: var(--uix-gap-md) var(--uix-gap-lg);
   }
 

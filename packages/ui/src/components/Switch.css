@@ -20,7 +20,7 @@
     height: 1.4rem;
     padding: 0;
     border: none;
-    border-radius: 999px;
+    border-radius: var(--uix-radius-pill);
     background: var(--uix-switch-track-bg, var(--uix-bg-subtle));
     cursor: pointer;
     transition: background var(--uix-duration-fast) var(--uix-ease-out);
@@ -49,9 +49,9 @@
     transform: translate(0, -50%);
     width: 1rem;
     height: 1rem;
-    border-radius: 999px;
+    border-radius: var(--uix-radius-pill);
     background: var(--uix-switch-thumb-bg, var(--uix-bg-surface));
-    box-shadow: var(--uix-shadow-1);
+    box-shadow: var(--uix-elevation-raised);
     transition: transform var(--uix-duration-fast) var(--uix-ease-out);
   }
 

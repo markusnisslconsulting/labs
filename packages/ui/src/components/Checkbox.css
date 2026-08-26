@@ -31,7 +31,7 @@
     width: 1.1rem;
     height: 1.1rem;
     border: 1px solid var(--uix-border-strong);
-    border-radius: var(--uix-radius-s);
+    border-radius: var(--uix-radius-inset);
     background: var(--uix-bg-surface);
     display: grid;
     place-items: center;

@@ -15,7 +15,7 @@
     min-width: var(--uix-control-md);
     min-height: var(--uix-control-md);
     aspect-ratio: 1;
-    border-radius: var(--uix-radius-m);
+    border-radius: var(--uix-radius-control);
     border: 1px solid transparent;
     background: transparent;
     color: var(--uix-text-primary);

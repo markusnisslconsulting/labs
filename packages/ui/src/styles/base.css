@@ -22,7 +22,7 @@
   body {
     background: var(--uix-bg-page);
     color: var(--uix-text-primary);
-    font-family: var(--uix-font-sans);
+    font-family: var(--uix-font-body);
     font-size: var(--uix-text-body);
     line-height: var(--uix-line-height-normal);
   }
@@ -43,6 +43,7 @@
   h2,
   h3,
   h4 {
+    font-family: var(--uix-font-display);
     line-height: var(--uix-line-height-tight);
     margin-bottom: 0.5em;
     letter-spacing: -0.01em;

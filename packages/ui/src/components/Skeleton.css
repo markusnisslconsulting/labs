@@ -7,7 +7,7 @@
   .uix-skeleton {
     display: block;
     height: var(--uix-space-4);
-    border-radius: var(--uix-radius-s);
+    border-radius: var(--uix-radius-inset);
     background: var(--uix-bg-subtle);
     position: relative;
     overflow: hidden;
@@ -29,13 +29,13 @@
   }
 
   .uix-skeleton--circle {
-    border-radius: 999px;
+    border-radius: var(--uix-radius-pill);
     width: 2.5rem;
     height: 2.5rem;
   }
 
   .uix-skeleton--block {
-    border-radius: var(--uix-radius-m);
+    border-radius: var(--uix-radius-surface);
     height: 6rem;
   }
 

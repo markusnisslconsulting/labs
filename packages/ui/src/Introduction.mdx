@@ -14,15 +14,24 @@ executable, and prose is not a guarantee.
 Three tiers, each with one job.
 
 - **Primitive** — raw values, no opinion: the palette, radii, spacing,
-  type and motion scales. No component may name a primitive **colour**;
-  colour is what themes and brands remap, so naming one escapes both.
-  The spacing, radius and type scales are shared and may be used
-  directly. A test reads the component stylesheets and fails on a
-  colour primitive, so the rule is checked where it actually breaks
-  rather than in the registry's own declarations.
-- **Semantic** — intent: `--uix-text-primary`, `--uix-bg-page`,
-  `--uix-accent`, `--uix-status-ok`. This is the only layer a brand
-  touches. `--uix-ink` and `--uix-paper` name the two ends of the
+  type and motion scales. No component may name a primitive **colour,
+  radius, typeface or shadow**. Those four are what a theme or a brand
+  remaps, so a component that names one has put itself out of their
+  reach permanently. This rule used to cover colour alone, and the
+  sentence that replaced this one said the radius and type scales "may
+  be used directly" — which is precisely why `ocean` could only ever
+  re-point a hue. Spacing and font *size* stay open: they are a rhythm
+  the whole library shares. Tests read the component stylesheets, so
+  each rule is checked where it actually breaks rather than in the
+  registry's own declarations.
+- **Semantic** — intent, and not only colour: `--uix-text-primary`,
+  `--uix-bg-page`, `--uix-accent`, `--uix-status-ok`, and alongside them
+  the shape roles (`--uix-radius-control`, `--uix-radius-container`,
+  `--uix-radius-pill`), the type roles (`--uix-font-body`,
+  `--uix-font-display`, `--uix-font-code`) and the elevation roles
+  (`--uix-elevation-raised`, `--uix-elevation-overlay`,
+  `--uix-elevation-modal`). This is the only layer a brand touches, so
+  whatever a brand must be able to change has to have a role here. `--uix-ink` and `--uix-paper` name the two ends of the
   neutral ramp for the current theme, so a component can shade a fill
   by mixing toward them and get the right result on light and dark
   without naming either colour.
@@ -53,16 +62,56 @@ it and `--uix-focus-ring` aliases it, so a new brand cannot forget
 them. A test asserts that a brand file declares nothing but semantic
 tokens.
 
+`graphite` exists because one token was not proof of anything. It
+re-points shape, display face, elevation and accent: corners come down
+to near-square, headings take a serif, and shadows are replaced by
+hairlines. Same components, one file, no core stylesheet edited. Open
+**Foundations / Brands** to see all three at once — that page is pinned
+to the three brands rather than following the toolbar, because a column
+that followed the toolbar was a duplicate of a control already on
+screen.
+
 Switch brand, theme and density from the toolbar above; each is an
 independent axis on the root element (`data-brand`, `data-theme`,
 `data-density`) rather than a separate build.
 
-## Density
+## Density, and the reader's own text size
 
 `data-density="compact"` sets one multiplier, and the semantic
 `--uix-gap-*` roles carry it into padding, gaps and margins alike — not
 only the inside of controls. At the default density they resolve to the
 raw scale exactly, so cozy rendering is unchanged.
+
+Control heights are `max(24px, calc(<rem> * var(--uix-density)))`. The
+rem half means a reader who sets their browser text larger gets larger
+controls, which is what the unit is for; `font-size` is therefore set on
+`body` and never on `html`, because pinning the root size cancels that
+setting. The `24px` half is the one absolute length in the token layer:
+WCAG 2.2 target size is specified in CSS pixels, and at the compact
+multiplier of 0.72 the small height resolved to 23.04px. Clamping in the
+token rather than raising the multiplier means a product that sets its
+own density cannot reintroduce the violation.
+
+A browser test measures every matrix story against the control tokens at
+two densities and two root font sizes, reading the token values out of
+the page rather than asserting pixels. Growing past the floor is allowed
+— that is what a long label at 20px does — and clipping is not.
+
+## The floor under all of it
+
+`styles/reset.css` is the normalization layer, and for a long time there
+was none: `base.css` set a typographic voice and was mistaken for a
+foundation, so every user-agent default reached the components
+untouched. Nothing set `box-sizing`, which meant every `min-height` in
+the library was a floor on the *content* box and any bordered control
+came out two pixels over the scale. Three separate reports about things
+not being centred were that one omission.
+
+The two files are deliberately separate. `reset.css` holds the box
+model, inheritance, and the places where engines still disagree, and
+every rule there names the browser that needs it. `base.css` holds only
+choices someone could reasonably make differently. It is not
+normalize.css, which mostly corrects browsers nobody ships any more.
 
 ## CSS ships with the component
 
@@ -108,13 +157,38 @@ attributes to. That is documented on the component.
 
 ## What the build refuses
 
-Six gates, each closing a claim this page used to make in prose:
+Each of these closes a claim this page used to make in prose. Several
+were added after the claim turned out to be false.
 
 - **Token parity** — the registry and the CSS cannot disagree, in either
-  direction, and no component stylesheet may name a colour primitive or
-  hardcode a colour literal.
+  direction, and no component stylesheet may name a colour, radius,
+  typeface or shadow primitive, or hardcode a colour or a pixel radius.
+- **Docs pages** — every one of the forty is loaded in a browser and
+  must render. Components/Button had been dead for days with
+  "t.startsWith is not a function" while all 145 story tests were green,
+  because the runner replays stories and nothing had ever opened a docs
+  page. The cause was an un-backticked `<a href />` in a TSDoc comment:
+  markdown made it a real anchor, and Storybook's link renderer calls
+  `href.startsWith`, which a valueless attribute does not have. The bug
+  was in the prose, so no amount of story coverage could have found it.
+- **The control scale** — every matrix story measured against the
+  control tokens across density and root font size, with the token
+  values read out of the page. The first version of this asserted
+  32/40/48px, which describes exactly one configuration.
+- **Narrow** — nothing overflows at 360px, and what reads as one row
+  stays one row.
+- **Icons** — no component draws an icon with a text character. A glyph
+  is positioned by the font's metrics rather than by its box, so it
+  cannot be centred from CSS.
+- **Disabled** — a `disabled` prop and disabled styling imply each other
+  in *both* directions. One direction alone let Switch ship a rule that
+  could never match Base UI's `<span role="switch">`, and let Tabs ship
+  styling for a state no tab could enter.
+- **Snapshotted stories do not mutate** — a story that clicks in
+  `play()` and is photographed baselines the state after the click under
+  a name that promised the state before it. Two were doing exactly that.
 - **Contrast** — every declared pairing is measured in every theme and
-  every brand, 84 of them, against WCAG AA. A brand may pick a hue; it
+  every brand, 144 of them, against WCAG AA. A brand may pick a hue; it
   may not pick a pairing nobody can read. This caught an inverted
   surface that was legible inside itself and invisible against the page
   it sat on.
@@ -122,6 +196,11 @@ Six gates, each closing a claim this page used to make in prose:
   still using this" is answered by the graph rather than by grep, plus a
   ratchet that fails on a new use of a deprecated token and on a
   baseline that was not tightened after one was removed.
+- **Root font size and colour scheme** — `font-size` is never set on the
+  root element, and each theme declares its `color-scheme`. Both are
+  silent when broken: the first cancels a reader's text-size setting,
+  the second leaves a dark page with a light scrollbar and a white date
+  picker.
 - **Story coverage** — derived from each component's own types: every
   union value rendered, every state boolean shown, one assertion, and a
   keyboard story if the component is operable. Turning it on found 33 of

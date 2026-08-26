@@ -145,6 +145,7 @@ const preview: Preview = {
         items: [
           { value: "default", title: "Labs (default)" },
           { value: "ocean", title: "Ocean" },
+          { value: "graphite", title: "Graphite" },
         ],
         dynamicTitle: true,
       },

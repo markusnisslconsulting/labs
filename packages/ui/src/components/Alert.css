@@ -9,7 +9,7 @@
     gap: var(--uix-gap-md);
     align-items: flex-start;
     border: 1px solid var(--uix-border-subtle);
-    border-radius: var(--uix-radius-m);
+    border-radius: var(--uix-radius-surface);
     padding: var(--uix-gap-md) var(--uix-gap-lg);
   }
 
