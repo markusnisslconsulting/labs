@@ -14,6 +14,13 @@
       "options": {
         "command": "eslint scripts --max-warnings 0"
       }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "vitest run scripts/test/ --root ."
+      }
     }
   }
 }

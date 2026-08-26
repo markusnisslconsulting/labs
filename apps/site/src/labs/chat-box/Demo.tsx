@@ -1,5 +1,6 @@
 import { Button } from "@labs/ui/components/Button";
 import { Panel } from "@labs/ui/components/Panel";
+import { Table } from "@labs/ui/components/Table";
 import { useEffect, useRef, useState } from "react";
 import {
   createScriptedRun,
@@ -118,7 +119,7 @@ const AgentStreamDemo = () => {
       </div>
 
       <div className="demo-panes">
-        <div className="demo-pane">
+        <Panel>
           <h3>The transcript: a log</h3>
           {transcript.length === 0 ? (
             <p className="demo-chat-line">
@@ -131,14 +132,16 @@ const AgentStreamDemo = () => {
               </p>
             ))
           )}
-        </div>
-        <div className="demo-pane">
+        </Panel>
+        <Panel>
           <h3>The product: the ordering desk</h3>
-          <table className="demo-table">
+          <Table caption="Reorder points the agent proposed">
             <thead>
               <tr>
-                <th>SKU</th>
-                <th>Reorder point</th>
+                <th scope="col">SKU</th>
+                <th scope="col" data-numeric>
+                  Reorder point
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -175,8 +178,8 @@ const AgentStreamDemo = () => {
                 </td>
               </tr>
             </tbody>
-          </table>
-        </div>
+          </Table>
+        </Panel>
       </div>
 
       {events.length > 0 ? (

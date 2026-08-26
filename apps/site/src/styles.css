@@ -272,17 +272,14 @@
     gap: var(--uix-gap-lg);
   }
 
-  .demo-pane,
-  .demo-mini,
-  .demo-result,
+  /* Page furniture, deliberately not a component: a muted caption under a
+     demo is not a thing the design system should have an opinion about.
+     The panes, results and tables that used to share this rule are now
+     Panel and Table. */
   .demo-note {
     border: 1px solid var(--uix-border-subtle);
     border-radius: var(--uix-radius-surface);
-    background: var(--uix-bg-surface);
     padding: var(--uix-gap-md);
-  }
-
-  .demo-note {
     background: var(--uix-bg-subtle);
     color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-200);
@@ -325,19 +322,6 @@
   .demo-old {
     text-decoration: line-through;
     color: var(--uix-text-secondary);
-  }
-
-  .demo-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--uix-font-size-200);
-  }
-
-  .demo-table th,
-  .demo-table td {
-    text-align: left;
-    padding: var(--uix-gap-sm);
-    border-bottom: 1px solid var(--uix-border-subtle);
   }
 
   .demo-textarea {

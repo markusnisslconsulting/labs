@@ -43,6 +43,16 @@ export interface TokenDescriptor {
    * references it — deprecation as data, not as a code comment.
    */
   deprecated?: string;
+  /**
+   * The token that replaces this one, machine-readable.
+   *
+   * `deprecated` is prose for a human and for DTCG's `$deprecated`; this
+   * is what `scripts/tokens/codemod.ts` reads to rewrite call sites. A
+   * deprecation without it is a note asking every consumer to do the same
+   * search-and-replace by hand, which is how a deprecated token survives
+   * three releases.
+   */
+  supersededBy?: string;
 }
 
 const t = (
@@ -52,6 +62,7 @@ const t = (
   type: TokenType,
   description: string,
   deprecated?: string,
+  supersededBy?: string,
 ): TokenDescriptor => ({
   name,
   value,
@@ -59,6 +70,7 @@ const t = (
   type,
   description,
   ...(deprecated ? { deprecated } : {}),
+  ...(supersededBy ? { supersededBy } : {}),
 });
 
 /* Primitive ---------------------------------------------------------------- */

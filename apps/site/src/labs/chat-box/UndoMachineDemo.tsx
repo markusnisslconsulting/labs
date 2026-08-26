@@ -1,3 +1,4 @@
+import { Table } from "@labs/ui/components/Table";
 import { Button } from "@labs/ui/components/Button";
 import { Panel } from "@labs/ui/components/Panel";
 import { useEffect, useReducer, useRef, useState } from "react";
@@ -106,12 +107,12 @@ const UndoMachineDemo = () => {
         </label>
       </div>
 
-      <table className="demo-table">
+      <Table caption="Rows the undo machine can roll back">
         <thead>
           <tr>
-            <th>SKU</th>
-            <th>Reorder point</th>
-            <th>State</th>
+            <th scope="col">SKU</th>
+            <th scope="col">Reorder point</th>
+            <th scope="col">State</th>
           </tr>
         </thead>
         <tbody>
@@ -163,7 +164,7 @@ const UndoMachineDemo = () => {
             </td>
           </tr>
         </tbody>
-      </table>
+      </Table>
 
       {log.length > 0 ? (
         <div className="demo-events" aria-label="Transitions">

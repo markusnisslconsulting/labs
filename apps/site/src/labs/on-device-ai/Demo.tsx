@@ -332,18 +332,18 @@ const OnDeviceDemo = () => {
       ) : null}
 
       {phase === "done" && result ? (
-        <div className="demo-result">
+        <Panel>
           Detected <strong>{result.lang}</strong> → &ldquo;{result.english}
           &rdquo;
           <p className="demo-note">
             That sentence was translated on your machine. Nothing was sent to a
             server; the network tab can confirm it.
           </p>
-        </div>
+        </Panel>
       ) : null}
 
       {summary ? (
-        <div className="demo-result">
+        <Panel>
           <strong>Key points</strong>
           <p style={{ whiteSpace: "pre-line", margin: "0.5rem 0 0" }}>
             {summary}
@@ -352,11 +352,11 @@ const OnDeviceDemo = () => {
             Short key points, plain text: the documented shape from the budget
             section, produced on your machine from a four-message sample thread.
           </p>
-        </div>
+        </Panel>
       ) : null}
 
       {extracted ? (
-        <div className="demo-result">
+        <Panel>
           <strong>Extracted</strong>
           <p style={{ whiteSpace: "pre-line", margin: "0.5rem 0 0" }}>
             <code>{extracted}</code>
@@ -365,7 +365,7 @@ const OnDeviceDemo = () => {
             The escape hatch with a schema: the Prompt API had to answer in the
             declared JSON shape, on your machine.
           </p>
-        </div>
+        </Panel>
       ) : null}
 
       {error ? <p className="demo-note">{error}</p> : null}

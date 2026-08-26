@@ -1,0 +1,4 @@
+{
+  "note": "Component coverage may not fall below this. Raise it when it rises; lowering it is a decision that belongs in a reviewed diff, not in a quiet afternoon of local CSS. Run `nx run ui:adoption-write-floor`.",
+  "coverage": 38.4
+}

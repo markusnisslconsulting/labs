@@ -85,7 +85,7 @@ jobs:
       - name: Gates
         run: >-
           pnpm exec nx affected
-          --targets=lint,typecheck,test,build,build-storybook,test-storybook,browser-test,package-check,tokens-check,tokens-dtcg,contrast-check,story-coverage,snapshot-budget,a11y
+          --targets=lint,typecheck,test,build,build-storybook,test-storybook,browser-test,package-check,tokens-check,tokens-dtcg,contrast-check,story-coverage,snapshot-budget,adoption,a11y
           ${{ steps.base.outputs.args }}
 
       - name: Bundle budget

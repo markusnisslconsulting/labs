@@ -187,6 +187,37 @@
         ],
         "parallel": false
       }
+    },
+    "tokens-codemod": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/tokens/codemod.ts report"
+      }
+    },
+    "tokens-codemod-write": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/tokens/codemod.ts write"
+      }
+    },
+    "adoption": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "tsx scripts/adoption.ts check"
+      }
+    },
+    "adoption-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/adoption.ts report"
+      }
+    },
+    "adoption-write-floor": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/adoption.ts write-floor"
+      }
     }
   }
 }

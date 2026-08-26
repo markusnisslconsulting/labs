@@ -1,3 +1,4 @@
+import { Table } from "@labs/ui/components/Table";
 import { Button } from "@labs/ui/components/Button";
 import { Panel } from "@labs/ui/components/Panel";
 import { StatusPill } from "@labs/ui/components/StatusPill";
@@ -93,12 +94,14 @@ const WebMcpDemo = () => {
         </li>
       </ul>
 
-      <table className="demo-table">
+      <Table caption="SKUs and the reorder points the agent proposed">
         <thead>
           <tr>
-            <th>SKU</th>
-            <th>Article</th>
-            <th>Reorder point</th>
+            <th scope="col">SKU</th>
+            <th scope="col">Article</th>
+            <th scope="col" data-numeric>
+              Reorder point
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -115,20 +118,20 @@ const WebMcpDemo = () => {
                     <span className="demo-old">{row.units}</span>
                     <strong>{row.proposed} units</strong>
                     <span className="demo-inline-actions">
-                      <button
-                        type="button"
-                        className="demo-mini yes"
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => resolve(row.sku, true)}
                       >
                         Accept
-                      </button>
-                      <button
-                        type="button"
-                        className="demo-mini no"
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         onClick={() => resolve(row.sku, false)}
                       >
                         Undo
-                      </button>
+                      </Button>
                     </span>
                   </>
                 ) : (
@@ -138,7 +141,7 @@ const WebMcpDemo = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
 
       <div className="uix-actions">
         <Button onClick={simulate}>Simulate an agent call</Button>

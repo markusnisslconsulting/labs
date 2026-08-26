@@ -246,6 +246,27 @@ if (mode === "baseline") {
   process.exit(0);
 }
 
+/**
+ * Tokens that nothing in this repo reaches, on purpose.
+ *
+ * "Unreachable" sat in the report as a number for weeks, which is the
+ * failure mode this repo keeps arguing against: a count nobody watches is
+ * not a gate. But the four entries were not dead API either — each is a
+ * step in a scale, and a scale with a hole in it is worse than a step
+ * nobody has needed yet. A product picking 200ms for a transition should
+ * find --uix-duration-base there.
+ *
+ * So the exemption is written down with its reason, and anything *not*
+ * listed fails the check. That is the difference between an allowlist and
+ * an excuse.
+ */
+const INTENTIONALLY_UNREFERENCED: Record<string, string> = {
+  "--uix-duration-base": "middle step of the motion scale",
+  "--uix-font-size-600": "largest step of the type scale",
+  "--uix-font-weight-regular": "the other end of the weight pair",
+  "--uix-z-popover": "layer between dropdown and modal, reserved",
+};
+
 if (mode === "check") {
   const failures: string[] = [];
 
@@ -253,6 +274,33 @@ if (mode === "check") {
     failures.push(
       `${unknown.length} token(s) referenced but never declared: ${unknown.join(", ")}`,
     );
+  }
+
+  const unexplained = dead.filter(
+    (name) => !(name in INTENTIONALLY_UNREFERENCED),
+  );
+  if (unexplained.length) {
+    failures.push(
+      `${unexplained.length} token(s) nothing can reach and nothing explains: ` +
+        `${unexplained.join(", ")}. Either deprecate them, or add them to ` +
+        `INTENTIONALLY_UNREFERENCED with the reason they exist.`,
+    );
+  }
+
+  // The other direction: an exemption for a token that is now used, or that
+  // no longer exists, is a stale comment pretending to be a decision.
+  for (const name of Object.keys(INTENTIONALLY_UNREFERENCED)) {
+    if (!registry.has(name)) {
+      failures.push(
+        `${name} is exempted as intentionally unreferenced but is no longer in the registry`,
+      );
+      continue;
+    }
+    if (!dead.includes(name)) {
+      failures.push(
+        `${name} is exempted as intentionally unreferenced but something now references it; drop the exemption`,
+      );
+    }
   }
 
   const baseline: Baseline = existsSync(BASELINE)
@@ -288,7 +336,8 @@ if (mode === "check") {
     process.exit(1);
   }
   console.log(
-    `Token check passed — ${live.size} live, ${dead.length} unreachable, ` +
+    `Token check passed — ${live.size} live, ${dead.length} unreachable ` +
+      `(all explained), ` +
       `${Object.keys(counts).length} deprecated token(s) held at baseline.`,
   );
   process.exit(0);
