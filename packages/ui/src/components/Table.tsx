@@ -16,6 +16,8 @@ export type TableProps = TableOwnProps &
   Omit<ComponentPropsWithoutRef<"div">, keyof TableOwnProps>;
 
 /**
+ * **Use it for** rows compared across the same columns. **Reach for something else when** each row is an object to open (a list of Cards).
+ *
  * Semantic table with the system's surface styling. Markup stays
  * yours: `thead`/`tbody`/`th scope` decide accessibility, this
  * wrapper decides looks.

@@ -5,13 +5,14 @@ import { NumberField } from "./NumberField";
 const meta = {
   title: "Components/NumberField",
   component: NumberField,
-  tags: ["autodocs"],
+  tags: ["autodocs", "beta"],
 } satisfies Meta<typeof NumberField>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const ReorderPoint: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Reorder point",
     min: 0,

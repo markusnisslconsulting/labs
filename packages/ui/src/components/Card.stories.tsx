@@ -1,4 +1,5 @@
 import { expect } from "storybook/test";
+import { NARROW } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Badge } from "./Badge";
 import { Button } from "./Button";
@@ -9,13 +10,14 @@ const meta = {
   component: Card,
   // Slots are part of the API, so they belong in the props table.
   subcomponents: { Header: Card.Header, Body: Card.Body, Footer: Card.Footer },
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof Card>;
 
 export default meta;
 type Story = StoryObj;
 
 export const WithSlots: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
   render: () => (
     <Card>
       <Card.Header>Supplier · Nordwind Logistik</Card.Header>

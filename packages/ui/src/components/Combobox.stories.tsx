@@ -5,13 +5,14 @@ import { Combobox } from "./Combobox";
 const meta = {
   title: "Components/Combobox",
   component: Combobox,
-  tags: ["autodocs"],
+  tags: ["autodocs", "beta"],
 } satisfies Meta<typeof Combobox>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const SupplierRegion: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Supplier region",
     options: ["European Union", "United Kingdom", "United States", "Japan"],

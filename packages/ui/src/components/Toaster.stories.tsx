@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { NARROW_AND_RTL } from "../../.storybook/modes";
 import { useState } from "react";
 import { expect, userEvent } from "storybook/test";
 import { Toaster, type ToastItem } from "./Toaster";
@@ -7,7 +8,7 @@ import { Button } from "./Button";
 const meta = {
   title: "Components/Toaster",
   component: Toaster,
-  tags: ["autodocs"],
+  tags: ["autodocs", "beta"],
   // Stories own the toast list through render(); these satisfy the
   // required props for the args table and docs.
   args: { toasts: [], onDismiss: () => {} },
@@ -50,6 +51,9 @@ function ToasterDemo({
 }
 
 export const Stack: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
+  },
   render: () => <ToasterDemo />,
   play: async ({ canvas }) => {
     // Severity decides politeness: success is a status, warning alerts.

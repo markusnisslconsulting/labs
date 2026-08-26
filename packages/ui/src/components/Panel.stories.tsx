@@ -1,4 +1,5 @@
 import { expect } from "storybook/test";
+import { NARROW } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Badge } from "./Badge";
 import { Panel } from "./Panel";
@@ -8,7 +9,7 @@ const meta = {
   component: Panel,
   // Slots are part of the API, so they belong in the props table.
   subcomponents: { Header: Panel.Header, Body: Panel.Body },
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   parameters: { layout: "centered" },
 } satisfies Meta<typeof Panel>;
 
@@ -17,6 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 /** A named landmark: screen reader users can jump to it by label. */
 export const Default: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
   args: {
     label: "Live · transcript versus control surface",
     children: <p>Demo content sits inside the bordered surface.</p>,

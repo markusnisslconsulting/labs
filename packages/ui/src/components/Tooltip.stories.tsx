@@ -6,7 +6,7 @@ import { Tooltip } from "./Tooltip";
 const meta = {
   title: "Components/Tooltip",
   component: Tooltip,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof Tooltip>;
 
 export default meta;
@@ -27,9 +27,10 @@ export const OnButton: StoryObj = {
     the headless runner's synthetic hover does not reach it, so this
     suite asserts markup and styling only. */
 export const OpenState: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Tooltip content="Applies to draft rows only" defaultOpen>
-      <button type="button">Bulk edit</button>
+      <Button variant="outline">Bulk edit</Button>
     </Tooltip>
   ),
 };
@@ -48,13 +49,9 @@ export const TriggerKeepsItsName: StoryObj = {
   parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Tooltip content="Days of stock remaining">
-      <button type="button">Cover</button>
+      <Button variant="outline">Cover</Button>
     </Tooltip>
   ),
-  args: {
-    content: "Days of stock remaining",
-    children: <button>Cover</button>,
-  },
   play: async ({ canvas }) => {
     // The tooltip describes the trigger; it must not replace its name.
     await expect(canvas.getByRole("button", { name: "Cover" })).toBeVisible();

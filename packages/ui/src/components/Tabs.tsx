@@ -25,6 +25,8 @@ export type TabsProps = TabsOwnProps &
   Omit<ComponentPropsWithoutRef<typeof BaseTabs.Root>, keyof TabsOwnProps>;
 
 /**
+ * **Use it for** peer sections of content in one context. **Reach for something else when** the sections are filters over one list (SegmentedControl).
+ *
  * WAI-ARIA tabs on Base UI.
  *
  * Accessibility: Base UI renders the tablist/tab/tabpanel wiring —

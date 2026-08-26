@@ -5,13 +5,14 @@ import { SearchInput } from "./SearchInput";
 const meta = {
   title: "Components/SearchInput",
   component: SearchInput,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof SearchInput>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { placeholder: "Search the labs", "aria-label": "Search the labs" },
   play: async ({ canvas }) => {
     // The accessible name comes from the label, never the placeholder.

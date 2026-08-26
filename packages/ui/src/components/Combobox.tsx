@@ -20,6 +20,8 @@ export type ComboboxProps = ComboboxOwnProps &
   Omit<ComponentPropsWithoutRef<"div">, keyof ComboboxOwnProps>;
 
 /**
+ * **Use it for** choosing one value from a list too long to scan. **Reach for something else when** the list is short and fixed (Select).
+ *
  * Filterable single-select on native primitives: an input bound to a
  * `datalist` via `list`/`id`.
  *

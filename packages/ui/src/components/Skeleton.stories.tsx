@@ -6,7 +6,7 @@ import { Skeleton } from "./Skeleton";
 const meta = {
   title: "Components/Skeleton",
   component: Skeleton,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped("shape", "width", "height"),
   parameters: {
     docs: {
@@ -67,6 +67,7 @@ export const HiddenFromAssistiveTechnology: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "1rem" }}>
       {(["line", "circle", "block"] as const).map((shape) => (

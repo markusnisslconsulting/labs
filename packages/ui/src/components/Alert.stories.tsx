@@ -7,7 +7,7 @@ import { Alert } from "./Alert";
 const meta = {
   title: "Components/Alert",
   component: Alert,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped(
     "severity",
     "title",
@@ -100,6 +100,7 @@ export const Warning: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "1rem" }}>
       {(["info", "success", "warning", "danger"] as const).map((severity) => (

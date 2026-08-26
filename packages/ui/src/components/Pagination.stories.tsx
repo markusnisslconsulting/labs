@@ -1,17 +1,21 @@
 import { expect } from "storybook/test";
+import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Pagination } from "./Pagination";
 
 const meta = {
   title: "Components/Pagination",
   component: Pagination,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof Pagination>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const NinePages: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
+  },
   args: { pageCount: 9, defaultPage: 4 },
   play: async ({ canvas }) => {
     // aria-current marks where you are; prev/next have real names.

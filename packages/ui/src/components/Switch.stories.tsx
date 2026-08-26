@@ -1,4 +1,5 @@
 import { expect, userEvent } from "storybook/test";
+import { RTL } from "../../.storybook/modes";
 import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Switch } from "./Switch";
@@ -20,7 +21,7 @@ import { Switch } from "./Switch";
 const meta = {
   title: "Components/Switch",
   component: Switch,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped(
     "label",
     "checked",
@@ -91,6 +92,7 @@ export const TogglesWithTheKeyboard: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
   render: () => (
     <div style={{ display: "grid", gap: "1rem" }}>
       <Switch label="Off" />

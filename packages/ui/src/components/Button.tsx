@@ -48,6 +48,8 @@ export interface ButtonProps extends Omit<
 }
 
 /**
+ * **Use it for** anything that performs an action. **Reach for something else when** the control navigates: pass render={<a href />} so it stays a link.
+ *
  * The one button of the design system.
  *
  * API: three coherent axes — `variant`, `tone`, `size` — every

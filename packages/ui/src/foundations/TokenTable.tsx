@@ -41,8 +41,10 @@ function Preview({ token }: { token: TokenDescriptor }) {
       return (
         <span
           style={{
-            display: "inline-block",
-            width: "8rem",
+            display: "block",
+            // Fill the preview column instead of a fixed 8rem: the column
+            // is 5rem, so the bar used to run under the next column.
+            width: "100%",
             height: "0.9rem",
             background: "var(--uix-bg-subtle)",
             borderRadius: "var(--uix-radius-s)",
@@ -141,7 +143,8 @@ export function TokenTable({ tokens }: { tokens: TokenDescriptor[] }) {
           key={token.name}
           style={{
             display: "grid",
-            gridTemplateColumns: "minmax(14rem, 1.2fr) 5rem 2fr 2fr",
+            gridTemplateColumns:
+              "minmax(11rem, 1.1fr) minmax(4rem, 7rem) minmax(0, 1.6fr) minmax(0, 1fr)",
             gap: "var(--uix-space-3)",
             alignItems: "center",
             padding: "0.35rem 0.5rem",
@@ -171,6 +174,7 @@ export function TokenTable({ tokens }: { tokens: TokenDescriptor[] }) {
             style={{
               fontSize: "var(--uix-font-size-200)",
               color: "var(--uix-text-secondary)",
+              minWidth: 0,
             }}
           >
             {token.description}
@@ -179,6 +183,8 @@ export function TokenTable({ tokens }: { tokens: TokenDescriptor[] }) {
             style={{
               fontSize: "var(--uix-font-size-100)",
               color: "var(--uix-text-secondary)",
+              minWidth: 0,
+              overflowWrap: "anywhere",
             }}
           >
             {token.value}

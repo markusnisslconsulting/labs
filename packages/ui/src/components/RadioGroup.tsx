@@ -29,6 +29,8 @@ export type RadioGroupProps = RadioGroupOwnProps &
   Omit<ComponentPropsWithoutRef<"fieldset">, keyof RadioGroupOwnProps>;
 
 /**
+ * **Use it for** one choice from a small set, all of it visible. **Reach for something else when** there are more than about seven options (Select).
+ *
  * Radio group as a `fieldset` with a real `legend` — the platform's
  * own grouping semantics. Arrow keys move between options natively.
  */

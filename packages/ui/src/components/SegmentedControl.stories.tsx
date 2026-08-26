@@ -1,4 +1,5 @@
 import { expect, userEvent } from "storybook/test";
+import { RTL } from "../../.storybook/modes";
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SegmentedControl } from "./SegmentedControl";
@@ -6,7 +7,7 @@ import { SegmentedControl } from "./SegmentedControl";
 const meta = {
   title: "Components/SegmentedControl",
   component: SegmentedControl,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof SegmentedControl>;
 
 export default meta;
@@ -28,6 +29,7 @@ function ViewSwitcherDemo() {
 }
 
 export const ViewSwitcher: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
   render: () => <ViewSwitcherDemo />,
   play: async ({ canvas }) => {
     // Reference state: assert what is on screen without changing it.

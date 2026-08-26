@@ -6,7 +6,7 @@ import { Spinner } from "./Spinner";
 const meta = {
   title: "Components/Spinner",
   component: Spinner,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped("size", "label"),
 } satisfies Meta<typeof Spinner>;
 
@@ -54,6 +54,7 @@ export const Announced: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div
       style={{

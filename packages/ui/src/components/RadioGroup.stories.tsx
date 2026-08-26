@@ -5,7 +5,7 @@ import { RadioGroup } from "./RadioGroup";
 const meta = {
   title: "Components/RadioGroup",
   component: RadioGroup,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   args: {
     name: "shipping",
     legend: "Shipping speed",
@@ -21,7 +21,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ShippingSpeed: Story = {};
+export const ShippingSpeed: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
+};
 
 /** Interaction only; see the note in Accordion.stories. */
 export const SelectingAnOption: Story = {

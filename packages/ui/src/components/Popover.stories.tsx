@@ -1,11 +1,12 @@
 import { expect, userEvent } from "storybook/test";
+import { RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Popover } from "./Popover";
 
 const meta = {
   title: "Components/Popover",
   component: Popover,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof Popover>;
 
 export default meta;
@@ -16,6 +17,7 @@ type Story = StoryObj;
  * Base UI's own tested surface — same policy as Menu and Tooltip.
  */
 export const Details: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
   args: {
     trigger: "Delivery details",
     title: "Nordwind Logistik",

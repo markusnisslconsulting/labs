@@ -1,4 +1,4 @@
 {
   "note": "Projected Chromatic snapshots per full build: snapshotted stories x modes. The check fails when this is exceeded, so a rise in the bill arrives as a reviewable diff. Run `nx run ui:snapshot-budget-write` after an intentional change.",
-  "ceiling": 114
+  "ceiling": 100
 }

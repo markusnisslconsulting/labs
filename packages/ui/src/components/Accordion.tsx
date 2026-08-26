@@ -28,6 +28,8 @@ export type AccordionProps = AccordionOwnProps &
   >;
 
 /**
+ * **Use it for** sections where only one answer matters at a time. **Reach for something else when** the sections are peer views to navigate between (Tabs).
+ *
  * Disclosure sections on Base UI's accordion.
  *
  * Accessibility: Base UI renders header triggers with

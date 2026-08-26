@@ -18,6 +18,8 @@ export interface SelectProps extends Omit<
 }
 
 /**
+ * **Use it for** one value from a short fixed list. **Reach for something else when** the list is long enough that someone would rather type (Combobox).
+ *
  * Native `<select>` with a bound label and optional hint. The chevron
  * is a styled span (aria-hidden) — the element stays a real select,
  * so pickers, keyboards and forms behave like the platform.

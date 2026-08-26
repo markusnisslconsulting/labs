@@ -6,7 +6,7 @@ import { Badge } from "./Badge";
 const meta = {
   title: "Components/Badge",
   component: Badge,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped("tone", "children"),
 } satisfies Meta<typeof Badge>;
 
@@ -51,6 +51,7 @@ export const ToneIsNeverTheOnlySignal: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div
       style={{

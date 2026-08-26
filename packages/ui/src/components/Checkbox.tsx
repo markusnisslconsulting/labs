@@ -27,6 +27,8 @@ export type CheckboxProps = CheckboxOwnProps &
   >;
 
 /**
+ * **Use it for** independent options, each on or off. **Reach for something else when** the options are mutually exclusive (RadioGroup), or the change applies immediately (Switch).
+ *
  * Checkbox on a Base UI headless root, following Base UI's suggested
  * structure: `Root` carries the state attributes
  * (`data-checked`/`data-indeterminate`), the `Indicator` is the

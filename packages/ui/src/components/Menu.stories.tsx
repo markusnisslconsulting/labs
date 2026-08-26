@@ -1,11 +1,12 @@
 import { expect, userEvent } from "storybook/test";
+import { RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Menu } from "./Menu";
 
 const meta = {
   title: "Components/Menu",
   component: Menu,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof Menu>;
 
 export default meta;
@@ -18,6 +19,7 @@ type Story = StoryObj;
  * browser does.
  */
 export const RowActions: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
   args: {
     label: "Row actions",
     items: [

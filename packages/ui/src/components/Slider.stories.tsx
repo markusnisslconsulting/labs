@@ -1,15 +1,17 @@
 import { expect, userEvent } from "storybook/test";
+import { RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Slider } from "./Slider";
 
 const meta = {
   title: "Components/Slider",
   component: Slider,
-  tags: ["autodocs"],
+  tags: ["autodocs", "beta"],
 } satisfies Meta<typeof Slider>;
 
 export default meta;
 export const ReorderBuffer: StoryObj<typeof meta> = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
   args: {
     label: "Safety buffer",
     min: 0,

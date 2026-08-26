@@ -30,6 +30,7 @@ type Story = StoryObj;
  * right one runs under `data-brand="ocean"`.
  */
 export const SideBySide: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div
       style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.2rem" }}

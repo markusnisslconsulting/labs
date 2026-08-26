@@ -16,6 +16,8 @@ export type BadgeProps = BadgeOwnProps &
   Omit<ComponentPropsWithoutRef<"span">, keyof BadgeOwnProps>;
 
 /**
+ * **Use it for** labelling a state on a row or card. **Reach for something else when** the label performs an action (Button), or the state changes on its own (StatusPill).
+ *
  * Usage: status labels on rows and cards; never for actions (use Button).
  *
  * A short status label. The text is the content — tone only colours

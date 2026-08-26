@@ -17,6 +17,8 @@ export type SpinnerProps = SpinnerOwnProps &
   Omit<ComponentPropsWithoutRef<"span">, keyof SpinnerOwnProps>;
 
 /**
+ * **Use it for** a short wait with no known duration. **Reach for something else when** the layout is already known (Skeleton), or progress is measurable (ProgressBar).
+ *
  * Waiting indicator.
  *
  * Accessibility: `role="status"` with a visually hidden label, so

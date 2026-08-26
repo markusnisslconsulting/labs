@@ -5,7 +5,7 @@ import { Divider } from "./Divider";
 const meta = {
   title: "Components/Divider",
   component: Divider,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof Divider>;
 
 export default meta;
@@ -43,6 +43,7 @@ export const Vertical: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "1rem" }}>
       <Divider orientation="horizontal" />

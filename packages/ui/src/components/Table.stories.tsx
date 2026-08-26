@@ -1,17 +1,21 @@
 import { expect } from "storybook/test";
+import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Table } from "./Table";
 
 const meta = {
   title: "Components/Table",
   component: Table,
-  tags: ["autodocs"],
+  tags: ["autodocs", "beta"],
 } satisfies Meta<typeof Table>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const OrderingDesk: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
+  },
   args: {
     caption: "SKUs with their current reorder points",
     children: (

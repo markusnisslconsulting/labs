@@ -213,6 +213,31 @@ describe("the layering rules the architecture depends on", () => {
     );
   });
 
+  /**
+   * A brand is usually scoped to a subtree while the theme sits on the
+   * root. A single compound selector demands both attributes on one
+   * element, so a nested brand silently keeps its light values under a
+   * dark root. Every brand must therefore ship the descendant spelling
+   * too.
+   */
+  it("a brand's theme overrides compose when the brand is nested", () => {
+    for (const file of readdirSync(BRANDS).filter((name) =>
+      name.endsWith(".css"),
+    )) {
+      const source = strip(readFileSync(join(BRANDS, file), "utf8"));
+      const brand = file.replace(/\.css$/, "");
+      const compound = source.includes(
+        `[data-brand="${brand}"][data-theme="dark"]`,
+      );
+      if (!compound) continue;
+      expect(
+        source.includes(`[data-theme="dark"] [data-brand="${brand}"]`),
+        `${file} overrides the dark theme only as a compound selector, so a ` +
+          `brand nested under a dark root keeps its light values`,
+      ).toBe(true);
+    }
+  });
+
   it("a brand only re-points semantic tokens", () => {
     const semanticNames = new Set(semanticTokens.map((token) => token.name));
     for (const file of readdirSync(BRANDS).filter((name) =>

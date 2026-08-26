@@ -6,7 +6,7 @@ import { Banner } from "./Banner";
 const meta = {
   title: "Components/Banner",
   component: Banner,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped("severity", "children"),
 } satisfies Meta<typeof Banner>;
 
@@ -62,6 +62,7 @@ export const InfoIsPolite: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "1rem" }}>
       {(["info", "success", "warning", "danger"] as const).map((severity) => (

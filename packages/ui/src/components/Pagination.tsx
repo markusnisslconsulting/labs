@@ -19,6 +19,8 @@ export type PaginationProps = PaginationOwnProps &
   Omit<ComponentPropsWithoutRef<"nav">, keyof PaginationOwnProps>;
 
 /**
+ * **Use it for** moving through pages a reader may want to return to. **Reach for something else when** the list is an endless feed (load more).
+ *
  * Numeric pagination with a sliding window.
  *
  * Accessibility: one `nav` labelled "Pagination"; the current page is

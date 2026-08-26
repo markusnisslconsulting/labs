@@ -6,6 +6,8 @@ import "./Card.css";
 export type CardProps = ComponentPropsWithoutRef<"article">;
 export type CardSlotProps = ComponentPropsWithoutRef<"div">;
 /**
+ * **Use it for** a summary that links somewhere else. **Reach for something else when** the surface is a section of this page (Panel).
+ *
  * Generic surface with compound slots.
  *
  * Pattern: compound components rendering in place — NOT

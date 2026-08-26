@@ -18,6 +18,8 @@ export interface TextFieldProps extends Omit<
 }
 
 /**
+ * **Use it for** any single-line text entry. **Reach for something else when** the field queries a collection (SearchInput).
+ *
  * Labelled text input with hint/error wiring.
  *
  * Accessibility: `label` is bound with `for`; hint and error are

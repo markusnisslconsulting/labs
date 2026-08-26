@@ -20,6 +20,8 @@ export type BreadcrumbProps = BreadcrumbOwnProps &
   Omit<ComponentPropsWithoutRef<"nav">, keyof BreadcrumbOwnProps>;
 
 /**
+ * **Use it for** showing where a page sits in a hierarchy the reader can climb. **Reach for something else when** the levels are not a hierarchy (a back link).
+ *
  * Breadcrumb trail. The last item is the current page:
  * `aria-current="page"`, rendered as text, not a link to itself.
  *

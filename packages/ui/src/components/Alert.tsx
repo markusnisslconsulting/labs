@@ -31,6 +31,8 @@ const roleFor: Record<Severity, "status" | "alert"> = {
 };
 
 /**
+ * **Use it for** feedback about what the user just did, next to the thing they did it to. **Reach for something else when** the message concerns the whole view (Banner).
+ *
  * Inline feedback.
  *
  * Accessibility: `warning` and `danger` render `role="alert"`

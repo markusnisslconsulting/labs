@@ -20,6 +20,8 @@ export type StatusPillProps = StatusPillOwnProps &
   Omit<ComponentPropsWithoutRef<"span">, keyof StatusPillOwnProps>;
 
 /**
+ * **Use it for** a live state that changes on its own. **Reach for something else when** the label is static (Badge).
+ *
  * A live state, one line. The coloured dot is `aria-hidden`; the word
  * next to it carries the meaning for assistive technology.
  */

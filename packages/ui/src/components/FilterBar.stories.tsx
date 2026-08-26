@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { NARROW } from "../../.storybook/modes";
 import { useState } from "react";
 import { Chip } from "./Chip";
 import { IconButton } from "./IconButton";
@@ -69,5 +70,6 @@ function FilterBar() {
 }
 
 export const OverviewFilterBar: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
   render: () => <FilterBar />,
 };

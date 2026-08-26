@@ -38,15 +38,38 @@ const config: TestRunnerConfig = {
     if (a11y?.config?.rules) {
       await configureAxe(page, { rules: a11y.config.rules as never });
     }
-    await serialize(() =>
-      checkA11y(
-        page,
-        "#storybook-root",
-        { detailedReport: true, detailedReportOptions: { html: true } },
-        // skipFailures = false: a violation throws, so the run is red.
-        false,
-      ),
+    const check = () =>
+      serialize(() =>
+        checkA11y(
+          page,
+          "#storybook-root",
+          { detailedReport: true, detailedReportOptions: { html: true } },
+          // skipFailures = false: a violation throws, so the run is red.
+          false,
+        ),
+      );
+
+    // Light, then dark.
+    //
+    // The runner visits each story once with the default globals, which
+    // meant every accessibility check only ever saw the light theme. Dark
+    // shipped for months with a black-on-dark select, a tooltip trigger
+    // on the browser's grey button face, and a nested brand that kept its
+    // light accent under a dark root. All three were invisible here.
+    //
+    // Flipping the attribute in place costs one extra axe run per story
+    // rather than a second full pass over the Storybook.
+    await check();
+    await page.evaluate(() =>
+      document.documentElement.setAttribute("data-theme", "dark"),
     );
+    try {
+      await check();
+    } finally {
+      await page.evaluate(() =>
+        document.documentElement.removeAttribute("data-theme"),
+      );
+    }
   },
 };
 

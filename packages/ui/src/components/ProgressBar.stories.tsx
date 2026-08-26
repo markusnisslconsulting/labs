@@ -5,7 +5,7 @@ import { ProgressBar } from "./ProgressBar";
 const meta = {
   title: "Components/ProgressBar",
   component: ProgressBar,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof ProgressBar>;
 
 export default meta;
@@ -67,6 +67,7 @@ export const Indeterminate: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "1rem" }}>
       <ProgressBar label="Empty" value={0} />

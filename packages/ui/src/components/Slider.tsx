@@ -25,6 +25,8 @@ export type SliderProps = SliderOwnProps &
   Omit<ComponentPropsWithoutRef<"div">, keyof SliderOwnProps>;
 
 /**
+ * **Use it for** a value where the approximate position matters more than the number. **Reach for something else when** the exact number matters (NumberField).
+ *
  * Native range input.
  *
  * Accessibility: `input[type=range]` is a fully accessible slider —

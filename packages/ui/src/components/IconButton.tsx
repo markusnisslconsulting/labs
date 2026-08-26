@@ -21,6 +21,8 @@ export interface IconButtonProps extends Omit<
 }
 
 /**
+ * **Use it for** an action whose icon is unambiguous, where space is tight. **Reach for something else when** the action is primary, or the icon needs explaining (Button with a leading icon).
+ *
  * An icon-only action.
  *
  * Accessibility: same native button as Button, but the accessible

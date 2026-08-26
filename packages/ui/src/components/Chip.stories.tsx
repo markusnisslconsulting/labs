@@ -6,7 +6,7 @@ import { Chip } from "./Chip";
 const meta = {
   title: "Components/Chip",
   component: Chip,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped("interactive", "active", "children", "onSelect"),
 } satisfies Meta<typeof Chip>;
 
@@ -67,6 +67,7 @@ export const KeyboardReachable: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div
       style={{

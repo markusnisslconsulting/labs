@@ -6,7 +6,7 @@ import { StatusPill } from "./StatusPill";
 const meta = {
   title: "Components/StatusPill",
   component: StatusPill,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped("tone", "children"),
 } satisfies Meta<typeof StatusPill>;
 
@@ -32,6 +32,7 @@ export const Off: Story = {
  * compared and their contrast checked at once.
  */
 export const AllTones: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "0.5rem", justifyItems: "start" }}>
       <StatusPill tone="ok">ready on this machine</StatusPill>

@@ -55,8 +55,11 @@
 
   button,
   input,
-  textarea {
+  textarea,
+  select {
     font: inherit;
+    /* select was missing here, so a native select kept the UA's black
+       text and rendered black-on-dark-surface in the dark theme. */
     color: inherit;
   }
 

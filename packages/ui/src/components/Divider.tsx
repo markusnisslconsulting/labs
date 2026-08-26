@@ -17,6 +17,8 @@ export type DividerProps = DividerOwnProps &
   Omit<ComponentPropsWithoutRef<"div">, keyof DividerOwnProps>;
 
 /**
+ * **Use it for** separating groups that already read as groups. **Reach for something else when** the separation needs a name (a heading).
+ *
  * A rule between content groups.
  *
  * Accessibility: renders `role="separator"`; purely decorative by

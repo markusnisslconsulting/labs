@@ -13,6 +13,8 @@ export interface TooltipProps {
 }
 
 /**
+ * **Use it for** naming an icon-only control, or a short hint. **Reach for something else when** the content is essential or interactive (put it in the page).
+ *
  * A text hint on hover and keyboard focus, positioned by Base UI
  * (floating-ui): flips at viewport edges, so it never leaves the
  * window the way absolute CSS positioning did.

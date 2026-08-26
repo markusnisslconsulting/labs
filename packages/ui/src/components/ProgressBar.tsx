@@ -23,6 +23,8 @@ export type ProgressBarProps = ProgressBarOwnProps &
   >;
 
 /**
+ * **Use it for** progress with a known proportion, or a named indeterminate wait. **Reach for something else when** the wait is short and local (Spinner).
+ *
  * Progress on Base UI's progress root.
  *
  * Accessibility: Base UI renders `role="progressbar"` with

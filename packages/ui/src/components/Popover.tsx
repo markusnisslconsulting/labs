@@ -23,6 +23,8 @@ export type PopoverProps = PopoverOwnProps &
   >;
 
 /**
+ * **Use it for** detail or a small form without blocking the page. **Reach for something else when** the task must be completed first (Dialog).
+ *
  * A non-modal floating container (details, forms, filters) on Base
  * UI's popover: focus is trapped while open, Escape closes, the
  * trigger gets `aria-expanded`/`aria-haspopup`, and positioning flips

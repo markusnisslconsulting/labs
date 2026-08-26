@@ -1,11 +1,12 @@
 import { expect, userEvent } from "storybook/test";
+import { RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Accordion } from "./Accordion";
 
 const meta = {
   title: "Components/Accordion",
   component: Accordion,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   args: {
     items: [
       {
@@ -25,7 +26,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const SingleOpen: Story = {};
+export const SingleOpen: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
+};
 
 /**
  * Interaction, not a reference state. Chromatic captures the frame after

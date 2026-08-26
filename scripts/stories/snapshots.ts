@@ -28,12 +28,37 @@ const ROOTS = ["packages/ui/src/components", "packages/ui/src/foundations"];
 const PREVIEW = "packages/ui/.storybook/preview.tsx";
 const BUDGET = "packages/ui/snapshot-budget.json";
 
+/** How many modes each named set in .storybook/modes.ts declares. */
+function namedModes(): Record<string, number> {
+  const source = readFileSync("packages/ui/.storybook/modes.ts", "utf8");
+  const base = (
+    source.match(/const BASE = \{([\s\S]*?)\} as const;/)?.[1] ?? ""
+  )
+    .split("\n")
+    .filter((line) => /^\s*\w+:\s*\{/.test(line)).length;
+  const out: Record<string, number> = {};
+  for (const hit of source.matchAll(
+    /export const (\w+) = \{([\s\S]*?)\} as const;/g,
+  )) {
+    const own = hit[2]!
+      .split("\n")
+      .filter((line) => /^\s*[\w"']+:\s*\{/.test(line)).length;
+    out[hit[1]!] = (/\.\.\.BASE/.test(hit[2]!) ? base : 0) + own;
+  }
+  return out;
+}
+
 /** Modes declared globally in preview.tsx, e.g. light + dark. */
 function globalModes(): number {
   const preview = readFileSync(PREVIEW, "utf8");
-  const block = preview.match(/chromatic:\s*\{\s*modes:\s*\{([\s\S]*?)\n\s{4}\},/);
+  // `modes` does not have to be the first key inside `chromatic`, and
+  // assuming it was made this return 1 and undercount the projection.
+  const block = preview.match(/\n(\s*)modes:\s*\{([\s\S]*?)\n\1\},/);
   if (!block) return 1;
-  return Math.max(1, [...block[1]!.matchAll(/^\s{8}[\w"' -]+:\s*\{/gm)].length);
+  return Math.max(
+    1,
+    [...block[2]!.matchAll(/^\s*[\w"'][\w"' -]*:\s*\{/gm)].length,
+  );
 }
 
 interface Story {
@@ -57,13 +82,22 @@ function bodies(source: string): Array<{ name: string; body: string }> {
   const hits = [...source.matchAll(/^export const (\w+)[^=]*=\s*\{/gm)];
   hits.forEach((hit, index) => {
     const start = hit.index!;
-    const end = index + 1 < hits.length ? hits[index + 1]!.index! : source.length;
+    const end =
+      index + 1 < hits.length ? hits[index + 1]!.index! : source.length;
     out.push({ name: hit[1]!, body: source.slice(start, end) });
   });
   return out;
 }
 
-function countModes(body: string, fallback: number): number {
+function countModes(
+  body: string,
+  fallback: number,
+  named: Record<string, number>,
+): number {
+  // `modes: { ...NARROW }` resolves through the named set; a literal
+  // object is counted by its keys.
+  const spread = body.match(/modes:\s*\{\s*\.\.\.(\w+)\s*\}/);
+  if (spread && named[spread[1]!]) return named[spread[1]!]!;
   const modes = body.match(/modes:\s*\{([\s\S]*?)\n\s*\},/);
   if (!modes) return fallback;
   const keys = [...modes[1]!.matchAll(/^\s*["'\w][\w"' -]*:\s*\{/gm)].length;
@@ -71,6 +105,7 @@ function countModes(body: string, fallback: number): number {
 }
 
 const fallbackModes = globalModes();
+const named = namedModes();
 const stories: Story[] = [];
 
 for (const file of storyFiles()) {
@@ -78,16 +113,20 @@ for (const file of storyFiles()) {
   const component = file.split("/").pop()!.replace(".stories.tsx", "");
   const meta = source.match(/const meta = \{[\s\S]*?\} satisfies/);
   const metaOff = meta ? /disableSnapshot:\s*true/.test(meta[0]) : false;
-  const metaModes = meta ? countModes(meta[0], fallbackModes) : fallbackModes;
+  const metaModes = meta
+    ? countModes(meta[0], fallbackModes, named)
+    : fallbackModes;
 
   for (const { name, body } of bodies(source)) {
     if (name === "meta") continue;
-    const off = metaOff || /disableSnapshot:\s*true/.test(body);
+    // Opt-in: the project default in preview.tsx is disabled, so a story
+    // is only photographed when it says so.
+    const on = /disableSnapshot:\s*false/.test(body);
     stories.push({
       component,
       name,
-      snapshotted: !off,
-      modes: countModes(body, metaModes),
+      snapshotted: on && !metaOff,
+      modes: countModes(body, metaModes, named),
     });
   }
 }
@@ -97,7 +136,10 @@ const total = snapshotted.reduce((sum, s) => sum + s.modes, 0);
 
 const byComponent = new Map<string, Story[]>();
 for (const story of stories) {
-  byComponent.set(story.component, [...(byComponent.get(story.component) ?? []), story]);
+  byComponent.set(story.component, [
+    ...(byComponent.get(story.component) ?? []),
+    story,
+  ]);
 }
 const uncovered = [...byComponent.entries()]
   .filter(([, list]) => !list.some((s) => s.snapshotted))
@@ -109,7 +151,9 @@ if (mode === "report") {
   console.log("Snapshot budget\n");
   console.log(`  stories                 ${stories.length}`);
   console.log(`  snapshotted             ${snapshotted.length}`);
-  console.log(`  opted out               ${stories.length - snapshotted.length}`);
+  console.log(
+    `  opted out               ${stories.length - snapshotted.length}`,
+  );
   console.log(`  global modes            ${fallbackModes}`);
   console.log(`  projected snapshots     ${total}\n`);
 
@@ -120,12 +164,17 @@ if (mode === "report") {
       off: list.length - list.filter((s) => s.snapshotted).length,
     }))
     .sort((a, b) => b.off - a.off);
-  console.log(`  ${"component".padEnd(20)} ${"snapshots".padEnd(10)} opted out`);
+  console.log(
+    `  ${"component".padEnd(20)} ${"snapshots".padEnd(10)} opted out`,
+  );
   for (const row of rows) {
     const cost = row.on.reduce((sum, s) => sum + s.modes, 0);
-    console.log(`  ${row.component.padEnd(20)} ${String(cost).padEnd(10)} ${row.off}`);
+    console.log(
+      `  ${row.component.padEnd(20)} ${String(cost).padEnd(10)} ${row.off}`,
+    );
   }
-  if (uncovered.length) console.log(`\n  NO SNAPSHOT AT ALL: ${uncovered.join(", ")}`);
+  if (uncovered.length)
+    console.log(`\n  NO SNAPSHOT AT ALL: ${uncovered.join(", ")}`);
   process.exit(0);
 }
 

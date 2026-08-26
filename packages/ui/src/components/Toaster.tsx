@@ -68,6 +68,8 @@ function Toast({
 }
 
 /**
+ * **Use it for** confirming something that already happened, without interrupting. **Reach for something else when** the reader must act on it (Dialog or Alert).
+ *
  * The toast stack, fully controlled: the app owns the queue, the
  * Toaster renders it and reports dismissals (manual or via timeout).
  *

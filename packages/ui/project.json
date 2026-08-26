@@ -133,14 +133,14 @@
       "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec playwright test --config visual/playwright.config.ts"
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4520 --silent\" \"wait-on tcp:127.0.0.1:4520 && pnpm exec playwright test --config visual/playwright.config.ts\""
       }
     },
     "visual-update": {
       "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm exec playwright test --config visual/playwright.config.ts --update-snapshots"
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4520 --silent\" \"wait-on tcp:127.0.0.1:4520 && pnpm exec playwright test --config visual/playwright.config.ts --update-snapshots\""
       }
     }
   }

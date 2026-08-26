@@ -35,6 +35,8 @@ function PanelBodyBase({ children }: PanelBodyProps) {
 }
 
 /**
+ * **Use it for** a titled region of this page. **Reach for something else when** the surface summarises something that lives elsewhere (Card).
+ *
  * The bordered demo surface.
  *
  * Accessibility: `label` names the section (aria-label). For richer

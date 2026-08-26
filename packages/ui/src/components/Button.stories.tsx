@@ -5,7 +5,7 @@ import { Button } from "./Button";
 const meta = {
   title: "Components/Button",
   component: Button,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: {
     variant: {
       control: "radio",
@@ -98,6 +98,7 @@ const sizes = ["sm", "md", "lg"] as const;
  * wrong, the fix belongs in tokens, not in this story.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "1.2rem" }}>
       {variants.map((variant) => (

@@ -1,4 +1,5 @@
 import { expect, userEvent } from "storybook/test";
+import { RTL } from "../../.storybook/modes";
 import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Checkbox } from "./Checkbox";
@@ -6,7 +7,7 @@ import { Checkbox } from "./Checkbox";
 const meta = {
   title: "Components/Checkbox",
   component: Checkbox,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   argTypes: grouped(
     "label",
     "checked",
@@ -76,6 +77,7 @@ export const KeyboardReachable: Story = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
   render: () => (
     <div style={{ display: "grid", gap: "1rem" }}>
       <Checkbox label="Unchecked" />

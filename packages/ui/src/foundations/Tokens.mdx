@@ -1,0 +1,59 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { TokenTable } from "./TokenTable";
+import {
+  primitiveTokens,
+  semanticTokens,
+  componentTokens,
+} from "../tokens.registry";
+
+<Meta title="Foundations/Tokens" />
+
+# Tokens
+
+One page, because there is one answer to "what can I use". This was four
+pages — an overview that repeated the primitive and semantic tables, plus
+one page per tier — and a reader had to notice that two of them said the
+same thing.
+
+Every table below is generated from `tokens.registry.ts`. A test fails the
+build when the registry and the CSS disagree, so what you read here is
+what ships. Click a token name to copy it.
+
+## Primitive
+
+Raw values with no opinion: the palette, the scales. **No component may
+name a primitive colour** — colour is what themes and brands remap, so a
+component that names one escapes both. Spacing, radius, type and motion
+are a shared scale and may be used directly.
+
+<TokenTable tokens={primitiveTokens} />
+
+## Semantic
+
+Intent, not appearance. This is the only layer a brand touches, and it is
+deliberately a closed vocabulary: adding one is an API change, not a
+convenience.
+
+`--uix-ink` and `--uix-paper` are the two ends of the neutral ramp for the
+current theme. A component shades a fill by mixing toward them, so a hover
+deepens on light and brightens on dark without either being written twice.
+
+<TokenTable tokens={semanticTokens} />
+
+## Component slots
+
+Per-part override points. These are **not declared anywhere**: each is
+referenced with its semantic default inline, so the slot costs nothing
+until a product fills it.
+
+```css
+.uix-button[data-tone="accent"] {
+  background: var(--uix-button-accent-bg, var(--uix-accent));
+}
+```
+
+That is why the tier can grow to cover every component without the
+stylesheet growing with it. Each component's own docs page lists the slots
+that apply to it; this is the whole set.
+
+<TokenTable tokens={componentTokens} />

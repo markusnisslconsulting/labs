@@ -25,6 +25,8 @@ const roleFor: Record<Severity, "status" | "alert"> = {
 };
 
 /**
+ * **Use it for** an announcement that concerns the whole view. **Reach for something else when** the message belongs to one control or row (Alert).
+ *
  * Page-level strip for announcements that concern the whole view.
  * Same role semantics as Alert; the difference is placement and
  * weight, not behaviour.

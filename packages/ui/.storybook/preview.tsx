@@ -80,6 +80,26 @@ const preview: Preview = {
      */
     a11y: { test: "error" },
     /**
+     * Three widths, named for the decision rather than a device: the
+     * point is where the layout has to change, not which phone.
+     */
+    viewport: {
+      options: {
+        narrow: {
+          name: "Narrow (390)",
+          styles: { width: "390px", height: "780px" },
+        },
+        medium: {
+          name: "Medium (768)",
+          styles: { width: "768px", height: "900px" },
+        },
+        wide: {
+          name: "Wide (1280)",
+          styles: { width: "1280px", height: "900px" },
+        },
+      },
+    },
+    /**
      * Snapshot every story in both themes.
      *
      * Dark mode was unreachable for months and then, once reachable,
@@ -94,6 +114,22 @@ const preview: Preview = {
      * the Brands story, where a brand difference is the subject.
      */
     chromatic: {
+      /**
+       * Snapshotting is opt-in.
+       *
+       * Measured, not assumed: a full build captured 240 snapshots while
+       * the projection said 114. The gap is Storybook's autodocs pages,
+       * which Chromatic photographs like any other entry — 44 of them,
+       * each one the same components in a documentation shell.
+       *
+       * There is no documented way to keep a docs page and skip its
+       * snapshot, but story parameters override the project default. So
+       * the default is off, and each component turns exactly one story
+       * back on with `disableSnapshot: false`. Every snapshot is then a
+       * visible line someone chose, and the budget gate refuses a
+       * component that turned none on.
+       */
+      disableSnapshot: true,
       modes: {
         light: { theme: "light" },
         dark: { theme: "dark" },
@@ -113,6 +149,18 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
+    direction: {
+      name: "Direction",
+      description: "Writing direction; the layout must mirror, not shift",
+      toolbar: {
+        icon: "transfer",
+        items: [
+          { value: "ltr", title: "LTR" },
+          { value: "rtl", title: "RTL" },
+        ],
+        dynamicTitle: true,
+      },
+    },
     density: {
       name: "Density",
       description: "Spacing multiplier",
@@ -126,7 +174,7 @@ const preview: Preview = {
       },
     },
   },
-  initialGlobals: { brand: "default", density: "default" },
+  initialGlobals: { brand: "default", density: "default", direction: "ltr" },
   decorators: [
     // Padding as a real container: Chromatic crops snapshots to the
     // component, and focus rings with outline-offset need the room.
@@ -136,6 +184,10 @@ const preview: Preview = {
       </div>
     ),
     withRootAttribute("data-density", "density"),
+    // `dir` is a real attribute rather than a class, so logical properties
+    // and the browser's own bidi handling do the work. A component that
+    // used left/right instead of inline-start/end shows up immediately.
+    withRootAttribute("dir", "direction"),
     withRootAttribute("data-brand", "brand"),
     /**
      * The theme switcher. This decorator is what registers the theme

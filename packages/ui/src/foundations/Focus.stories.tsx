@@ -20,6 +20,7 @@ type Story = StoryObj<typeof meta>;
  * IS the subject, so the post-play frame is the state worth baselining.
  */
 export const KeyboardRing: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "flex", gap: "0.8rem" }}>
       <Button>First</Button>

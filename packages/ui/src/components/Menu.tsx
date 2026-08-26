@@ -27,6 +27,8 @@ export type MenuProps = MenuOwnProps &
   Omit<ComponentPropsWithoutRef<typeof BaseMenu.Trigger>, keyof MenuOwnProps>;
 
 /**
+ * **Use it for** a list of actions triggered from one control. **Reach for something else when** the items pick a value rather than act (Select).
+ *
  * Dropdown menu on Base UI's menu root.
  *
  * Accessibility: Base UI renders the full menu pattern — trigger with

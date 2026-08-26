@@ -5,7 +5,7 @@ import { Avatar } from "./Avatar";
 const meta = {
   title: "Components/Avatar",
   component: Avatar,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof Avatar>;
 
 export default meta;
@@ -52,6 +52,7 @@ export const Sizes: StoryObj = {
  * which is easier to judge than five separate images.
  */
 export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div
       style={{

@@ -1,11 +1,12 @@
 import { expect, userEvent } from "storybook/test";
+import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Tabs } from "./Tabs";
 
 const meta = {
   title: "Components/Tabs",
   component: Tabs,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   args: {
     label: "Sample details",
     defaultActive: 0,
@@ -24,7 +25,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ThreePanels: Story = {};
+export const ThreePanels: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
+  },
+};
 
 /** Interaction only; see the note in Accordion.stories. */
 export const SwitchingPanels: Story = {

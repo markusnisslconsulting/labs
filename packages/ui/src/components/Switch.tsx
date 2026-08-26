@@ -23,6 +23,8 @@ export type SwitchProps = SwitchOwnProps &
   Omit<ComponentPropsWithoutRef<"label">, keyof SwitchOwnProps>;
 
 /**
+ * **Use it for** a setting that takes effect the moment it is flipped. **Reach for something else when** the choice is submitted with a form (Checkbox).
+ *
  * A switch on a Base UI headless root.
  *
  * The component bridges uncontrolled use with its own state, so a

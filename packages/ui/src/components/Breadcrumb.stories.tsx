@@ -1,17 +1,21 @@
 import { expect, userEvent } from "storybook/test";
+import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Breadcrumb } from "./Breadcrumb";
 
 const meta = {
   title: "Components/Breadcrumb",
   component: Breadcrumb,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
 } satisfies Meta<typeof Breadcrumb>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Trail: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
+  },
   args: {
     items: [
       { label: "Labs", href: "/" },

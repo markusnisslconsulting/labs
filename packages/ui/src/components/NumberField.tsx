@@ -23,6 +23,8 @@ export type NumberFieldProps = NumberFieldOwnProps &
   Omit<ComponentPropsWithoutRef<"div">, keyof NumberFieldOwnProps>;
 
 /**
+ * **Use it for** a quantity where stepping by one is a normal move. **Reach for something else when** any text is valid (TextField).
+ *
  * Numeric input with stepper buttons on Base UI's number field.
  *
  * Accessibility: Base UI renders a labelled-capable input with

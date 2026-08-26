@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { NARROW } from "../../.storybook/modes";
 import { useState } from "react";
 import { expect, userEvent, within } from "storybook/test";
 import { AlertDialog, Dialog } from "./Dialog";
@@ -7,7 +8,7 @@ import { Button } from "./Button";
 const meta = {
   title: "Components/Dialog",
   component: Dialog,
-  tags: ["autodocs"],
+  tags: ["autodocs", "stable"],
   // Every story drives its own open state through render(); these satisfy
   // the required props for the args table and docs.
   args: { open: false, title: "Edit reorder point" },
@@ -50,6 +51,7 @@ function DialogDemo() {
  * worth baselining, and it only exists after the play function opens it.
  */
 export const Modal: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
   render: () => <DialogDemo />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole("button", { name: /Edit reorder/ }));

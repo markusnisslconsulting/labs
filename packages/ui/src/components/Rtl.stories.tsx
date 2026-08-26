@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { RTL } from "../../.storybook/modes";
 import { Breadcrumb } from "./Breadcrumb";
 import { TextField } from "./TextField";
 
@@ -17,6 +18,7 @@ type Story = StoryObj;
  * to left/right shows up here.
  */
 export const RightToLeft: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
   render: () => (
     <div dir="rtl" style={{ display: "grid", gap: "1.2rem" }}>
       <Breadcrumb

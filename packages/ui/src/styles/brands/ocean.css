@@ -11,7 +11,15 @@
     --uix-accent: var(--uix-blue-600);
   }
 
-  [data-brand="ocean"][data-theme="dark"] {
+  /* Both spellings, and this is not belt and braces.
+     A brand is often scoped to a subtree while the theme sits on the
+     root, so `[data-brand][data-theme]` as a single compound never
+     matches: it demands both attributes on one element. With only that
+     selector, a brand nested under a dark root kept its LIGHT accent
+     while the dark theme supplied dark text to sit on it — measured at
+     2:1 in the multi-brand story, which is how this was found. */
+  [data-brand="ocean"][data-theme="dark"],
+  [data-theme="dark"] [data-brand="ocean"] {
     --uix-accent: var(--uix-blue-400);
   }
 }

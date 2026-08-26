@@ -17,7 +17,7 @@ const stories = [
   "components-button--matrix",
   "components-alert--info",
   "components-statuspill--all-tones",
-  "foundations-tokens-primitive--primitive-tokens-story",
+  "foundations-brands--side-by-side",
 ] as const;
 
 const baselineDir = path.resolve(
@@ -41,7 +41,7 @@ test.describe("visual regression", () => {
         waitUntil: "load",
       });
       await page.waitForTimeout(600);
-      await expect(page.locator("#root").first()).toHaveScreenshot(
+      await expect(page.locator("#storybook-root").first()).toHaveScreenshot(
         `${story}.png`,
         { maxDiffPixelRatio: 0.02 },
       );

@@ -18,6 +18,8 @@ export type SkeletonProps = SkeletonOwnProps &
   Omit<ComponentPropsWithoutRef<"span">, keyof SkeletonOwnProps>;
 
 /**
+ * **Use it for** holding the shape of content that is about to arrive. **Reach for something else when** the wait has no known shape (Spinner).
+ *
  * Loading placeholder.
  *
  * Accessibility: `aria-hidden` — the loading state belongs to the

@@ -23,6 +23,8 @@ export type SegmentedControlProps = SegmentedControlOwnProps &
   Omit<ComponentPropsWithoutRef<"div">, keyof SegmentedControlOwnProps>;
 
 /**
+ * **Use it for** switching between a few views of the same data. **Reach for something else when** the options are separate content sections (Tabs).
+ *
  * Exclusive single choice, visible at a glance.
  *
  * Accessibility: `role="group"` with `aria-label`; each option is a

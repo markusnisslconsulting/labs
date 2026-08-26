@@ -22,6 +22,8 @@ export type DialogProps = DialogOwnProps &
   Omit<ComponentPropsWithoutRef<typeof BaseDialog.Popup>, keyof DialogOwnProps>;
 
 /**
+ * **Use it for** a task that must be finished or abandoned before anything else. **Reach for something else when** the content is supplementary (Popover), or it is a yes/no decision (AlertDialog).
+ *
  * Modal dialog on Base UI's dialog root.
  *
  * Accessibility: Base UI traps focus, restores it to the trigger on

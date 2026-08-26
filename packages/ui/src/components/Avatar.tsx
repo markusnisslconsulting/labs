@@ -26,6 +26,8 @@ function initials(name: string): string {
 }
 
 /**
+ * **Use it for** marking who a row or comment belongs to. **Reach for something else when** the image carries meaning of its own (a plain img with alt text).
+ *
  * A person marker. With `src`, the image is decorative
  * (`alt=""`) because the name is already next to it in context —
  * double announcement is the bug this avoids.
