@@ -4,26 +4,21 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
-  .uix-search {
-    flex: 1 1 14rem;
-    max-width: 22rem;
-    min-height: var(--uix-control-md);
-    padding-block: 0;
-    padding-inline: var(--uix-gap-lg);
-    border: 1px solid var(--uix-search-border, var(--uix-border-subtle));
-    border-radius: var(--uix-radius-pill);
-    background: var(--uix-bg-surface);
-    color: var(--uix-text-primary);
-    font: inherit;
+  /* All that is left. The border, background, height, padding, focus ring
+     and disabled treatment were declared here on the input itself,
+     duplicating .uix-field-row and diverging from it: hence a search box
+     whose text sat high, and a focus ring at a different offset from
+     every other field's. The one thing search actually wants differently
+     is its shape. */
+  .uix-search-field .uix-field-row {
+    border-radius: var(--uix-search-radius, var(--uix-radius-pill));
   }
 
-  .uix-search:focus-visible {
-    outline: 2px solid var(--uix-focus-ring);
-    outline-offset: 1px;
-  }
-
-  .uix-search:disabled {
-    opacity: var(--uix-opacity-disabled);
-    cursor: not-allowed;
+  /* The adornment sits inside a pill, so the text needs a little more
+     room after it than a square field's would. */
+  .uix-search-field .uix-field-adornment {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
   }
 }

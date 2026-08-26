@@ -1,13 +1,21 @@
 "use client";
 
-import type { ComponentPropsWithRef } from "react";
-import { useId } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 
 import { cx } from "../cx";
+import { Field } from "./Field";
 import "./_field.css";
 import "./Slider.css";
 interface SliderOwnProps {
-  label: string;
+  /** A node, now that the accessible name comes from a real `<label>`. */
+  label: ReactNode;
+  hint?: ReactNode;
+  /** Validation message. Its presence makes the field invalid. */
+  error?: ReactNode;
+  /** Marks the field required, visibly and for assistive technology. */
+  required?: boolean;
+  /** Render the label for assistive technology only. */
+  hideLabel?: boolean;
   min?: number;
   max?: number;
   step?: number;
@@ -46,6 +54,10 @@ export type SliderProps = SliderOwnProps &
  */
 export function Slider({
   label,
+  hint,
+  error,
+  required,
+  hideLabel,
   min = 0,
   max = 100,
   step = 1,
@@ -58,36 +70,39 @@ export function Slider({
   ...rest
 }: SliderProps) {
   const isControlled = value !== undefined;
-  const id = useId();
 
   return (
-    <div
+    <Field
+      label={label}
+      hint={hint}
+      error={error}
+      required={required}
+      hideLabel={hideLabel}
+      /* The live value goes in Field's aside rather than in a head row of
+         Slider's own. That private head row is why Slider was the only
+         field with no hint and no error: its layout had already diverged
+         from every other field before anyone asked it for one. */
+      aside={showValue ? (isControlled ? value : (defaultValue ?? min)) : null}
       className={cx("uix-slider", className)}
       data-disabled={disabled || undefined}
       {...rest}
     >
-      <div className="uix-slider-head">
-        <label className="uix-field-label" htmlFor={id}>
-          {label}
-        </label>
-        {showValue ? (
-          <span className="uix-slider-value">
-            {isControlled ? value : (defaultValue ?? min)}
-          </span>
-        ) : null}
-      </div>
-      <input
-        id={id}
-        type="range"
-        className="uix-range"
-        disabled={disabled}
-        min={min}
-        max={max}
-        step={step}
-        {...(isControlled ? { value } : { defaultValue })}
-        onChange={(event) => onValueChange?.(Number(event.target.value))}
-        aria-label={label}
-      />
-    </div>
+      {({ id, describedBy, invalid, required: isRequired }) => (
+        <input
+          id={id}
+          type="range"
+          className="uix-range"
+          disabled={disabled}
+          required={isRequired || undefined}
+          min={min}
+          max={max}
+          step={step}
+          aria-describedby={describedBy}
+          aria-invalid={invalid}
+          {...(isControlled ? { value } : { defaultValue })}
+          onChange={(event) => onValueChange?.(Number(event.target.value))}
+        />
+      )}
+    </Field>
   );
 }

@@ -1,0 +1,27 @@
+/* Storybook's own chrome, kept out of the library's reach.
+ *
+ * styles.css is loaded into the docs iframe so a story renders exactly as
+ * a page would, and its base layer deliberately styles bare elements —
+ * button, input, a — because that is how a production page inherits the
+ * voice without every tag carrying a class.
+ *
+ * Storybook's docs chrome lives in the same document. So "Show code" and
+ * "Copy code" were picking up the library's focus ring and drawing a
+ * second, heavier, brand-coloured border around a button that already had
+ * one of its own.
+ *
+ * This is preview-only and never ships: the fix belongs to the tool that
+ * put two design systems in one document, not to the package. `revert`
+ * hands the property back to Storybook's own stylesheet rather than
+ * guessing what it wanted.
+ */
+
+.sbdocs button:focus-visible,
+.sbdocs [role="button"]:focus-visible,
+.sbdocs a:focus-visible,
+.docblock-code-toggle:focus-visible,
+.os-content button:focus-visible {
+  outline: revert;
+  outline-offset: revert;
+  border-radius: revert;
+}

@@ -18,14 +18,6 @@ export const SupplierRegion: Story = {
     options: ["European Union", "United Kingdom", "United States", "Japan"],
     placeholder: "Type to filter",
   },
-  play: async ({ canvas }) => {
-    // The input carries the accessible name. Filtering and the option
-    // list are the platform's, via input[list] and datalist — this
-    // component is not on Base UI, whatever an earlier comment claimed.
-    await expect(
-      canvas.getByRole("combobox", { name: "Supplier region" }),
-    ).toBeVisible();
-  },
 };
 
 const REGIONS = ["European Union", "United Kingdom", "United States", "Japan"];
@@ -39,6 +31,7 @@ export const Matrix: StoryObj = {
     <div style={{ display: "grid", gap: "1.2rem", maxWidth: "22rem" }}>
       <Combobox label="Rest" options={REGIONS} placeholder="Type to filter" />
       <Combobox label="Filled" options={REGIONS} value="Japan" />
+      <Combobox label="Required" required options={REGIONS} />
       <Combobox label="Disabled" options={REGIONS} value="Japan" disabled />
     </div>
   ),
@@ -50,11 +43,45 @@ export const Matrix: StoryObj = {
  * component's resting appearance.
  */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: SupplierRegion.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     await userEvent.tab();
     const target = canvas.getAllByRole("combobox")[0]!;
     await expect(target).toHaveFocus();
+  },
+};
+
+/** SupplierRegion, asserted. Hidden: it renders the example above again. */
+export const SupplierRegionBehaviour: Story = {
+  tags: ["!dev"],
+  args: SupplierRegion.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    // The input carries the accessible name. Filtering and the option
+    // list are the platform's, via input[list] and datalist — this
+    // component is not on Base UI, whatever an earlier comment claimed.
+    await expect(
+      canvas.getByRole("combobox", { name: "Supplier region" }),
+    ).toBeVisible();
+  },
+};
+
+/** Required, with a hint and a failed validation. */
+export const RequiredWithError: Story = {
+  /* The matrix above already photographs `required`; this story is the
+     documented example, not a second baseline. The snapshot budget gate
+     is what asked the question. */
+  parameters: { chromatic: { disableSnapshot: true } },
+  args: {
+    label: "Supplier region",
+    options: ["European Union", "United Kingdom", "Switzerland"],
+    required: true,
+    hint: "Type to filter.",
+    error: "No contract covers that region.",
   },
 };

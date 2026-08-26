@@ -36,6 +36,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Off: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     await expect(canvas.getByRole("switch")).toHaveAttribute(
@@ -46,6 +50,10 @@ export const Off: Story = {
 };
 
 export const On: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { defaultChecked: true },
   play: async ({ canvas }) => {
@@ -62,6 +70,10 @@ export const Disabled: Story = {
 };
 
 export const TogglesFromTheLabel: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     const control = canvas.getByRole("switch");
@@ -72,6 +84,10 @@ export const TogglesFromTheLabel: Story = {
 };
 
 export const TogglesWithTheKeyboard: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     const control = canvas.getByRole("switch");
@@ -101,4 +117,17 @@ export const Matrix: StoryObj = {
       <Switch label="Disabled on" disabled defaultChecked />
     </div>
   ),
+};
+
+/** With a hint under it, and required. */
+export const RequiredWithHint: Story = {
+  /* The matrix above already photographs `required`; this story is the
+     documented example, not a second baseline. The snapshot budget gate
+     is what asked the question. */
+  parameters: { chromatic: { disableSnapshot: true } },
+  args: {
+    label: "Send me the notes afterwards",
+    required: true,
+    hint: "One email per session, no digest.",
+  },
 };

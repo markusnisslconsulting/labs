@@ -53,17 +53,6 @@ function DialogDemo() {
 export const Modal: Story = {
   parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
   render: () => <DialogDemo />,
-  play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole("button", { name: /Edit reorder/ }));
-    // the dialog is named by its title and described by its text, so a
-    // screen reader announces both without reading the whole surface.
-    // Base UI portals the popup outside #storybook-root, so query the
-    // document rather than the story canvas.
-    const dialog = await within(document.body).findByRole("dialog", {
-      name: /Edit reorder point/,
-    });
-    await expect(dialog).toBeVisible();
-  },
 };
 
 function ConfirmDemo() {
@@ -96,6 +85,10 @@ function ConfirmDemo() {
 }
 
 export const Confirm: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   render: () => <ConfirmDemo />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole("button", { name: /Delete lab/ }));
@@ -113,6 +106,10 @@ export const Confirm: Story = {
  * can only reach with a mouse is not reachable. Interaction only.
  */
 export const KeyboardReachable: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   render: () => <DialogDemo />,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -155,4 +152,26 @@ export const OpenWithPageBehind: Story = {
       </Dialog>
     </>
   ),
+};
+
+/**
+ * The behaviour of Modal, asserted. Hidden from the sidebar: the
+ * frame after an assertion is the resting state again, so it would
+ * show the reader a second copy of the example above.
+ */
+export const ModalBehaviour: Story = {
+  tags: ["!dev"],
+  args: Modal.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole("button", { name: /Edit reorder/ }));
+    // the dialog is named by its title and described by its text, so a
+    // screen reader announces both without reading the whole surface.
+    // Base UI portals the popup outside #storybook-root, so query the
+    // document rather than the story canvas.
+    const dialog = await within(document.body).findByRole("dialog", {
+      name: /Edit reorder point/,
+    });
+    await expect(dialog).toBeVisible();
+  },
 };

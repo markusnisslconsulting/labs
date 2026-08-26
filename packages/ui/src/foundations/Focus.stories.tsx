@@ -20,6 +20,10 @@ type Story = StoryObj<typeof meta>;
  * IS the subject, so the post-play frame is the state worth baselining.
  */
 export const KeyboardRing: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "flex", gap: "0.8rem" }}>

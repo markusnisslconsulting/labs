@@ -32,6 +32,10 @@ export const Determinate: StoryObj = {
 };
 
 export const Static64: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { label: "Uploading catalogue", value: 64 },
   play: async ({ canvas }) => {
@@ -43,6 +47,10 @@ export const Static64: Story = {
 };
 
 export const Indeterminate: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { label: "Rebuilding the index" },
   play: async ({ canvas }) => {

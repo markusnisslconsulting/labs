@@ -24,6 +24,10 @@ type Story = StoryObj<typeof meta>;
 /** The name is required at the type level — an unlabelled icon
     button cannot be authored. */
 export const Close: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { label: "Close", children: <X size={14} /> },
   play: async ({ canvas }) => {
@@ -46,6 +50,10 @@ export const Solid: Story = {
  * component's resting appearance.
  */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: Close.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {

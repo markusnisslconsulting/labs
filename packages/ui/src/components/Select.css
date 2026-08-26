@@ -7,7 +7,9 @@
   /* Was an element-qualified rule in the shared sheet, which reached
      every select on the page whether or not it was this component. */
   .uix-select {
-    appearance: none;
+    /* `appearance: none` moved to reset.css: stripping native control
+       chrome is normalization every engine needs, not a decision this
+       component gets to make differently. */
     /* The chevron is a sibling, so the text must stop before it. */
     padding-inline-end: var(--uix-gap-sm);
     cursor: pointer;

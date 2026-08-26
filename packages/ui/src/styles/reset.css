@@ -107,6 +107,58 @@
     -webkit-appearance: none;
   }
 
+  /* Native control chrome, removed once and for every engine.
+   *
+   * Each of these was a bug someone saw and nobody could reproduce,
+   * because a headless browser does not draw them: the engines only paint
+   * native form chrome when they think a real person is looking. So a
+   * Combobox shipped with two arrows — ours plus Chrome's datalist
+   * indicator — and a Select in Safari drew its own bevelled box and a
+   * checkmark inside the box we had already drawn. Both passed every
+   * gate, on two engines, for weeks.
+   *
+   * `appearance` is the unprefixed property and the prefixed one, because
+   * Safari only honoured the unprefixed name from 15.4 and enterprise
+   * fleets run older. */
+  select,
+  input[list] {
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  /* Chrome and Edge draw a filled triangle at the end of any input with
+     a `list`, on top of whatever the component drew there. */
+  input[list]::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
+
+  /* Spin buttons on a number input: the component ships its own stepper
+     pair, so the native ones are a second, smaller, unstyled copy. */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* iOS refuses to round a control unless told, and then rounds it to its
+     own radius rather than the brand's. */
+  input,
+  textarea,
+  select,
+  button {
+    border-radius: 0;
+  }
+
+  /* Safari renders a disabled control at its own reduced opacity on top
+     of ours, so a disabled field was dimmer than a disabled button. */
+  :disabled {
+    opacity: 1;
+  }
+
   /* A pointer on anything that acts, in every engine. */
   button,
   [type="button"],

@@ -18,27 +18,14 @@ export const NinePages: Story = {
     chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
   },
   args: { pageCount: 9, defaultPage: 4 },
-  play: async ({ canvas }) => {
-    // Assertion only: aria-current marks where you are. Clicking Next
-    // here used to move the page while this story was still the
-    // snapshotted one, so the baseline showed page 5 under a name and
-    // args that both said page 4.
-    //
-    // getByLabelText, not getByRole: this story also renders in the
-    // narrow mode, where the numbered buttons are display:none and so
-    // absent from the accessibility tree that getByRole searches. The
-    // label query reads the DOM, so the assertion holds at both widths.
-    await expect(canvas.getByLabelText("Page 4")).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
-    // What a narrow viewer gets instead of the numbers.
-    await expect(canvas.getByText("Page 4 of 9")).toBeInTheDocument();
-  },
 };
 
 /** Interaction only: the current page moves, so it does not snapshot. */
 export const MovingToTheNextPage: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: NinePages.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -51,6 +38,10 @@ export const MovingToTheNextPage: Story = {
 };
 
 export const FirstPage: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: { pageCount: 3 },
   play: async ({ canvas }) => {
     await expect(
@@ -88,6 +79,10 @@ export const Localized: StoryObj = {
  * not snapshot.
  */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: NinePages.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -127,6 +122,17 @@ export const SmallCounts: StoryObj = {
       <Pagination pageCount={3} defaultPage={2} label="Three pages" />
     </div>
   ),
+};
+
+/**
+ * The behaviour of SmallCounts, asserted. Hidden from the sidebar: the
+ * frame after an assertion is the resting state again, so it would
+ * show the reader a second copy of the example above.
+ */
+export const SmallCountsBehaviour: StoryObj = {
+  tags: ["!dev"],
+  args: SmallCounts.args,
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     // Exactly one page-1 button per pagination, and no page 0 anywhere.
     await expect(canvas.queryAllByLabelText("Page 0")).toHaveLength(0);
@@ -142,5 +148,33 @@ export const SmallCounts: StoryObj = {
     await expect(canvas.getAllByText("Page 1 of 1")).toHaveLength(2);
     await expect(canvas.getByText("Page 1 of 2")).toBeVisible();
     await expect(canvas.getByText("Page 2 of 3")).toBeVisible();
+  },
+};
+
+/**
+ * The behaviour of NinePages, asserted. Hidden from the sidebar: the
+ * frame after an assertion is the resting state again, so it would
+ * show the reader a second copy of the example above.
+ */
+export const NinePagesBehaviour: Story = {
+  tags: ["!dev"],
+  args: NinePages.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    // Assertion only: aria-current marks where you are. Clicking Next
+    // here used to move the page while this story was still the
+    // snapshotted one, so the baseline showed page 5 under a name and
+    // args that both said page 4.
+    //
+    // getByLabelText, not getByRole: this story also renders in the
+    // narrow mode, where the numbered buttons are display:none and so
+    // absent from the accessibility tree that getByRole searches. The
+    // label query reads the DOM, so the assertion holds at both widths.
+    await expect(canvas.getByLabelText("Page 4")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    // What a narrow viewer gets instead of the numbers.
+    await expect(canvas.getByText("Page 4 of 9")).toBeInTheDocument();
   },
 };

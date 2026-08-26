@@ -46,6 +46,10 @@ export const CardPlaceholder: Story = {
 };
 
 export const HiddenFromAssistiveTechnology: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { shape: "line" },
   play: async ({ canvasElement }) => {

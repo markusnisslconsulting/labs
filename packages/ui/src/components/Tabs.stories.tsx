@@ -67,6 +67,10 @@ export const Matrix: Story = {
  * now a shorthand over these parts rather than the only door.
  */
 export const Composed: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Tabs defaultValue="open">
@@ -111,6 +115,10 @@ export const Composed: StoryObj = {
 
 /** Interaction only; see the note in Accordion.stories. */
 export const SwitchingPanels: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole("tab", { name: "Product row" }));
@@ -127,6 +135,10 @@ export const SwitchingPanels: Story = {
  * component's resting appearance.
  */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     await userEvent.tab();

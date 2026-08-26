@@ -4,7 +4,10 @@ import type { ComponentPropsWithRef } from "react";
 import { useId, type ChangeEvent, type ReactNode } from "react";
 
 import { cx } from "../cx";
+import { useFieldMessages } from "./Field";
+import { useStrings } from "../i18n";
 import "./_choice.css";
+import "./_field.css";
 import "./RadioGroup.css";
 export interface RadioOption {
   value: string;
@@ -28,6 +31,12 @@ interface RadioGroupOwnProps {
   /** The value triple: value, defaultValue, onValueChange. */
   onValueChange?: (value: string) => void;
   disabled?: boolean;
+  /** Instruction under the group, linked with aria-describedby. */
+  hint?: ReactNode;
+  /** Validation message. Its presence makes the group invalid. */
+  error?: ReactNode;
+  /** Marks the group required, visibly and for assistive technology. */
+  required?: boolean;
   children?: ReactNode;
 }
 
@@ -66,20 +75,41 @@ export function RadioGroup({
   value,
   onValueChange,
   disabled,
+  hint,
+  error,
+  required,
   className,
   children,
   ...rest
 }: RadioGroupProps) {
   const isControlled = value !== undefined;
   const baseId = useId();
+  const { describedBy, invalid, messages } = useFieldMessages(hint, error);
+  const strings = useStrings();
 
   return (
     <fieldset
       className={cx("uix-radiogroup", className)}
       disabled={disabled}
+      /* On the fieldset, not on each radio: the requirement and the
+         validation message belong to the choice, not to any one option. */
+      aria-describedby={describedBy}
+      aria-invalid={invalid}
+      aria-required={required || undefined}
       {...rest}
     >
-      <legend className="uix-legend">{legend}</legend>
+      <legend className="uix-legend">
+        {legend}
+        {required ? (
+          <>
+            {" "}
+            <span className="uix-field-required" aria-hidden>
+              *
+            </span>
+            <span className="uix-visually-hidden">{strings.required}</span>
+          </>
+        ) : null}
+      </legend>
       {children ??
         (options ?? []).map((option) => {
           const id = `${baseId}-${option.value}`;
@@ -101,6 +131,7 @@ export function RadioGroup({
             </RadioOptionPart>
           );
         })}
+      {messages}
     </fieldset>
   );
 }

@@ -1,14 +1,29 @@
 "use client";
 
-import type { ComponentPropsWithRef } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { NumberField as BaseNumberField } from "@base-ui-components/react/number-field";
 import { Minus, Plus } from "lucide-react";
 
-import { cx } from "../cx";
+import { Field } from "./Field";
+import { useStrings } from "../i18n";
 import "./_field.css";
 import "./NumberField.css";
 interface NumberFieldOwnProps {
-  label: string;
+  /**
+   * A node, now that a real `<label>` carries the accessible name. It was
+   * `string` because the name came from `aria-label`, and an aria-label
+   * can only be a string — so the one field where a label might carry a
+   * unit or a tooltip was the one field that forbade it. That is what a
+   * workaround does to an API.
+   */
+  label: ReactNode;
+  hint?: ReactNode;
+  /** Validation message. Its presence makes the field invalid. */
+  error?: ReactNode;
+  /** Marks the field required, visibly and for assistive technology. */
+  required?: boolean;
+  /** Render the label for assistive technology only. */
+  hideLabel?: boolean;
   min?: number;
   max?: number;
   step?: number;
@@ -44,6 +59,10 @@ export type NumberFieldProps = NumberFieldOwnProps &
  */
 export function NumberField({
   label,
+  hint,
+  error,
+  required,
+  hideLabel,
   min,
   max,
   step = 1,
@@ -54,31 +73,60 @@ export function NumberField({
   className,
   ...rest
 }: NumberFieldProps) {
+  const strings = useStrings();
+
   return (
-    <div className={cx("uix-field", className)} {...rest}>
-      <label className="uix-field-label">{label}</label>
-      <BaseNumberField.Root
-        value={value}
-        defaultValue={defaultValue}
-        min={min}
-        max={max}
-        step={step}
-        disabled={disabled}
-        onValueChange={(next) => onValueChange?.(next)}
-      >
-        <BaseNumberField.Group className="uix-numberfield">
-          <BaseNumberField.Decrement className="uix-numberfield-step">
-            <Minus size={16} />
-          </BaseNumberField.Decrement>
-          <BaseNumberField.Input
-            className="uix-field-input"
-            aria-label={label}
-          />
-          <BaseNumberField.Increment className="uix-numberfield-step">
-            <Plus size={16} />
-          </BaseNumberField.Increment>
-        </BaseNumberField.Group>
-      </BaseNumberField.Root>
-    </div>
+    <Field
+      label={label}
+      hint={hint}
+      error={error}
+      required={required}
+      hideLabel={hideLabel}
+      className={className}
+      {...rest}
+    >
+      {({ id, describedBy, invalid, required: isRequired }) => (
+        <BaseNumberField.Root
+          value={value}
+          defaultValue={defaultValue}
+          min={min}
+          max={max}
+          step={step}
+          disabled={disabled}
+          required={isRequired}
+          onValueChange={(next) => onValueChange?.(next)}
+        >
+          <BaseNumberField.Group
+            className="uix-numberfield"
+            data-invalid={invalid}
+          >
+            <BaseNumberField.Decrement
+              className="uix-numberfield-step"
+              aria-label={strings.decrease}
+            >
+              <Minus size={16} />
+            </BaseNumberField.Decrement>
+            {/* The id from Field, so the visible <label> names this input.
+                It used to carry aria-label={label} instead: a second copy
+                of the same words, and — since label is a node — one that
+                React stringified to "[object Object]" for any label
+                carrying markup. A duplicated name is a name that drifts;
+                a stringified one is no name at all. */}
+            <BaseNumberField.Input
+              id={id}
+              className="uix-field-input"
+              aria-describedby={describedBy}
+              aria-invalid={invalid}
+            />
+            <BaseNumberField.Increment
+              className="uix-numberfield-step"
+              aria-label={strings.increase}
+            >
+              <Plus size={16} />
+            </BaseNumberField.Increment>
+          </BaseNumberField.Group>
+        </BaseNumberField.Root>
+      )}
+    </Field>
   );
 }

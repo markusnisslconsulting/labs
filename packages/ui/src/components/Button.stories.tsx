@@ -77,6 +77,10 @@ export const Large: Story = {
 };
 
 export const Disabled: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { children: "Run the agent", disabled: true },
   play: async ({ canvas }) => {
@@ -154,6 +158,10 @@ export const Matrix: StoryObj = {
 };
 
 export const AsLink: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { children: "Read the article" },
   render: (args) => (
@@ -180,6 +188,10 @@ export const AsLink: Story = {
  * component's resting appearance.
  */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: SolidAccent.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -190,6 +202,10 @@ export const KeyboardReachable: Story = {
 };
 
 export const Loading: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { loading: true, children: "Saving" },
   play: async ({ canvas }) => {

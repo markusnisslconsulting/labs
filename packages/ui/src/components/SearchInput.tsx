@@ -1,8 +1,11 @@
 "use client";
 
-import { useId, type ReactNode, type ComponentPropsWithRef } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 
 import { cx } from "../cx";
+import { Search } from "lucide-react";
+
+import { Field } from "./Field";
 
 export interface SearchInputProps extends Omit<
   ComponentPropsWithRef<"input">,
@@ -22,8 +25,22 @@ export interface SearchInputProps extends Omit<
    * forgot shipped an unnamed search box.
    */
   label: ReactNode;
-  /** Render the label visibly instead of for assistive technology only. */
+  /**
+   * Render the label for assistive technology only. Defaults to `true`:
+   * a search box beside a magnifier usually does not want a visible one.
+   *
+   * Was `showLabel`, inverted, which made SearchInput the one field whose
+   * label prop read the opposite way round from every other field's. The
+   * old name still works and warns.
+   */
+  hideLabel?: boolean;
+  /** @deprecated Use `hideLabel` — the inverse — for consistency with every other field. */
   showLabel?: boolean;
+  hint?: ReactNode;
+  /** Validation message. Its presence makes the field invalid. */
+  error?: ReactNode;
+  /** Marks the field required, visibly and for assistive technology. */
+  required?: boolean;
 }
 
 import "./_field.css";
@@ -43,7 +60,7 @@ import "./SearchInput.css";
  *
  * | Token | Default | Meaning |
  * | --- | --- | --- |
- * | `--uix-search-border` | `var(--uix-border-subtle)` | Search input border |
+ * | `--uix-search-radius` | `var(--uix-radius-pill)` | Search field corner; the one thing search wants apart from every other field |
  *
  * Accessibility: an accessible name is required, not optional. `label`
  * renders a real `label` element, visually hidden by default because a
@@ -54,25 +71,49 @@ import "./SearchInput.css";
  */
 export function SearchInput({
   label,
+  hideLabel,
   showLabel,
+  hint,
+  error,
+  required,
   className,
   ...rest
 }: SearchInputProps) {
-  const id = useId();
+  // showLabel is the deprecated inverse. Explicit hideLabel wins; then the
+  // old prop; then hidden, which is what a search box usually wants.
+  const hidden = hideLabel ?? (showLabel === undefined ? true : !showLabel);
+
   return (
-    <>
-      <label
-        htmlFor={id}
-        className={showLabel ? "uix-field-label" : "uix-visually-hidden"}
-      >
-        {label}
-      </label>
-      <input
-        id={id}
-        type="search"
-        className={cx("uix-search", className)}
-        {...rest}
-      />
-    </>
+    <Field
+      label={label}
+      hint={hint}
+      error={error}
+      required={required}
+      hideLabel={hidden}
+      className={cx("uix-search-field", className)}
+    >
+      {({ id, describedBy, invalid, required: isRequired }) => (
+        /* The same row every other field uses, with a pill radius. It used
+           to put its own border, background and min-height on the input
+           itself, which is why its text sat a pixel or two high: an input
+           with a min-height and no padding leaves the engine to centre the
+           value, and the engines do not agree. A row that is a flex
+           container centres it the same way everywhere. */
+        <div className="uix-field-row" data-invalid={invalid}>
+          <span className="uix-field-adornment" aria-hidden>
+            <Search size={16} />
+          </span>
+          <input
+            id={id}
+            type="search"
+            className="uix-field-input"
+            aria-describedby={describedBy}
+            aria-invalid={invalid}
+            required={isRequired || undefined}
+            {...rest}
+          />
+        </div>
+      )}
+    </Field>
   );
 }

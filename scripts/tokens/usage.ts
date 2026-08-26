@@ -122,8 +122,27 @@ interface Site {
 }
 const usage = new Map<string, Site[]>();
 
+/**
+ * Properties a single stylesheet declares and reads itself.
+ *
+ * Not tokens, and the difference matters: Banner names its severity once
+ * as `--uix-banner-severity` and reads it from the fill, the rule and the
+ * icon, which is what replaced four near-identical rules that each
+ * re-pointed one border colour. Nothing outside Banner may set it, so it
+ * has no place in the registry — but the checker saw a `var()` with no
+ * declaration among the token files and called it a typo.
+ *
+ * The test is locality: declared and referenced inside the same file.
+ */
+const localToFile = new Set<string>();
+
 for (const file of consumers) {
-  const lines = stripComments(readFileSync(file, "utf8")).split("\n");
+  const source = stripComments(readFileSync(file, "utf8"));
+  for (const hit of source.matchAll(DECL)) {
+    const name = hit[1]!;
+    if (!declared.has(name)) localToFile.add(name);
+  }
+  const lines = source.split("\n");
   lines.forEach((text, index) => {
     for (const ref of text.matchAll(VAR_REF)) {
       const sites = usage.get(ref[1]!) ?? [];
@@ -154,7 +173,9 @@ const slots = new Set(
   allTokens.filter((t) => t.level === "component").map((t) => t.name),
 );
 const unknown = [...usage.keys()]
-  .filter((name) => !declared.has(name) && !slots.has(name))
+  .filter(
+    (name) => !declared.has(name) && !slots.has(name) && !localToFile.has(name),
+  )
   .sort();
 
 const registry = new Map(allTokens.map((token) => [token.name, token]));

@@ -44,6 +44,20 @@ export const ShippingSpeed: StoryObj = {
         options={OPTIONS}
       />
       <RadioGroup
+        name="shipping-required"
+        legend="Shipping speed"
+        options={OPTIONS}
+        required
+        hint="Overnight is unavailable for pallet freight."
+      />
+      <RadioGroup
+        name="shipping-invalid"
+        legend="Shipping speed"
+        options={OPTIONS}
+        required
+        error="Choose a shipping speed."
+      />
+      <RadioGroup
         name="shipping-unavailable"
         legend="Shipping speed (unavailable)"
         defaultValue="standard"
@@ -56,6 +70,10 @@ export const ShippingSpeed: StoryObj = {
 
 /** Interaction only; see the note in Accordion.stories. */
 export const SelectingAnOption: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByLabelText("Express (1-2 days)"));
@@ -72,6 +90,10 @@ export const SelectingAnOption: Story = {
  * component's resting appearance.
  */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     await userEvent.tab();
@@ -84,9 +106,33 @@ export const KeyboardReachable: Story = {
 export const Disabled: Story = {
   args: { disabled: true },
   parameters: { chromatic: { disableSnapshot: true } },
+};
+
+/** Disabled, asserted. Hidden: it renders the example above again. */
+export const DisabledBehaviour: Story = {
+  tags: ["!dev"],
+  args: Disabled.args,
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     for (const radio of canvas.getAllByRole("radio")) {
       await expect(radio).toBeDisabled();
     }
+  },
+};
+
+/**
+ * Required, with a hint and an error on the group rather than on any one
+ * option: the requirement belongs to the choice.
+ */
+export const RequiredWithError: Story = {
+  /* The matrix above already photographs `required`; this story is the
+     documented example, not a second baseline. The snapshot budget gate
+     is what asked the question. */
+  parameters: { chromatic: { disableSnapshot: true } },
+  args: {
+    ...meta.args,
+    required: true,
+    hint: "Overnight is unavailable for pallet freight.",
+    error: "Choose a shipping speed.",
   },
 };

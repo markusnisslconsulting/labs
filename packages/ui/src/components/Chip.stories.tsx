@@ -17,9 +17,6 @@ type Story = StoryObj<typeof meta>;
 export const StaticTag: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   args: { children: "agentic-ui" },
-  play: async ({ canvas }) => {
-    await expect(canvas.queryByRole("button")).toBeNull();
-  },
 };
 
 /** A filter. Native button with aria-pressed announcing the state. */
@@ -31,23 +28,19 @@ export const FilterOff: Story = {
     children: "agents",
     onSelect: fn(),
   },
-  play: async ({ canvas }) => {
-    const chip = canvas.getByRole("button", { name: "agents" });
-    await expect(chip).toHaveAttribute("aria-pressed", "false");
-  },
 };
 
 export const FilterActive: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   args: { interactive: true, active: true, children: "agents", onSelect: fn() },
-  play: async ({ canvas }) => {
-    const chip = canvas.getByRole("button", { name: "agents" });
-    await expect(chip).toHaveAttribute("aria-pressed", "true");
-  },
 };
 
 /** Reachable from the keyboard. Interaction only, so it does not snapshot. */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: FilterOff.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -86,4 +79,36 @@ export const Matrix: StoryObj = {
       </Chip>
     </div>
   ),
+};
+
+/** FilterActive, asserted. Hidden: it renders the example above again. */
+export const FilterActiveBehaviour: Story = {
+  tags: ["!dev"],
+  args: FilterActive.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    const chip = canvas.getByRole("button", { name: "agents" });
+    await expect(chip).toHaveAttribute("aria-pressed", "true");
+  },
+};
+
+/** FilterOff, asserted. Hidden: it renders the example above again. */
+export const FilterOffBehaviour: Story = {
+  tags: ["!dev"],
+  args: FilterOff.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    const chip = canvas.getByRole("button", { name: "agents" });
+    await expect(chip).toHaveAttribute("aria-pressed", "false");
+  },
+};
+
+/** StaticTag, asserted. Hidden: it renders the example above again. */
+export const StaticTagBehaviour: Story = {
+  tags: ["!dev"],
+  args: StaticTag.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await expect(canvas.queryByRole("button")).toBeNull();
+  },
 };

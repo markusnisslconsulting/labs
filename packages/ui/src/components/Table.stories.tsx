@@ -45,15 +45,6 @@ export const OrderingDesk: Story = {
       </>
     ),
   },
-  play: async ({ canvas }) => {
-    // Assertion only, so this stays the reference state. The caption is
-    // the table's accessible name, which is how a screen reader user
-    // knows which table they have landed in; it is visually hidden, so
-    // nothing on screen would reveal it if it broke.
-    await expect(
-      canvas.getByRole("table", { name: /reorder points/i }),
-    ).toBeVisible();
-  },
 };
 
 /**
@@ -121,6 +112,10 @@ export const WideColumns: Story = {
  * says so.
  */
 export const ScrollRegionIsReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: WideColumns.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -129,5 +124,25 @@ export const ScrollRegionIsReachable: Story = {
       name: /Suppliers by region/,
     });
     await expect(region).toHaveFocus();
+  },
+};
+
+/**
+ * The behaviour of OrderingDesk, asserted. Hidden from the sidebar: the
+ * frame after an assertion is the resting state again, so it would
+ * show the reader a second copy of the example above.
+ */
+export const OrderingDeskBehaviour: Story = {
+  tags: ["!dev"],
+  args: OrderingDesk.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    // Assertion only, so this stays the reference state. The caption is
+    // the table's accessible name, which is how a screen reader user
+    // knows which table they have landed in; it is visually hidden, so
+    // nothing on screen would reveal it if it broke.
+    await expect(
+      canvas.getByRole("table", { name: /reorder points/i }),
+    ).toBeVisible();
   },
 };

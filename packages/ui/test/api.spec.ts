@@ -124,7 +124,12 @@ describe("component API contract", () => {
   it("every component is composable, or says why it cannot be", () => {
     for (const [file, text] of source) {
       const name = file.replace(/\.tsx$/, "");
-      const takesChildren = /children\??:\s*(React\.)?ReactNode/.test(text);
+      const takesChildren =
+        /children\??:\s*(React\.)?ReactNode/.test(text) ||
+        // A render prop is composition too, and the stricter kind: Field
+        // hands the caller the ids it minted, which is the only way the
+        // control can be wired without the caller holding them.
+        /children:\s*\(/.test(text);
       const hasParts = new RegExp(`${name}\\.\\w+\\s*=`).test(text);
       if (takesChildren || hasParts) continue;
       expect(
@@ -381,14 +386,108 @@ describe("component API contract", () => {
       const params = /\(\{([\s\S]*?)\}:/.exec(fn)?.[1] ?? "";
       if (!/^\s*className,?\s*$/m.test(params)) continue;
 
+      // A component may build its root once and return it from more than
+      // one branch: Checkbox renders the control alone, or wrapped with a
+      // hint and an error under it. The wrapper is layout; the caller's
+      // class belongs on the control, which is what `control` already
+      // merged. So a branch that embeds such a variable counts as merged.
+      const merged = new Set<string>();
+      for (const [, name_, body_] of fn.matchAll(
+        /const (\w+) = \(([\s\S]*?)\n  \);/g,
+      )) {
+        if (/cx\(|cxState\(|renderAsElement\(/.test(body_!)) merged.add(name_!);
+      }
+
       const branches = [...fn.matchAll(/\n\s*return \(([\s\S]*?)\n\s*\);/g)];
       for (const [, branch] of branches) {
+        if ([...merged].some((name_) => branch!.includes(`{${name_}}`)))
+          continue;
         expect(
-          /cx\(|cxState\(|renderAsElement\(/.test(branch!),
+          // Forwarding to a component that merges counts: TextField hands
+          // className to Field, which is the whole point of Field — the
+          // field wrapper and its class exist in one place.
+          /cx\(|cxState\(|renderAsElement\(|className=\{className\}/.test(
+            branch!,
+          ),
           `${file}: one return branch renders without merging className, so a ` +
             `caller's class is dropped on that path`,
         ).toBe(true);
       }
     }
+  });
+});
+
+/**
+ * The field family, measured.
+ *
+ * Before Field existed this was the audit:
+ *
+ *     field         label  hint  error  required
+ *     TextField     y      y     y      .
+ *     Select        y      y     .      .
+ *     Combobox      y      .     .      .
+ *     NumberField   y      .     .      .
+ *     Slider        y      .     .      .
+ *     SearchInput   y      .     .      .
+ *     Checkbox      y      .     .      .
+ *     RadioGroup    y      .     .      .
+ *     Switch        y      .     .      .
+ *
+ * One field could show an error. Two could show a hint. None could say it
+ * was required. A form with a required Select that failed validation was
+ * not expressible — and nothing in the pipeline said so, because every
+ * component was internally consistent. The inconsistency was between
+ * them, which is the kind no per-component test can see.
+ */
+describe("the field family", () => {
+  const FIELDS = [
+    "TextField",
+    "Select",
+    "Combobox",
+    "NumberField",
+    "Slider",
+    "SearchInput",
+    "Checkbox",
+    "RadioGroup",
+    "Switch",
+  ];
+
+  it.each(FIELDS)("%s takes hint, error and required", (name) => {
+    const text = readFileSync(join(DIR, `${name}.tsx`), "utf8");
+    for (const prop of ["hint?:", "error?:", "required?:"]) {
+      expect(text, `${name} cannot express ${prop.slice(0, -2)}`).toContain(
+        prop,
+      );
+    }
+  });
+
+  /**
+   * And derives the wiring in one place. Nine components each computing
+   * their own `aria-describedby` is nine chances to forget the error id,
+   * which is what TextField's neighbours all did.
+   */
+  it.each(FIELDS)("%s does not re-derive the aria wiring", (name) => {
+    const text = code(readFileSync(join(DIR, `${name}.tsx`), "utf8"));
+    expect(
+      /useFieldMessages|<Field\b/.test(text),
+      `${name} wires its own messages instead of using Field`,
+    ).toBe(true);
+    expect(
+      text,
+      `${name} builds its own describedBy string; Field owns that`,
+    ).not.toMatch(/-hint`/);
+  });
+
+  /**
+   * A required field says the word, not only the asterisk. An asterisk is
+   * a convention the reader has to already know, and a screen reader
+   * reads it as "star" or skips it.
+   */
+  it.each(FIELDS)("%s announces required as a word", (name) => {
+    const text = readFileSync(join(DIR, `${name}.tsx`), "utf8");
+    if (/<Field\b/.test(code(text))) return; // Field itself says it
+    expect(text, `${name} marks required visually only`).toContain(
+      "strings.required",
+    );
   });
 });

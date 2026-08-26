@@ -28,6 +28,13 @@
     --uix-accent: light-dark(var(--uix-red-600), var(--uix-red-400));
     --uix-accent-soft: color-mix(in srgb, var(--uix-accent) 16%, transparent);
     --uix-focus-ring: var(--uix-accent);
+    /* The ring's geometry, not only its colour. Both are roles because
+       both are things a brand and an accessibility profile have to be
+       able to change: a 2px ring is the floor, and a reader who needs a
+       heavier indicator gets it from one declaration rather than from a
+       search through thirteen component files. */
+    --uix-focus-width: 2px;
+    --uix-focus-offset: 2px;
     --uix-status-ok: light-dark(var(--uix-green-700), var(--uix-green-400));
     --uix-status-warn: light-dark(var(--uix-amber-700), var(--uix-amber-400));
     --uix-status-off: light-dark(var(--uix-slate-600), var(--uix-slate-400));
@@ -255,6 +262,9 @@
         var(--uix-slate-400)
       );
       --uix-opacity-disabled: 0.75;
+      /* A reader who asked for more contrast asked for the focus ring
+         too. It is the one indicator with no fallback. */
+      --uix-focus-width: 3px;
     }
   }
 }

@@ -144,6 +144,8 @@ export const semanticTokens: TokenDescriptor[] = [
   t("--uix-accent", "light-dark(var(--uix-red-600), var(--uix-red-400))", "semantic", "color", "Brand accent; the coaching brand re-points it to teal"),
   t("--uix-accent-soft", "color-mix(in srgb, var(--uix-accent) 16%, transparent)", "semantic", "color", "Accent washes"),
   t("--uix-focus-ring", "var(--uix-accent)", "semantic", "color", "Keyboard focus indicator"),
+  t("--uix-focus-width", "2px", "semantic", "space", "Focus ring thickness; 3px under prefers-contrast: more"),
+  t("--uix-focus-offset", "2px", "semantic", "space", "Gap between the element and its focus ring"),
   t("--uix-status-ok", "light-dark(var(--uix-green-700), var(--uix-green-400))", "semantic", "color", "Positive status"),
   t("--uix-status-warn", "light-dark(var(--uix-amber-700), var(--uix-amber-400))", "semantic", "color", "Caution status"),
   t("--uix-status-off", "light-dark(var(--uix-slate-600), var(--uix-slate-400))", "semantic", "color", "Neutral or absent status"),
@@ -238,7 +240,7 @@ export const componentTokens: TokenDescriptor[] = [
   t("--uix-switch-track-on-bg", "var(--uix-accent)", "component", "color", "Switch track, on"),
   t("--uix-switch-thumb-bg", "var(--uix-bg-surface)", "component", "color", "Switch knob"),
   t("--uix-switch-travel", "1.3rem", "component", "space", "How far the knob travels; negated under dir=rtl"),
-  t("--uix-search-border", "var(--uix-border-subtle)", "component", "color", "Search input border"),
+  t("--uix-search-radius", "var(--uix-radius-pill)", "component", "radius", "Search field corner; the one thing search wants apart from every other field"),
 ];
 
 export const allTokens: TokenDescriptor[] = [

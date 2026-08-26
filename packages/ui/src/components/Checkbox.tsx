@@ -4,6 +4,9 @@ import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 
 import { cxState } from "../cx";
+import { useFieldMessages } from "./Field";
+import { useStrings } from "../i18n";
+import "./_field.css";
 import "./Checkbox.css";
 interface CheckboxOwnProps {
   /** Visible label; rendered inside the control, so the whole row
@@ -26,6 +29,12 @@ interface CheckboxOwnProps {
   disabled?: boolean;
   /** Tri-state support: aria-checked="mixed" plus a dash. */
   indeterminate?: boolean;
+  /** Instruction under the control, linked with aria-describedby. */
+  hint?: ReactNode;
+  /** Validation message. Its presence makes the control invalid. */
+  error?: ReactNode;
+  /** Marks the control required, visibly and for assistive technology. */
+  required?: boolean;
 }
 
 /**
@@ -55,10 +64,16 @@ export function Checkbox({
   onCheckedChange,
   disabled,
   indeterminate,
+  hint,
+  error,
+  required,
   className,
   ...rest
 }: CheckboxProps) {
-  return (
+  const { describedBy, invalid, messages } = useFieldMessages(hint, error);
+  const strings = useStrings();
+
+  const control = (
     <BaseCheckbox.Root
       className={cxState("uix-checkbox", className)}
       checked={checked}
@@ -66,6 +81,9 @@ export function Checkbox({
       indeterminate={indeterminate}
       onCheckedChange={(next) => onCheckedChange?.(Boolean(next))}
       disabled={disabled}
+      required={required}
+      aria-describedby={describedBy}
+      aria-invalid={invalid}
       {...rest}
     >
       <BaseCheckbox.Indicator keepMounted className="uix-checkbox-indicator">
@@ -74,7 +92,29 @@ export function Checkbox({
           <path className="uix-checkbox-dash" d="M2 6h8" />
         </svg>
       </BaseCheckbox.Indicator>
-      <span className="uix-checkbox-label">{label}</span>
+      <span className="uix-checkbox-label">
+        {label}
+        {required ? (
+          <>
+            {" "}
+            <span className="uix-field-required" aria-hidden>
+              *
+            </span>
+            <span className="uix-visually-hidden">{strings.required}</span>
+          </>
+        ) : null}
+      </span>
     </BaseCheckbox.Root>
+  );
+
+  // No wrapper unless there is something to wrap: a bare checkbox in a
+  // table cell should stay one element.
+  if (!hint && !error) return control;
+
+  return (
+    <div className="uix-field">
+      {control}
+      {messages}
+    </div>
   );
 }

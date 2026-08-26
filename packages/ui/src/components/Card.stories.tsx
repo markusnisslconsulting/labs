@@ -48,6 +48,13 @@ export const SlotsForwardTheirProps: Story = {
       </Card.Body>
     </Card>
   ),
+};
+
+/** SlotsForwardTheirProps, asserted. Hidden: it renders the example above again. */
+export const SlotsForwardTheirPropsBehaviour: Story = {
+  tags: ["!dev"],
+  args: SlotsForwardTheirProps.args,
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     // article + aria-label, which was unreachable while the slots took
     // only children.

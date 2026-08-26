@@ -32,6 +32,25 @@ interface MenuOwnProps {
    */
   items?: MenuItemDescriptor[];
   children?: ReactNode;
+  /**
+   * Whether the popup is open. Controlled; pair it with `onOpenChange`.
+   *
+   * The whole triple was missing, so the open state of a menu was
+   * unreachable from outside it: a toolbar could not close its menu after
+   * an action, a tour could not open one to point at it, and the
+   * catalogue could not show a reader what the items look like — Menu's
+   * only picture was a closed button. `<BaseMenu.Root>` was rendered with
+   * no props at all, which is the shape a component takes when nobody has
+   * had to use it yet.
+   */
+  open?: boolean;
+  /** Open on mount, then uncontrolled. */
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Which side of the trigger the popup prefers. */
+  side?: "top" | "bottom" | "left" | "right";
+  /** How the popup lines up with the trigger along that side. */
+  align?: "start" | "center" | "end";
 }
 
 /**
@@ -85,10 +104,19 @@ export function Menu({
   items,
   className,
   children,
+  open,
+  defaultOpen,
+  onOpenChange,
+  side,
+  align = "end",
   ...rest
 }: MenuProps) {
   return (
-    <BaseMenu.Root>
+    <BaseMenu.Root
+      open={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+    >
       <BaseMenu.Trigger
         className={cxState("uix-button", className)}
         data-variant="outline"
@@ -103,7 +131,8 @@ export function Menu({
         <BaseMenu.Positioner
           className="uix-menu-positioner"
           sideOffset={6}
-          align="end"
+          side={side}
+          align={align}
         >
           <BaseMenu.Popup className="uix-menu">
             {children ??

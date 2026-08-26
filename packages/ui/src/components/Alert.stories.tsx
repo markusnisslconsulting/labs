@@ -30,6 +30,10 @@ export const Info: Story = {
 };
 
 export const DangerIsAssertive: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: {
     severity: "danger",
@@ -66,6 +70,10 @@ export const Dismissible: StoryObj = {
  * component: the story that looked broken was doing exactly what it said.
  */
 export const DismissingRemovesIt: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   render: () => <DismissibleAlert />,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -75,6 +83,10 @@ export const DismissingRemovesIt: StoryObj = {
 };
 
 export const Warning: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: {
     severity: "warning",
@@ -121,6 +133,10 @@ export const Matrix: StoryObj = {
  * a button counted as having none.
  */
 export const DismissFromTheKeyboard: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   render: function Render() {
     const [gone, setGone] = useState(false);

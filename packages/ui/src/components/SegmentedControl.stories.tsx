@@ -31,13 +31,6 @@ function ViewSwitcherDemo() {
 export const ViewSwitcher: StoryObj = {
   parameters: { chromatic: { disableSnapshot: true } },
   render: () => <ViewSwitcherDemo />,
-  play: async ({ canvas }) => {
-    // Reference state: assert what is on screen without changing it.
-    await expect(canvas.getByRole("button", { name: "List" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-  },
 };
 
 /**
@@ -66,6 +59,10 @@ export const Matrix: StoryObj = {
 
 /** Interaction only; selection moves, so it does not snapshot. */
 export const SelectingAView: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   render: () => <ViewSwitcherDemo />,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -87,6 +84,10 @@ export const SelectingAView: StoryObj = {
  * component's resting appearance.
  */
 export const KeyboardReachable: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   render: () => <ViewSwitcherDemo />,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -95,5 +96,19 @@ export const KeyboardReachable: StoryObj = {
     // group, not radios: the group is a toolbar of toggles.
     const target = canvas.getAllByRole("button")[0]!;
     await expect(target).toHaveFocus();
+  },
+};
+
+/** ViewSwitcher, asserted. Hidden: it renders the example above again. */
+export const ViewSwitcherBehaviour: StoryObj = {
+  tags: ["!dev"],
+  args: ViewSwitcher.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    // Reference state: assert what is on screen without changing it.
+    await expect(canvas.getByRole("button", { name: "List" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   },
 };

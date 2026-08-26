@@ -1,8 +1,8 @@
 "use client";
 
-import { useId, type ReactNode, type ComponentPropsWithRef } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 
-import { cx } from "../cx";
+import { Field } from "./Field";
 import "./_field.css";
 export interface TextFieldProps extends Omit<
   ComponentPropsWithRef<"input">,
@@ -14,6 +14,10 @@ export interface TextFieldProps extends Omit<
   hint?: ReactNode;
   /** Validation message. Sets aria-invalid and links the same way. */
   error?: ReactNode;
+  /** Marks the field required, visibly and for assistive technology. */
+  required?: boolean;
+  /** Render the label for assistive technology only. */
+  hideLabel?: boolean;
   /** Slot before the input (e.g. a unit). */
   prefix?: ReactNode;
   /** Slot after the input (e.g. an icon). */
@@ -47,50 +51,44 @@ export function TextField({
   label,
   hint,
   error,
+  required,
+  hideLabel,
   prefix,
   suffix,
   className,
   ...rest
 }: TextFieldProps) {
-  const id = useId();
-  const describedBy = [hint && `${id}-hint`, error && `${id}-error`]
-    .filter(Boolean)
-    .join(" ");
-
   return (
-    <div className={cx("uix-field", className)}>
-      <label className="uix-field-label" htmlFor={id}>
-        {label}
-      </label>
-      <div className="uix-field-row" data-invalid={error ? true : undefined}>
-        {prefix ? (
-          <span className="uix-field-adornment" aria-hidden>
-            {prefix}
-          </span>
-        ) : null}
-        <input
-          id={id}
-          className="uix-field-input"
-          aria-describedby={describedBy || undefined}
-          aria-invalid={error ? true : undefined}
-          {...rest}
-        />
-        {suffix ? (
-          <span className="uix-field-adornment" aria-hidden>
-            {suffix}
-          </span>
-        ) : null}
-      </div>
-      {hint ? (
-        <p className="uix-field-hint" id={`${id}-hint`}>
-          {hint}
-        </p>
-      ) : null}
-      {error ? (
-        <p className="uix-field-error" id={`${id}-error`}>
-          {error}
-        </p>
-      ) : null}
-    </div>
+    <Field
+      label={label}
+      hint={hint}
+      error={error}
+      required={required}
+      hideLabel={hideLabel}
+      className={className}
+    >
+      {({ id, describedBy, invalid, required: isRequired }) => (
+        <div className="uix-field-row" data-invalid={invalid}>
+          {prefix ? (
+            <span className="uix-field-adornment" aria-hidden>
+              {prefix}
+            </span>
+          ) : null}
+          <input
+            id={id}
+            className="uix-field-input"
+            aria-describedby={describedBy}
+            aria-invalid={invalid}
+            required={isRequired || undefined}
+            {...rest}
+          />
+          {suffix ? (
+            <span className="uix-field-adornment" aria-hidden>
+              {suffix}
+            </span>
+          ) : null}
+        </div>
+      )}
+    </Field>
   );
 }

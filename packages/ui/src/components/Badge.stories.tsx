@@ -31,6 +31,10 @@ export const Danger: Story = {
 };
 
 export const ToneIsNeverTheOnlySignal: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { tone: "danger", children: "Failed" },
   play: async ({ canvas }) => {
@@ -59,6 +63,10 @@ export const ToneIsNeverTheOnlySignal: Story = {
  * badge — and a copied class name is how a design system starts losing.
  */
 export const AsLink: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Badge

@@ -56,16 +56,13 @@ export const Stack: Story = {
     chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
   },
   render: () => <ToasterDemo />,
-  play: async ({ canvas }) => {
-    // Severity decides politeness: success is a status, warning alerts.
-    // Assert the announced text rather than an accessible name — a live
-    // region is announced from its content and takes no name from it.
-    await expect(canvas.getByRole("status")).toHaveTextContent("Saved");
-    await expect(canvas.getByRole("alert")).toHaveTextContent("Stock low");
-  },
 };
 
 export const Dismissing: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   render: () => <ToasterDemo />,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -83,6 +80,10 @@ export const TopCentre: Story = {
 
 /** Reachable from the keyboard. Interaction only, so it does not snapshot. */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   render: () => <ToasterDemo />,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -111,6 +112,10 @@ export const KeyboardReachable: Story = {
  * error nobody read.
  */
 export const Imperative: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   render: function Render() {
     function Raise() {
@@ -158,5 +163,23 @@ export const Imperative: StoryObj = {
     await expect(alert).toContainElement(
       within(alert).getByText("Could not reach the supplier"),
     );
+  },
+};
+
+/**
+ * The behaviour of Stack, asserted. Hidden from the sidebar: the
+ * frame after an assertion is the resting state again, so it would
+ * show the reader a second copy of the example above.
+ */
+export const StackBehaviour: Story = {
+  tags: ["!dev"],
+  args: Stack.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    // Severity decides politeness: success is a status, warning alerts.
+    // Assert the announced text rather than an accessible name — a live
+    // region is announced from its content and takes no name from it.
+    await expect(canvas.getByRole("status")).toHaveTextContent("Saved");
+    await expect(canvas.getByRole("alert")).toHaveTextContent("Stock low");
   },
 };

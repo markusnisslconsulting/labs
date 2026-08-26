@@ -14,6 +14,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: {
     label: "Order number",
@@ -35,6 +39,10 @@ export const Default: Story = {
  * name Default promises.
  */
 export const TypingIntoTheLabelledField: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: { label: "Order number", hint: "Find it in your confirmation email." },
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -58,6 +66,7 @@ export const Matrix: StoryObj = {
         error="We could not find that order number."
       />
       <TextField label="With affixes" prefix=">=" suffix="units" />
+      <TextField label="Required" required placeholder="4711" />
       <TextField label="Disabled" defaultValue="4711" disabled />
     </div>
   ),
@@ -91,6 +100,10 @@ export const WithPrefixAndSuffix: Story = {
  * component's resting appearance.
  */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: Default.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {

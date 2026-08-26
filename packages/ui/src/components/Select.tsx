@@ -1,9 +1,9 @@
 "use client";
 
-import { useId, type ComponentPropsWithRef, type ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 
-import { cx } from "../cx";
+import { Field } from "./Field";
 import "./_field.css";
 import "./Select.css";
 export interface SelectOption {
@@ -24,6 +24,12 @@ export interface SelectProps extends Omit<
    */
   options?: SelectOption[];
   hint?: ReactNode;
+  /** Validation message. Its presence makes the field invalid. */
+  error?: ReactNode;
+  /** Marks the field required, visibly and for assistive technology. */
+  required?: boolean;
+  /** Render the label for assistive technology only. */
+  hideLabel?: boolean;
   children?: ReactNode;
 }
 
@@ -47,42 +53,45 @@ export function Select({
   label,
   options,
   hint,
+  error,
+  required,
+  hideLabel,
   className,
   children,
   ...rest
 }: SelectProps) {
-  const id = useId();
-  const hintId = `${id}-hint`;
-
   return (
-    <div className={cx("uix-field", className)}>
-      <label className="uix-field-label" htmlFor={id}>
-        {label}
-      </label>
-      <div className="uix-field-row">
-        <select
-          id={id}
-          className="uix-field-input uix-select"
-          aria-describedby={hint ? hintId : undefined}
-          {...rest}
-        >
-          {children ??
-            (options ?? []).map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-        </select>
-        <span className="uix-field-affordance" aria-hidden>
-          <ChevronDown size={16} />
-        </span>
-      </div>
-      {hint ? (
-        <p className="uix-field-hint" id={hintId}>
-          {hint}
-        </p>
-      ) : null}
-    </div>
+    <Field
+      label={label}
+      hint={hint}
+      error={error}
+      required={required}
+      hideLabel={hideLabel}
+      className={className}
+    >
+      {({ id, describedBy, invalid, required: isRequired }) => (
+        <div className="uix-field-row" data-invalid={invalid}>
+          <select
+            id={id}
+            className="uix-field-input uix-select"
+            aria-describedby={describedBy}
+            aria-invalid={invalid}
+            required={isRequired || undefined}
+            {...rest}
+          >
+            {children ??
+              (options ?? []).map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+          </select>
+          <span className="uix-field-affordance" aria-hidden>
+            <ChevronDown size={16} />
+          </span>
+        </div>
+      )}
+    </Field>
   );
 }
 

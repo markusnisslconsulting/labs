@@ -27,6 +27,10 @@ export const Success: Story = {
 };
 
 export const Warning: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { severity: "warning", children: "Two suppliers have no lead time." },
   play: async ({ canvas }) => {
@@ -36,6 +40,10 @@ export const Warning: Story = {
 };
 
 export const Danger: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { severity: "danger", children: "The nightly sync did not run." },
   play: async ({ canvas }) => {
@@ -44,6 +52,10 @@ export const Danger: Story = {
 };
 
 export const InfoIsPolite: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { severity: "info", children: "Onboarding opens in October." },
   play: async ({ canvas }) => {

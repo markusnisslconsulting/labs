@@ -9,6 +9,31 @@
     max-width: 24rem;
   }
 
+  /* Label and its aside on one row. A grid rather than flex with
+     space-between: with a hidden label the aside would otherwise jump to
+     the start, because a visually-hidden element still holds a slot. */
+  .uix-field-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--uix-gap-sm);
+    min-width: 0;
+  }
+
+  .uix-field-aside {
+    font-family: var(--uix-font-ui);
+    font-size: 0.88rem;
+    color: var(--uix-text-secondary);
+    font-variant-numeric: tabular-nums;
+    flex: none;
+  }
+
+  /* The required marker is red because that is the convention, and it is
+     never the only signal: the word next to it is read aloud. */
+  .uix-field-required {
+    color: var(--uix-status-danger);
+  }
+
   .uix-field-label {
     /* A label belongs to its control, not to the prose around it. The
        coaching brand sets its running text in a serif and its interface

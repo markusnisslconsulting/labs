@@ -4,24 +4,10 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
-  .uix-slider {
-    display: grid;
-    gap: var(--uix-gap-sm);
-    max-width: 24rem;
-  }
-
-  .uix-slider-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    max-width: 24rem;
-  }
-
-  .uix-slider-value {
-    font-size: var(--uix-font-size-200);
-    color: var(--uix-text-secondary);
-    font-variant-numeric: tabular-nums;
-  }
+  /* The grid, the gap, the width, the head row and the value's type were
+     all declared here, duplicating .uix-field and .uix-field-head — which
+     is how Slider ended up as the one field with no hint and no error. It
+     is a Field now; what is left below is the range track. */
 
   .uix-range {
     accent-color: var(--uix-accent);
@@ -30,10 +16,7 @@
     cursor: pointer;
   }
 
-  .uix-range:focus-visible {
-    outline: 2px solid var(--uix-focus-ring);
-    outline-offset: 2px;
-  }
+  /* The focus ring comes from the one contract in base.css. */
 
   .uix-range:disabled {
     opacity: var(--uix-opacity-disabled);
@@ -46,7 +29,7 @@
      text beside the control, so dimming them produced a real 2:1
      failure. A colour token can be measured; an opacity cannot. */
   .uix-slider[data-disabled] .uix-field-label,
-  .uix-slider[data-disabled] .uix-slider-value {
+  .uix-slider[data-disabled] .uix-field-aside {
     color: var(--uix-text-disabled);
   }
 }

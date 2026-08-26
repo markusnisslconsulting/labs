@@ -8,11 +8,26 @@ import "./_positioner.css";
 import "./Button.css";
 import "./Popover.css";
 interface PopoverOwnProps {
-  /** Trigger label. */
   /** The trigger's content. A node, so it can carry an icon or a count. */
   trigger: ReactNode;
   title?: ReactNode;
   children: ReactNode;
+  /**
+   * Whether the popup is open. Controlled; pair it with `onOpenChange`.
+   *
+   * Missing for the same reason it was missing on Menu: `<Root>` was
+   * rendered with no props, so a form inside a popover could not close it
+   * on save, and the component's only picture in the catalogue was the
+   * button that opens it.
+   */
+  open?: boolean;
+  /** Open on mount, then uncontrolled. */
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Which side of the trigger the popup prefers. */
+  side?: "top" | "bottom" | "left" | "right";
+  /** How the popup lines up with the trigger along that side. */
+  align?: "start" | "center" | "end";
 }
 
 /**
@@ -46,10 +61,19 @@ export function Popover({
   title,
   children,
   className,
+  open,
+  defaultOpen,
+  onOpenChange,
+  side,
+  align = "end",
   ...rest
 }: PopoverProps) {
   return (
-    <BasePopover.Root>
+    <BasePopover.Root
+      open={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+    >
       <BasePopover.Trigger
         className={cxState("uix-button", className)}
         data-variant="outline"
@@ -63,7 +87,8 @@ export function Popover({
         <BasePopover.Positioner
           className="uix-menu-positioner"
           sideOffset={6}
-          align="end"
+          side={side}
+          align={align}
         >
           <BasePopover.Popup className="uix-popover">
             {title ? (

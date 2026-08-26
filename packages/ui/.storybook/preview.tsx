@@ -3,6 +3,7 @@ import { withThemeByDataAttribute } from "@storybook/addon-themes";
 import { useEffect } from "react";
 import { create } from "storybook/theming";
 import "../src/styles.css";
+import "./preview.css";
 
 /** Docs pages read on the product palette, not Storybook defaults. */
 const labsTheme = create({

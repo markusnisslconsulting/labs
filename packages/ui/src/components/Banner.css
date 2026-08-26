@@ -4,21 +4,51 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
+  /* One severity colour, named once and read three times.
+   *
+   * This was four rules that each re-pointed border-inline-start-color
+   * and nothing else, so every severity shared --uix-bg-subtle as its
+   * background: a danger banner was an info banner with a red sliver down
+   * the edge, and side by side in the docs the two were the same picture.
+   * Severity carried by 4 pixels out of a full-width bar is severity
+   * nobody reads.
+   *
+   * Declaring the colour as a local property means the fill, the rule and
+   * the icon all follow one value, and a new severity is one declaration
+   * rather than four. */
   .uix-banner {
+    --uix-banner-severity: var(--uix-info);
     padding: var(--uix-gap-md) var(--uix-gap-lg);
-    border-inline-start: 4px solid var(--uix-info);
-    background: var(--uix-bg-subtle);
+    border-inline-start: 4px solid var(--uix-banner-severity);
+    /* Mixed toward the page rather than a fixed tint per theme: the same
+       declaration lands a 10% wash on white and on near-black, so dark
+       mode is not a second block that has to be kept in step. */
+    background: color-mix(
+      in srgb,
+      var(--uix-banner-severity) 10%,
+      var(--uix-bg-surface)
+    );
+    color: var(--uix-text-primary);
   }
 
   .uix-banner[data-severity="warning"] {
-    border-inline-start-color: var(--uix-status-warn);
+    --uix-banner-severity: var(--uix-status-warn);
   }
 
   .uix-banner[data-severity="danger"] {
-    border-inline-start-color: var(--uix-status-danger);
+    --uix-banner-severity: var(--uix-status-danger);
   }
 
   .uix-banner[data-severity="success"] {
-    border-inline-start-color: var(--uix-status-ok);
+    --uix-banner-severity: var(--uix-status-ok);
+  }
+
+  /* Windows high contrast throws away the wash, and then all four
+     severities are the same box again. A border survives it. */
+  @media (forced-colors: active) {
+    .uix-banner {
+      border: 1px solid CanvasText;
+      border-inline-start-width: 4px;
+    }
   }
 }

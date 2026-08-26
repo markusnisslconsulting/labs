@@ -1,15 +1,22 @@
 "use client";
 
 import type { ComponentPropsWithRef, ReactNode } from "react";
-import { useId, useState } from "react";
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-import { cx } from "../cx";
+import { Field } from "./Field";
 import "./_field.css";
 interface ComboboxOwnProps {
   /** A node: it goes into a real <label> element, which carries the
    * accessible name, so it does not have to be flat text. */
   label: ReactNode;
+  hint?: ReactNode;
+  /** Validation message. Its presence makes the field invalid. */
+  error?: ReactNode;
+  /** Marks the field required, visibly and for assistive technology. */
+  required?: boolean;
+  /** Render the label for assistive technology only. */
+  hideLabel?: boolean;
   /**
    * The convenience form. A shorthand over `Combobox.Option`, which a
    * grouped or async list needs.
@@ -52,6 +59,10 @@ export type ComboboxProps = ComboboxOwnProps &
 export function Combobox({
   label,
   options,
+  hint,
+  error,
+  required,
+  hideLabel,
   value,
   defaultValue,
   onValueChange,
@@ -61,7 +72,6 @@ export function Combobox({
   children,
   ...rest
 }: ComboboxProps) {
-  const id = useId();
   // The uncontrolled value doubles as the query, which is what an
   // uncontrolled combobox means: what is typed is what is chosen until
   // something else says otherwise.
@@ -72,33 +82,43 @@ export function Combobox({
   );
 
   return (
-    <div className={cx("uix-field", className)} {...rest}>
-      <label className="uix-field-label" htmlFor={id}>
-        {label}
-      </label>
-      <div className="uix-field-row">
-        <input
-          id={id}
-          className="uix-field-input"
-          type="text"
-          disabled={disabled}
-          list={`${id}-options`}
-          placeholder={placeholder}
-          value={value ?? query}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            onValueChange?.(event.target.value);
-          }}
-        />
-        <span className="uix-field-affordance" aria-hidden>
-          <ChevronDown size={16} />
-        </span>
-        <datalist id={`${id}-options`}>
-          {children ??
-            matches.map((option) => <option key={option} value={option} />)}
-        </datalist>
-      </div>
-    </div>
+    <Field
+      label={label}
+      hint={hint}
+      error={error}
+      required={required}
+      hideLabel={hideLabel}
+      className={className}
+      {...rest}
+    >
+      {({ id, describedBy, invalid, required: isRequired }) => (
+        <div className="uix-field-row" data-invalid={invalid}>
+          <input
+            id={id}
+            className="uix-field-input"
+            type="text"
+            disabled={disabled}
+            list={`${id}-options`}
+            placeholder={placeholder}
+            aria-describedby={describedBy}
+            aria-invalid={invalid}
+            required={isRequired || undefined}
+            value={value ?? query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              onValueChange?.(event.target.value);
+            }}
+          />
+          <span className="uix-field-affordance" aria-hidden>
+            <ChevronDown size={16} />
+          </span>
+          <datalist id={`${id}-options`}>
+            {children ??
+              matches.map((option) => <option key={option} value={option} />)}
+          </datalist>
+        </div>
+      )}
+    </Field>
   );
 }
 

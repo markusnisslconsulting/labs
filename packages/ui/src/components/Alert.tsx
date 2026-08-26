@@ -81,6 +81,7 @@ export function Alert({
       </div>
       {onDismiss ? (
         <Button
+          className="uix-alert-dismiss"
           variant="ghost"
           size="sm"
           aria-label={dismissLabel ?? labels.dismiss}

@@ -61,10 +61,73 @@
     text-underline-offset: 0.15em;
   }
 
-  a:focus-visible {
-    outline: 2px solid var(--uix-focus-ring);
-    outline-offset: 2px;
-    border-radius: var(--uix-radius-s);
+  /* One focus indicator, for everything that can take focus.
+   *
+   * This used to say `a:focus-visible` and nothing else. --uix-focus-ring
+   * was a token with exactly one consumer, so every other component had
+   * to invent its own: thirteen of them did, in thirteen files, and
+   * fourteen invented nothing and fell through to the user agent's. The
+   * result was an Accordion with a Chrome-blue ring next to a Select with
+   * the brand's, and a different pair of colours again in Safari. A focus
+   * ring that changes with the engine is not a design decision.
+   *
+   * `:where()` holds the whole selector at zero specificity, so a
+   * component that genuinely needs a different indicator — a field whose
+   * ring belongs on the wrapper rather than the input — overrides this
+   * with a single class and no !important.
+   *
+   * :focus-visible, not :focus: the browser already knows whether the
+   * focus came from a key or a pointer, and a ring drawn around a
+   * just-clicked button is the thing people file bugs about. */
+  :where(
+    a[href],
+    area[href],
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    iframe,
+    [tabindex]:not([tabindex="-1"]),
+    [contenteditable="true"]
+  ):focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+    /* Follows the element's own corner instead of imposing one. A ring
+       with its own radius sat square around a pill. */
+    border-radius: inherit;
+  }
+
+  /* A container focused to scope the keyboard takes no ring.
+   *
+   * Base UI moves focus onto a menu or popover popup when it opens, so
+   * the popup — tabindex="-1", never a place anyone navigated to — matched
+   * :focus-visible and the browser drew its own 1px #005fcc ring around
+   * it. Opening any menu in this library outlined it in Chrome blue,
+   * inside a border we had already drawn in the brand's own grey.
+   *
+   * This is why the ring is excluded rather than merely not added: the
+   * indicator a user needs is on the item that has roving focus inside
+   * the popup, and a second ring around the container competes with it. */
+  :where([tabindex="-1"]):focus-visible {
+    outline: none;
+  }
+
+  /* Forced colours drop author colours, and a ring the user cannot see is
+     the one indicator they cannot do without. Highlight is the colour
+     they chose for it. */
+  @media (forced-colors: active) {
+    :where(
+      a[href],
+      button,
+      input,
+      select,
+      textarea,
+      summary,
+      [tabindex]
+    ):focus-visible {
+      outline-color: Highlight;
+    }
   }
 
   h1,

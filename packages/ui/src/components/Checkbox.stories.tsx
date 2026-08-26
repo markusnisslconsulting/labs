@@ -27,6 +27,10 @@ export const Unchecked: Story = {
 };
 
 export const Checked: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { label: "Email me updates", defaultChecked: true },
   play: async ({ canvas }) => {
@@ -37,6 +41,10 @@ export const Checked: Story = {
 };
 
 export const Indeterminate: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
   args: { label: "Select all", indeterminate: true },
   play: async ({ canvas }) => {
@@ -57,6 +65,10 @@ export const Disabled: Story = {
  * component's resting appearance.
  */
 export const KeyboardReachable: Story = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   args: Unchecked.args,
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
@@ -83,7 +95,21 @@ export const Matrix: StoryObj = {
       <Checkbox label="Unchecked" />
       <Checkbox label="Checked" defaultChecked />
       <Checkbox label="Indeterminate" indeterminate />
+      <Checkbox label="Required" required />
       <Checkbox label="Disabled" disabled defaultChecked />
     </div>
   ),
+};
+
+/** Required, with a failed validation under it. */
+export const RequiredWithError: Story = {
+  /* The matrix above already photographs `required`; this story is the
+     documented example, not a second baseline. The snapshot budget gate
+     is what asked the question. */
+  parameters: { chromatic: { disableSnapshot: true } },
+  args: {
+    label: "I accept the supplier terms",
+    required: true,
+    error: "Accept the terms to continue.",
+  },
 };

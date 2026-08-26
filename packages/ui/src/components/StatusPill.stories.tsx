@@ -32,6 +32,10 @@ export const Off: Story = {
  * compared and their contrast checked at once.
  */
 export const AllTones: StoryObj = {
+  /* Interaction test, not an example: hidden from the sidebar by
+     `!dev` so the catalogue lists states a reader can look at, and
+     kept in the test run by the default `test` tag. */
+  tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <div style={{ display: "grid", gap: "0.5rem", justifyItems: "start" }}>

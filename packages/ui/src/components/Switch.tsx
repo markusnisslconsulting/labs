@@ -5,6 +5,9 @@ import { useId, useState } from "react";
 import { Switch as BaseSwitch } from "@base-ui-components/react/switch";
 
 import { cx } from "../cx";
+import { useFieldMessages } from "./Field";
+import { useStrings } from "../i18n";
+import "./_field.css";
 import "./Switch.css";
 interface SwitchOwnProps {
   /** Visible label; rendered inside the control, so the whole row
@@ -24,6 +27,12 @@ interface SwitchOwnProps {
    */
   onCheckedChange?: (checked: boolean) => void;
   disabled?: boolean;
+  /** Instruction under the control, linked with aria-describedby. */
+  hint?: ReactNode;
+  /** Validation message. Its presence makes the control invalid. */
+  error?: ReactNode;
+  /** Marks the control required, visibly and for assistive technology. */
+  required?: boolean;
 }
 
 /**
@@ -79,6 +88,9 @@ export function Switch({
   defaultChecked,
   onCheckedChange,
   disabled,
+  hint,
+  error,
+  required,
   className,
   ...rest
 }: SwitchProps) {
@@ -88,24 +100,47 @@ export function Switch({
   );
   const isChecked = isControlled ? checked : internalChecked;
   const labelId = useId();
+  const { describedBy, invalid, messages } = useFieldMessages(hint, error);
+  const strings = useStrings();
 
-  return (
+  const row = (
     <label className={cx("uix-switch-row", className)} {...rest}>
       <BaseSwitch.Root
         className="uix-switch"
         aria-labelledby={labelId}
+        aria-describedby={describedBy}
+        aria-invalid={invalid}
         checked={isChecked}
         onCheckedChange={(next) => {
           if (!isControlled) setInternalChecked(next);
           onCheckedChange?.(next);
         }}
         disabled={disabled}
+        required={required}
       >
         <BaseSwitch.Thumb className="uix-switch-thumb" />
       </BaseSwitch.Root>
       <span className="uix-switch-label" id={labelId}>
         {label}
+        {required ? (
+          <>
+            {" "}
+            <span className="uix-field-required" aria-hidden>
+              *
+            </span>
+            <span className="uix-visually-hidden">{strings.required}</span>
+          </>
+        ) : null}
       </span>
     </label>
+  );
+
+  if (!hint && !error) return row;
+
+  return (
+    <div className="uix-field">
+      {row}
+      {messages}
+    </div>
   );
 }

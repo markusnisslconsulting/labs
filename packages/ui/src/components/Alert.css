@@ -29,6 +29,24 @@
     border-inline-start: 4px solid var(--uix-status-danger);
   }
 
+  /* The message takes the width, so the dismiss control sits at the far
+     edge. Without this the body was a shrink-to-fit flex item and the ✕
+     landed against the end of the title — which reads as part of the
+     sentence rather than as a control for the whole alert.
+     min-width: 0 because a flex item's automatic minimum size is its
+     content, so a long unbroken word would push the ✕ off the card. */
+  .uix-alert-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Aligned with the first line of text rather than the block: a dismiss
+     control halfway down a three-line alert looks unattached to it. */
+  .uix-alert-dismiss {
+    flex: none;
+    margin-block-start: -0.15rem;
+  }
+
   .uix-alert-body > :first-child {
     margin-top: 0;
   }

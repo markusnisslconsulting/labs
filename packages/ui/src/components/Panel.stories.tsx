@@ -23,13 +23,6 @@ export const Default: Story = {
     label: "Live · transcript versus control surface",
     children: <p>Demo content sits inside the bordered surface.</p>,
   },
-  play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole("region", {
-        name: "Live · transcript versus control surface",
-      }),
-    ).toBeVisible();
-  },
 };
 
 /** Anatomy slots for richer headers, composed on the same surface. */
@@ -45,4 +38,22 @@ export const WithSlots: StoryObj = {
       </Panel.Body>
     </Panel>
   ),
+};
+
+/**
+ * The behaviour of Default, asserted. Hidden from the sidebar: the
+ * frame after an assertion is the resting state again, so it would
+ * show the reader a second copy of the example above.
+ */
+export const DefaultBehaviour: Story = {
+  tags: ["!dev"],
+  args: Default.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole("region", {
+        name: "Live · transcript versus control surface",
+      }),
+    ).toBeVisible();
+  },
 };
