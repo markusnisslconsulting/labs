@@ -44,6 +44,12 @@ export default tseslint.config(
           // rule strict everywhere it actually describes shipping code.
           allow: ["@labs/tools/*"],
           depConstraints: [
+            // Scope answers "whose code may I use", type answers "which
+            // layer am I in". Scope alone let the design system import a
+            // feature: packages/ui and packages/reorder-desk are both
+            // scope:shared, so nothing stopped a button from reaching
+            // into a product screen, and the day it happened the design
+            // system would stop being independently publishable.
             {
               sourceTag: "scope:site",
               onlyDependOnLibsWithTags: ["scope:shared"],
@@ -51,6 +57,22 @@ export default tseslint.config(
             {
               sourceTag: "scope:shared",
               onlyDependOnLibsWithTags: ["scope:shared"],
+            },
+            // The layering, from the top down. Each may use what is below
+            // it and never what is beside or above it.
+            {
+              sourceTag: "type:app",
+              onlyDependOnLibsWithTags: ["type:feature", "type:ui"],
+            },
+            {
+              sourceTag: "type:feature",
+              onlyDependOnLibsWithTags: ["type:ui"],
+            },
+            {
+              // The leaf. A design system that depends on a product is no
+              // longer a design system.
+              sourceTag: "type:ui",
+              onlyDependOnLibsWithTags: [],
             },
           ],
         },

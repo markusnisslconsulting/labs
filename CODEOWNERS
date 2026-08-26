@@ -1,0 +1,23 @@
+# Ownership is per layer, because a review of a token is not a review of a
+# product screen. The design system and the token layer change the look of
+# every product at once, so they need an owner who is accountable for that
+# blast radius; a single lab does not.
+
+# Everything, unless a more specific rule below wins.
+*                               @markusnisslconsulting/maintainers
+
+# The design system. A change here reaches every product.
+/packages/ui/                   @markusnisslconsulting/design-system
+
+# The token layer and the brands: the widest blast radius in the repo.
+/packages/ui/src/styles/        @markusnisslconsulting/design-system
+/packages/ui/src/tokens.registry.ts @markusnisslconsulting/design-system
+
+# The gates. Weakening one is a decision, not a chore.
+/packages/ui/test/              @markusnisslconsulting/design-system
+/packages/ui/browser/           @markusnisslconsulting/design-system
+/scripts/                       @markusnisslconsulting/maintainers
+/.github/workflows/             @markusnisslconsulting/maintainers
+
+# Architecture decisions are reviewed by whoever has to live with them.
+/docs/adr/                      @markusnisslconsulting/maintainers

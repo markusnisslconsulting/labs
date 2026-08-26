@@ -176,7 +176,28 @@ const preview: Preview = {
       },
     },
   },
-  initialGlobals: { brand: "default", density: "default", direction: "ltr" },
+  initialGlobals: {
+    brand: "default",
+    density: "default",
+    direction: "ltr",
+    /*
+     * The theme the story suite starts in.
+     *
+     * The old test runner visited each story once with the default
+     * globals, so every accessibility check only ever saw the light
+     * theme. Dark shipped for months with a black-on-dark select, a
+     * tooltip trigger on the browser's grey button face, and a nested
+     * brand that kept its light accent under a dark root. None of the
+     * three was visible to a light-only run.
+     *
+     * So ui:test-storybook runs the suite twice and sets this the second
+     * time. An env var rather than a second Vitest config: composing
+     * setupFiles turns off the addon's own annotation provisioning, and
+     * the run then fails inside the addon rather than telling you what
+     * you broke.
+     */
+    theme: import.meta.env["VITE_LABS_THEME"] ?? "light",
+  },
   decorators: [
     // Padding as a real container: Chromatic crops snapshots to the
     // component, and focus rings with outline-offset need the room.

@@ -89,10 +89,15 @@
       }
     },
     "test-storybook": {
-      "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
+      "cache": true,
       "options": {
-        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4411 --silent\" \"wait-on tcp:127.0.0.1:4411 && pnpm exec test-storybook --url http://127.0.0.1:4411 --config-dir packages/ui/.storybook\""
+        "cwd": "packages/ui",
+        "commands": [
+          "vitest run --config vitest.storybook.config.ts",
+          "VITE_LABS_THEME=dark vitest run --config vitest.storybook.config.ts"
+        ],
+        "parallel": false
       }
     },
     "tokens-baseline": {

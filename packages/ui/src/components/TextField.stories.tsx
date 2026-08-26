@@ -64,11 +64,16 @@ export const Matrix: StoryObj = {
 };
 
 export const WithError: Story = {
+  // `invalid: true` used to be here behind an `as never` cast, which is
+  // what a prop that does not exist looks like when TypeScript is talked
+  // out of the way: it reached the DOM as a non-boolean attribute. The
+  // component derives data-invalid and aria-invalid from `error` itself,
+  // so there was nothing to pass. React had been warning about it in the
+  // console for months; the old test runner did not read the console.
   args: {
     label: "Order number",
     error: "We could not find that order number.",
-    invalid: true,
-  } as never,
+  },
 };
 
 export const WithPrefixAndSuffix: Story = {
