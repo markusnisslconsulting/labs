@@ -144,3 +144,54 @@ test("a brand can set the density, and it reaches the controls", async ({
   ).toBeGreaterThan(measured.base.height);
   expect(measured.coaching.gap).toBeGreaterThan(measured.base.gap);
 });
+
+test("a brand's typography reaches prose and leaves the controls alone", async ({
+  page,
+}) => {
+  // The third appearance of one trap, and the reason this test exists.
+  // font-family and line-height are inherited properties: declared on
+  // body, every descendant inherits the value computed there, so a brand
+  // re-pointing --uix-font-body on a subtree changed a custom property
+  // nobody read again. The coaching column rendered in the consulting
+  // typeface and looked plausible.
+  await page.goto(
+    "/iframe.html?id=foundations-brands--side-by-side&viewMode=story",
+    {
+      waitUntil: "networkidle",
+    },
+  );
+
+  const measured = await page.evaluate(() => {
+    const brand = document.querySelector('[data-brand="coaching"]')!;
+    const base = [...document.querySelectorAll("section")].find(
+      (el) => !el.hasAttribute("data-brand"),
+    )!;
+    const read = (scope: Element) => {
+      const prose = scope.querySelector("p")!;
+      const control = scope.querySelector("button.uix-button")!;
+      const p = getComputedStyle(prose);
+      return {
+        proseFace: p.fontFamily,
+        proseLeading: parseFloat(p.lineHeight),
+        controlFace: getComputedStyle(control).fontFamily,
+      };
+    };
+    return { base: read(base), coaching: read(brand) };
+  });
+
+  expect(
+    measured.coaching.proseFace,
+    "the coaching brand's prose renders in the consulting typeface",
+  ).not.toBe(measured.base.proseFace);
+  expect(measured.coaching.proseFace).toMatch(/Charter|Iowan|Hoefler|Georgia/);
+  expect(
+    measured.coaching.proseLeading,
+    "the brand's looser leading did not apply",
+  ).toBeGreaterThan(measured.base.proseLeading);
+  // And the half that must NOT change: an interface face stays an
+  // interface face, because legibility beats identity on a control.
+  expect(
+    measured.coaching.controlFace,
+    "the brand's prose face leaked onto a control",
+  ).toBe(measured.base.controlFace);
+});

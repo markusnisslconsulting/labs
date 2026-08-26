@@ -22,12 +22,13 @@
   }
 
   .uix-panel-label {
+    font-family: var(--uix-font-ui);
     display: flex;
     align-items: center;
     gap: var(--uix-gap-sm);
     font-size: var(--uix-text-caption);
-    font-weight: var(--uix-font-weight-bold);
-    letter-spacing: 0.14em;
+    font-weight: var(--uix-weight-ui);
+    letter-spacing: var(--uix-tracking-ui);
     text-transform: uppercase;
     margin-bottom: var(--uix-gap-lg);
   }

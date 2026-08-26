@@ -11,7 +11,7 @@
     border-radius: 50%; /* a circle, not a brandable pill */
     background: var(--uix-bg-subtle);
     color: var(--uix-text-primary);
-    font-weight: 700;
+    font-weight: var(--uix-weight-ui);
     object-fit: cover;
   }
 

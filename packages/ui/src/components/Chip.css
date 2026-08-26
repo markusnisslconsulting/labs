@@ -19,7 +19,7 @@
     padding-block: 0;
     padding-inline: calc(var(--uix-gap-sm) + var(--uix-space-2));
     font-size: var(--uix-font-size-200);
-    line-height: var(--uix-line-height-normal);
+    line-height: var(--uix-leading-body);
   }
 
   button.uix-chip {

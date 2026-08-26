@@ -22,9 +22,37 @@
   body {
     background: var(--uix-bg-page);
     color: var(--uix-text-primary);
-    font-family: var(--uix-font-body);
     font-size: var(--uix-text-body);
-    line-height: var(--uix-line-height-normal);
+  }
+
+  /* The prose voice, declared on body *and* on any brand scope.
+   *
+   * This is the third appearance of one trap. font-family and line-height
+   * are inherited properties: declared on body, every descendant inherits
+   * the value already computed there. A brand that re-points
+   * --uix-font-body or --uix-leading-body on a subtree therefore changes
+   * a custom property nobody reads again, and renders identically — which
+   * is exactly what the coaching brand did until this rule existed. The
+   * density roles needed [data-brand] for the same reason, and
+   * --uix-control-md needed [data-density] before that.
+   *
+   * The rule to remember: a token consumed by an inherited property has
+   * to be consumed wherever that token can change. */
+  body,
+  [data-brand] {
+    font-family: var(--uix-font-body);
+    line-height: var(--uix-leading-body);
+  }
+
+  /* Controls take the interface face, which a brand may set apart from
+     its prose face. The reset makes them inherit; this decides what they
+     inherit from. */
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    font-family: var(--uix-font-ui);
   }
 
   a {
@@ -44,9 +72,13 @@
   h3,
   h4 {
     font-family: var(--uix-font-display);
-    line-height: var(--uix-line-height-tight);
+    font-weight: var(--uix-weight-display);
+    line-height: var(--uix-leading-display);
     margin-bottom: 0.5em;
-    letter-spacing: -0.01em;
+    /* Was -0.01em, written here. A brand could change the face and
+       nothing about how it was set, which is most of what a typographic
+       identity is. */
+    letter-spacing: var(--uix-tracking-display);
     /* Stops a heading from leaving one word alone on its last line. */
     text-wrap: balance;
   }

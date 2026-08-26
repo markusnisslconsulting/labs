@@ -269,6 +269,17 @@
           }
         }
       },
+      "serif": {
+        "$type": "fontFamily",
+        "$value": "Charter, \"Iowan Old Style\", \"Hoefler Text\", Palatino, Georgia, serif",
+        "$description": "Font serif",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-serif",
+            "tier": "primitive"
+          }
+        }
+      },
       "size-100": {
         "$type": "dimension",
         "$value": "0.75rem",
@@ -377,6 +388,52 @@
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-line-height-normal",
+            "tier": "primitive"
+          }
+        }
+      },
+      "height-loose": {
+        "$type": "number",
+        "$value": "1.7",
+        "$description": "Loose line height for long-form prose",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-line-height-loose",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "tracking": {
+      "tight": {
+        "$type": "dimension",
+        "$value": "-0.01em",
+        "$description": "Tracking, tight",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-tracking-tight",
+            "tier": "primitive"
+          }
+        }
+      },
+      "none": {
+        "$type": "fontFamily",
+        "$value": "0",
+        "$description": "Tracking, none",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-tracking-none",
+            "tier": "primitive"
+          }
+        }
+      },
+      "wide": {
+        "$type": "dimension",
+        "$value": "0.14em",
+        "$description": "Tracking, wide (uppercase labels)",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-tracking-wide",
             "tier": "primitive"
           }
         }
@@ -1025,6 +1082,89 @@
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-font-code",
+            "tier": "semantic"
+          }
+        }
+      },
+      "ui": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.sans}",
+        "$description": "Controls, labels and fields",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-ui",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "leading": {
+      "display": {
+        "$type": "fontFamily",
+        "$value": "{primitive.line.height-tight}",
+        "$description": "Heading leading",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-leading-display",
+            "tier": "semantic"
+          }
+        }
+      },
+      "body": {
+        "$type": "fontFamily",
+        "$value": "{primitive.line.height-normal}",
+        "$description": "Running text leading",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-leading-body",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "tracking": {
+      "display": {
+        "$type": "fontFamily",
+        "$value": "{primitive.tracking.tight}",
+        "$description": "Heading tracking",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-tracking-display",
+            "tier": "semantic"
+          }
+        }
+      },
+      "ui": {
+        "$type": "fontFamily",
+        "$value": "{primitive.tracking.wide}",
+        "$description": "Uppercase label tracking",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-tracking-ui",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "weight": {
+      "display": {
+        "$type": "fontWeight",
+        "$value": "{primitive.font.weight-bold}",
+        "$description": "Heading weight",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-weight-display",
+            "tier": "semantic"
+          }
+        }
+      },
+      "ui": {
+        "$type": "fontWeight",
+        "$value": "{primitive.font.weight-bold}",
+        "$description": "Label and control weight",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-weight-ui",
             "tier": "semantic"
           }
         }

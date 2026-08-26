@@ -44,9 +44,9 @@ const BRANDS = [
     brand: "coaching",
     name: "Coaching",
     voice:
-      "Cooler, quieter, more room. Made for someone deciding whether to trust you with their own development.",
+      "Cooler, quieter, more room, and set in a serif. Made for someone deciding whether to trust you with their own development.",
     changes:
-      "accent, four shape roles, the display face, three elevations and the density multiplier — one file, no core stylesheet touched",
+      "accent, four shape roles, the prose and display faces, heading weight, leading, tracking, three elevations and the density multiplier — one file, no core stylesheet touched",
   },
 ] as const;
 

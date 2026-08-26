@@ -10,7 +10,12 @@
   }
 
   .uix-field-label {
-    font-weight: 700;
+    /* A label belongs to its control, not to the prose around it. The
+       coaching brand sets its running text in a serif and its interface
+       in a sans; a field label sitting in the serif contradicted the rule
+       the brand file states. */
+    font-family: var(--uix-font-ui);
+    font-weight: var(--uix-weight-ui);
   }
 
   .uix-field-row {
@@ -100,6 +105,6 @@
 
   .uix-field-error {
     color: var(--uix-status-danger);
-    font-weight: 700;
+    font-weight: var(--uix-weight-ui);
   }
 }

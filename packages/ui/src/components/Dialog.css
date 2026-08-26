@@ -29,7 +29,7 @@
   .uix-dialog-title {
     margin: 0 0 var(--uix-gap-sm);
     font-size: var(--uix-text-heading);
-    line-height: var(--uix-line-height-tight);
+    line-height: var(--uix-leading-display);
   }
 
   .uix-dialog-description {

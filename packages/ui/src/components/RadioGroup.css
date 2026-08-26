@@ -15,7 +15,7 @@
   .uix-legend {
     padding: 0;
     margin-bottom: var(--uix-gap-sm);
-    font-weight: var(--uix-font-weight-bold);
+    font-weight: var(--uix-weight-ui);
   }
 
   .uix-radio-dot {

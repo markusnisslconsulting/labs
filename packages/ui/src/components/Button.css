@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.45rem;
-    font-weight: var(--uix-font-weight-bold);
+    font-weight: var(--uix-weight-ui);
     cursor: pointer;
     border: 1px solid transparent;
     background: transparent;

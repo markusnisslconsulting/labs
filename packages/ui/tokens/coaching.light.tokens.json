@@ -29,10 +29,46 @@
       }
     },
     "font": {
+      "body": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.serif}",
+        "$description": "Running text"
+      },
       "display": {
         "$type": "fontFamily",
-        "$value": "\"Hoefler Text\", \"Iowan Old Style\", Palatino, Charter, Georgia, serif",
+        "$value": "{primitive.font.serif}",
         "$description": "Headings"
+      },
+      "ui": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.sans}",
+        "$description": "Controls, labels and fields"
+      }
+    },
+    "weight": {
+      "display": {
+        "$type": "fontWeight",
+        "$value": "{primitive.font.weight-regular}",
+        "$description": "Heading weight"
+      }
+    },
+    "leading": {
+      "display": {
+        "$type": "fontFamily",
+        "$value": "{primitive.line.height-normal}",
+        "$description": "Heading leading"
+      },
+      "body": {
+        "$type": "fontFamily",
+        "$value": "{primitive.line.height-loose}",
+        "$description": "Running text leading"
+      }
+    },
+    "tracking": {
+      "display": {
+        "$type": "fontFamily",
+        "$value": "{primitive.tracking.none}",
+        "$description": "Heading tracking"
       }
     },
     "elevation": {

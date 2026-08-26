@@ -455,6 +455,17 @@ describe("the layering rules the architecture depends on", () => {
       /var\(--uix-shadow-\d\)/,
       /var\(--uix-font-(sans|serif|mono)\)/,
       /border-radius:\s*\d+px/,
+      // Typography is a brand decision too, and it was the half that
+      // leaked: Panel wrote its own 0.14em tracking and eleven sheets
+      // their own font-weight: 700, so a brand could change the typeface
+      // and nothing about how the type was set.
+      /letter-spacing:\s*[-\d.]/,
+      /font-weight:\s*\d/,
+      /var\(--uix-line-height-\w+\)/,
+      // The primitives only. --uix-tracking-display and --uix-tracking-ui
+      // are the roles, and forbidding the whole prefix banned them too.
+      /var\(--uix-tracking-(tight|none|wide)\)/,
+      /var\(--uix-font-weight-\w+\)/,
     ];
     for (const { file, source } of componentCss) {
       for (const pattern of FORBIDDEN) {

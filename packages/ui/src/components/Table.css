@@ -16,7 +16,7 @@
 
   .uix-table th {
     text-align: start;
-    font-weight: var(--uix-font-weight-bold);
+    font-weight: var(--uix-weight-ui);
     color: var(--uix-text-secondary);
     border-bottom: 1px solid var(--uix-border-subtle);
     padding: var(--uix-gap-sm) var(--uix-gap-md);

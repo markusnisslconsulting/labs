@@ -27,7 +27,7 @@
     border: none;
     border-bottom: 2px solid transparent;
     color: var(--uix-text-secondary);
-    font-weight: 700;
+    font-weight: var(--uix-weight-ui);
     cursor: pointer;
   }
 

@@ -23,7 +23,7 @@
        the library that was not on the scale. */
     border-radius: var(--uix-radius-inset);
     font-size: var(--uix-font-size-200);
-    font-weight: var(--uix-font-weight-bold);
+    font-weight: var(--uix-weight-ui);
     cursor: pointer;
   }
 

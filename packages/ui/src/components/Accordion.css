@@ -24,7 +24,7 @@
     background: none;
     border: none;
     color: var(--uix-text-primary);
-    font-weight: 700;
+    font-weight: var(--uix-weight-ui);
     cursor: pointer;
     text-align: start;
   }

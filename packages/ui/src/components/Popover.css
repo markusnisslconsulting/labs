@@ -15,7 +15,7 @@
 
   .uix-popover-title {
     margin: 0 0 var(--uix-gap-sm);
-    font-weight: var(--uix-font-weight-bold);
+    font-weight: var(--uix-weight-ui);
   }
 
   .uix-popover-body {

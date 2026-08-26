@@ -35,6 +35,8 @@
       "Atkinson Hyperlegible", -apple-system, "Segoe UI", Helvetica, Arial,
       sans-serif;
     --uix-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --uix-font-serif:
+      Charter, "Iowan Old Style", "Hoefler Text", Palatino, Georgia, serif;
     --uix-font-size-100: 0.75rem;
     --uix-font-size-200: 0.875rem;
     --uix-font-size-300: 1rem;
@@ -45,6 +47,10 @@
     --uix-font-weight-bold: 700;
     --uix-line-height-tight: 1.15;
     --uix-line-height-normal: 1.55;
+    --uix-line-height-loose: 1.7;
+    --uix-tracking-tight: -0.01em;
+    --uix-tracking-none: 0;
+    --uix-tracking-wide: 0.14em;
 
     /* Radii */
     --uix-radius-s: 0.5rem;

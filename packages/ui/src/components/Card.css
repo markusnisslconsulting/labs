@@ -14,7 +14,7 @@
   .uix-card-header {
     padding: var(--uix-gap-lg) var(--uix-gap-xl);
     border-bottom: 1px solid var(--uix-border-subtle);
-    font-weight: 700;
+    font-weight: var(--uix-weight-ui);
   }
 
   .uix-card-body {

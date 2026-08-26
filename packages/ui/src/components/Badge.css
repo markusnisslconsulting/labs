@@ -9,7 +9,7 @@
     border-radius: var(--uix-radius-pill);
     padding: 0.1rem 0.6rem;
     font-size: 0.8rem;
-    font-weight: 700;
+    font-weight: var(--uix-weight-ui);
     background: var(--uix-chip-bg, var(--uix-bg-subtle));
     color: var(--uix-chip-fg, var(--uix-text-secondary));
   }

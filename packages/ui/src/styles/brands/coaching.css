@@ -23,9 +23,12 @@
  *            default 11px is the difference between a form that means
  *            business and one that means come in.
  *
- *   Type     A humanist serif for headings, the same accessible sans for
- *            everything else. Reflection in the headline, plain speech in
- *            the body.
+ *   Type     Prose in a serif, interface in a sans. Headings and running
+ *            text go serif at regular weight with open tracking and loose
+ *            leading; buttons, fields and labels stay in the hyperlegible
+ *            sans, because legibility beats identity on a control. The
+ *            largest difference between the brands after the colour, and
+ *            the one a reader feels before reading a word.
  *
  *   Depth    Wider, fainter shadows, tinted with the accent rather than
  *            neutral black. The consulting brand's elevation is a crisp
@@ -52,9 +55,29 @@
     --uix-radius-surface: 1rem;
     --uix-radius-container: 1.5rem;
 
-    /* Type */
-    --uix-font-display:
-      "Hoefler Text", "Iowan Old Style", Palatino, Charter, Georgia, serif;
+    /* Type. The largest difference between the two brands after the
+       colour, and the one a reader feels before they read a word.
+       Consulting sets everything in the hyperlegible sans: one voice,
+       efficient, the same face on a heading and on a button.
+
+       Coaching splits it. Prose — headings and running text — goes into a
+       serif, because this brand's content is read rather than scanned and
+       a serif is what long-form reading wants. The interface stays in the
+       sans, because a form field is not prose and legibility beats
+       identity on a control. Headings drop to regular weight and open up:
+       a serif at 700 with tight tracking shouts, which is the opposite of
+       the point.
+
+       Nothing here ships a webfont. A design system that pulls a font
+       file makes every consumer pay for a network request they did not
+       choose, so both brands work from stacks the platform already has. */
+    --uix-font-body: var(--uix-font-serif);
+    --uix-font-display: var(--uix-font-serif);
+    --uix-font-ui: var(--uix-font-sans);
+    --uix-weight-display: var(--uix-font-weight-regular);
+    --uix-leading-display: var(--uix-line-height-normal);
+    --uix-leading-body: var(--uix-line-height-loose);
+    --uix-tracking-display: var(--uix-tracking-none);
 
     /* Depth */
     --uix-elevation-raised: 0 2px 10px

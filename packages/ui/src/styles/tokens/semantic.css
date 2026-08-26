@@ -67,6 +67,21 @@
     --uix-font-body: var(--uix-font-sans);
     --uix-font-display: var(--uix-font-sans);
     --uix-font-code: var(--uix-font-mono);
+    /* The interface face, separate from the prose face on purpose. A
+       brand may set its running text in a serif and still want its
+       buttons, labels and fields in the most legible sans available;
+       without this role the two are the same decision. */
+    --uix-font-ui: var(--uix-font-sans);
+
+    /* Typographic voice, not just typeface. base.css used to hardcode the
+       heading letter-spacing and Panel its own 0.14em, so a brand could
+       change the face and nothing about how it was set. */
+    --uix-leading-display: var(--uix-line-height-tight);
+    --uix-leading-body: var(--uix-line-height-normal);
+    --uix-tracking-display: var(--uix-tracking-tight);
+    --uix-tracking-ui: var(--uix-tracking-wide);
+    --uix-weight-display: var(--uix-font-weight-bold);
+    --uix-weight-ui: var(--uix-font-weight-bold);
 
     /* Elevation by what is being lifted. A flat brand re-points all
        three to none. */
