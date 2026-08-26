@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 
 import { useState } from "react";
 
@@ -41,7 +41,7 @@ interface ChipOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type ChipProps = ChipOwnProps &
-  Omit<ComponentPropsWithoutRef<"span">, keyof ChipOwnProps>;
+  Omit<ComponentPropsWithRef<"span">, keyof ChipOwnProps>;
 
 /**
  * **Use it for** a compact tag, or a filter that toggles. **Reach for
@@ -113,7 +113,7 @@ export function Chip({
         if (!isControlled) setUncontrolled(!pressed);
         onActiveChange?.(!pressed);
       }}
-      {...(rest as ComponentPropsWithoutRef<"button">)}
+      {...(rest as ComponentPropsWithRef<"button">)}
     >
       {children}
     </button>

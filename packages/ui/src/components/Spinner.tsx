@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { cx } from "../cx";
 import { useStrings } from "../i18n";
 import "./Spinner.css";
@@ -15,7 +15,7 @@ interface SpinnerOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type SpinnerProps = SpinnerOwnProps &
-  Omit<ComponentPropsWithoutRef<"span">, keyof SpinnerOwnProps>;
+  Omit<ComponentPropsWithRef<"span">, keyof SpinnerOwnProps>;
 
 /**
  * **Use it for** a short wait with no known duration. **Reach for something else when** the layout is already known (Skeleton), or progress is measurable (ProgressBar).

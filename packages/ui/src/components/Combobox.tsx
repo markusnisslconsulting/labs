@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
@@ -35,7 +35,7 @@ interface ComboboxOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type ComboboxProps = ComboboxOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof ComboboxOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof ComboboxOwnProps>;
 
 /**
  * **Use it for** choosing one value from a list too long to scan. **Reach for something else when** the list is short and fixed (Select).
@@ -106,7 +106,7 @@ export function Combobox({
    list from somewhere other than a string array — an async fetch, a
    grouped source — without leaving the component. */
 Combobox.Option = function ComboboxOptionPart(
-  props: ComponentPropsWithoutRef<"option">,
+  props: ComponentPropsWithRef<"option">,
 ) {
   return <option {...props} />;
 };

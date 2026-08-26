@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 
 import { cx } from "../cx";
 import { useStrings } from "../i18n";
@@ -26,7 +26,7 @@ interface BreadcrumbOwnProps {
   children?: ReactNode;
 }
 
-export type BreadcrumbCrumbProps = ComponentPropsWithoutRef<"li"> & {
+export type BreadcrumbCrumbProps = ComponentPropsWithRef<"li"> & {
   href?: string;
   /** Marks this crumb as the page the reader is on. */
   current?: boolean;
@@ -37,7 +37,7 @@ export type BreadcrumbCrumbProps = ComponentPropsWithoutRef<"li"> & {
  * `className` merges with the component's own class.
  */
 export type BreadcrumbProps = BreadcrumbOwnProps &
-  Omit<ComponentPropsWithoutRef<"nav">, keyof BreadcrumbOwnProps>;
+  Omit<ComponentPropsWithRef<"nav">, keyof BreadcrumbOwnProps>;
 
 /**
  * **Use it for** showing where a page sits in a hierarchy the reader can climb. **Reach for something else when** the levels are not a hierarchy (a back link).

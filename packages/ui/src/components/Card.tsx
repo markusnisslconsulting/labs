@@ -1,10 +1,10 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 
 import { cx } from "../cx";
 import "./Card.css";
 
-export type CardProps = ComponentPropsWithoutRef<"article">;
-export type CardSlotProps = ComponentPropsWithoutRef<"div">;
+export type CardProps = ComponentPropsWithRef<"article">;
+export type CardSlotProps = ComponentPropsWithRef<"div">;
 /**
  * **Use it for** a summary that links somewhere else. **Reach for something else when** the surface is a section of this page (Panel).
  *

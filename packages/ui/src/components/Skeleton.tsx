@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { cx } from "../cx";
 import "./Skeleton.css";
 
@@ -15,7 +15,7 @@ interface SkeletonOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type SkeletonProps = SkeletonOwnProps &
-  Omit<ComponentPropsWithoutRef<"span">, keyof SkeletonOwnProps>;
+  Omit<ComponentPropsWithRef<"span">, keyof SkeletonOwnProps>;
 
 /**
  * **Use it for** holding the shape of content that is about to arrive. **Reach for something else when** the wait has no known shape (Spinner).

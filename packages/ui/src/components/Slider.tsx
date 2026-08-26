@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { useId } from "react";
 
 import { cx } from "../cx";
@@ -30,7 +30,7 @@ interface SliderOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type SliderProps = SliderOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof SliderOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof SliderOwnProps>;
 
 /**
  * **Use it for** a value where the approximate position matters more than the number. **Reach for something else when** the exact number matters (NumberField).

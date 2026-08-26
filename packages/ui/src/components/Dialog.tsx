@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
-import { useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { useId, type ComponentPropsWithRef, type ReactNode } from "react";
 
 import { cxState } from "../cx";
 
@@ -27,7 +27,7 @@ interface DialogOwnProps {
  * root renders no element of its own.
  */
 export type DialogProps = DialogOwnProps &
-  Omit<ComponentPropsWithoutRef<typeof BaseDialog.Popup>, keyof DialogOwnProps>;
+  Omit<ComponentPropsWithRef<typeof BaseDialog.Popup>, keyof DialogOwnProps>;
 
 /**
  * **Use it for** a task that must be finished or abandoned before anything else. **Reach for something else when** the content is supplementary (Popover), or it is a yes/no decision (AlertDialog).
@@ -103,7 +103,7 @@ interface AlertDialogOwnProps {
 /** Extra props land on the popup, as with Dialog. */
 export type AlertDialogProps = AlertDialogOwnProps &
   Omit<
-    ComponentPropsWithoutRef<typeof BaseDialog.Popup>,
+    ComponentPropsWithRef<typeof BaseDialog.Popup>,
     keyof AlertDialogOwnProps
   >;
 

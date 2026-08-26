@@ -50,4 +50,15 @@
       border-color: Highlight;
     }
   }
+
+  /* An interactive chip is a button and accepts `disabled`; until the
+     gate noticed, it accepted the prop and looked exactly the same. */
+  button.uix-chip:disabled {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  button.uix-chip:disabled:hover {
+    color: var(--uix-chip-fg, var(--uix-text-secondary));
+  }
 }

@@ -1,4 +1,4 @@
-import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 
 import { cx } from "../cx";
 import { renderAsElement, type Renderable } from "../renderAs";
@@ -26,7 +26,7 @@ interface StatusPillOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type StatusPillProps = StatusPillOwnProps &
-  Omit<ComponentPropsWithoutRef<"span">, keyof StatusPillOwnProps>;
+  Omit<ComponentPropsWithRef<"span">, keyof StatusPillOwnProps>;
 
 /**
  * **Use it for** a live state that changes on its own. **Reach for something else when** the label is static (Badge).

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Progress as BaseProgress } from "@base-ui-components/react/progress";
 
 import { cxState } from "../cx";
@@ -21,7 +21,7 @@ interface ProgressBarOwnProps {
  */
 export type ProgressBarProps = ProgressBarOwnProps &
   Omit<
-    ComponentPropsWithoutRef<typeof BaseProgress.Root>,
+    ComponentPropsWithRef<typeof BaseProgress.Root>,
     keyof ProgressBarOwnProps
   >;
 

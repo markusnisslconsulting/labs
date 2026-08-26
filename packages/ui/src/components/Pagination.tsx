@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -27,7 +27,7 @@ interface PaginationOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type PaginationProps = PaginationOwnProps &
-  Omit<ComponentPropsWithoutRef<"nav">, keyof PaginationOwnProps>;
+  Omit<ComponentPropsWithRef<"nav">, keyof PaginationOwnProps>;
 
 /**
  * **Use it for** moving through pages a reader may want to return to. **Reach for something else when** the list is an endless feed (load more).

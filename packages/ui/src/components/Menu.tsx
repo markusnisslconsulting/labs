@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Menu as BaseMenu } from "@base-ui-components/react/menu";
 import { ChevronDown } from "lucide-react";
 
@@ -39,17 +39,17 @@ interface MenuOwnProps {
  * the page layout; the popup is positioned in a portal.
  */
 export type MenuProps = MenuOwnProps &
-  Omit<ComponentPropsWithoutRef<typeof BaseMenu.Trigger>, keyof MenuOwnProps>;
+  Omit<ComponentPropsWithRef<typeof BaseMenu.Trigger>, keyof MenuOwnProps>;
 
-export type MenuItemProps = ComponentPropsWithoutRef<typeof BaseMenu.Item> & {
+export type MenuItemProps = ComponentPropsWithRef<typeof BaseMenu.Item> & {
   /** Marks a destructive action. */
   danger?: boolean;
 };
-export type MenuSeparatorProps = ComponentPropsWithoutRef<
+export type MenuSeparatorProps = ComponentPropsWithRef<
   typeof BaseMenu.Separator
 >;
-export type MenuGroupProps = ComponentPropsWithoutRef<typeof BaseMenu.Group>;
-export type MenuGroupLabelProps = ComponentPropsWithoutRef<
+export type MenuGroupProps = ComponentPropsWithRef<typeof BaseMenu.Group>;
+export type MenuGroupLabelProps = ComponentPropsWithRef<
   typeof BaseMenu.GroupLabel
 >;
 

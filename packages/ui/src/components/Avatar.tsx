@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { cx } from "../cx";
 import "./Avatar.css";
 
@@ -25,7 +25,7 @@ interface AvatarOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type AvatarProps = AvatarOwnProps &
-  Omit<ComponentPropsWithoutRef<"img">, keyof AvatarOwnProps>;
+  Omit<ComponentPropsWithRef<"img">, keyof AvatarOwnProps>;
 
 function initials(name: string): string {
   return name
@@ -85,7 +85,7 @@ export function Avatar({
       {...(decorative
         ? { "aria-hidden": true }
         : { role: "img", "aria-label": name })}
-      {...(rest as ComponentPropsWithoutRef<"span">)}
+      {...(rest as ComponentPropsWithRef<"span">)}
     >
       {initials(name)}
     </span>

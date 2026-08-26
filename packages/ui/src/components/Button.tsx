@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  type ButtonHTMLAttributes,
-  type MouseEvent,
-  type ReactNode,
-} from "react";
+import type { ComponentPropsWithRef, MouseEvent, ReactNode } from "react";
 
 import { cx } from "../cx";
 import { renderAsElement, type Renderable } from "../renderAs";
@@ -54,7 +50,7 @@ interface ButtonOwnProps {
  * others rendered.
  */
 export type ButtonProps = ButtonOwnProps &
-  Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps>;
+  Omit<ComponentPropsWithRef<"button">, keyof ButtonOwnProps>;
 
 /**
  * **Use it for** anything that performs an action. **Reach for something else when** the control navigates: pass `renderAs={<a href="…" />}` so it stays a link.

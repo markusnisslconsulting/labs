@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { useEffect } from "react";
 import { X } from "lucide-react";
 
@@ -31,7 +31,7 @@ interface ToasterOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type ToasterProps = ToasterOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof ToasterOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof ToasterOwnProps>;
 
 const roleFor: Record<Severity, "status" | "alert"> = {
   info: "status",

@@ -1,11 +1,11 @@
 "use client";
 
-import { useId, type InputHTMLAttributes, type ReactNode } from "react";
+import { useId, type ReactNode, type ComponentPropsWithRef } from "react";
 
 import { cx } from "../cx";
 
 export interface SearchInputProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
+  ComponentPropsWithRef<"input">,
   "id"
 > {
   /**

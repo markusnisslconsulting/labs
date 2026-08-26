@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 
 import { useState } from "react";
 
@@ -29,7 +29,7 @@ interface SegmentedControlOwnProps {
   children?: ReactNode;
 }
 
-export type SegmentedOptionProps = ComponentPropsWithoutRef<"button"> & {
+export type SegmentedOptionProps = ComponentPropsWithRef<"button"> & {
   /** Whether this option is the selected one. */
   selected?: boolean;
 };
@@ -40,7 +40,7 @@ export type SegmentedOptionProps = ComponentPropsWithoutRef<"button"> & {
  * replacing it, and the rest land on the root element.
  */
 export type SegmentedControlProps = SegmentedControlOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof SegmentedControlOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof SegmentedControlOwnProps>;
 
 /**
  * **Use it for** switching between a few views of the same data. **Reach for something else when** the options are separate content sections (Tabs).

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { useId, type ChangeEvent, type ReactNode } from "react";
 
 import { cx } from "../cx";
@@ -32,7 +32,7 @@ interface RadioGroupOwnProps {
 }
 
 export type RadioOptionProps = Omit<
-  ComponentPropsWithoutRef<"input">,
+  ComponentPropsWithRef<"input">,
   "type" | "children"
 > & {
   /** The option's visible content. */
@@ -45,7 +45,7 @@ export type RadioOptionProps = Omit<
  * replacing it, and the rest land on the root element.
  */
 export type RadioGroupProps = RadioGroupOwnProps &
-  Omit<ComponentPropsWithoutRef<"fieldset">, keyof RadioGroupOwnProps>;
+  Omit<ComponentPropsWithRef<"fieldset">, keyof RadioGroupOwnProps>;
 
 /**
  * **Use it for** one choice from a small set, all of it visible. **Reach for something else when** there are more than about seven options (Select).

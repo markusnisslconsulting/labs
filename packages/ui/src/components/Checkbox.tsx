@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 
 import { cxState } from "../cx";
@@ -34,10 +34,7 @@ interface CheckboxOwnProps {
  * on the root element.
  */
 export type CheckboxProps = CheckboxOwnProps &
-  Omit<
-    ComponentPropsWithoutRef<typeof BaseCheckbox.Root>,
-    keyof CheckboxOwnProps
-  >;
+  Omit<ComponentPropsWithRef<typeof BaseCheckbox.Root>, keyof CheckboxOwnProps>;
 
 /**
  * **Use it for** independent options, each on or off. **Reach for something else when** the options are mutually exclusive (RadioGroup), or the change applies immediately (Switch).

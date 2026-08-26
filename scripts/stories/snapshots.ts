@@ -147,9 +147,21 @@ for (const story of stories) {
     story,
   ]);
 }
+/**
+ * Pages that prove a contract rather than show a picture.
+ *
+ * Foundations/Contract asserts that a ref reaches a DOM element. Its
+ * output is a list of tag names; photographing it would cost a snapshot
+ * per theme to watch text that is only ever read by an assertion.
+ */
+const NOT_VISUAL: Record<string, string> = {
+  Contract: "asserts the ref contract; its output is text for a test",
+};
+
 const uncovered = [...byComponent.entries()]
   .filter(([, list]) => !list.some((s) => s.snapshotted))
-  .map(([component]) => component);
+  .map(([component]) => component)
+  .filter((component) => !NOT_VISUAL[component]);
 
 const mode = process.argv[2] ?? "report";
 

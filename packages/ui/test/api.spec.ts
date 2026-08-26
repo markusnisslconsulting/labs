@@ -313,6 +313,37 @@ describe("component API contract", () => {
     }
   });
 
+  it("every component accepts a ref", () => {
+    /*
+     * Not "refs happen to work" — they were *type-forbidden*. All
+     * twenty-nine components typed their props with
+     * `ComponentPropsWithoutRef`, and three went further and wrote
+     * `Omit<…, "ref">` explicitly, so passing a ref to any component in
+     * this library was a type error.
+     *
+     * That rules out most of what an application does with a component:
+     * focus the first field on mount, scroll a field into view after a
+     * validation error, measure a card to position something against it,
+     * hand an input to a form library. None of it was possible, and
+     * nothing said so.
+     *
+     * Foundations/Contract proves the refs actually land; this makes sure
+     * the type keeps allowing them.
+     */
+    for (const [file, text] of source) {
+      expect(
+        /ComponentPropsWithoutRef/.test(text),
+        `${file} types its props without a ref. Use ComponentPropsWithRef ` +
+          `so a caller can focus, measure or scroll to this component.`,
+      ).toBe(false);
+      const stripped = /Omit<[^>]*["']ref["']/.exec(code(text));
+      expect(
+        stripped?.[0],
+        `${file} removes ref from its props explicitly`,
+      ).toBeUndefined();
+    }
+  });
+
   it("every branch of a component merges className", () => {
     /*
      * Passing className used to strip a component's own styling. The rule

@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { cx } from "../cx";
 import { renderAsElement, type Renderable } from "../renderAs";
 import "./Badge.css";
@@ -27,7 +27,7 @@ interface BadgeOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type BadgeProps = BadgeOwnProps &
-  Omit<ComponentPropsWithoutRef<"span">, keyof BadgeOwnProps>;
+  Omit<ComponentPropsWithRef<"span">, keyof BadgeOwnProps>;
 
 /**
  * **Use it for** labelling a state on a row or card. **Reach for something else when** the label performs an action (Button), or the state changes on its own (StatusPill).

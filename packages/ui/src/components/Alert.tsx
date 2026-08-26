@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 import { useId } from "react";
 import { X } from "lucide-react";
 import { Button } from "./Button";
@@ -25,7 +25,7 @@ interface AlertOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type AlertProps = AlertOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof AlertOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof AlertOwnProps>;
 
 const roleFor: Record<Severity, "status" | "alert"> = {
   info: "status",

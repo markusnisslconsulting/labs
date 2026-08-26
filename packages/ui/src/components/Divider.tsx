@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { cx } from "../cx";
 import "./Divider.css";
 
@@ -14,7 +14,7 @@ interface DividerOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type DividerProps = DividerOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof DividerOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof DividerOwnProps>;
 
 /**
  * **Use it for** separating groups that already read as groups. **Reach for something else when** the separation needs a name (a heading).

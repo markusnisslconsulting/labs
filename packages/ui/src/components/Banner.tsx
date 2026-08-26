@@ -1,4 +1,4 @@
-import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 
 import { cx } from "../cx";
 import "./Banner.css";
@@ -15,7 +15,7 @@ interface BannerOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type BannerProps = BannerOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof BannerOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof BannerOwnProps>;
 
 const roleFor: Record<Severity, "status" | "alert"> = {
   info: "status",

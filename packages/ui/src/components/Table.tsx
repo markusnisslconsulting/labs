@@ -1,4 +1,4 @@
-import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 
 import { cx } from "../cx";
 import "./Table.css";
@@ -13,7 +13,7 @@ interface TableOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type TableProps = TableOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof TableOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof TableOwnProps>;
 
 /**
  * **Use it for** rows compared across the same columns. **Reach for something else when** each row is an object to open (a list of Cards).

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 
 import { cxState } from "../cx";
@@ -21,7 +21,7 @@ interface PopoverOwnProps {
  */
 export type PopoverProps = PopoverOwnProps &
   Omit<
-    ComponentPropsWithoutRef<typeof BasePopover.Trigger>,
+    ComponentPropsWithRef<typeof BasePopover.Trigger>,
     keyof PopoverOwnProps
   >;
 

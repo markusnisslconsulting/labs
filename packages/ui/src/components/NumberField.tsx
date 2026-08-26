@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { NumberField as BaseNumberField } from "@base-ui-components/react/number-field";
 import { Minus, Plus } from "lucide-react";
 
@@ -29,7 +29,7 @@ interface NumberFieldOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type NumberFieldProps = NumberFieldOwnProps &
-  Omit<ComponentPropsWithoutRef<"div">, keyof NumberFieldOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof NumberFieldOwnProps>;
 
 /**
  * **Use it for** a quantity where stepping by one is a normal move. **Reach for something else when** any text is valid (TextField).

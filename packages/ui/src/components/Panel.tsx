@@ -1,4 +1,4 @@
-import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 
 import { cx } from "../cx";
 import { renderAsElement, type Renderable } from "../renderAs";
@@ -32,7 +32,7 @@ interface PanelOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type PanelProps = PanelOwnProps &
-  Omit<ComponentPropsWithoutRef<"section">, keyof PanelOwnProps>;
+  Omit<ComponentPropsWithRef<"section">, keyof PanelOwnProps>;
 
 function PanelHeaderBase({ children }: PanelHeaderProps) {
   return <div className="uix-panel-header">{children}</div>;

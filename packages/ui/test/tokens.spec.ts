@@ -280,11 +280,20 @@ describe("the layering rules the architecture depends on", () => {
     // earlier version of this test only looked for the declaration, so
     // Button, IconButton, SearchInput, Select and TextField were never
     // checked at all.
+    // Both spellings. The components moved from ButtonHTMLAttributes to
+    // ComponentPropsWithRef<"button"> so a caller could pass a ref, and
+    // this list still named only the old one — so Button stopped counting
+    // as a component that can be disabled and its disabled styling was
+    // reported as dead.
     const NATIVE = [
       "ButtonHTMLAttributes",
       "InputHTMLAttributes",
       "SelectHTMLAttributes",
       "TextareaHTMLAttributes",
+      'ComponentPropsWithRef<"button">',
+      'ComponentPropsWithRef<"input">',
+      'ComponentPropsWithRef<"select">',
+      'ComponentPropsWithRef<"textarea">',
     ];
     for (const file of readdirSync(dir).filter(
       (f) => f.endsWith(".tsx") && !f.includes(".stories."),

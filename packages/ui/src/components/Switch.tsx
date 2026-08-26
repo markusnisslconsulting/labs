@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { useId, useState } from "react";
 import { Switch as BaseSwitch } from "@base-ui-components/react/switch";
 
@@ -32,7 +32,7 @@ interface SwitchOwnProps {
  * replacing it, and the rest land on the root element.
  */
 export type SwitchProps = SwitchOwnProps &
-  Omit<ComponentPropsWithoutRef<"label">, keyof SwitchOwnProps>;
+  Omit<ComponentPropsWithRef<"label">, keyof SwitchOwnProps>;
 
 /**
  * **Use it for** a setting that takes effect the moment it is flipped. **Reach for something else when** the choice is submitted with a form (Checkbox).

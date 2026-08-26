@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithRef } from "react";
 import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
 import { Minus, Plus } from "lucide-react";
 import type { ReactNode } from "react";
@@ -26,13 +26,13 @@ interface AccordionOwnProps {
   children?: ReactNode;
 }
 
-export type AccordionItemProps = ComponentPropsWithoutRef<
+export type AccordionItemProps = ComponentPropsWithRef<
   typeof BaseAccordion.Item
 >;
-export type AccordionTriggerProps = ComponentPropsWithoutRef<
+export type AccordionTriggerProps = ComponentPropsWithRef<
   typeof BaseAccordion.Trigger
 >;
-export type AccordionPanelProps = ComponentPropsWithoutRef<
+export type AccordionPanelProps = ComponentPropsWithRef<
   typeof BaseAccordion.Panel
 >;
 
@@ -43,7 +43,7 @@ export type AccordionPanelProps = ComponentPropsWithoutRef<
  */
 export type AccordionProps = AccordionOwnProps &
   Omit<
-    ComponentPropsWithoutRef<typeof BaseAccordion.Root>,
+    ComponentPropsWithRef<typeof BaseAccordion.Root>,
     keyof AccordionOwnProps
   >;
 

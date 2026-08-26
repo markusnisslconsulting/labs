@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Tabs as BaseTabs } from "@base-ui-components/react/tabs";
 
 import { cxState } from "../cx";
@@ -61,11 +61,11 @@ interface TabsOwnProps {
  * on the root element.
  */
 export type TabsProps = TabsOwnProps &
-  Omit<ComponentPropsWithoutRef<typeof BaseTabs.Root>, keyof TabsOwnProps>;
+  Omit<ComponentPropsWithRef<typeof BaseTabs.Root>, keyof TabsOwnProps>;
 
-export type TabListProps = ComponentPropsWithoutRef<typeof BaseTabs.List>;
-export type TabProps = ComponentPropsWithoutRef<typeof BaseTabs.Tab>;
-export type TabPanelProps = ComponentPropsWithoutRef<typeof BaseTabs.Panel>;
+export type TabListProps = ComponentPropsWithRef<typeof BaseTabs.List>;
+export type TabProps = ComponentPropsWithRef<typeof BaseTabs.Tab>;
+export type TabPanelProps = ComponentPropsWithRef<typeof BaseTabs.Panel>;
 
 /**
  * **Use it for** peer sections of content in one context. **Reach for something else when** the sections are filters over one list (SegmentedControl).

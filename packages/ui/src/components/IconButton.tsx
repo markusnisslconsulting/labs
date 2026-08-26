@@ -1,6 +1,6 @@
 "use client";
 
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ReactNode, ComponentPropsWithRef } from "react";
 
 import { cx } from "../cx";
 import { renderAsElement, type Renderable } from "../renderAs";
@@ -10,7 +10,7 @@ type Variant = "solid" | "outline" | "ghost";
 type Size = "sm" | "md";
 
 export interface IconButtonProps extends Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
+  ComponentPropsWithRef<"button">,
   "children"
 > {
   /**

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useId,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-  type SelectHTMLAttributes,
-} from "react";
+import { useId, type ComponentPropsWithRef, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 
 import { cx } from "../cx";
@@ -17,7 +12,7 @@ export interface SelectOption {
 }
 
 export interface SelectProps extends Omit<
-  SelectHTMLAttributes<HTMLSelectElement>,
+  ComponentPropsWithRef<"select">,
   "id" | "children"
 > {
   /** A node: a field label can carry a hint or a required marker. */
@@ -32,8 +27,8 @@ export interface SelectProps extends Omit<
   children?: ReactNode;
 }
 
-export type SelectOptionProps = ComponentPropsWithoutRef<"option">;
-export type SelectGroupProps = ComponentPropsWithoutRef<"optgroup">;
+export type SelectOptionProps = ComponentPropsWithRef<"option">;
+export type SelectGroupProps = ComponentPropsWithRef<"optgroup">;
 
 /**
  * **Use it for** one value from a short fixed list. **Reach for something else when** the list is long enough that someone would rather type (Combobox).
