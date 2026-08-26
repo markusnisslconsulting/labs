@@ -2,6 +2,8 @@ import { expect } from "storybook/test";
 import { useEffect, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { Avatar } from "../components/Avatar";
+import { Breadcrumb } from "../components/Breadcrumb";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Chip } from "../components/Chip";
@@ -9,7 +11,9 @@ import { IconButton } from "../components/IconButton";
 import { Panel } from "../components/Panel";
 import { SearchInput } from "../components/SearchInput";
 import { Select } from "../components/Select";
+import { Slider } from "../components/Slider";
 import { Table } from "../components/Table";
+import { Tabs } from "../components/Tabs";
 import { TextField } from "../components/TextField";
 
 const meta = {
@@ -120,6 +124,49 @@ export const RefsReachElements: StoryObj = {
         item.getAttribute("data-tag"),
         `${target} did not give its ref a DOM element`,
       ).not.toBe("none");
+    }
+  },
+};
+
+/**
+ * Degenerate input, which is the input production actually sends.
+ *
+ * Every list here is empty or contradictory: no options, no crumbs, no
+ * name, a minimum above the maximum. None of it is exotic — it is what a
+ * filter returns before anyone has typed, what a breadcrumb holds on a
+ * root page, what a name field holds while a profile is still loading.
+ *
+ * The assertion is deliberately weak on purpose: nothing must throw, and
+ * nothing must render an element with an empty accessible name. The a11y
+ * addon runs over this story in both themes, so the stronger statement is
+ * made by axe rather than by me guessing what to look for.
+ */
+export const DegenerateInput: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  render: () => (
+    <div style={{ display: "grid", gap: "1.2rem", justifyItems: "start" }}>
+      <Avatar name="" />
+      <Avatar name="Cher" />
+      <Breadcrumb items={[]} label="Empty trail" />
+      <Breadcrumb items={[{ label: "Only" }]} label="Single crumb" />
+      <Select label="No options" options={[]} />
+      <Tabs tabs={[]} label="No tabs" />
+      <Slider label="Backwards range" min={100} max={0} defaultValue={50} />
+      <Table caption="No rows">
+        <tbody />
+      </Table>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    // An element in the accessibility tree with no name at all is worse
+    // than one that is absent: a screen reader announces "image" and the
+    // reader learns nothing.
+    const named = canvas.getAllByRole("img", { hidden: false });
+    for (const el of named) {
+      await expect(
+        el.getAttribute("aria-label") ?? el.getAttribute("alt") ?? "",
+        "an element is in the accessibility tree with an empty name",
+      ).not.toBe("");
     }
   },
 };

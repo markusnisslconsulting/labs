@@ -64,6 +64,16 @@ export function Avatar({
   // default root size. An aspect hint has to match what CSS will do, or
   // it causes the shift it exists to prevent.
   const px = { sm: 26, md: 40, lg: 56 }[size];
+  /*
+   * A nameless avatar is decoration by definition.
+   *
+   * With `name=""` this rendered `role="img"` and `aria-label=""` — an
+   * element in the accessibility tree with nothing to announce, so a
+   * screen reader says "image" and the reader learns nothing. That is not
+   * an exotic input: it is what a record holds while a profile is loading,
+   * or when a user has never set a name.
+   */
+  const silent = decorative || name.trim() === "";
 
   if (src) {
     return (
@@ -71,7 +81,7 @@ export function Avatar({
         className={cx("uix-avatar", className)}
         data-size={size}
         src={src}
-        alt={decorative ? "" : name}
+        alt={silent ? "" : name}
         width={px}
         height={px}
         {...rest}
@@ -82,7 +92,7 @@ export function Avatar({
     <span
       className={cx("uix-avatar", className)}
       data-size={size}
-      {...(decorative
+      {...(silent
         ? { "aria-hidden": true }
         : { role: "img", "aria-label": name })}
       {...(rest as ComponentPropsWithRef<"span">)}
