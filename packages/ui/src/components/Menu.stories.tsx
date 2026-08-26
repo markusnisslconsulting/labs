@@ -75,6 +75,12 @@ export const Open: Story = {
  * a separator, and a destructive action set apart from the rest.
  */
 export const Structured: Story = {
+  /* Photographed rather than Open: this is the frame that carries the
+     group labels, the separators, the destructive item and the disabled
+     one, and a disabled menu item had no picture at all — Menu accepted
+     the prop and styled nothing, so "Export as PDF" and "Copy link" were
+     the same row. */
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { label: "Order", defaultOpen: true, items: undefined },
   render: (args) => (
     <Menu {...args}>

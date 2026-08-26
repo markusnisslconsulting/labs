@@ -24,12 +24,6 @@
     outline-offset: 2px;
   }
 
-  .uix-button:disabled,
-  .uix-button[aria-disabled="true"] {
-    opacity: var(--uix-opacity-disabled);
-    cursor: not-allowed;
-  }
-
   .uix-button[data-size="sm"] {
     min-height: var(--uix-control-sm);
     padding-inline: var(--uix-gap-md);
@@ -104,12 +98,71 @@
     border-top-color: currentColor;
   }
 
-  /* opacity still applies here, so a disabled button is dimmed but not
-     obviously unavailable. GrayText is the convention the platform uses,
-     and the user chose it. */
+  /* Unavailable, in colour rather than in opacity.
+   *
+   * This said `opacity: var(--uix-opacity-disabled)` and nothing else, so
+   * a disabled solid button was the brand fill seen through fog —
+   * measured, byte for byte the same as a *loading* one: rgb(179,18,52),
+   * white text, 0.55, in both. Busy and unavailable are two different
+   * promises and they rendered the same picture.
+   *
+   * Named colours also mean the contrast script can see them. An opacity
+   * cannot be evaluated against a background, so the old rule left
+   * disabled-ghost text at roughly 2.6:1 and nothing in the pipeline was
+   * able to notice.
+   *
+   * The two attributes in the selector are load-bearing, not decoration.
+   * `[data-variant="solid"][data-tone="accent"]` scores 0,3,0; a plain
+   * `.uix-button:disabled` scores 0,2,0 and loses to it whatever the
+   * order. Both attributes are always present — the component sets them
+   * — so naming them costs nothing and puts this at 0,4,0, which wins
+   * without !important and without depending on where in the file it
+   * sits. The first draft of this rule was placed above the variants at
+   * 0,2,0 and changed nothing at all.
+   */
+  .uix-button[data-variant][data-tone]:disabled,
+  .uix-button[data-variant][data-tone][aria-disabled="true"]:not(
+      [aria-busy="true"]
+    ) {
+    background: var(--uix-bg-disabled);
+    border-color: var(--uix-border-disabled);
+    color: var(--uix-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* Outline keeps its surface, ghost keeps nothing. Only the solid
+     variants take the disabled fill.
+     The three variants are three levels of emphasis, and being
+     unavailable is not a reason to move between them: an outline button
+     that fills in on being disabled, or a ghost button that grows a box,
+     reads as having gained emphasis by losing function. What changes is
+     the palette. */
+  .uix-button[data-variant="outline"][data-tone]:disabled,
+  .uix-button[data-variant="outline"][data-tone][aria-disabled="true"] {
+    background: var(--uix-button-outline-bg, var(--uix-bg-surface));
+  }
+
+  .uix-button[data-variant="ghost"][data-tone]:disabled,
+  .uix-button[data-variant="ghost"][data-tone][aria-disabled="true"] {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  /* Loading is not disabled, and the :not() above is how that is said. A
+     busy button keeps its variant's palette because the work is still
+     happening and the spinner is what reports it; it carries
+     aria-disabled only so the tab order skips a control that would
+     swallow the click. It is also the one state where the label has to
+     stay fully readable, because somebody is waiting on it. */
+  .uix-button[aria-busy="true"] {
+    cursor: progress;
+  }
+
+  /* Forced colours throws the palette above away, and GrayText is the
+     convention the platform uses for exactly this. */
   @media (forced-colors: active) {
     .uix-button:disabled,
-    .uix-button[aria-disabled="true"] {
+    .uix-button[aria-disabled="true"]:not([aria-busy="true"]) {
       color: GrayText;
       border-color: GrayText;
     }

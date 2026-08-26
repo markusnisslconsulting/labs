@@ -18,8 +18,11 @@
 
   /* The focus ring comes from the one contract in base.css. */
 
+  /* accent-color takes a colour, so the track and the thumb can both be
+     re-pointed without an opacity. The rule two blocks down already made
+     the argument for the label; it applies to the control as well. */
   .uix-range:disabled {
-    opacity: var(--uix-opacity-disabled);
+    accent-color: var(--uix-border-disabled);
     cursor: not-allowed;
   }
 

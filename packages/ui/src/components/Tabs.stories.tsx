@@ -26,8 +26,18 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * The shorthand, with the second panel open from the first frame.
+ *
+ * `defaultActiveIndex` had no example, and this story had no args of its
+ * own — so it rendered the same picture as the matrix below it minus one
+ * tab, which is the "what is the difference between these two" report
+ * again. A tab set whose first tab is not the open one is both a real
+ * state and a different picture.
+ */
 export const ThreePanels: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
+  args: { defaultActiveIndex: 1 },
 };
 
 /**

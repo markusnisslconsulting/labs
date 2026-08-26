@@ -19,8 +19,13 @@
     clip-path: inset(50%);
   }
 
+  /* Colour, not opacity — and not a bare 0.55 either, which was the one
+     place in the library that wrote the number instead of naming the
+     token. accent-color re-points the radio itself; the label is plain
+     text beside it and takes the measurable disabled colour. */
   .uix-radiogroup:disabled .uix-check {
-    opacity: 0.55;
+    color: var(--uix-text-disabled);
+    accent-color: var(--uix-border-disabled);
     cursor: not-allowed;
   }
 }

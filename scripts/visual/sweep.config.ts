@@ -14,6 +14,12 @@ export default defineConfig({
   testDir: ".",
   outputDir: "./.sweep-output",
   workers: 6,
+  /* One retry, because this is a camera and not a gate. Twelve workers
+     across two engines occasionally lose a navigation to a timeout, and a
+     missing frame in a contact sheet reads as a broken component. A gate
+     with retries hides failures; a screenshot run without them invents
+     them. */
+  retries: 1,
   reporter: [["line"]],
   projects: [
     {

@@ -16,9 +16,12 @@
     color: var(--uix-text-primary);
   }
 
+  /* Colour, not opacity: an opacity cannot be measured against the
+     surface behind it, and a dimmed accent fill reads as a checked box
+     seen through fog rather than one that cannot be changed. */
   .uix-checkbox:disabled,
   .uix-checkbox[data-disabled] {
-    opacity: var(--uix-opacity-disabled);
+    color: var(--uix-text-disabled);
     cursor: not-allowed;
   }
 
@@ -71,6 +74,25 @@
 
   .uix-checkbox[data-indeterminate] .uix-checkbox-dash {
     visibility: visible;
+  }
+
+  /* After the checked and indeterminate rules, not before them.
+     `.uix-checkbox[data-checked] .uix-checkbox-indicator` scores 0,3,0 and
+     so does this; at equal specificity the later rule wins, and the first
+     draft of this sat above them and did nothing to a checked box. The
+     strokes are re-pointed too: the tick is drawn in the on-accent colour,
+     which is white, and white on a light grey fill is an empty box. */
+  .uix-checkbox:disabled .uix-checkbox-indicator,
+  .uix-checkbox[data-disabled] .uix-checkbox-indicator {
+    background: var(--uix-bg-disabled);
+    border-color: var(--uix-border-disabled);
+  }
+
+  .uix-checkbox:disabled .uix-checkbox-check,
+  .uix-checkbox[data-disabled] .uix-checkbox-check,
+  .uix-checkbox:disabled .uix-checkbox-dash,
+  .uix-checkbox[data-disabled] .uix-checkbox-dash {
+    stroke: var(--uix-text-disabled);
   }
 
   .uix-checkbox-label {

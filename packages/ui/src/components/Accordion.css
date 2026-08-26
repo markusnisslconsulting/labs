@@ -13,10 +13,17 @@
     font-size: 1rem;
   }
 
+  /* The caller's content packs at the start; the indicator is pinned to
+     the end by its own auto margin.
+     This was `justify-content: space-between`, which spreads *every*
+     child evenly — so a trigger holding a title, a status badge and the
+     indicator put the badge in the middle of the row, floating between
+     the two. It looks placed until you notice it moves as the title
+     length changes. An auto margin on the one element that belongs at the
+     end works for any number of children the caller passes. */
   .uix-accordion-trigger {
     width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: var(--uix-gap-md);
     min-height: var(--uix-control-md);
@@ -34,6 +41,10 @@
   }
 
   .uix-accordion-chevron {
+    /* Pinned to the end by its own margin rather than by the trigger
+       spreading its children. See the note on .uix-accordion-trigger. */
+    margin-inline-start: auto;
+    flex: none;
     display: inline-flex;
     align-items: center;
     color: var(--uix-text-secondary);

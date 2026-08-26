@@ -28,11 +28,35 @@
   }
 
   /* Base UI renders the track as a <span role="switch">, so :disabled
-     never matched and a disabled switch looked enabled. */
+     never matched and a disabled switch looked enabled.
+     It then looked *almost* enabled, which is the report Markus filed
+     twice: the fix was `opacity: 0.55`, and the off track is already a
+     light grey, so 55% of a light grey on a light page is a slightly
+     lighter light grey. Off and disabled-off were the same picture.
+     A switch is a drawing of a state, so being unavailable has to change
+     the drawing. Three things do it, and the third is the one that
+     carries: the track gains an edge, the thumb loses its lift, and the
+     thumb stops being white. The white lifted knob is what makes a switch
+     look like something you can push. */
   .uix-switch:disabled,
   .uix-switch[data-disabled] {
-    opacity: var(--uix-opacity-disabled);
+    background: var(--uix-bg-disabled);
+    box-shadow: inset 0 0 0 1px var(--uix-border-disabled);
     cursor: not-allowed;
+  }
+
+  /* Disabled and on: a mid grey, so it is not the same picture as
+     disabled and off. A faded accent would read as an active switch seen
+     through fog, which is what it used to be. */
+  .uix-switch[data-checked]:disabled,
+  .uix-switch[data-checked][data-disabled] {
+    background: var(--uix-border-disabled);
+  }
+
+  .uix-switch:disabled .uix-switch-thumb,
+  .uix-switch[data-disabled] .uix-switch-thumb {
+    background: var(--uix-text-disabled);
+    box-shadow: none;
   }
 
   .uix-switch:focus-visible {

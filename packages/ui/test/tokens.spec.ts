@@ -697,3 +697,83 @@ describe("the layering rules the architecture depends on", () => {
     }
   });
 });
+
+/**
+ * Disabled is a colour, not an opacity.
+ *
+ * Eleven components said `opacity: var(--uix-opacity-disabled)` and
+ * nothing else. Two things followed, and both were invisible to the
+ * pipeline:
+ *
+ *   - Nothing could be measured. An opacity has no value to check against
+ *     a background, so `scripts/tokens/contrast.ts` had nothing to look
+ *     at, and disabled-ghost text sat near 2.6:1 while the contrast gate
+ *     reported green.
+ *   - The state stopped being distinct. Measured on Button: disabled and
+ *     *loading* were byte for byte identical — rgb(179,18,52), white
+ *     text, 0.55, in both. Busy and unavailable are two different
+ *     promises to the reader.
+ */
+describe("disabled states", () => {
+  const CSS = "packages/ui/src/components";
+  const files = readdirSync(CSS).filter((f) => f.endsWith(".css"));
+
+  /** Rules whose selector mentions a disabled state. */
+  function disabledRules(source: string) {
+    const out: string[] = [];
+    for (const block of strip(source).matchAll(
+      /([^{}]*(?::disabled|\[data-disabled\]|\[aria-disabled)[^{}]*)\{([^{}]*)\}/g,
+    )) {
+      out.push(block[2]!);
+    }
+    return out;
+  }
+
+  it.each(files)("%s expresses disabled in colour, not opacity", (file) => {
+    const source = readFileSync(join(CSS, file), "utf8");
+    for (const body of disabledRules(source)) {
+      expect(
+        body,
+        `${file} dims a disabled part with opacity. Use --uix-text-disabled, ` +
+          `--uix-bg-disabled or --uix-border-disabled, so the reading can be ` +
+          `measured and the state stays distinct from busy.`,
+      ).not.toMatch(/opacity:/);
+    }
+  });
+
+  /**
+   * And every component that accepts the state says something about it.
+   * A component that takes `disabled` and styles nothing accepts the prop
+   * and renders a control that looks available — which is how Chip
+   * shipped for as long as it existed.
+   */
+  it("every component that takes disabled also styles it", () => {
+    const missing: string[] = [];
+    for (const file of readdirSync(CSS).filter((f) => f.endsWith(".tsx"))) {
+      if (file.endsWith(".stories.tsx")) continue;
+      const tsx = strip(readFileSync(join(CSS, file), "utf8")).replace(
+        /^\s*\/\/.*$/gm,
+        "",
+      );
+      if (!/\bdisabled\??:/.test(tsx)) continue;
+      // Field-family components delegate the row's disabled look to
+      // _field.css, and the choice controls to _choice.css.
+      const own = file.replace(/\.tsx$/, ".css");
+      const sheets = [own, "_field.css", "_choice.css"]
+        .filter((name) => files.includes(name))
+        .map((name) => readFileSync(join(CSS, name), "utf8"))
+        .join("\n");
+      const imported =
+        tsx.includes("_field.css") || tsx.includes("_choice.css");
+      const scope = imported
+        ? sheets
+        : files.includes(own)
+          ? readFileSync(join(CSS, own), "utf8")
+          : "";
+      if (!/:disabled|\[data-disabled\]|\[aria-disabled/.test(scope)) {
+        missing.push(file);
+      }
+    }
+    expect(missing).toEqual([]);
+  });
+});

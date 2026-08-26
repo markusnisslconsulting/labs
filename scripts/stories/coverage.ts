@@ -40,6 +40,16 @@ const FAMILIES: string[][] = [
   ["open", "defaultOpen"],
 ];
 
+/**
+ * Native boolean attributes any component reaches through `...rest`.
+ *
+ * Chip never declared `disabled` and its stylesheet has styled
+ * `button.uix-chip:disabled` since the component existed, so the state
+ * was reachable, styled, and invisible to this gate — which only ever
+ * read declared props.
+ */
+const PASS_THROUGH = ["disabled", "readonly"];
+
 /** Booleans that describe a visual state worth seeing, not a config flag. */
 const STATE_BOOLEANS = [
   "disabled",
@@ -81,6 +91,8 @@ interface Component {
   source: string;
   stories: string;
   hasStories: boolean;
+  /** The component's own stylesheet, or "" when it has none. */
+  css: string;
 }
 
 function load(): Component[] {
@@ -97,9 +109,16 @@ function load(): Component[] {
       } catch {
         hasStories = false;
       }
+      let css = "";
+      try {
+        css = readFileSync(join(DIR, `${name}.css`), "utf8");
+      } catch {
+        css = "";
+      }
       return {
         name,
         source: readFileSync(join(DIR, f), "utf8"),
+        css,
         stories,
         hasStories,
       };
@@ -156,12 +175,37 @@ function defaults(source: string): Map<string, string> {
   return out;
 }
 
-function stateBooleans(source: string): string[] {
+/**
+ * The state booleans a component can be in.
+ *
+ * Two sources, because a declared prop is not the only way in. A
+ * component whose props extend a native element's passes `disabled`
+ * straight through `...rest` without declaring it — Chip does, and its
+ * stylesheet has styled `button.uix-chip:disabled` all along, so the
+ * state existed, mattered, and was invisible to this gate. The
+ * stylesheet is the evidence: if a component's CSS bothers to style a
+ * state, the catalogue owes a picture of it.
+ */
+function stateBooleans(source: string, css = ""): string[] {
   const body = source.match(/interface \w*(?:Own)?Props[^{]*\{([\s\S]*?)\n\}/);
-  if (!body) return [];
-  return STATE_BOOLEANS.filter((prop) =>
-    new RegExp(`^\\s*${prop}\\??:\\s*boolean`, "m").test(body[1]!),
+  const declared = body
+    ? STATE_BOOLEANS.filter((prop) =>
+        new RegExp(`^\\s*${prop}\\??:\\s*boolean`, "m").test(body[1]!),
+      )
+    : [];
+  // Only the states a native element can receive through `...rest`.
+  // Deriving every state from the stylesheet over-reaches: RadioGroup's
+  // CSS styles [data-checked] and Tabs' styles [data-active], but neither
+  // takes a boolean for it — the state comes from `value`, and demanding
+  // a `checked` prop in a story would be demanding a prop that does not
+  // exist. `disabled` and `readonly` are different: they are HTML
+  // attributes, any component spreading props onto a native element
+  // accepts them whether or not it says so, and a stylesheet that styles
+  // one is admitting the state is reachable.
+  const styled = PASS_THROUGH.filter((prop) =>
+    new RegExp(`:${prop}\\b|\\[data-${prop}\\]|\\[aria-${prop}`, "i").test(css),
   );
+  return [...new Set([...declared, ...styled])];
 }
 
 /** Does the component render something a keyboard can reach? */
@@ -224,7 +268,7 @@ function photographed(text: string): string {
 
 const results = load().map((component) => {
   const unions = unionProps(component.source);
-  const booleans = stateBooleans(component.source);
+  const booleans = stateBooleans(component.source, component.css ?? "");
   const exception = EXCEPTIONS[component.name];
   const text = component.stories;
 
@@ -248,7 +292,10 @@ const results = load().map((component) => {
 
   const shown = (prop: string) =>
     new RegExp(`\\b${prop}\\s*:\\s*true`).test(text) ||
-    new RegExp(`\\b${prop}\\b(?=[\\s,}])`).test(text);
+    // `>` and `/` because a JSX boolean attribute is written
+    // `<Menu.Item disabled>` — the old lookahead accepted it only in an
+    // args object, so a state shown in a render() went unseen.
+    new RegExp(`\\b${prop}\\b(?=[\\s,}>/])`).test(text);
   const missingBooleans = booleans.filter((prop) => {
     if (shown(prop)) return false;
     // A sibling spelling of the same state counts.

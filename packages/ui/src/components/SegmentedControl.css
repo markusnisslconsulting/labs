@@ -38,8 +38,11 @@
     outline-offset: 2px;
   }
 
+  /* Colour, so the contrast script can see it: a segment's label is the
+     whole control, and 55% of secondary text on a subtle fill was the
+     worst reading in the library. */
   .uix-segment:disabled {
-    opacity: var(--uix-opacity-disabled);
+    color: var(--uix-text-disabled);
     cursor: not-allowed;
   }
 

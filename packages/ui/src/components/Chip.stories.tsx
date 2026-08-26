@@ -77,6 +77,14 @@ export const Matrix: StoryObj = {
       <Chip interactive active onActiveChange={() => {}}>
         filter on
       </Chip>
+      {/* Chip never declared `disabled` — it spreads onto a <button>, so
+          the attribute went straight through — and Chip.css has styled
+          `button.uix-chip:disabled` since the component existed. A state
+          that is reachable and styled and has no picture is a state
+          nobody can check. */}
+      <Chip interactive disabled onActiveChange={() => {}}>
+        filter unavailable
+      </Chip>
     </div>
   ),
 };

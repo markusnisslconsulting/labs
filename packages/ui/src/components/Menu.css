@@ -38,6 +38,29 @@
     color: var(--uix-status-danger);
   }
 
+  /* Declared after :hover, [data-highlighted] and [data-danger] so it
+     wins the specificity tie on order: an unavailable item must not light
+     up under the pointer, and a disabled destructive item must not stay
+     red — red on a menu row reads as "this will delete something", which
+     is a promise the item cannot keep.
+     Menu accepted `disabled` on its items and styled nothing at all, so a
+     disabled row was the same picture as an available one. The screenshot
+     showed it — "Export as PDF" next to "Copy link", indistinguishable —
+     and I read past it. A gate found it on its first run. */
+  .uix-menu-item[data-disabled],
+  .uix-menu-item[aria-disabled="true"],
+  .uix-menu-item:disabled {
+    color: var(--uix-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .uix-menu-item[data-disabled]:hover,
+  .uix-menu-item[data-disabled][data-highlighted],
+  .uix-menu-item[aria-disabled="true"]:hover,
+  .uix-menu-item:disabled:hover {
+    background: transparent;
+  }
+
   .uix-menu-item:focus-visible {
     outline: 2px solid var(--uix-focus-ring);
     outline-offset: -2px;

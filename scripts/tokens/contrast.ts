@@ -84,15 +84,85 @@ type Scope = Map<string, string>;
 
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
-/** Declarations from the blocks whose selector passes `accept`. */
-function collect(css: string, accept: (selector: string) => boolean): Scope {
+/**
+ * Declarations from the blocks whose selector and at-rule context pass.
+ *
+ * This walked the file with `/([^{}]+)\{([^{}]*)\}/g` and took the
+ * innermost block's selector. Inside
+ *
+ *     @media (prefers-contrast: more) {
+ *       :root { --uix-text-disabled: ...; }
+ *     }
+ *
+ * the innermost block's selector is `:root`, so the high-contrast
+ * overrides were collected as base values — and being later in the file,
+ * they *overwrote* the base ones. Every reading in the report was the
+ * high-contrast palette. The default palette, the one almost everybody
+ * sees, had never been measured.
+ *
+ * That is visible in the old output once you know: body text and
+ * secondary text scored identically on every background, because the
+ * override sets `--uix-text-secondary: var(--uix-text-primary)`. Two
+ * different colours, one number, for as long as this script has existed.
+ *
+ * The file's own comment above pickScheme describes the same class of bug
+ * being fixed once for `[data-theme="dark"]`. A selector-matching parser
+ * with no notion of nesting will keep producing it, so this one tracks
+ * depth and the enclosing at-rules instead.
+ */
+function collect(
+  css: string,
+  accept: (selector: string) => boolean,
+  /** Which conditional at-rules must be in force. Order-independent. */
+  conditions: string[] = [],
+): Scope {
   const out: Scope = new Map();
-  for (const block of strip(css).matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-    const selector = block[1]!.trim();
-    if (!accept(selector)) continue;
-    for (const decl of block[2]!.matchAll(/(--uix-[\w-]+)\s*:\s*([^;]+);/g)) {
-      out.set(decl[1]!, decl[2]!.replace(/\s+/g, " ").trim());
+  const source = strip(css);
+  const stack: string[] = [];
+  let i = 0;
+  let prelude = "";
+
+  while (i < source.length) {
+    const ch = source[i]!;
+    if (ch === "{") {
+      const head = prelude.trim();
+      prelude = "";
+      if (head.startsWith("@")) {
+        stack.push(head);
+        i += 1;
+        continue;
+      }
+      // A rule block. Its body runs to the matching brace; nested rules
+      // are not legal CSS inside one, so a scan to the next brace is safe.
+      const close = source.indexOf("}", i);
+      const body = source.slice(i + 1, close === -1 ? undefined : close);
+      // Every condition asked for is present, and no other conditional
+      // at-rule is: a block guarded by @media (forced-colors) is not the
+      // base palette either.
+      const conditional = stack.filter(
+        (rule) => rule.startsWith("@media") || rule.startsWith("@supports"),
+      );
+      const matches =
+        conditional.length === conditions.length &&
+        conditions.every((want) =>
+          conditional.some((rule) => rule.includes(want)),
+        );
+      if (matches && accept(head)) {
+        for (const decl of body.matchAll(/(--uix-[\w-]+)\s*:\s*([^;]+);/g)) {
+          out.set(decl[1]!, decl[2]!.replace(/\s+/g, " ").trim());
+        }
+      }
+      i = close === -1 ? source.length : close + 1;
+      continue;
     }
+    if (ch === "}") {
+      stack.pop();
+      prelude = "";
+      i += 1;
+      continue;
+    }
+    prelude += ch;
+    i += 1;
   }
   return out;
 }
@@ -138,7 +208,21 @@ function pickScheme(value: string, theme: "light" | "dark"): string {
   }
 }
 
-function scopeFor(theme: "light" | "dark", brand: string): Scope {
+/**
+ * The palette in force for one (theme, brand, contrast) combination.
+ *
+ * `contrast: "more"` layers the `prefers-contrast: more` overrides on top
+ * of the base, which is what the cascade does. It is measured as its own
+ * combination rather than folded in, because it is a different palette
+ * that a real user setting selects — and because it used to be the *only*
+ * palette this script measured, by accident. Dropping it now would trade
+ * one blind spot for another.
+ */
+function scopeFor(
+  theme: "light" | "dark",
+  brand: string,
+  contrast: "normal" | "more" = "normal",
+): Scope {
   const scope: Scope = new Map();
   const add = (from: Scope) =>
     from.forEach((value, name) => scope.set(name, pickScheme(value, theme)));
@@ -156,6 +240,9 @@ function scopeFor(theme: "light" | "dark", brand: string): Scope {
       // A brand no longer needs a theme selector: its theme-dependent
       // values are light-dark() and pickScheme has already chosen.
     }
+  }
+  if (contrast === "more") {
+    add(collect(semantic, (s) => s === ":root", ["prefers-contrast: more"]));
   }
   return scope;
 }
@@ -294,6 +381,38 @@ const PAIRINGS: Pairing[] = [
     bg: "--uix-bg-subtle",
     target: 4.5,
   },
+  /* The pairing that could not exist while disabled was an opacity.
+     Eleven components dimmed themselves by 45% and there was nothing here
+     to check, because an opacity has no colour to measure. Now the fill is
+     a role, the text on it is a role, and this is the reading that decides
+     whether a locked field is still legible — which is usually the reason
+     it was locked. */
+  {
+    what: "disabled text on a disabled fill",
+    fg: "--uix-text-disabled",
+    bg: "--uix-bg-disabled",
+    target: 4.5,
+  },
+  /* No pairing for the edge of a disabled control, and the reason is not
+     that it looks fine.
+     WCAG 1.4.11 exempts inactive user interface components from the 3:1
+     non-text requirement, so there is no number to hold the edge to. The
+     first draft of this file asserted 3:1 anyway and both readings failed
+     at 1.32 and 1.39 — an invented threshold, failed honestly. Inventing
+     a lower one to make it pass would be worse.
+     What is measured instead is the part that is *not* exempt: the text
+     on a disabled control, above. A reader finds a locked field by its
+     label, and the label has to be legible — usually the label is why it
+     was locked. Whether the control still reads as a control is a
+     judgment, and `nx run ui:visual-sweep` is where that judgment gets
+     made, by looking.
+     One consequence worth writing down: --uix-bg-disabled resolves to the
+     same value as --uix-bg-subtle, and that is forced rather than lazy.
+     Every darker candidate on this neutral ramp drops
+     --uix-text-disabled below 4.5 on it — measured, grey-300 gives 4.04
+     on light and slate-600 gives 2.87 on dark. So a disabled control
+     sitting on a subtle surface loses its fill and keeps its text, which
+     is the trade the ramp allows. */
   {
     what: "label on an accent fill",
     fg: "--uix-text-on-accent",
@@ -405,22 +524,28 @@ interface Result extends Pairing {
   theme: string;
   brand: string;
   value: number | null;
+  contrast: "normal" | "more";
 }
+
+const CONTRASTS = ["normal", "more"] as const;
 
 function measure(): Result[] {
   const out: Result[] = [];
   for (const brand of brands()) {
     for (const theme of THEMES) {
-      const scope = scopeFor(theme, brand);
-      for (const pairing of PAIRINGS) {
-        const fg = resolve(pairing.fg, scope);
-        const bg = resolve(pairing.bg, scope);
-        out.push({
-          ...pairing,
-          theme,
-          brand,
-          value: fg && bg ? ratio(fg, bg) : null,
-        });
+      for (const contrast of CONTRASTS) {
+        const scope = scopeFor(theme, brand, contrast);
+        for (const pairing of PAIRINGS) {
+          const fg = resolve(pairing.fg, scope);
+          const bg = resolve(pairing.bg, scope);
+          out.push({
+            ...pairing,
+            theme,
+            brand,
+            contrast,
+            value: fg && bg ? ratio(fg, bg) : null,
+          });
+        }
       }
     }
   }
@@ -435,7 +560,7 @@ const unmeasured = results.filter((r) => r.value === null);
 if (mode === "report") {
   let currentGroup = "";
   for (const r of results) {
-    const group = `${r.brand} / ${r.theme}`;
+    const group = `${r.brand} / ${r.theme} / contrast ${r.contrast}`;
     if (group !== currentGroup) {
       currentGroup = group;
       console.log(`\n${group}`);
@@ -447,7 +572,7 @@ if (mode === "report") {
     );
   }
   console.log(
-    `\n${results.length} pairings across ${brands().length} brand(s) x ${THEMES.length} themes` +
+    `\n${results.length} pairings across ${brands().length} brand(s) x ${THEMES.length} themes x ${CONTRASTS.length} contrast settings` +
       `  |  ${failures.length} below target  |  ${unmeasured.length} unmeasurable`,
   );
   process.exit(0);
@@ -476,7 +601,8 @@ if (mode === "check") {
   }
   console.log(
     `Contrast check passed — ${results.length} pairings across ` +
-      `${brands().length} brand(s) and ${THEMES.length} themes.`,
+      `${brands().length} brand(s), ${THEMES.length} themes and ` +
+      `${CONTRASTS.length} contrast settings.`,
   );
   process.exit(0);
 }

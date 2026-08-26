@@ -55,10 +55,14 @@
   /* Base UI stamps data-disabled on the group and both steppers, and
      sets the native attribute on a stepper that has reached the min or
      the max. Both spellings, or a stepper at the limit looks live. */
+  /* Colour, not opacity. The steppers are two glyphs with no text
+     beside them, and the group holds the value, which somebody still has
+     to read while the field is locked. */
   .uix-numberfield[data-disabled],
   .uix-numberfield-step[data-disabled],
   .uix-numberfield-step:disabled {
-    opacity: var(--uix-opacity-disabled);
+    background: var(--uix-bg-disabled);
+    color: var(--uix-text-disabled);
     cursor: not-allowed;
   }
 }

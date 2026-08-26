@@ -19,10 +19,31 @@
     --uix-bg-page: light-dark(var(--uix-grey-25), var(--uix-grey-900));
     --uix-bg-surface: light-dark(var(--uix-white), var(--uix-grey-800));
     --uix-bg-subtle: light-dark(var(--uix-grey-100), var(--uix-grey-700));
+    /* The fill of a control that is there and cannot be used.
+     *
+     * A role rather than an opacity, because an opacity cannot be
+     * measured. Eleven components said `opacity: var(--uix-opacity-disabled)`
+     * and nothing else, so a disabled solid button was a dimmed brand
+     * button — measured, byte for byte the same as a *loading* one: same
+     * fill, same text colour, same 0.55. Busy and unavailable are two
+     * different promises to the reader and they rendered identically.
+     *
+     * Neutral, not a faded accent: a faded accent reads as an active
+     * control seen through fog. --uix-text-disabled clears 4.5:1 on this
+     * in both themes, and scripts/tokens/contrast.ts checks that it
+     * still does. */
+    --uix-bg-disabled: light-dark(var(--uix-grey-100), var(--uix-grey-700));
 
     /* Lines */
     --uix-border-subtle: light-dark(var(--uix-grey-300), var(--uix-grey-700));
     --uix-border-strong: light-dark(var(--uix-slate-600), var(--uix-slate-400));
+    /* The edge of an unavailable control. Lighter than border-subtle on
+       light and lighter than the disabled fill on dark, so the shape stays
+       readable while reading as inert. */
+    --uix-border-disabled: light-dark(
+      var(--uix-grey-300),
+      var(--uix-slate-600)
+    );
 
     /* Intent */
     --uix-accent: light-dark(var(--uix-red-600), var(--uix-red-400));
@@ -40,6 +61,11 @@
     --uix-status-off: light-dark(var(--uix-slate-600), var(--uix-slate-400));
     --uix-status-danger: light-dark(var(--uix-red-700), var(--uix-red-400));
     --uix-info: light-dark(var(--uix-navy-900), var(--uix-slate-400));
+    /* Reserved for graphics: an avatar's image, a switch's thumb, an icon
+       with no text beside it to colour. Anything with text uses
+       --uix-text-disabled, --uix-bg-disabled and --uix-border-disabled
+       instead, because those can be measured and this cannot. A gate in
+       packages/ui/test/tokens.spec.ts holds the line. */
     --uix-opacity-disabled: 0.55;
 
     /* The two ends of the neutral ramp for this theme. Components mix
@@ -262,6 +288,7 @@
         var(--uix-slate-400)
       );
       --uix-opacity-disabled: 0.75;
+      --uix-border-disabled: var(--uix-border-strong);
       /* A reader who asked for more contrast asked for the focus ring
          too. It is the one indicator with no fallback. */
       --uix-focus-width: 3px;

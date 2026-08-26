@@ -49,9 +49,11 @@
     padding-top: var(--uix-gap-lg);
   }
 
+  /* Colour, not opacity. A tab is a word and an underline; dimming the
+     word is the whole control. */
   .uix-tab:disabled,
   .uix-tab[data-disabled] {
-    opacity: var(--uix-opacity-disabled);
+    color: var(--uix-text-disabled);
     cursor: not-allowed;
   }
 

@@ -53,8 +53,19 @@
 
   /* An interactive chip is a button and accepts `disabled`; until the
      gate noticed, it accepted the prop and looked exactly the same. */
+  /* The disabled look for an interactive chip.
+     Two rounds of being wrong about this rule. First it did not exist and
+     `disabled` changed nothing. Then it dimmed by 55%, which on a chip
+     whose resting fill is already a light grey is barely a change. And
+     all along the prop it styles was not on the type at all — ChipProps
+     extends span attributes, so TypeScript rejected `disabled` and this
+     rule could never fire. Chip declares the prop now.
+     Colour so it can be measured, and after the pressed rule so it wins
+     the specificity tie on order. */
   button.uix-chip:disabled {
-    opacity: var(--uix-opacity-disabled);
+    background: var(--uix-bg-disabled);
+    box-shadow: inset 0 0 0 1px var(--uix-border-disabled);
+    color: var(--uix-text-disabled);
     cursor: not-allowed;
   }
 

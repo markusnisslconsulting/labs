@@ -87,9 +87,21 @@
     min-width: 0;
   }
 
+  /* Colour, not opacity, and for the strongest version of the reason:
+     this rule dimmed the whole row — border, background, value and any
+     adornment — so a locked field showed a value nobody could quite read.
+     A form that locks a field still expects it to be legible; that is
+     usually why it was locked. */
   .uix-field-row:has(:disabled) {
-    opacity: var(--uix-opacity-disabled);
+    background: var(--uix-bg-disabled);
+    border-color: var(--uix-border-disabled);
     cursor: not-allowed;
+  }
+
+  .uix-field-row:has(:disabled) .uix-field-input,
+  .uix-field-row:has(:disabled) .uix-field-adornment,
+  .uix-field-row:has(:disabled) .uix-field-affordance {
+    color: var(--uix-text-disabled);
   }
 
   .uix-field-input:disabled {

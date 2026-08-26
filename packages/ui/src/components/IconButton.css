@@ -50,8 +50,23 @@
     outline-offset: 2px;
   }
 
+  /* Colour, not opacity. An icon button has no text beside it, so the
+     glyph *is* the label and dimming it is dimming the only thing there
+     is to read. The modifier classes score 0,1,0 against this rule's
+     0,2,0, so it wins wherever it sits. */
   .uix-iconbutton:disabled {
-    opacity: var(--uix-opacity-disabled);
+    background: var(--uix-bg-disabled);
+    border-color: var(--uix-border-disabled);
+    color: var(--uix-text-disabled);
     cursor: not-allowed;
+  }
+
+  /* The ghost default keeps no box, the same as when it is available. */
+  .uix-iconbutton:not(
+      .uix-iconbutton--solid,
+      .uix-iconbutton--outline
+    ):disabled {
+    background: transparent;
+    border-color: transparent;
   }
 }

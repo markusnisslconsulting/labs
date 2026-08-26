@@ -31,6 +31,18 @@ interface ChipOwnProps {
    * other stateful component here.
    */
   onActiveChange?: (active: boolean) => void;
+  /**
+   * Unavailable. Only meaningful on an interactive chip: a static chip is
+   * a label and a label cannot be pressed.
+   *
+   * Declared because Chip.css has styled `button.uix-chip:disabled` since
+   * the component existed — with a comment claiming "an interactive chip
+   * is a button and accepts `disabled`". It did not. ChipProps extends
+   * span attributes, so TypeScript rejected the prop and the styled state
+   * was unreachable through the API. Dead CSS describing itself as a
+   * feature.
+   */
+  disabled?: boolean;
 }
 
 /**
@@ -75,6 +87,7 @@ export function Chip({
   active,
   defaultActive,
   onActiveChange,
+  disabled,
   className,
   renderAs,
   ...rest
@@ -109,6 +122,7 @@ export function Chip({
       type="button"
       className={cx("uix-chip", className)}
       aria-pressed={pressed}
+      disabled={disabled}
       onClick={() => {
         if (!isControlled) setUncontrolled(!pressed);
         onActiveChange?.(!pressed);

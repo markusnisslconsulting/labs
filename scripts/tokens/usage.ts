@@ -296,8 +296,13 @@ if (mode === "check") {
     );
   }
 
+  /* A deprecated token with no references left is the goal state, not a
+     mystery: the deprecation note is the explanation, and it is data the
+     report already prints. Before this, finishing a migration made the
+     check fail — the one moment it should have passed. */
   const unexplained = dead.filter(
-    (name) => !(name in INTENTIONALLY_UNREFERENCED),
+    (name) =>
+      !(name in INTENTIONALLY_UNREFERENCED) && !registry.get(name)?.deprecated,
   );
   if (unexplained.length) {
     failures.push(

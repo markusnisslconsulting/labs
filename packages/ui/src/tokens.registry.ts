@@ -138,8 +138,10 @@ export const semanticTokens: TokenDescriptor[] = [
   t("--uix-text-on-accent", "light-dark(var(--uix-white), var(--uix-grey-900))", "semantic", "color", "Text on accent fills"),
   t("--uix-bg-page", "light-dark(var(--uix-grey-25), var(--uix-grey-900))", "semantic", "color", "Page background"),
   t("--uix-bg-surface", "light-dark(var(--uix-white), var(--uix-grey-800))", "semantic", "color", "Surface background"),
+  t("--uix-bg-disabled", "light-dark(var(--uix-grey-100), var(--uix-grey-700))", "semantic", "color", "Fill of a control that is present and unusable"),
   t("--uix-bg-subtle", "light-dark(var(--uix-grey-100), var(--uix-grey-700))", "semantic", "color", "Subtle fills: chips, code"),
   t("--uix-border-subtle", "light-dark(var(--uix-grey-300), var(--uix-grey-700))", "semantic", "color", "Hairline borders"),
+  t("--uix-border-disabled", "light-dark(var(--uix-grey-300), var(--uix-slate-600))", "semantic", "color", "Edge of a control that is present and unusable"),
   t("--uix-border-strong", "light-dark(var(--uix-slate-600), var(--uix-slate-400))", "semantic", "color", "Emphasised borders"),
   t("--uix-accent", "light-dark(var(--uix-red-600), var(--uix-red-400))", "semantic", "color", "Brand accent; the coaching brand re-points it to teal"),
   t("--uix-accent-soft", "color-mix(in srgb, var(--uix-accent) 16%, transparent)", "semantic", "color", "Accent washes"),
@@ -151,7 +153,21 @@ export const semanticTokens: TokenDescriptor[] = [
   t("--uix-status-off", "light-dark(var(--uix-slate-600), var(--uix-slate-400))", "semantic", "color", "Neutral or absent status"),
   t("--uix-status-danger", "light-dark(var(--uix-red-700), var(--uix-red-400))", "semantic", "color", "Destructive status"),
   t("--uix-info", "light-dark(var(--uix-navy-900), var(--uix-slate-400))", "semantic", "color", "Informational intent"),
-  t("--uix-opacity-disabled", "0.55", "semantic", "opacity", "Disabled controls"),
+  t(
+    "--uix-opacity-disabled",
+    "0.55",
+    "semantic",
+    "opacity",
+    "Disabled controls (deprecated; use the disabled colour roles)",
+    "Eleven components expressed disabled as this opacity and nothing " +
+      "else, which cannot be measured: an opacity has no value to check " +
+      "against a background, so a disabled ghost button sat near 2.6:1 and " +
+      "the contrast script had nothing to look at. Measured, it also made " +
+      "a disabled solid button identical to a loading one. Use " +
+      "--uix-text-disabled, --uix-bg-disabled and --uix-border-disabled; " +
+      "which of the three depends on the part, so there is no codemod and " +
+      "no supersededBy.",
+  ),
   t("--uix-gap-xs", "calc(var(--uix-space-1) * var(--uix-density))", "semantic", "space", "Density-scaled quarter step"),
   t("--uix-gap-sm", "calc(var(--uix-space-2) * var(--uix-density))", "semantic", "space", "Density-scaled half step"),
   t("--uix-gap-md", "calc(var(--uix-space-3) * var(--uix-density))", "semantic", "space", "Density-scaled base step"),
