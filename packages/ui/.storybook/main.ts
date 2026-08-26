@@ -15,6 +15,11 @@ const config: StorybookConfig = {
     // suite, supports watch mode and coverage, and reuses the browser
     // rather than driving it through a second harness.
     "@storybook/addon-vitest",
+    // Surfaces the status tag as a badge in the sidebar. Every component
+    // already declared "stable" or "beta"; until now nothing rendered it,
+    // so the maturity metadata existed for a linter and not for the
+    // person deciding whether to build on a component.
+    "storybook-addon-tag-badges",
     {
       // MDX 3 has no tables without GFM, so every table in the guides
       // rendered as a row of pipes until this was added.

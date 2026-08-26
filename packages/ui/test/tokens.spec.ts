@@ -569,6 +569,41 @@ describe("the layering rules the architecture depends on", () => {
     }
   });
 
+  /**
+   * Every component declares exactly one maturity status.
+   *
+   * The maturity models put this first: a consumer deciding whether to
+   * build on a component needs to know whether its API is settled. All
+   * thirty-four already carried "stable" or "beta", and nothing checked
+   * it or showed it — the tag existed for a grep. It is a badge in the
+   * sidebar now, which is only worth something if it is always there and
+   * always exactly one.
+   */
+  it("every component declares one status", () => {
+    const STATUSES = ["stable", "beta", "deprecated"];
+    const dir = "packages/ui/src/components";
+    for (const file of readdirSync(dir).filter((f) =>
+      f.endsWith(".stories.tsx"),
+    )) {
+      const source = readFileSync(join(dir, file), "utf8");
+      // Only components carry a status. A Foundations page or a Pattern
+      // documents the system rather than being part of its API, so there
+      // is nothing for a consumer to depend on.
+      if (!/title:\s*"Components\//.test(source)) continue;
+      const tags = /tags:\s*\[([^\]]*)\]/.exec(source);
+      expect(tags, `${file} declares no tags`).not.toBeNull();
+      const declared = [...tags![1]!.matchAll(/["'](\w+)["']/g)].map(
+        (hit) => hit[1]!,
+      );
+      const statuses = declared.filter((tag) => STATUSES.includes(tag));
+      expect(
+        statuses,
+        `${file} must declare exactly one of ${STATUSES.join(", ")}, found ` +
+          `${statuses.length === 0 ? "none" : statuses.join(" and ")}`,
+      ).toHaveLength(1);
+    }
+  });
+
   it("every component stylesheet lives in @layer components", () => {
     for (const { file, source } of componentCss) {
       expect(
