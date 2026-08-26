@@ -15,6 +15,12 @@
  *   2. The projected total stays under a committed ceiling. When the
  *      ceiling has to move, it moves in a diff someone reviewed.
  *
+ * IMPORTANT: the total here is an ESTIMATE, and it has been wrong twice.
+ * Measured builds captured 240 and then 204 snapshots where this model
+ * said 114 and 100. The authoritative number is the one Chromatic prints
+ * ("captured N snapshots"), and the gap is not yet explained. Use this to
+ * catch a story-count regression, not to predict a bill.
+ *
  * Counting rules mirror Chromatic: a story is snapshotted unless
  * `chromatic.disableSnapshot` is set on it or on its meta, and each
  * snapshotted story costs one image per mode.
@@ -155,7 +161,9 @@ if (mode === "report") {
     `  opted out               ${stories.length - snapshotted.length}`,
   );
   console.log(`  global modes            ${fallbackModes}`);
-  console.log(`  projected snapshots     ${total}\n`);
+  console.log(
+    `  estimated snapshots     ${total}   (Chromatic is authoritative)\n`,
+  );
 
   const rows = [...byComponent.entries()]
     .map(([component, list]) => ({
@@ -184,7 +192,9 @@ if (mode === "write-budget") {
     `${JSON.stringify(
       {
         note:
-          "Projected Chromatic snapshots per full build: snapshotted stories x modes. " +
+          "ESTIMATED snapshots per full build (snapshotted stories x modes). This model has " +
+          "under-counted twice against real builds (240 and 204 measured vs 114 and 100 " +
+          "estimated), so treat it as a regression guard, not a bill forecast. " +
           "The check fails when this is exceeded, so a rise in the bill arrives as a " +
           "reviewable diff. Run `nx run ui:snapshot-budget-write` after an intentional change.",
         ceiling: total,
@@ -209,7 +219,7 @@ if (mode === "check") {
     : Infinity;
   if (total > committed) {
     failures.push(
-      `projected snapshots ${total} exceed the committed ceiling ${committed}. ` +
+      `estimated snapshots ${total} exceed the committed ceiling ${committed}. ` +
         `Either consolidate variants into a matrix story or raise the ceiling deliberately.`,
     );
   }
