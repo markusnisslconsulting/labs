@@ -27,10 +27,20 @@ const norm = (value: string) => value.replace(/\s+/g, " ").trim();
 function rootDeclarations(path: string): Map<string, string> {
   const source = strip(readFileSync(path, "utf8"));
   const map = new Map<string, string>();
+  // Anchored on :root, then any comma-separated companions. The previous
+  // pattern required the brace to follow :root directly, so a selector
+  // list did not match at all and the check below never even saw it.
   for (const block of source.matchAll(
-    /(:root|\[[^\]]+\][^{]*)\s*\{([^}]*)\}/g,
+    /(:root(?:\s*,\s*[^{,]+)*)\s*\{([^}]*)\}/g,
   )) {
-    if (block[1]?.trim() !== ":root") continue;
+    // A selector list counts when :root is one of its parts. The density
+    // roles are declared on ":root, [data-density]" so that a subtree
+    // carrying the attribute re-resolves them against its own multiplier,
+    // and an exact-match check silently dropped all nine of them from
+    // parity. A block scoped only to a theme or a brand is still skipped,
+    // because those are overrides rather than the default set.
+    const parts = (block[1] ?? "").split(",").map((part) => part.trim());
+    if (!parts.includes(":root")) continue;
     for (const decl of (block[2] ?? "").matchAll(
       /(--uix-[\w-]+):\s*([^;]+);/g,
     )) {

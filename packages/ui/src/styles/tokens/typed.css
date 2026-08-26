@@ -1,0 +1,33 @@
+/* Typed tokens.
+ *
+ * @property gives a custom property a syntax, so a value that does not
+ * match is discarded and the initial value is used instead of poisoning
+ * everything downstream. An unregistered property accepts anything: set
+ * --uix-density to "medium" and every gap and every control height in
+ * the page becomes invalid at computed-value time, which is a blank
+ * layout from one typo in a product's theme file.
+ *
+ * Only the multiplier is registered, and the rule behind that is worth
+ * stating: register the values a product supplies by hand, because those
+ * are the ones that can be garbage. Everything the library derives from
+ * them — the --uix-gap-* and --uix-control-* roles — is computed from an
+ * already-validated input, so there is nothing left to validate and an
+ * initial-value would only be a copy of the scale waiting to drift out
+ * of sync with it.
+ *
+ * Registering this one did expose a bug that had nothing to do with
+ * registration. --uix-control-md was declared on :root, and a custom
+ * property has its var() substituted on the element where it is
+ * declared, so the density was baked in at the root and every descendant
+ * inherited the finished text. A data-density="compact" subtree changed
+ * nothing at all, which is exactly what semantic.css promised it would
+ * do. The derived roles are now declared on ":root, [data-density]" so
+ * that any density scope re-resolves them, and browser/density.spec.ts
+ * measures a compact subtree inside a cozy page.
+ */
+
+@property --uix-density {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}

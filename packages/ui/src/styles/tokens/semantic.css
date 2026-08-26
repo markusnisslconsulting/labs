@@ -32,27 +32,6 @@
     --uix-info: var(--uix-navy-900);
     --uix-opacity-disabled: 0.55;
 
-    /* Density-scaled spacing. Components consume these, never the raw
-     scale, so data-density="compact" tightens gaps and margins too and
-     not merely the inside of controls. At the default density of 1 they
-     resolve to the scale exactly, so cozy rendering is unchanged. */
-    --uix-gap-xs: calc(var(--uix-space-1) * var(--uix-density));
-    --uix-gap-sm: calc(var(--uix-space-2) * var(--uix-density));
-    --uix-gap-md: calc(var(--uix-space-3) * var(--uix-density));
-    --uix-gap-lg: calc(var(--uix-space-4) * var(--uix-density));
-    --uix-gap-xl: calc(var(--uix-space-5) * var(--uix-density));
-    --uix-gap-2xl: calc(var(--uix-space-6) * var(--uix-density));
-
-    /* Control heights.
-     Every control a finger or pointer aims at snaps to one of three
-     heights, so a button, a field and a stepper placed in a row line up
-     without anyone nudging padding. Measured before this existed: 43,
-     42, 41, 38, 35, 33 and 32px across components that sit next to each
-     other. Density-scaled, like the spacing roles. */
-    --uix-control-sm: max(24px, calc(2rem * var(--uix-density)));
-    --uix-control-md: max(24px, calc(2.5rem * var(--uix-density)));
-    --uix-control-lg: max(24px, calc(3rem * var(--uix-density)));
-
     /* The two ends of the neutral ramp for this theme. Components mix
      toward these to shade a fill, so a hover deepens on light and
      brightens on dark without either naming a palette value. */
@@ -156,6 +135,55 @@
 
   [data-density="compact"] {
     --uix-density: 0.72;
+  }
+
+  /* Everything derived from the multiplier is declared here, and the
+     selector is the whole point.
+
+     A custom property has its var() substituted on the element where it
+     is *declared*, and descendants inherit the result. Declared only on
+     :root, --uix-control-md resolved calc(2.5rem * var(--uix-density))
+     against the root's density and inherited the finished text, so a
+     data-density="compact" subtree inherited the page's heights and
+     changed nothing at all. The comment above used to promise subtree
+     density; measured, it had never worked. Setting the attribute on the
+     root appeared to work only because the root is where these were
+     declared.
+
+     Matching [data-density] as well means any element carrying the
+     attribute re-declares them against its own multiplier.
+     browser/density.spec.ts measures a compact subtree inside a cozy
+     page, which is the only thing keeping this true. */
+  :root,
+  [data-density] {
+    /* Density-scaled spacing. Components consume these, never the raw
+       scale, so a density tightens gaps and margins too and not merely
+       the inside of controls. At the default multiplier of 1 they
+       resolve to the scale exactly, so cozy rendering is unchanged. */
+    --uix-gap-xs: calc(var(--uix-space-1) * var(--uix-density));
+    --uix-gap-sm: calc(var(--uix-space-2) * var(--uix-density));
+    --uix-gap-md: calc(var(--uix-space-3) * var(--uix-density));
+    --uix-gap-lg: calc(var(--uix-space-4) * var(--uix-density));
+    --uix-gap-xl: calc(var(--uix-space-5) * var(--uix-density));
+    --uix-gap-2xl: calc(var(--uix-space-6) * var(--uix-density));
+
+    /* Control heights.
+       Every control a finger or pointer aims at snaps to one of three
+       heights, so a button, a field and a stepper placed in a row line
+       up without anyone nudging padding. Measured before this existed:
+       43, 42, 41, 38, 35, 33 and 32px across components sitting next to
+       each other.
+
+       The max(24px, ...) is the only absolute length in the token layer,
+       and it is deliberate: WCAG 2.2 target size (minimum, 2.5.8) is
+       specified in CSS pixels, so the floor has to be too. At the
+       compact multiplier of 0.72 the small height resolved to 23.04px.
+       Clamping here rather than raising the multiplier means a product
+       that sets its own density cannot reintroduce the violation. At the
+       default density the max() never binds. */
+    --uix-control-sm: max(24px, calc(2rem * var(--uix-density)));
+    --uix-control-md: max(24px, calc(2.5rem * var(--uix-density)));
+    --uix-control-lg: max(24px, calc(3rem * var(--uix-density)));
   }
 
   /* Dark theme: the semantic layer remaps to the lighter primitives.
