@@ -716,6 +716,17 @@
           }
         }
       },
+      "disabled": {
+        "$type": "color",
+        "$value": "{primitive.grey.700}",
+        "$description": "Fill of a control that is present and unusable",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-bg-disabled",
+            "tier": "semantic"
+          }
+        }
+      },
       "subtle": {
         "$type": "color",
         "$value": "{primitive.grey.700}",
@@ -736,6 +747,17 @@
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-border-subtle",
+            "tier": "semantic"
+          }
+        }
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{primitive.slate.600}",
+        "$description": "Edge of a control that is present and unusable",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-border-disabled",
             "tier": "semantic"
           }
         }
@@ -782,6 +804,28 @@
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-focus-ring",
+            "tier": "semantic"
+          }
+        }
+      },
+      "width": {
+        "$type": "dimension",
+        "$value": "2px",
+        "$description": "Focus ring thickness; 3px under prefers-contrast: more",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-focus-width",
+            "tier": "semantic"
+          }
+        }
+      },
+      "offset": {
+        "$type": "dimension",
+        "$value": "2px",
+        "$description": "Gap between the element and its focus ring",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-focus-offset",
             "tier": "semantic"
           }
         }
@@ -848,13 +892,14 @@
       "disabled": {
         "$type": "number",
         "$value": "0.55",
-        "$description": "Disabled controls",
+        "$description": "Disabled controls (deprecated; use the disabled colour roles)",
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-opacity-disabled",
             "tier": "semantic"
           }
-        }
+        },
+        "$deprecated": "Eleven components expressed disabled as this opacity and nothing else, which cannot be measured: an opacity has no value to check against a background, so a disabled ghost button sat near 2.6:1 and the contrast script had nothing to look at. Measured, it also made a disabled solid button identical to a loading one. Use --uix-text-disabled, --uix-bg-disabled and --uix-border-disabled; which of the three depends on the part, so there is no codemod and no supersededBy."
       }
     },
     "gap": {
@@ -1694,13 +1739,13 @@
       }
     },
     "search": {
-      "border": {
-        "$type": "color",
-        "$value": "{semantic.border.subtle}",
-        "$description": "Search input border",
+      "radius": {
+        "$type": "dimension",
+        "$value": "{semantic.radius.pill}",
+        "$description": "Search field corner; the one thing search wants apart from every other field",
         "$extensions": {
           "com.markusnissl.labs": {
-            "cssVariable": "--uix-search-border",
+            "cssVariable": "--uix-search-radius",
             "tier": "component"
           }
         }

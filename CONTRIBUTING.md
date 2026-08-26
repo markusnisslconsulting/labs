@@ -45,13 +45,17 @@ Docs-Seite des Parts — nicht in Foundations.
 ## Gates vor jedem Push
 
 ```sh
-pnpm nx run-many -t typecheck lint test build build-storybook test-storybook \
-  browser-test tokens-check contrast-check story-coverage snapshot-budget \
-  --skip-nx-cache
-pnpm format:check
-pnpm nx run site:a11y
+pnpm gates                        # genau die Targets, die CI faehrt
 pnpm nx run ui:visual-test        # lokal, gegen committed baselines
+pnpm nx run ui:visual-sweep       # Kontaktabzuege zum Anschauen, kein Gate
 ```
+
+`pnpm gates` steht in der package.json und nennt dieselbe Liste wie der
+Gates-Schritt in `.github/workflows/ci.yml`. Vorher stand die Liste hier
+zweimal, an zwei Orten gepflegt, und hier fehlten drei Targets —
+`package-check`, `tokens-dtcg` und `adoption`. Genau `tokens-dtcg` ist
+dann in CI umgefallen, nachdem lokal alles gruen war: neue Tokens ohne
+neu geschriebenen DTCG-Export.
 
 CI läuft affected; Axe- und Test-Findings blockieren Deploys.
 
