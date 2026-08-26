@@ -7,15 +7,26 @@ import { Meta } from "@storybook/addon-docs/blocks";
 Four independent axes, all attributes on the root element. They compose;
 none of them is a separate build.
 
-| Axis      | Attribute      | Values                   |
-| --------- | -------------- | ------------------------ |
-| Brand     | `data-brand`   | absent (Labs), `ocean`   |
-| Theme     | `data-theme`   | absent (light), `dark`   |
-| Density   | `data-density` | absent (cozy), `compact` |
-| Direction | `dir`          | `ltr`, `rtl`             |
+| Axis      | Attribute      | Values                             |
+| --------- | -------------- | ---------------------------------- |
+| Brand     | `data-brand`   | absent (Labs), `ocean`, `graphite` |
+| Theme     | `data-theme`   | absent (light), `dark`             |
+| Density   | `data-density` | absent (cozy), `compact`           |
+| Direction | `dir`          | `ltr`, `rtl`                       |
 
 Flip all four from the toolbar above. Nothing here is a preview trick:
 the toolbar sets the same attributes a product sets.
+
+A fifth axis has no attribute, because it is not ours to set: the
+reader's own text size. Every length in the library is a rem, and
+`font-size` is set on `body` and never on `html`, so a browser text
+preference scales the whole system. Control heights are measured at two
+root font sizes in CI for exactly that reason.
+
+Brand and density are the two that also work on a **subtree** — a
+compact toolbar in a cozy page, or one product area under a different
+brand. Theme is root-only in practice, because a page with two colour
+schemes has bigger problems than tokens.
 
 ## Adding a brand
 
@@ -27,10 +38,23 @@ teams adding two brands never touch the same line.
 /* src/styles/brands/harbour.css */
 @layer tokens {
   [data-brand="harbour"] {
+    /* colour */
     --uix-accent: var(--uix-teal-600);
+    /* shape */
+    --uix-radius-control: 0.25rem;
+    --uix-radius-container: 0.375rem;
+    /* type */
+    --uix-font-display: "Söhne Breit", var(--uix-font-sans);
+    /* elevation */
+    --uix-elevation-raised: none;
   }
 
-  [data-brand="harbour"][data-theme="dark"] {
+  /* Both spellings. A brand is often scoped to a subtree while the theme
+     sits on the root, so the compound selector alone never matches: it
+     demands both attributes on one element. A brand nested under a dark
+     root kept its light accent that way, measured at 2:1. */
+  [data-brand="harbour"][data-theme="dark"],
+  [data-theme="dark"] [data-brand="harbour"] {
     --uix-accent: var(--uix-teal-400);
   }
 }
@@ -42,6 +66,15 @@ Import it from `styles.css` and you are done. Two gates then apply:
   file and fails on anything else. Reaching into a primitive would change
   every brand; reaching into a component token would fix one component
   and leave its siblings behind.
+
+  The other half of that rule is what makes it usable: whatever a brand
+  must be able to change has to _have_ a semantic role. For a long time
+  radius, typeface and shadow were primitives and components named them
+  directly, so the brand axis was colour-only and `ocean` re-pointing one
+  token was the ceiling rather than a demonstration. There are now shape,
+  type and elevation roles, and a test forbids a component from naming
+  any of the four primitive families.
+
 - **Contrast is measured for the new brand automatically.** The check
   walks every declared pairing in every theme for every brand it finds on
   disk. A brand that cannot clear WCAG AA fails the build rather than
@@ -93,6 +126,32 @@ so styling from outside the layers silently beats the whole system.
 ## Density
 
 `data-density="compact"` sets one multiplier, and the semantic
-`--uix-gap-*` roles carry it into padding, gaps and margins. At the
-default density they resolve to the raw scale exactly, so cozy rendering
-is byte-identical to no density at all.
+`--uix-gap-*` and `--uix-control-*` roles carry it into padding, gaps,
+margins and control heights alike. At the default density they resolve to
+the raw scale exactly, so cozy rendering is byte-identical to no density
+at all.
+
+Two things about it are easy to get wrong, and both are held down by
+tests rather than by this page.
+
+**It works on a subtree, and that took a fix.** A custom property has its
+`var()` substituted on the element where it is _declared_. Declared only
+on `:root`, `--uix-control-md` resolved the density at the root and every
+descendant inherited the finished value, so a `data-density="compact"`
+subtree inherited the page's heights and changed nothing — while this
+guide said it would. The density roles are now declared on
+`:root, [data-density]`, so any element carrying the attribute
+re-resolves them against its own multiplier.
+
+**A density cannot make a control illegal.** The heights are
+`max(24px, calc(<rem> * var(--uix-density)))`. At the compact multiplier
+of 0.72 the small height resolved to 23.04px, under the WCAG 2.2 target
+size minimum. The clamp lives in the token rather than in a larger
+multiplier, so a product that supplies its own density cannot
+reintroduce the violation.
+
+`--uix-density` is registered with `@property` as a `<number>`. An
+unregistered property accepts anything, and one typo — `medium` — would
+make every `calc()` in the page invalid at computed-value time. The
+derived roles stay unregistered on purpose: they are computed from an
+already-validated input, so there is nothing left to check.
