@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NARROW_AND_RTL } from "../../.storybook/modes";
 import { useState } from "react";
-import { expect, userEvent } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
+import { ToastProvider, useToast } from "../toast";
 import { Toaster, type ToastItem } from "./Toaster";
 import { Button } from "./Button";
 
@@ -94,5 +95,68 @@ export const KeyboardReachable: Story = {
     await expect(
       canvas.getAllByRole("button", { name: /Dismiss/ })[0]!,
     ).toHaveFocus();
+  },
+};
+
+/**
+ * The imperative form, which is how a notification actually arrives.
+ *
+ * A notification does not come from the component tree, it comes from
+ * whatever just finished — a save, a fetch, a rules run. The controlled
+ * form above makes every consumer hold a list, mint ids and remove
+ * entries; this is one function call.
+ *
+ * Note the defaults: info and success disappear on their own, warning and
+ * danger stay until dismissed. An error that vanishes by itself is an
+ * error nobody read.
+ */
+export const Imperative: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  render: function Render() {
+    function Raise() {
+      const toast = useToast();
+      return (
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <Button onClick={() => toast.success("Reorder point saved")}>
+            Save
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() =>
+              toast.danger("Could not reach the supplier", {
+                description: "Nordwind Logistik did not answer in 30 seconds.",
+              })
+            }
+          >
+            Fail
+          </Button>
+          <Button variant="ghost" onClick={() => toast.clear()}>
+            Clear
+          </Button>
+        </div>
+      );
+    }
+    return (
+      <ToastProvider>
+        <Raise />
+      </ToastProvider>
+    );
+  },
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Fail" }));
+    const region = await within(document.body).findByRole("region", {
+      name: /Notifications/,
+    });
+    await expect(region).toContainElement(
+      await within(region).findByText("Could not reach the supplier"),
+    );
+    // A danger toast has role alert, so it interrupts rather than waits.
+    // Queried without a name: `alert` does not take its accessible name
+    // from its content, so asking for one finds nothing even when the
+    // alert is right there with the text inside it.
+    const alert = within(region).getByRole("alert");
+    await expect(alert).toContainElement(
+      within(alert).getByText("Could not reach the supplier"),
+    );
   },
 };

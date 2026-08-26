@@ -6,6 +6,7 @@ import { Banner, type BannerProps } from "./components/Banner";
 import { Breadcrumb, type BreadcrumbItem } from "./components/Breadcrumb";
 import { Button, type ButtonProps } from "./components/Button";
 import { LabsStrings, defaultStrings, useStrings } from "./i18n";
+import { ToastProvider, useToast } from "./toast";
 import { Card } from "./components/Card";
 import { Checkbox, type CheckboxProps } from "./components/Checkbox";
 import { Chip, type ChipProps } from "./components/Chip";
@@ -62,6 +63,8 @@ export {
   type ButtonProps,
   Card,
   LabsStrings,
+  ToastProvider,
+  useToast,
   defaultStrings,
   useStrings,
   Checkbox,

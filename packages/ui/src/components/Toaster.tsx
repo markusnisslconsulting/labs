@@ -99,6 +99,14 @@ export function Toaster({
         `uix-toaster uix-toaster--${position.replace("-", "-")}`,
         className,
       )}
+      /*
+       * A labelled div is not a landmark. Without a role, the container
+       * had an accessible name that nothing could navigate to: a screen
+       * reader user could not jump to their notifications, and a test
+       * could not find them either. `region` is the landmark for "a
+       * named part of the page", and it needs the name it already had.
+       */
+      role="region"
       aria-label={labels.notifications}
       {...rest}
     >
