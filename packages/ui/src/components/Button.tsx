@@ -57,7 +57,7 @@ export type ButtonProps = ButtonOwnProps &
   Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps>;
 
 /**
- * **Use it for** anything that performs an action. **Reach for something else when** the control navigates: pass renderAs={<a href />} so it stays a link.
+ * **Use it for** anything that performs an action. **Reach for something else when** the control navigates: pass `renderAs={<a href="…" />}` so it stays a link.
  *
  * The one button of the design system.
  *
