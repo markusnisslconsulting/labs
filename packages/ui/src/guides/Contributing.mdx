@@ -71,7 +71,8 @@ reviewed. Every component must still have at least one snapshotted story.
 
 ```
 pnpm nx run-many -t lint typecheck test build build-storybook \
-  test-storybook tokens-check contrast-check story-coverage snapshot-budget
+  test-storybook browser-test tokens-check contrast-check story-coverage \
+  snapshot-budget
 pnpm nx run site:a11y
 ```
 

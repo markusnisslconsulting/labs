@@ -46,8 +46,10 @@ Docs-Seite des Parts — nicht in Foundations.
 
 ```sh
 pnpm nx run-many -t typecheck lint test build build-storybook test-storybook \
+  browser-test tokens-check contrast-check story-coverage snapshot-budget \
   --skip-nx-cache
 pnpm format:check
+pnpm nx run site:a11y
 pnpm nx run ui:visual-test        # lokal, gegen committed baselines
 ```
 

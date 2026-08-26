@@ -80,8 +80,18 @@ environments; revisited at 1.0).
   `aria-pressed`, tabs activate on Enter, an alert with a title is a
   named `alert` region.
 - **A11y as a gate:** the a11y addon checks every story with
-  `a11y: { test: "error" }`; `pnpm nx run ui:test-storybook` replays
-  all stories headless in CI. Findings block deploys.
+  `a11y: { test: "error" }`, and `pnpm nx run ui:test-storybook` replays
+  every story in a real browser through `@storybook/addon-vitest`.
+  Findings block deploys. The suite runs twice, light and dark: a
+  light-only run is how a black-on-dark select, a tooltip trigger on the
+  browser's grey button face and a nested brand stuck on its light accent
+  all shipped.
+- **Cross-cutting gates:** `ui:browser-test` is a Playwright suite for
+  the things no single story can assert — every docs page renders, the
+  control scale holds across density and root font size, nothing
+  overflows a 360px viewport, a high contrast theme still distinguishes
+  selected from unselected, `auto` follows the system, and the print
+  sheet out-ranks the components.
 - **Visual regression:** Chromatic on every push and PR
   (Turbosnap builds only changed stories; findings reviewable in the
   Chromatic app). A local Playwright screenshot gate
