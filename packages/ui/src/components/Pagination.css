@@ -6,9 +6,43 @@
 @layer components {
   .uix-pagination {
     display: flex;
+    /* wrap stays as the last resort; the container query below is what
+       actually keeps the row intact. */
     flex-wrap: wrap;
     align-items: center;
     gap: var(--uix-gap-sm);
+    container-type: inline-size;
+  }
+
+  .uix-pagination-summary {
+    display: none;
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-200);
+  }
+
+  /* Nine pages plus both arrows do not fit a phone. Measured at 360px:
+     the row wrapped and left Next alone on a second line. Below this
+     width the numbers give way to one sentence, and the two arrows keep
+     the control usable. A media query would have asked about the
+     viewport; the component cares about its own box. */
+  @container (max-width: 25rem) {
+    /* Scoped through the parent on purpose. A bare .uix-pagination-page
+       carries the same weight as Button's own .uix-button, and Button.css
+       is emitted later, so display:inline-flex won and the row still
+       wrapped. */
+    .uix-pagination .uix-pagination-page,
+    .uix-pagination .uix-pagination-ellipsis {
+      display: none;
+    }
+
+    .uix-pagination-summary {
+      display: inline;
+    }
+
+    .uix-pagination {
+      justify-content: space-between;
+      width: 100%;
+    }
   }
 
   .uix-pagination-ellipsis {
@@ -17,5 +51,20 @@
 
   .uix-pagination [aria-current="page"] {
     cursor: default;
+  }
+
+  /* Square page buttons. Without a floor the row jitters as the window
+     moves, because "9" is narrower than "10". */
+  .uix-pagination .uix-button {
+    min-width: var(--uix-control-sm);
+    padding-inline: var(--uix-gap-sm);
+    justify-content: center;
+  }
+
+  /* The chevrons point at the previous and next page, which swap sides
+     with the writing direction. The label already says which is which,
+     so only the picture has to turn. */
+  [dir="rtl"] .uix-pagination svg {
+    transform: scaleX(-1);
   }
 }

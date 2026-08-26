@@ -1,4 +1,5 @@
 import { useId, type SelectHTMLAttributes } from "react";
+import { ChevronDown } from "lucide-react";
 
 import { cx } from "../cx";
 import "./_field.css";
@@ -52,8 +53,8 @@ export function Select({
             </option>
           ))}
         </select>
-        <span className="uix-select-chevron" aria-hidden>
-          ▾
+        <span className="uix-field-affordance" aria-hidden>
+          <ChevronDown size={16} />
         </span>
       </div>
       {hint ? (

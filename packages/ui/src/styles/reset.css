@@ -1,0 +1,212 @@
+/* Cross-browser normalization.
+ *
+ * There was none. base.css set a typographic voice and was mistaken for
+ * a foundation, so every user-agent default reached the components
+ * untouched. Three separate bug reports about things "not centred" or
+ * "not aligned" were all this: no box-sizing, so every min-height in the
+ * library was a floor on the content box and any bordered control came
+ * out two pixels over the scale.
+ *
+ * What this file is: the box model, inheritance, and the handful of
+ * places where browsers still disagree. Nothing here expresses taste.
+ * The voice lives in base.css, which is imported after this one, so on
+ * equal specificity the voice wins.
+ *
+ * What this file is not: normalize.css. Most of that file corrects
+ * browsers nobody ships any more. Every rule below is here because a
+ * browser in the support matrix still needs it, and says which one.
+ */
+
+@layer base {
+  /* The box model, once, for everything. Any later min-height, height or
+     width then means the thing a designer measured. */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* The user-agent margins on flow content are arbitrary and differ
+     between engines. base.css sets the rhythm deliberately instead. */
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd,
+  pre {
+    margin: 0;
+  }
+
+  html {
+    /* iOS Safari inflates text when a phone is rotated to landscape
+       unless this is pinned. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* WebKit paints a grey flash on every tap on a link or button. */
+    -webkit-tap-highlight-color: transparent;
+    /* A tab is eight columns wide in the UA default, which makes any
+       preformatted code sample unreadable. */
+    tab-size: 4;
+  }
+
+  /* Media is block-level, so it stops sitting on a text baseline and
+     leaving a gap under itself, and never exceeds its column. */
+  img,
+  picture,
+  video,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* An icon does sit in a line of text, so it keeps inline flow and gets
+     its baseline corrected instead. */
+  svg {
+    vertical-align: middle;
+  }
+
+  /* Form controls do not inherit type or colour in any engine, and
+     Safari additionally refuses to inherit letter-spacing. Without this,
+     a control's text is 13.33px Arial inside a page set in the brand
+     font. */
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    /* Firefox and Safari add their own margins here. */
+    margin: 0;
+  }
+
+  /* Safari renders a file input's button in the UA font otherwise. */
+  ::-webkit-file-upload-button {
+    font: inherit;
+  }
+
+  /* Firefox applies opacity 0.54 to placeholders on top of the colour,
+     so the same hex renders lighter there than in Chrome. */
+  ::placeholder {
+    color: var(--uix-text-secondary);
+    opacity: 1;
+  }
+
+  /* WebKit draws its own clear button inside a search field, which
+       overlaps whatever the component puts at the inline end. */
+  ::-webkit-search-decoration,
+  ::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  /* A pointer on anything that acts, in every engine. */
+  button,
+  [type="button"],
+  [type="reset"],
+  [type="submit"],
+  summary {
+    cursor: pointer;
+  }
+
+  /* Safari does not give summary the list-item display the spec asks
+     for, so the disclosure marker never appears. */
+  summary {
+    display: list-item;
+  }
+
+  /* Spacing between cells is a UA default nobody wants, and it cannot be
+     removed from the component's own sheet once a table has inherited
+     it. */
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  /* The UA gives hr a colour of its own and no consistent height. */
+  hr {
+    height: 0;
+    color: inherit;
+    border: 0;
+    border-top: 1px solid;
+  }
+
+  /* Both of these render at 13px in the UA stylesheet's monospace
+     family, which is smaller than the surrounding text. */
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--uix-font-mono);
+    font-size: 1em;
+  }
+
+  /* Superscripts otherwise push their line taller than its neighbours. */
+  sub,
+  sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  sub {
+    bottom: -0.25em;
+  }
+
+  sup {
+    top: -0.5em;
+  }
+
+  /* Safari drops the underline on an abbreviation entirely. */
+  abbr[title] {
+    text-decoration: underline dotted;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  legend {
+    padding: 0;
+  }
+
+  progress {
+    vertical-align: baseline;
+  }
+
+  textarea {
+    /* Horizontal resize breaks any layout it sits in. */
+    resize: vertical;
+  }
+
+  /* A layout rule can out-rank the hidden attribute, and then an element
+     the author removed is still on the screen. This is the one place the
+     bluntness is worth it. */
+  [hidden]:not([hidden="until-found"]) {
+    display: none !important;
+  }
+
+  /* Someone who asked their system for less motion means it. Kept as a
+     floor rather than zero, because a duration of 0 cancels the
+     transitionend and animationend events some components wait on. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

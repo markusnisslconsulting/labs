@@ -85,7 +85,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "vitest run packages/ui/test --root ."
+        "command": "vitest run packages/ui/test/ --root ."
       }
     },
     "test-storybook": {
@@ -143,11 +143,11 @@
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4520 --silent\" \"wait-on tcp:127.0.0.1:4520 && pnpm exec playwright test --config visual/playwright.config.ts --update-snapshots\""
       }
     },
-    "docs-smoke": {
+    "browser-test": {
       "executor": "nx:run-commands",
       "dependsOn": ["build-storybook"],
       "options": {
-        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4414 --silent\" \"wait-on tcp:127.0.0.1:4414 && pnpm exec playwright test --config packages/ui/playwright.docs.config.ts\""
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4414 --silent\" \"wait-on tcp:127.0.0.1:4414 && pnpm exec playwright test --config packages/ui/playwright.browser.config.ts\""
       }
     }
   }

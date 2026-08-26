@@ -1,5 +1,7 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 import { Button } from "./Button";
 
 import { cx } from "../cx";
@@ -72,7 +74,7 @@ export function Pagination({
         disabled={page === 1}
         aria-label="Previous page"
       >
-        ‹
+        <ChevronLeft size={16} aria-hidden />
       </Button>
       {window[0] !== 1 ? (
         <>
@@ -81,6 +83,7 @@ export function Pagination({
             size="sm"
             onClick={() => go(1)}
             aria-label="Page 1"
+            className="uix-pagination-page"
           >
             1
           </Button>
@@ -100,6 +103,7 @@ export function Pagination({
             size="sm"
             aria-current="page"
             aria-label={`Page ${p}`}
+            className="uix-pagination-page"
           >
             {p}
           </Button>
@@ -110,6 +114,7 @@ export function Pagination({
             size="sm"
             onClick={() => go(p)}
             aria-label={`Page ${p}`}
+            className="uix-pagination-page"
           >
             {p}
           </Button>
@@ -126,10 +131,17 @@ export function Pagination({
           size="sm"
           onClick={() => go(pageCount)}
           aria-label={`Page ${pageCount}`}
+          className="uix-pagination-page"
         >
           {pageCount}
         </Button>
       ) : null}
+      {/* Not aria-hidden: in the narrow form the numbered buttons are
+          display:none and leave the accessibility tree with aria-current,
+          so this sentence becomes the only statement of where you are. */}
+      <span className="uix-pagination-summary">
+        Page {page} of {pageCount}
+      </span>
       <Button
         variant="outline"
         size="sm"
@@ -137,7 +149,7 @@ export function Pagination({
         disabled={page === pageCount}
         aria-label="Next page"
       >
-        ›
+        <ChevronRight size={16} aria-hidden />
       </Button>
     </nav>
   );

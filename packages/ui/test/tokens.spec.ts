@@ -306,6 +306,72 @@ describe("the layering rules the architecture depends on", () => {
     }
   });
 
+  /**
+   * An icon is a drawing, never a character.
+   *
+   * Select's chevron was a ▾, NumberField's steppers were − and +, and
+   * both sat wrong inside their boxes: a glyph is positioned by the
+   * font's metrics, not by the box, so it cannot be centred from CSS,
+   * and it changes shape with whatever font is actually available. Three
+   * separate "not centred correctly" reports were all this one cause.
+   *
+   * The ellipsis in Pagination is deliberately not covered: it is text
+   * that happens to be punctuation, not a picture of an action.
+   */
+  it("no component draws an icon with a text character", () => {
+    const dir = "packages/ui/src/components";
+    const GLYPHS = "▾▴▸◂▼▲△▽×÷−–—✓✔✕✖→←↑↓⌄⌃‹›«»•";
+    const pattern = new RegExp(`>\\s*([${GLYPHS}])\\s*<`, "s");
+    for (const file of readdirSync(dir).filter((f) => f.endsWith(".tsx"))) {
+      const source = readFileSync(join(dir, file), "utf8");
+      const hit = pattern.exec(source);
+      expect(
+        hit?.[1],
+        `${file} renders "${hit?.[1]}" as an icon; use a lucide icon so the box positions it`,
+      ).toBeUndefined();
+    }
+  });
+
+  /**
+   * Two promises the accessibility story rests on, both invisible until
+   * a reader has changed a setting.
+   *
+   * Pinning font-size on the root element cancels a browser text-size
+   * preference, and every length in this library is a rem against it. And
+   * without color-scheme the engine keeps painting its own chrome for the
+   * other theme, so a dark page gets a light scrollbar and a white date
+   * picker.
+   */
+  it("the reader's root font size is never pinned", () => {
+    for (const file of ["base.css", "reset.css"]) {
+      const source = readFileSync(join("packages/ui/src/styles", file), "utf8");
+      // Any font-size inside a rule that selects html or :root.
+      for (const block of source.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        const selector = block[1]!;
+        if (!/(^|[\s,])(html|:root)([\s,]|$)/.test(selector)) continue;
+        expect(
+          /font-size/.test(block[2]!),
+          `${file} sets font-size on "${selector.trim()}"; the root size is the reader's`,
+        ).toBe(false);
+      }
+    }
+  });
+
+  it("each theme declares its color-scheme", () => {
+    const source = readFileSync(
+      "packages/ui/src/styles/tokens/semantic.css",
+      "utf8",
+    );
+    expect(
+      /:root\s*\{[^}]*color-scheme:\s*light/.test(source),
+      "the light theme must declare color-scheme: light",
+    ).toBe(true);
+    expect(
+      /\[data-theme="dark"\]\s*\{[^}]*color-scheme:\s*dark/.test(source),
+      "the dark theme must declare color-scheme: dark",
+    ).toBe(true);
+  });
+
   it("every component stylesheet lives in @layer components", () => {
     for (const { file, source } of componentCss) {
       expect(

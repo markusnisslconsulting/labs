@@ -8,6 +8,15 @@
     display: flex;
     gap: var(--uix-gap-sm);
     border-bottom: 1px solid var(--uix-border-subtle);
+    /* Measured at 360px: three tabs pushed the document 5px wide. A
+       tablist is a row by definition, so it scrolls inside itself rather
+       than making the whole page scroll. */
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .uix-tab {
+    flex: none;
   }
 
   .uix-tab {

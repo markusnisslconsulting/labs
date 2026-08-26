@@ -4,8 +4,12 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
-  .uix-select-chevron {
-    color: var(--uix-text-secondary);
-    pointer-events: none;
+  /* Was an element-qualified rule in the shared sheet, which reached
+     every select on the page whether or not it was this component. */
+  .uix-select {
+    appearance: none;
+    /* The chevron is a sibling, so the text must stop before it. */
+    padding-inline-end: var(--uix-gap-sm);
+    cursor: pointer;
   }
 }

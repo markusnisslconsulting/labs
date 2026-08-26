@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { NumberField as BaseNumberField } from "@base-ui-components/react/number-field";
+import { Minus, Plus } from "lucide-react";
 
 import { cx } from "../cx";
 import "./_field.css";
@@ -65,14 +66,14 @@ export function NumberField({
       >
         <BaseNumberField.Group className="uix-numberfield">
           <BaseNumberField.Decrement className="uix-numberfield-step">
-            −
+            <Minus size={16} />
           </BaseNumberField.Decrement>
           <BaseNumberField.Input
             className="uix-field-input"
             aria-label={label}
           />
           <BaseNumberField.Increment className="uix-numberfield-step">
-            +
+            <Plus size={16} />
           </BaseNumberField.Increment>
         </BaseNumberField.Group>
       </BaseNumberField.Root>

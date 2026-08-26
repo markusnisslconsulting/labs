@@ -22,9 +22,17 @@ export const NinePages: Story = {
     // here used to move the page while this story was still the
     // snapshotted one, so the baseline showed page 5 under a name and
     // args that both said page 4.
-    await expect(
-      canvas.getByRole("button", { name: "Page 4" }),
-    ).toHaveAttribute("aria-current", "page");
+    //
+    // getByLabelText, not getByRole: this story also renders in the
+    // narrow mode, where the numbered buttons are display:none and so
+    // absent from the accessibility tree that getByRole searches. The
+    // label query reads the DOM, so the assertion holds at both widths.
+    await expect(canvas.getByLabelText("Page 4")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    // What a narrow viewer gets instead of the numbers.
+    await expect(canvas.getByText("Page 4 of 9")).toBeInTheDocument();
   },
 };
 
@@ -34,9 +42,10 @@ export const MovingToTheNextPage: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvas }) => {
     await canvas.getByRole("button", { name: "Next page" }).click();
-    await expect(
-      canvas.getByRole("button", { name: "Page 5" }),
-    ).toHaveAttribute("aria-current", "page");
+    await expect(canvas.getByLabelText("Page 5")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   },
 };
 

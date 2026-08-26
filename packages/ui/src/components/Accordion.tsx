@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
+import { Minus, Plus } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cxState } from "../cx";
@@ -57,8 +58,12 @@ export function Accordion({
             <BaseAccordion.Trigger className="uix-accordion-trigger">
               {item.title}
               <span aria-hidden className="uix-accordion-chevron">
-                <span className="uix-accordion-chevron-open">−</span>
-                <span className="uix-accordion-chevron-closed">+</span>
+                <span className="uix-accordion-chevron-open">
+                  <Minus size={16} />
+                </span>
+                <span className="uix-accordion-chevron-closed">
+                  <Plus size={16} />
+                </span>
               </span>
             </BaseAccordion.Trigger>
           </BaseAccordion.Header>

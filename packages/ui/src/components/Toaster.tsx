@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { useEffect } from "react";
+import { X } from "lucide-react";
 
 import { cx } from "../cx";
 import "./Toaster.css";
@@ -61,7 +62,7 @@ function Toast({
         aria-label="Dismiss"
         onClick={() => onDismiss(toast.id)}
       >
-        ✕
+        <X size={14} aria-hidden />
       </button>
     </div>
   );

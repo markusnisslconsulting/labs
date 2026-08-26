@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { useId, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 import { cx } from "../cx";
 import "./_field.css";
@@ -73,6 +74,9 @@ export function Combobox({
             onValueChange?.(event.target.value);
           }}
         />
+        <span className="uix-field-affordance" aria-hidden>
+          <ChevronDown size={16} />
+        </span>
         <datalist id={`${id}-options`}>
           {matches.map((option) => (
             <option key={option} value={option} />

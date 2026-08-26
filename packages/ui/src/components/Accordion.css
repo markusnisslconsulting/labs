@@ -34,8 +34,9 @@
   }
 
   .uix-accordion-chevron {
-    font-size: 1.1rem;
-    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    color: var(--uix-text-secondary);
   }
 
   .uix-accordion-chevron-open {
@@ -43,7 +44,7 @@
   }
 
   [data-panel-open] .uix-accordion-chevron-open {
-    display: inline;
+    display: inline-flex;
   }
 
   [data-panel-open] .uix-accordion-chevron-closed {

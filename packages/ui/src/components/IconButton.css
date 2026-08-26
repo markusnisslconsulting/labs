@@ -8,8 +8,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: var(--uix-control-md);
-    height: var(--uix-control-md);
+    /* A floor with a square ratio, not a fixed width and height. Fixed
+       sizes cannot grow, so a reader who sets their browser text to 20px
+       got an icon pressed against the edge of a box that stayed 40px.
+       min-* plus aspect-ratio keeps it square and lets it grow. */
+    min-width: var(--uix-control-md);
+    min-height: var(--uix-control-md);
+    aspect-ratio: 1;
     border-radius: var(--uix-radius-m);
     border: 1px solid transparent;
     background: transparent;
@@ -18,8 +23,8 @@
   }
 
   .uix-iconbutton[data-size="sm"] {
-    width: var(--uix-control-sm);
-    height: var(--uix-control-sm);
+    min-width: var(--uix-control-sm);
+    min-height: var(--uix-control-sm);
   }
 
   .uix-iconbutton:hover {

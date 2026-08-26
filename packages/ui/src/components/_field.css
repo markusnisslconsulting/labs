@@ -34,6 +34,17 @@
     box-shadow: 0 0 0 3px var(--uix-accent-soft);
   }
 
+  /* Windows high contrast drops box-shadow, so the ring above simply
+     disappears and a focused field looks like every other field. An
+     outline survives, and Highlight is the system colour the user chose
+     for exactly this. */
+  @media (forced-colors: active) {
+    .uix-field-row:focus-within {
+      outline: 2px solid Highlight;
+      outline-offset: 1px;
+    }
+  }
+
   .uix-field-row[data-invalid] {
     border-color: var(--uix-status-danger);
   }
@@ -59,10 +70,17 @@
     outline: none; /* the row carries the focus ring */
   }
 
-  select.uix-field-input {
-    appearance: none;
-    padding-inline-end: var(--uix-gap-xl);
-    cursor: pointer;
+  /* The icon that says what a field does: a chevron on a chooser. It is
+     decorative, so it never takes a click, and it is a flex box of its
+     own so the glyph's own metrics cannot decide where it sits. A text
+     character could not do that, which is why the ▾ used to sit high. */
+  .uix-field-affordance {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    color: var(--uix-text-secondary);
+    pointer-events: none;
   }
 
   .uix-field-adornment {

@@ -146,9 +146,9 @@ export const semanticTokens: TokenDescriptor[] = [
   t("--uix-paper", "var(--uix-white)", "semantic", "color", "Brightest surface for this theme; mix toward it to lighten a fill"),
   t("--uix-surface-inverse", "var(--uix-ink)", "semantic", "color", "Inverted surface (dark on light, light on dark)"),
   t("--uix-text-on-inverse", "var(--uix-paper)", "semantic", "color", "Text on an inverted surface"),
-  t("--uix-control-sm", "calc(2rem * var(--uix-density))", "semantic", "space", "Small control height"),
-  t("--uix-control-md", "calc(2.5rem * var(--uix-density))", "semantic", "space", "Default control height: buttons, fields, steppers"),
-  t("--uix-control-lg", "calc(3rem * var(--uix-density))", "semantic", "space", "Large control height"),
+  t("--uix-control-sm", "max(24px, calc(2rem * var(--uix-density)))", "semantic", "space", "Small control height"),
+  t("--uix-control-md", "max(24px, calc(2.5rem * var(--uix-density)))", "semantic", "space", "Default control height: buttons, fields, steppers"),
+  t("--uix-control-lg", "max(24px, calc(3rem * var(--uix-density)))", "semantic", "space", "Large control height"),
   t("--uix-text-body", "var(--uix-font-size-300)", "semantic", "typography", "Body text role"),
   t("--uix-text-heading", "var(--uix-font-size-500)", "semantic", "typography", "Heading text role"),
   t("--uix-text-caption", "var(--uix-font-size-100)", "semantic", "typography", "Caption text role"),
@@ -205,7 +205,7 @@ export const componentTokens: TokenDescriptor[] = [
   t("--uix-switch-track-bg", "var(--uix-bg-subtle)", "component", "color", "Switch track, off"),
   t("--uix-switch-track-on-bg", "var(--uix-accent)", "component", "color", "Switch track, on"),
   t("--uix-switch-thumb-bg", "var(--uix-bg-surface)", "component", "color", "Switch knob"),
-  t("--uix-switch-travel", "1.3rem", "component", "size", "How far the knob travels; negated under dir=rtl"),
+  t("--uix-switch-travel", "1.3rem", "component", "space", "How far the knob travels; negated under dir=rtl"),
   t("--uix-search-border", "var(--uix-border-subtle)", "component", "color", "Search input border"),
 ];
 

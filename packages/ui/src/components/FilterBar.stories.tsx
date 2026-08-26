@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NARROW } from "../../.storybook/modes";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { Chip } from "./Chip";
 import { IconButton } from "./IconButton";
@@ -44,7 +45,7 @@ function FilterBar() {
           style={{ flex: 1 }}
         />
         <IconButton label="Clear filters" variant="outline">
-          ✕
+          <X size={14} />
         </IconButton>
       </div>
       <div

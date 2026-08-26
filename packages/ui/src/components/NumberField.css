@@ -5,8 +5,14 @@
 
 @layer components {
   .uix-numberfield {
+    /* The group carries the height, so its own border counts inside it.
+       Without this the steppers set the height and the border added two
+       pixels on top: 42 against a scale that says 40. */
+    min-height: var(--uix-control-md);
     display: inline-flex;
-    align-items: center;
+    /* stretch, not center: the steppers set the height, and a centered
+       input left a strip of the group's background under it. */
+    align-items: stretch;
     border: 1px solid var(--uix-border-subtle);
     border-radius: var(--uix-radius-m);
     background: var(--uix-bg-surface);
@@ -19,7 +25,7 @@
 
   .uix-numberfield-step {
     width: var(--uix-control-md);
-    height: var(--uix-control-md);
+    /* Height comes from stretching to the group, not from its own floor. */
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -30,7 +36,7 @@
     cursor: pointer;
   }
 
-  .uix-numberfield-step:hover {
+  .uix-numberfield-step:hover:not(:disabled) {
     color: var(--uix-accent);
   }
 
@@ -41,14 +47,17 @@
 
   .uix-numberfield .uix-field-input {
     text-align: center;
-    padding: var(--uix-gap-sm) var(--uix-gap-md);
+    padding-block: 0;
+    padding-inline: var(--uix-gap-md);
     font-variant-numeric: tabular-nums;
   }
 
-  /* Base UI stamps data-disabled on the group and both steppers; the
-     shared field rule only covers the native input. */
+  /* Base UI stamps data-disabled on the group and both steppers, and
+     sets the native attribute on a stepper that has reached the min or
+     the max. Both spellings, or a stepper at the limit looks live. */
   .uix-numberfield[data-disabled],
-  .uix-numberfield-step[data-disabled] {
+  .uix-numberfield-step[data-disabled],
+  .uix-numberfield-step:disabled {
     opacity: var(--uix-opacity-disabled);
     cursor: not-allowed;
   }

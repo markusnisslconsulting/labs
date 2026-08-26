@@ -49,9 +49,9 @@
      without anyone nudging padding. Measured before this existed: 43,
      42, 41, 38, 35, 33 and 32px across components that sit next to each
      other. Density-scaled, like the spacing roles. */
-    --uix-control-sm: calc(2rem * var(--uix-density));
-    --uix-control-md: calc(2.5rem * var(--uix-density));
-    --uix-control-lg: calc(3rem * var(--uix-density));
+    --uix-control-sm: max(24px, calc(2rem * var(--uix-density)));
+    --uix-control-md: max(24px, calc(2.5rem * var(--uix-density)));
+    --uix-control-lg: max(24px, calc(3rem * var(--uix-density)));
 
     /* The two ends of the neutral ramp for this theme. Components mix
      toward these to shade a fill, so a hover deepens on light and
@@ -107,6 +107,18 @@
     --uix-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.5);
     --uix-shadow-2: 0 8px 20px rgba(0, 0, 0, 0.45);
     --uix-shadow-3: 0 18px 45px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Tells the engine which theme it is painting, so the scrollbars, the
+     text caret, the spellcheck underline and every native control the
+     library does not own follow it too. Without this a dark page keeps a
+     light scrollbar and a white date picker. */
+  :root {
+    color-scheme: light;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
   }
 
   /* Density: one multiplier the components consume. Products set

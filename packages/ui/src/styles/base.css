@@ -1,11 +1,25 @@
-/* Element defaults. The demos and the site shell both assume these,
-   so Storybook renders with the same typographic voice as production. */
+/* The typographic voice.
+ *
+ * Element defaults only, all of them expressed in tokens. The demos and
+ * the site shell both assume these, so Storybook renders with the same
+ * voice as production.
+ *
+ * Normalization is not here: reset.css owns the box model, inheritance
+ * and the browser disagreements, and is imported first so that on equal
+ * specificity these rules win. Anything in this file that is not a
+ * choice someone could reasonably make differently belongs there.
+ */
 
 @layer base {
-  html,
+  html {
+    background: var(--uix-bg-page);
+  }
+
+  /* font-size is set on body, never on html. The root font size is the
+     reader's own setting, and every length in the library is a rem
+     against it; pinning it would quietly cancel a browser text-size
+     preference, which is the thing rem exists to respect. */
   body {
-    margin: 0;
-    padding: 0;
     background: var(--uix-bg-page);
     color: var(--uix-text-primary);
     font-family: var(--uix-font-sans);
@@ -29,42 +43,35 @@
   h2,
   h3,
   h4 {
-    line-height: 1.15;
-    margin: 0 0 0.5em;
+    line-height: var(--uix-line-height-tight);
+    margin-bottom: 0.5em;
     letter-spacing: -0.01em;
+    /* Stops a heading from leaving one word alone on its last line. */
+    text-wrap: balance;
   }
 
   p {
-    margin: 0 0 0.9rem;
+    margin-bottom: 0.9rem;
   }
 
   code {
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     font-size: 0.92em;
     background: var(--uix-bg-subtle);
     padding: 0.1em 0.35em;
-    border-radius: 0.35em;
+    border-radius: var(--uix-radius-s);
   }
 
   pre code {
     display: block;
-    padding: 0.8rem 1rem;
+    padding: var(--uix-gap-md) var(--uix-gap-lg);
+    /* A long sample scrolls inside its own box rather than widening the
+       page. */
     overflow-x: auto;
     text-align: left;
   }
 
-  button,
-  input,
-  textarea,
-  select {
-    font: inherit;
-    /* select was missing here, so a native select kept the UA's black
-       text and rendered black-on-dark-surface in the dark theme. */
-    color: inherit;
-  }
-
-  /* Rendered for assistive technology only. Used where a visible
-     label cannot exist (spinner, switch track). */
+  /* Rendered for assistive technology only. Used where a visible label
+     cannot exist (spinner, switch track). */
   .uix-visually-hidden {
     position: absolute;
     width: 1px;

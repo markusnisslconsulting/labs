@@ -12,7 +12,12 @@
     color: var(--uix-chip-fg, var(--uix-text-secondary));
     border: 1px solid transparent;
     border-radius: 999px;
-    padding: var(--uix-gap-xs) calc(var(--uix-gap-sm) + var(--uix-space-2));
+    /* On the control scale like every other interactive box; padding
+       alone put it at 31.7px, which is nearly right and therefore worse
+       than wrong. */
+    min-height: var(--uix-control-sm);
+    padding-block: 0;
+    padding-inline: calc(var(--uix-gap-sm) + var(--uix-space-2));
     font-size: var(--uix-font-size-200);
     line-height: var(--uix-line-height-normal);
   }
