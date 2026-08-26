@@ -103,3 +103,44 @@ export const KeyboardReachable: Story = {
     );
   },
 };
+
+/**
+ * The counts that used to break it.
+ *
+ * `pageCount={1}` rendered page 1 twice — two buttons with the same
+ * accessible name, both carrying `aria-current="page"`, and two React
+ * children with the same key. `pageCount={0}` rendered a button labelled
+ * "Page 0". A single-page result set is not an edge case; it is what a
+ * filter returns most afternoons.
+ */
+export const SmallCounts: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <div style={{ display: "grid", gap: "1.2rem", justifyItems: "start" }}>
+      {/* Each landmark is named distinctly. Four navigations called
+          "Pagination" is axe's landmark-unique violation, and it is not a
+          story artefact: a long table has a pagination above it and
+          another below. */}
+      <Pagination pageCount={0} label="No results" />
+      <Pagination pageCount={1} label="One page" />
+      <Pagination pageCount={2} label="Two pages" />
+      <Pagination pageCount={3} defaultPage={2} label="Three pages" />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    // Exactly one page-1 button per pagination, and no page 0 anywhere.
+    await expect(canvas.queryAllByLabelText("Page 0")).toHaveLength(0);
+    await expect(canvas.queryAllByLabelText("Page 1")).toHaveLength(4);
+    // Each pagination states where it is, and each says a sensible total.
+    // A count of aria-current buttons would be the direct assertion, but
+    // neither filtering the canvas's proxied elements by attribute nor the
+    // role query's `current` option matched inside the instrumented
+    // canvas — so this asserts the summary, which is the same fact stated
+    // where a narrow reader gets it.
+    // Two of them: pageCount 0 and pageCount 1 both clamp to a single
+    // page, which is the fix stating itself.
+    await expect(canvas.getAllByText("Page 1 of 1")).toHaveLength(2);
+    await expect(canvas.getByText("Page 1 of 2")).toBeVisible();
+    await expect(canvas.getByText("Page 2 of 3")).toBeVisible();
+  },
+};

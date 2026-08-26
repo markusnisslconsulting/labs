@@ -90,6 +90,7 @@ const SELF_CONTAINED: Record<string, string> = {
  */
 const ACCESSIBLE_NAME: Record<string, string> = {
   "Breadcrumb.tsx": "label names the nav",
+  "Pagination.tsx": "label names the nav landmark, per instance",
   "Divider.tsx": "label names the separator",
   "IconButton.tsx": "label is the button's only name",
   "NumberField.tsx": "label is the input's aria-label",

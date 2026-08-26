@@ -19,6 +19,16 @@ interface PaginationOwnProps {
   page?: number;
   defaultPage?: number;
   onPageChange?: (page: number) => void;
+  /**
+   * The landmark's accessible name, overriding the locale default.
+   *
+   * Needed because two paginations on one page is normal — above and
+   * below a long table — and two navigation landmarks with the same name
+   * is an accessibility failure (axe's landmark-unique). The strings table
+   * can only supply one name for the whole application, so the second
+   * instance has to be able to say "Results, bottom".
+   */
+  label?: string;
 }
 
 /**
@@ -46,40 +56,63 @@ export function Pagination({
   page: controlledPage,
   defaultPage = 1,
   onPageChange,
+  label,
   className,
   ...rest
 }: PaginationProps) {
   const labels = useStrings();
   const isControlled = controlledPage !== undefined;
-  const [uncontrolled, setUncontrolled] = useState(
-    Math.min(Math.max(defaultPage, 1), pageCount),
-  );
+  const [uncontrolled, setUncontrolled] = useState(Math.max(defaultPage, 1));
 
+  // A page count below one is not a pagination. Clamping here rather than
+  // asking every caller to, because the caller is usually passing
+  // Math.ceil(matches / perPage) and matches is often zero.
+  const total = Math.max(1, Math.floor(pageCount) || 1);
   const page = isControlled
-    ? Math.min(Math.max(controlledPage, 1), pageCount)
-    : uncontrolled;
+    ? Math.min(Math.max(controlledPage, 1), total)
+    : Math.min(uncontrolled, total);
 
   const go = (next: number) => {
-    const clamped = Math.min(Math.max(next, 1), pageCount);
+    const clamped = Math.min(Math.max(next, 1), total);
     if (clamped === page) return;
     if (!isControlled) setUncontrolled(clamped);
     onPageChange?.(clamped);
   };
 
-  /** Sliding window; erste und letzte Seite bleiben sichtbar. */
-  const window: number[] = [];
-  const start = Math.max(2, Math.min(page - 1, pageCount - 2));
-  const end = Math.min(pageCount - 1, Math.max(page + 1, 3));
-  for (let p = start; p <= end; p += 1) {
-    window.push(p);
-  }
-  const showLeadingEllipsis = start > 2;
-  const showTrailingEllipsis = end < pageCount - 1;
+  /*
+   * One list, deduplicated by construction, with gaps marked.
+   *
+   * The previous version computed a sliding window and then decided
+   * separately whether to prepend page 1 and append the last page. At
+   * pageCount 1 both of those fired and it rendered page 1 twice: two
+   * buttons with the same accessible name, both carrying
+   * aria-current="page", and two React children with the same key. At
+   * pageCount 0 it rendered a button labelled "Page 0".
+   *
+   * A single-page result set is not an edge case, it is what a filter
+   * returns most afternoons.
+   *
+   * A Set cannot contain page 1 twice, so the bug is not expressible
+   * here; the ellipsis is derived from the gaps afterwards rather than
+   * decided in parallel with the window.
+   */
+  const shown = [
+    ...new Set(
+      [1, total, page - 1, page, page + 1].filter((p) => p >= 1 && p <= total),
+    ),
+  ].sort((a, b) => a - b);
+
+  const slots: Array<number | "gap"> = [];
+  shown.forEach((p, index) => {
+    const previous = shown[index - 1];
+    if (previous !== undefined && p - previous > 1) slots.push("gap");
+    slots.push(p);
+  });
 
   return (
     <nav
       className={cx("uix-pagination", className)}
-      aria-label={labels.pagination}
+      aria-label={label ?? labels.pagination}
       {...rest}
     >
       <Button
@@ -91,77 +124,51 @@ export function Pagination({
       >
         <ChevronLeft size={16} aria-hidden />
       </Button>
-      {window[0] !== 1 ? (
-        <>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => go(1)}
-            aria-label={labels.page(1)}
-            className="uix-pagination-page"
+      {slots.map((slot, index) =>
+        slot === "gap" ? (
+          <span
+            key={`gap-${index}`}
+            className="uix-pagination-ellipsis"
+            aria-hidden
           >
-            1
-          </Button>
-          {showLeadingEllipsis ? (
-            <span className="uix-pagination-ellipsis" aria-hidden>
-              …
-            </span>
-          ) : null}
-        </>
-      ) : null}
-      {window.map((p) =>
-        p === page ? (
+            …
+          </span>
+        ) : slot === page ? (
           <Button
-            key={p}
+            key={slot}
             variant="solid"
             tone="neutral"
             size="sm"
             aria-current="page"
-            aria-label={labels.page(p)}
+            aria-label={labels.page(slot)}
             className="uix-pagination-page"
           >
-            {p}
+            {slot}
           </Button>
         ) : (
           <Button
-            key={p}
+            key={slot}
             variant="outline"
             size="sm"
-            onClick={() => go(p)}
-            aria-label={labels.page(p)}
+            onClick={() => go(slot)}
+            aria-label={labels.page(slot)}
             className="uix-pagination-page"
           >
-            {p}
+            {slot}
           </Button>
         ),
       )}
-      {showTrailingEllipsis ? (
-        <span className="uix-pagination-ellipsis" aria-hidden>
-          …
-        </span>
-      ) : null}
-      {window.at(-1) !== pageCount ? (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => go(pageCount)}
-          aria-label={labels.page(pageCount)}
-          className="uix-pagination-page"
-        >
-          {pageCount}
-        </Button>
-      ) : null}
       {/* Not aria-hidden: in the narrow form the numbered buttons are
           display:none and leave the accessibility tree with aria-current,
           so this sentence becomes the only statement of where you are. */}
       <span className="uix-pagination-summary">
-        Page {page} of {pageCount}
+        Page {page} of {total}
       </span>
       <Button
         variant="outline"
         size="sm"
         onClick={() => go(page + 1)}
-        disabled={page === pageCount}
+        disabled={page === total}
         aria-label={labels.nextPage}
       >
         <ChevronRight size={16} aria-hidden />
