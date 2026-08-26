@@ -43,10 +43,40 @@ for (const { id, title } of docs) {
     // The iframe URL renders the docs page without the manager, so a
     // failure here is the page's own, not the shell's.
     await page.goto(`/iframe.html?id=${id}&viewMode=docs`, {
-      waitUntil: "networkidle",
+      waitUntil: "domcontentloaded",
     });
 
-    const body = (await page.locator("body").innerText()).slice(0, 4000);
+    /* Wait for the settled page, not for the network, and read it once.
+     *
+     * Two things were wrong here. It waited on `networkidle`, which is a
+     * guess about rendering dressed as a wait: Storybook mounts an
+     * autodocs page after its modules load, so the network can go quiet
+     * before React has committed. In CI, on the two heaviest pages, it
+     * had not — Button and Dialog reported an empty body while every
+     * other page passed, and both had just gained a story.
+     *
+     * Then it read `body.innerText()` twice and asserted on both reads. A
+     * docs page re-renders once after mount, so the second read landed in
+     * the gap: the first said the page was there, the second said it was
+     * empty, and which page it happened to be changed every run. The
+     * assertion was measuring the sample time.
+     *
+     * So: poll until the page has content, keep that text, and assert on
+     * it. A page that never renders fails with a timeout naming itself,
+     * which is the same defect reported honestly.
+     */
+    let settled = "";
+    await expect
+      .poll(
+        async () => {
+          settled = (await page.locator("body").innerText()).trim();
+          return settled.length;
+        },
+        { timeout: 30_000, message: `${id} never rendered a body` },
+      )
+      .toBeGreaterThan(40);
+
+    const body = settled.slice(0, 4000);
     expect(
       failures,
       `${id} threw while rendering:\n${failures.join("\n")}`,
@@ -55,9 +85,5 @@ for (const { id, title } of docs) {
       body,
       `${id} rendered Storybook's failure page:\n${body.slice(0, 600)}`,
     ).not.toMatch(/failed to render properly|is not a function/i);
-    // A page that renders nothing is also a failure, and a silent one.
-    expect(body.trim().length, `${id} rendered an empty body`).toBeGreaterThan(
-      40,
-    );
   });
 }
