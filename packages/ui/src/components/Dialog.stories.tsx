@@ -127,3 +127,32 @@ export const KeyboardReachable: StoryObj = {
     ).toBeVisible();
   },
 };
+
+/**
+ * Open from the first frame, with something focusable behind it.
+ *
+ * A fixture rather than a demonstration. The Modal story opens its dialog
+ * inside `play()`, so anything loading the page without running play sees
+ * an ambiguous state — which is what made the focus test assert against a
+ * dialog that may or may not have been open. `defaultOpen` exists now, so
+ * the fixture can simply be open.
+ *
+ * The button behind is the point: a focus trap is only observable if there
+ * is something outside to escape to.
+ */
+export const OpenWithPageBehind: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  render: () => (
+    <>
+      <Button>Behind the modal</Button>
+      <Dialog
+        defaultOpen
+        title="Edit reorder point"
+        description="The change applies to SKU 4711 from the next planning run."
+        footer={<Button>Save</Button>}
+      >
+        <p>Focus belongs in here until this closes.</p>
+      </Dialog>
+    </>
+  ),
+};

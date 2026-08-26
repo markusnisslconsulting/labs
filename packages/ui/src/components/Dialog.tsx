@@ -1,9 +1,15 @@
 "use client";
 
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
-import { useId, type ComponentPropsWithRef, type ReactNode } from "react";
+import {
+  useId,
+  useState,
+  type ComponentPropsWithRef,
+  type ReactNode,
+} from "react";
 
 import { cxState } from "../cx";
+import { useInertBackground } from "../useInertBackground";
 
 import "./Dialog.css";
 interface DialogOwnProps {
@@ -15,6 +21,20 @@ interface DialogOwnProps {
   /** The uncontrolled half of the triple, which was missing. */
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /**
+   * Whether the page behind is inert while this is open.
+   *
+   * `true` is the default and the reason this prop exists: the component
+   * never passed anything, Base UI's root was left on its own default, and
+   * the result was a dialog with `role="dialog"`, no `aria-modal`, nothing
+   * inert behind it and no focus trap — while this component's own
+   * documentation claimed it wired `aria-modal`. A keyboard user could tab
+   * straight out of the dialog into the page it was covering.
+   *
+   * `"trap-focus"` keeps focus inside without making the rest of the page
+   * inert, which is what a non-blocking side panel wants.
+   */
+  modal?: boolean | "trap-focus";
   title: string;
   description?: string;
   children?: ReactNode;
@@ -34,15 +54,26 @@ export type DialogProps = DialogOwnProps &
  *
  * Modal dialog on Base UI's dialog root.
  *
- * Accessibility: Base UI traps focus, restores it to the trigger on
- * close, wires `aria-modal`, `aria-labelledby`/`aria-describedby`,
- * and closes on Escape. The backdrop click closes as well.
+ * Accessibility: Base UI restores focus to the trigger on close, wires
+ * `aria-labelledby`/`aria-describedby`, and closes on Escape or a
+ * backdrop click.
+ *
+ * The modal half is ours. Measured against `1.0.0-rc.0` the popup had
+ * `role="dialog"` and nothing else: no `aria-modal`, nothing inert behind
+ * it, no focus trap — so a keyboard user could tab out of the dialog into
+ * the page it was covering and operate it. Passing Base UI's own `modal`
+ * prop changed none of that, so this component sets `aria-modal` and
+ * marks every branch outside the popup `inert` while it is open, and
+ * `browser/focus.spec.ts` holds that down. This paragraph previously
+ * claimed the behaviour as Base UI's, which is how an unimplemented
+ * guarantee survives a review.
  *
  * Performance: the popup mounts only when open.
  */
 export function Dialog({
   open,
   defaultOpen,
+  modal = true,
   onOpenChange,
   title,
   description,
@@ -53,17 +84,25 @@ export function Dialog({
 }: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
+  const [popup, setPopup] = useState<HTMLElement | null>(null);
+
+  // Base UI's `modal` did nothing in this rc, so the two halves of "modal"
+  // are wired here: aria-modal on the popup, and inert on everything else.
+  useInertBackground(modal !== false && Boolean(popup), popup);
 
   return (
     <BaseDialog.Root
       open={open}
       defaultOpen={defaultOpen}
+      modal={modal}
       onOpenChange={(next) => onOpenChange?.(Boolean(next))}
     >
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className="uix-dialog-backdrop" />
         <BaseDialog.Popup
+          ref={setPopup}
           className={cxState("uix-dialog", className)}
+          aria-modal={modal === false ? undefined : true}
           {...rest}
         >
           <BaseDialog.Title className="uix-dialog-title" id={titleId}>
