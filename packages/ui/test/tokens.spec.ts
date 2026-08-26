@@ -439,7 +439,7 @@ describe("the layering rules the architecture depends on", () => {
    *
    * The rule used to cover colour only, and the Introduction said the
    * radius and type scales "may be used directly". That single sentence
-   * is why the `ocean` brand could re-point exactly one token: a brand
+   * is why the brand axis reached colour and nothing else: a brand
    * only sees the semantic layer, so anything a component reaches for
    * below it is out of the brand's reach forever. A sharp-cornered brand
    * or one with a display face was not expressible, which is most of

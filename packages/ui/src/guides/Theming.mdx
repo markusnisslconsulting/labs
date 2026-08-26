@@ -7,12 +7,12 @@ import { Meta } from "@storybook/addon-docs/blocks";
 Four independent axes, all attributes on the root element. They compose;
 none of them is a separate build.
 
-| Axis      | Attribute      | Values                             |
-| --------- | -------------- | ---------------------------------- |
-| Brand     | `data-brand`   | absent (Labs), `ocean`, `graphite` |
-| Theme     | `data-theme`   | absent (light), `dark`             |
-| Density   | `data-density` | absent (cozy), `compact`           |
-| Direction | `dir`          | `ltr`, `rtl`                       |
+| Axis      | Attribute      | Values                                  |
+| --------- | -------------- | --------------------------------------- |
+| Brand     | `data-brand`   | absent (consulting), `coaching`         |
+| Theme     | `data-theme`   | absent (light), `light`, `dark`, `auto` |
+| Density   | `data-density` | absent (cozy), `compact`, `comfortable` |
+| Direction | `dir`          | `ltr`, `rtl`                            |
 
 Flip all four from the toolbar above. Nothing here is a preview trick:
 the toolbar sets the same attributes a product sets.
@@ -35,7 +35,7 @@ makes multi-brand scale — brands cannot collide in a shared file, so two
 teams adding two brands never touch the same line.
 
 ```css
-/* src/styles/brands/harbour.css */
+/* src/styles/brands/harbour.css — the shape a brand takes */
 @layer tokens {
   [data-brand="harbour"] {
     /* colour */
@@ -70,10 +70,15 @@ Import it from `styles.css` and you are done. Two gates then apply:
   The other half of that rule is what makes it usable: whatever a brand
   must be able to change has to _have_ a semantic role. For a long time
   radius, typeface and shadow were primitives and components named them
-  directly, so the brand axis was colour-only and `ocean` re-pointing one
-  token was the ceiling rather than a demonstration. There are now shape,
-  type and elevation roles, and a test forbids a component from naming
-  any of the four primitive families.
+  directly, so the brand axis was colour-only — and a brand re-pointing
+  one token was the ceiling rather than a demonstration. There are now
+  shape, type and elevation roles, and a test forbids a component from
+  naming any of the four primitive families.
+
+  `coaching` is the reason that mattered. A leadership-coaching practice
+  and a consulting practice do not differ by hue; they differ by how much
+  room the page takes and how hard its corners are. That is only sayable
+  if radius, type, elevation and density are all semantic.
 
 - **Contrast is measured for the new brand automatically.** The check
   walks every declared pairing in every theme for every brand it finds on
@@ -82,8 +87,8 @@ Import it from `styles.css` and you are done. Two gates then apply:
 
 ## What follows the accent on its own
 
-`ocean` overrides exactly one token. Everything derived from the accent
-moves with it:
+`coaching` never mentions a hover colour, a focus ring or a wash.
+Everything derived from the accent moves with it:
 
 - `--uix-accent-soft` is a `color-mix` of the accent, not a second hex
   value someone has to remember to update.
@@ -93,7 +98,9 @@ moves with it:
   brightens on dark without either being written down twice.
 
 That is the test of a semantic layer: how few values a brand has to
-supply before the rest is implied.
+supply before the rest is implied. `coaching` supplies nine — one colour,
+four shapes, a typeface, three elevations — plus the density multiplier,
+and gets a consistent identity across thirty-four components from it.
 
 ## Theming one component without touching another
 

@@ -1,54 +1,60 @@
 {
-  "$description": "Brand override: graphite. Theme: light. Generated.",
+  "$description": "Brand override: coaching. Theme: dark. Generated.",
   "semantic": {
+    "accent": {
+      "$type": "color",
+      "$value": "{primitive.teal.400}",
+      "$description": "Brand accent; the coaching brand re-points it to teal"
+    },
     "radius": {
       "inset": {
         "$type": "dimension",
-        "$value": "0.125rem",
+        "$value": "0.5rem",
         "$description": "A shape inside another shape"
       },
       "control": {
         "$type": "dimension",
-        "$value": "0.1875rem",
+        "$value": "1rem",
         "$description": "An interactive box"
       },
       "surface": {
         "$type": "dimension",
-        "$value": "0.1875rem",
+        "$value": "1rem",
         "$description": "A floating or banded surface"
       },
       "container": {
         "$type": "dimension",
-        "$value": "0.25rem",
+        "$value": "1.5rem",
         "$description": "A container that holds content"
-      },
-      "pill": {
-        "$type": "dimension",
-        "$value": "0.25rem",
-        "$description": "Fully rounded by brand decision, not by geometry"
       }
     },
     "font": {
       "display": {
         "$type": "fontFamily",
-        "$value": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "$value": "\"Hoefler Text\", \"Iowan Old Style\", Palatino, Charter, Georgia, serif",
         "$description": "Headings"
       }
     },
     "elevation": {
       "raised": {
         "$type": "shadow",
-        "$value": [],
+        "$value": {
+          "offsetX": "0",
+          "offsetY": "2px",
+          "blur": "10px",
+          "spread": "0",
+          "color": "rgba(0, 0, 0, 0.5)"
+        },
         "$description": "Lifted off the page"
       },
       "overlay": {
         "$type": "shadow",
         "$value": {
           "offsetX": "0",
-          "offsetY": "0",
-          "blur": "0",
+          "offsetY": "12px",
+          "blur": "32px",
           "spread": "0",
-          "color": "1px {semantic.border.strong}"
+          "color": "rgba(0, 0, 0, 0.5)"
         },
         "$description": "Floating above the page"
       },
@@ -56,18 +62,18 @@
         "$type": "shadow",
         "$value": {
           "offsetX": "0",
-          "offsetY": "0",
-          "blur": "0",
+          "offsetY": "24px",
+          "blur": "60px",
           "spread": "0",
-          "color": "1px {semantic.border.strong}"
+          "color": "rgba(0, 0, 0, 0.62)"
         },
         "$description": "Above everything"
       }
     },
-    "accent": {
-      "$type": "color",
-      "$value": "{primitive.slate.600}",
-      "$description": "Brand accent (ocean brand overrides to blue)"
+    "density": {
+      "$type": "number",
+      "$value": "1.12",
+      "$description": "Spacing multiplier; data-density=compact sets 0.72"
     }
   }
 }

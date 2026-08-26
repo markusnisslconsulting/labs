@@ -1,0 +1,72 @@
+/* Coaching — the second real brand.
+ *
+ * Two brands share this system, and they are two businesses rather than
+ * two colour schemes. The default is the consulting practice: crimson,
+ * tight, decisive, made for someone buying delivery. This one is the
+ * personal leadership-coaching practice, and its reader is a person
+ * deciding whether to trust someone with their own development.
+ *
+ * So the difference is not only the hue. Consulting is warm, high-chroma
+ * and close-set; coaching is cooler, quieter and more spacious. Same
+ * components throughout, same logo, one file, no core stylesheet edited.
+ *
+ * What it re-points, and why each one:
+ *
+ *   Colour   A deep petrol teal, chosen against the crimson rather than
+ *            on its own: cooler and lower in chroma, which reads calm
+ *            instead of urgent, and nowhere near the corporate blue every
+ *            consultancy already owns. Measured at 6.94:1 on the page and
+ *            7.32:1 on a surface, so it carries a link at body size, and
+ *            white sits on it at 7.32:1 for a solid button.
+ *
+ *   Shape    Noticeably softer corners. A 16px control against the
+ *            default 11px is the difference between a form that means
+ *            business and one that means come in.
+ *
+ *   Type     A humanist serif for headings, the same accessible sans for
+ *            everything else. Reflection in the headline, plain speech in
+ *            the body.
+ *
+ *   Depth    Wider, fainter shadows, tinted with the accent rather than
+ *            neutral black. The consulting brand's elevation is a crisp
+ *            lift; this is a room with light in it.
+ *
+ *   Density  1.12, the one brand token that changes the geometry of every
+ *            component at once, and the most honest expression of the
+ *            difference: this brand takes its time.
+ *
+ * No [data-theme] selector anywhere below, because every theme-dependent
+ * value states both themes in one light-dark(). That is what stops a
+ * nested brand from holding a light accent under a dark root.
+ */
+
+@layer tokens {
+  [data-brand="coaching"] {
+    /* Colour. --uix-accent-soft mixes from this and --uix-focus-ring
+       aliases it, so both follow without being named here. */
+    --uix-accent: light-dark(var(--uix-teal-600), var(--uix-teal-400));
+
+    /* Shape */
+    --uix-radius-inset: 0.5rem;
+    --uix-radius-control: 1rem;
+    --uix-radius-surface: 1rem;
+    --uix-radius-container: 1.5rem;
+
+    /* Type */
+    --uix-font-display:
+      "Hoefler Text", "Iowan Old Style", Palatino, Charter, Georgia, serif;
+
+    /* Depth */
+    --uix-elevation-raised: 0 2px 10px
+      light-dark(rgba(15, 95, 107, 0.1), rgba(0, 0, 0, 0.5));
+    --uix-elevation-overlay: 0 12px 32px
+      light-dark(rgba(15, 95, 107, 0.14), rgba(0, 0, 0, 0.5));
+    --uix-elevation-modal: 0 24px 60px
+      light-dark(rgba(15, 95, 107, 0.2), rgba(0, 0, 0, 0.62));
+
+    /* Breathing room. This works only because the density-derived roles
+       are declared on [data-brand] as well as on :root — see the comment
+       in tokens/semantic.css for what happens without that. */
+    --uix-density: 1.12;
+  }
+}

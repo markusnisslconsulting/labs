@@ -143,9 +143,8 @@ const preview: Preview = {
       toolbar: {
         icon: "paintbrush",
         items: [
-          { value: "default", title: "Labs (default)" },
-          { value: "ocean", title: "Ocean" },
-          { value: "graphite", title: "Graphite" },
+          { value: "default", title: "Consulting (default)" },
+          { value: "coaching", title: "Coaching" },
         ],
         dynamicTitle: true,
       },

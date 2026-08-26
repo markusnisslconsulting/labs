@@ -51,7 +51,7 @@
        are the same components with a different corner. These four roles
        are what a brand re-points; components never name the radius
        scale, because a primitive is invisible to the brand layer and
-       that is exactly what kept `ocean` down to one token. */
+       that is exactly what kept the brand axis on colour alone. */
     --uix-radius-inset: var(--uix-radius-s);
     --uix-radius-control: var(--uix-radius-m);
     --uix-radius-surface: var(--uix-radius-m);
@@ -179,9 +179,18 @@
      Matching [data-density] as well means any element carrying the
      attribute re-declares them against its own multiplier.
      browser/density.spec.ts measures a compact subtree inside a cozy
-     page, which is the only thing keeping this true. */
+     page, which is the only thing keeping this true.
+
+     [data-brand] is in the list for the same reason. --uix-density is a
+     semantic token, so a brand is allowed to set it — the coaching brand
+     does, because breathing room is part of what distinguishes it from
+     the consulting one. Without the brand selector here, that
+     declaration would sit on the brand element while the heights stayed
+     resolved against the root, and the brand would look identical. Same
+     bug, one attribute over. */
   :root,
-  [data-density] {
+  [data-density],
+  [data-brand] {
     /* Density-scaled spacing. Components consume these, never the raw
        scale, so a density tightens gaps and margins too and not merely
        the inside of controls. At the default multiplier of 1 they

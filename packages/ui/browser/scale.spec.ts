@@ -149,31 +149,43 @@ for (const id of targets) {
           // has been registered with @property; asking for it returns the
           // literal "calc(2.5rem * var(--uix-density))". So the tokens are
           // measured the way the browser uses them: on a real box.
-          const px = (name: string) => {
-            const probe = document.createElement("div");
-            probe.style.cssText = `position:absolute;visibility:hidden;height:var(${name})`;
-            root.appendChild(probe);
-            const height = probe.getBoundingClientRect().height;
-            probe.remove();
-            return height;
-          };
-          const floors = [
-            px("--uix-control-sm"),
-            px("--uix-control-md"),
-            px("--uix-control-lg"),
-          ];
+          //
+          // And measured *next to the control*, not once at the root. A
+          // brand may set --uix-density — the coaching brand does — so a
+          // control inside that brand has different floors from one
+          // outside it, both correct. Resolving once at the root reported
+          // every control on the Brands page as off the scale, which was
+          // the gate being wrong rather than the page.
+          const floorsFor = (() => {
+            const cache = new Map<Element, number[]>();
+            return (context: Element) => {
+              const cached = cache.get(context);
+              if (cached) return cached;
+              const floors = [
+                "--uix-control-sm",
+                "--uix-control-md",
+                "--uix-control-lg",
+              ].map((name) => {
+                const probe = document.createElement("div");
+                probe.style.cssText = `position:absolute;visibility:hidden;height:var(${name})`;
+                context.appendChild(probe);
+                const height = probe.getBoundingClientRect().height;
+                probe.remove();
+                return height;
+              });
+              cache.set(context, floors);
+              return floors;
+            };
+          })();
 
           const problems: string[] = [];
-          for (const floor of floors) {
+          for (const floor of floorsFor(root)) {
             if (floor < targetMin) {
               problems.push(
                 `a control floor resolves to ${floor.toFixed(1)}px, under the ${targetMin}px target minimum`,
               );
             }
           }
-
-          const on = (value: number) =>
-            floors.some((floor) => Math.abs(floor - value) < 0.75);
 
           for (const selector of selectors) {
             if (exempt.includes(selector)) continue;
@@ -183,6 +195,10 @@ for (const id of targets) {
               if (box.height === 0) continue;
               const label = `${selector} "${(el.textContent ?? "").trim().slice(0, 18)}"`;
               const floor = parseFloat(style.minHeight);
+              // The scale as it resolves where this control actually sits.
+              const floors = floorsFor(el.parentElement ?? root);
+              const on = (value: number) =>
+                floors.some((candidate) => Math.abs(candidate - value) < 0.75);
 
               if (!Number.isFinite(floor) || !on(floor)) {
                 problems.push(
@@ -204,7 +220,7 @@ for (const id of targets) {
               }
             }
           }
-          return { problems, floors };
+          return { problems, floors: floorsFor(root) };
         },
         { selectors: SELECTORS, exempt: EXEMPT, axis, targetMin: TARGET_MIN },
       );

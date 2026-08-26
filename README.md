@@ -30,7 +30,9 @@ two:
   layer a product overrides** — dark mode and the density switch are
   both just semantic remaps (`data-theme="dark"`,
   `data-density="compact"`), and a second brand is one more override
-  block (`data-brand="ocean"` ships as the proof).
+  block. Two real brands ship: the consulting practice as the default,
+  and `data-brand="coaching"` re-pointing colour, shape, type, elevation
+  and density from one file.
 - **Component** — per-part bindings: `--uix-button-accent-bg`,
   `--uix-chip-active-bg`, `--uix-panel-radius`. What a product themes
   on one component without touching any other.

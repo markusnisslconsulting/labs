@@ -95,3 +95,52 @@ test("an invalid density falls back instead of poisoning the page", async ({
     "an invalid density should fall back to 1, leaving the md control at its 40px default",
   ).toBe(40);
 });
+
+test("a brand can set the density, and it reaches the controls", async ({
+  page,
+}) => {
+  // --uix-density is a semantic token, so a brand is allowed to set it, and
+  // the coaching brand does: room is part of what distinguishes it from the
+  // consulting one. This works only because the density-derived roles are
+  // declared on [data-brand] as well as on :root. Without that the
+  // declaration would sit on the brand element while the heights stayed
+  // resolved against the root, and the brand would look identical — the
+  // same failure as subtree density, one attribute over.
+  await page.goto("/iframe.html?id=components-button--matrix&viewMode=story", {
+    waitUntil: "networkidle",
+  });
+
+  const measured = await page.evaluate(async () => {
+    const make = (brand?: string) => {
+      const host = document.createElement("div");
+      if (brand) host.setAttribute("data-brand", brand);
+      const probe = document.createElement("div");
+      probe.style.cssText =
+        "position:absolute;visibility:hidden;height:var(--uix-control-md);width:var(--uix-gap-xl)";
+      host.appendChild(probe);
+      document.body.appendChild(host);
+      return { host, probe };
+    };
+    const base = make();
+    const coaching = make("coaching");
+    await new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    );
+    const read = (el: Element) => {
+      const box = el.getBoundingClientRect();
+      return { height: box.height, gap: box.width };
+    };
+    const result = { base: read(base.probe), coaching: read(coaching.probe) };
+    base.host.remove();
+    coaching.host.remove();
+    return result;
+  });
+
+  expect(
+    measured.coaching.height,
+    `the coaching brand renders the default control height ` +
+      `(${measured.coaching.height}px); the density-derived roles are probably ` +
+      `no longer declared on [data-brand]`,
+  ).toBeGreaterThan(measured.base.height);
+  expect(measured.coaching.gap).toBeGreaterThan(measured.base.gap);
+});

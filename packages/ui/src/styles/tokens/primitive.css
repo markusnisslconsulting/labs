@@ -8,9 +8,8 @@
     /* Darkened from the original seal red (#e5173f): that value
        reached only 4.39:1 on paper and ~4:1 under white labels. At
        #b31234 both directions clear WCAG AA with room to spare. */
-    --uix-blue-600: #1d4ed8;
-    --uix-blue-400: #7aa5f7;
     --uix-red-600: #b31234;
+    --uix-teal-600: #0f5f6b;
     --uix-red-700: #8f0e29;
     --uix-navy-900: #172b4d;
     --uix-slate-600: #4b5870;
@@ -22,6 +21,7 @@
     --uix-green-700: #14691f;
     --uix-amber-700: #8a5a00;
     --uix-red-400: #ff6b85;
+    --uix-teal-400: #72cbd4;
     --uix-green-400: #63c47a;
     --uix-amber-400: #e2b04a;
     --uix-grey-700: #2c3a4f;

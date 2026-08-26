@@ -99,8 +99,8 @@ test("an explicit theme overrides the system preference", async ({ page }) => {
 test("a brand's accent flips with the theme without a theme selector", async ({
   page,
 }) => {
-  // ocean used to need two extra selectors for this, and the compound one
-  // alone never matched a nested brand. One light-dark() replaced both.
+  // A brand used to need two extra selectors for this, and the compound
+  // one alone never matched a nested brand. One light-dark() replaced both.
   await story(page);
   const read = async (theme: string) => {
     await page.evaluate((value) => {
@@ -109,7 +109,7 @@ test("a brand's accent flips with the theme without a theme selector", async ({
       if (!host) {
         host = document.createElement("div");
         host.id = "brand-probe";
-        host.setAttribute("data-brand", "ocean");
+        host.setAttribute("data-brand", "coaching");
         document.body.appendChild(host);
       }
       return null;
@@ -129,6 +129,6 @@ test("a brand's accent flips with the theme without a theme selector", async ({
   const dark = await read("dark");
   expect(
     dark,
-    "a nested ocean brand kept its light accent under a dark root",
+    "a nested coaching brand kept its light accent under a dark root",
   ).not.toBe(light);
 });

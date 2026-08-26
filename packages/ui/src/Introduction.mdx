@@ -19,8 +19,8 @@ Three tiers, each with one job.
   remaps, so a component that names one has put itself out of their
   reach permanently. This rule used to cover colour alone, and the
   sentence that replaced this one said the radius and type scales "may
-  be used directly" — which is precisely why `ocean` could only ever
-  re-point a hue. Spacing and font _size_ stay open: they are a rhythm
+  be used directly" — which is precisely why the brand axis could only
+  ever reach a hue. Spacing and font _size_ stay open: they are a rhythm
   the whole library shares. Tests read the component stylesheets, so
   each rule is checked where it actually breaks rather than in the
   registry's own declarations.
@@ -56,24 +56,28 @@ A brand is data, not a stylesheet edit. One file under
 property that makes multi-brand scale — brands cannot collide in a
 shared file.
 
-`ocean` overrides exactly one token, `--uix-accent`. Everything that
-should follow the accent already does: `--uix-accent-soft` mixes from
-it and `--uix-focus-ring` aliases it, so a new brand cannot forget
-them. A test asserts that a brand file declares nothing but semantic
-tokens.
+Two brands ship, and they are two businesses rather than two colour
+schemes. The default is the consulting practice: crimson, high-chroma,
+close-set, for someone buying delivery. `coaching` is the personal
+leadership practice, and its reader is deciding whether to trust someone
+with their own development — so it is cooler, quieter and more spacious.
 
-`graphite` exists because one token was not proof of anything. It
-re-points shape, display face, elevation and accent: corners come down
-to near-square, headings take a serif, and shadows are replaced by
-hairlines. Same components, one file, no core stylesheet edited. Open
-**Foundations / Brands** to see all three at once — that page is pinned
-to the three brands rather than following the toolbar, because a column
-that followed the toolbar was a duplicate of a control already on
-screen.
+That difference is not expressible as a hue. `coaching` re-points the
+accent, four shape roles, the display face, three elevations _and_ the
+density multiplier, in one file, with no core stylesheet edited. Its
+controls are 16px-cornered against the default 11px and its whole
+geometry is 12% roomier, because taking its time is part of what the
+brand means.
 
-Switch brand, theme and density from the toolbar above; each is an
-independent axis on the root element (`data-brand`, `data-theme`,
-`data-density`) rather than a separate build.
+Everything derived follows without being named: `--uix-accent-soft` mixes
+from the accent and `--uix-focus-ring` aliases it, so a brand cannot
+forget them. A test asserts that a brand file declares nothing but
+semantic tokens — which is also the constraint that forced the shape,
+type and elevation roles to exist in the first place.
+
+Open **Foundations / Brands** to see both at once. That page is pinned to
+the two brands rather than following the toolbar, because a column that
+followed the toolbar was a duplicate of a control already on screen.
 
 ## Density, and the reader's own text size
 

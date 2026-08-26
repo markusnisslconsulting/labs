@@ -76,9 +76,8 @@ const t = (
 /* Primitive ---------------------------------------------------------------- */
 
 export const primitiveTokens: TokenDescriptor[] = [
-  t("--uix-blue-600", "#1d4ed8", "primitive", "color", "Ocean brand accent"),
-  t("--uix-blue-400", "#7aa5f7", "primitive", "color", "Ocean accent on dark surfaces"),
   t("--uix-red-600", "#b31234", "primitive", "color", "Brand accent red (AA on paper and under white)"),
+  t("--uix-teal-600", "#0f5f6b", "primitive", "color", "Coaching brand accent, light theme"),
   t("--uix-red-700", "#8f0e29", "primitive", "color", "Destructive red"),
   t("--uix-navy-900", "#172b4d", "primitive", "color", "Deep navy ink"),
   t("--uix-slate-600", "#4b5870", "primitive", "color", "Muted slate"),
@@ -89,6 +88,7 @@ export const primitiveTokens: TokenDescriptor[] = [
   t("--uix-white", "#ffffff", "primitive", "color", "Pure white"),
   t("--uix-green-700", "#14691f", "primitive", "color", "Positive green"),
   t("--uix-amber-700", "#8a5a00", "primitive", "color", "Caution amber"),
+  t("--uix-teal-400", "#72cbd4", "primitive", "color", "Coaching brand accent, dark theme"),
   t("--uix-red-400", "#ff6b85", "primitive", "color", "Accent on dark surfaces"),
   t("--uix-green-400", "#63c47a", "primitive", "color", "Positive on dark surfaces"),
   t("--uix-amber-400", "#e2b04a", "primitive", "color", "Caution on dark surfaces"),
@@ -136,7 +136,7 @@ export const semanticTokens: TokenDescriptor[] = [
   t("--uix-bg-subtle", "light-dark(var(--uix-grey-100), var(--uix-grey-700))", "semantic", "color", "Subtle fills: chips, code"),
   t("--uix-border-subtle", "light-dark(var(--uix-grey-300), var(--uix-grey-700))", "semantic", "color", "Hairline borders"),
   t("--uix-border-strong", "light-dark(var(--uix-slate-600), var(--uix-slate-400))", "semantic", "color", "Emphasised borders"),
-  t("--uix-accent", "light-dark(var(--uix-red-600), var(--uix-red-400))", "semantic", "color", "Brand accent (ocean brand overrides to blue)"),
+  t("--uix-accent", "light-dark(var(--uix-red-600), var(--uix-red-400))", "semantic", "color", "Brand accent; the coaching brand re-points it to teal"),
   t("--uix-accent-soft", "color-mix(in srgb, var(--uix-accent) 16%, transparent)", "semantic", "color", "Accent washes"),
   t("--uix-focus-ring", "var(--uix-accent)", "semantic", "color", "Keyboard focus indicator"),
   t("--uix-status-ok", "light-dark(var(--uix-green-700), var(--uix-green-400))", "semantic", "color", "Positive status"),
