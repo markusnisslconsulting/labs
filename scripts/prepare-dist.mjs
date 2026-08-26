@@ -76,6 +76,28 @@ writeFileSync(
   `${JSON.stringify(manifest, null, 2)}\n`,
 );
 
+/**
+ * Minify a copied stylesheet.
+ *
+ * The source CSS in this repository is heavily commented on purpose —
+ * most rules carry the measurement or the bug that produced them — and
+ * `prepare-dist` copied it verbatim, so the published token layer was
+ * 31 KB of which most was prose written for maintainers. A consumer
+ * downloads the cascade, not the reasoning.
+ *
+ * esbuild rather than lightningcss, and that is not a preference: this
+ * repository has already been bitten by lightningcss collapsing
+ * `@layer tokens, base, components, print, overrides;` into nothing,
+ * after which the first opened layer decided precedence and an active
+ * chip rendered navy on navy. The assertion below is there because
+ * knowing that once is not the same as never repeating it.
+ */
+async function minifyCss(text) {
+  const { transform } = await import("esbuild");
+  const out = await transform(text, { loader: "css", minify: true });
+  return out.code;
+}
+
 const copied = [];
 for (const relative of ["src/styles.css", "src/styles", "tokens"]) {
   const from = join(packageDir, relative);
@@ -83,9 +105,8 @@ for (const relative of ["src/styles.css", "src/styles", "tokens"]) {
     console.error(`${from} does not exist, but the exports map promises it`);
     process.exit(1);
   }
-  cpSync(from, join(distDir, relative.replace(/^src\//, "")), {
-    recursive: true,
-  });
+  const to = join(distDir, relative.replace(/^src\//, ""));
+  cpSync(from, to, { recursive: true });
   copied.push(relative);
 }
 
@@ -139,7 +160,51 @@ function stripCssImports(dir) {
 }
 stripCssImports(distDir);
 
+/** Minify every copied stylesheet, in place. */
+let cssBefore = 0;
+let cssAfter = 0;
+async function minifyTree(dir) {
+  for (const entry of readdirSync(dir)) {
+    const path = join(dir, entry);
+    if (statSync(path).isDirectory()) {
+      await minifyTree(path);
+      continue;
+    }
+    if (!entry.endsWith(".css")) continue;
+    const before = readFileSync(path, "utf8");
+    const after = await minifyCss(before);
+    cssBefore += before.length;
+    cssAfter += after.length;
+    writeFileSync(path, after);
+  }
+}
+await minifyTree(join(distDir, "styles"));
+const entry = join(distDir, "styles.css");
+if (existsSync(entry)) {
+  const before = readFileSync(entry, "utf8");
+  const after = await minifyCss(before);
+  cssBefore += before.length;
+  cssAfter += after.length;
+  // The declaration has to survive, and it has to be first: whatever
+  // opens a layer first decides the order, so losing it is a silent
+  // precedence change rather than an error.
+  if (
+    !after
+      .trimStart()
+      .startsWith("@layer tokens,base,components,print,overrides;")
+  ) {
+    console.error(
+      `${entry}: the cascade layer declaration did not survive minification. ` +
+        `The minifier dropped or reordered it, which changes precedence ` +
+        `without failing anything downstream.`,
+    );
+    process.exit(1);
+  }
+  writeFileSync(entry, after);
+}
+
 console.log(
   `wrote ${distDir}/package.json, copied ${copied.join(", ")}, ` +
-    `stripped CSS imports from ${stripped} declaration file(s)`,
+    `stripped CSS imports from ${stripped} declaration file(s), ` +
+    `minified CSS ${cssBefore} -> ${cssAfter} B`,
 );

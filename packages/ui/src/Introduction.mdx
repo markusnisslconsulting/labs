@@ -147,6 +147,29 @@ The barrel (`@labs/ui`) re-exports everything and is convenient, but a
 CSS import is a side effect, so the barrel pulls every component's
 styles. Use it for prototypes, not for pages you measure.
 
+## What a component costs
+
+Measured on the built package, gzip, and gated per component rather than
+in total — a single number over the library hides the case that matters,
+which is one component quietly growing.
+
+|                                                         | gzip   |
+| ------------------------------------------------------- | ------ |
+| The floor every page pays (tokens, reset, voice, print) | 3.5 KB |
+| Median component, JavaScript and CSS together           | 0.9 KB |
+| Largest (Button, and it is mostly CSS)                  | 1.4 KB |
+
+The floor was 10.7 KB until recently, and the reason is worth keeping:
+the stylesheets here are heavily commented, most rules carrying the
+measurement or the bug that produced them, and the publish step copied
+them verbatim. A consumer downloads the cascade, not the reasoning. They
+are minified into the package now and the source keeps its prose.
+
+`Menu` and `Popover` each pull `Button.css` as well as their own, because
+their triggers _are_ buttons. That is reuse rather than leakage, and it is
+the only cross-component CSS dependency in the library — a test asserts
+there are no others.
+
 ## The component API
 
 Every component takes the attributes of the element it renders.
