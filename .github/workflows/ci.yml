@@ -33,14 +33,29 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
 
+      # One source of truth for the Node version. It used to be pinned
+      # here as well as in engines and .nvmrc, which is two places to
+      # forget.
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Nx caches by input hash, so a run that changed one component does
+      # not rebuild the other three packages. Without this the cache lives
+      # only inside a single run and every push starts cold.
+      - name: Restore the Nx cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nx-${{ runner.os }}-
 
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
@@ -59,14 +74,19 @@ jobs:
             echo "args=--base=main" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Lint
-        run: pnpm exec nx affected --target=lint ${{ steps.base.outputs.args }}
+      - name: Formatting
+        run: pnpm format:check
 
-      - name: Typecheck, test, build
-        run: |
-          for target in typecheck test build build-storybook test-storybook browser-test tokens-check contrast-check story-coverage snapshot-budget a11y; do
-            pnpm exec nx affected --target=$target ${{ steps.base.outputs.args }}
-          done
+      # One invocation rather than a shell loop over targets. The loop
+      # stopped at the first failure, so a lint error hid every test
+      # result behind it and the next push found the next problem. Nx runs
+      # these in dependency order, in parallel where it can, and reports
+      # every failure from one run.
+      - name: Gates
+        run: >-
+          pnpm exec nx affected
+          --targets=lint,typecheck,test,build,build-storybook,test-storybook,browser-test,tokens-check,contrast-check,story-coverage,snapshot-budget,a11y
+          ${{ steps.base.outputs.args }}
 
       - name: Bundle budget
         run: pnpm run size-check
