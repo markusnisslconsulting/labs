@@ -373,13 +373,20 @@ describe("the layering rules the architecture depends on", () => {
   it("no component draws an icon with a text character", () => {
     const dir = "packages/ui/src/components";
     const GLYPHS = "▾▴▸◂▼▲△▽×÷−–—✓✔✕✖→←↑↓⌄⌃‹›«»•";
-    const pattern = new RegExp(`>\\s*([${GLYPHS}])\\s*<`, "s");
+    // Two shapes, because the first version only caught a glyph alone
+    // between tags and Menu shipped `{label} ▾` for months: a glyph next
+    // to an expression is still a glyph.
+    const pattern = new RegExp(
+      `>\\s*([${GLYPHS}])\\s*<|[}\\w]\\s*([${GLYPHS}])\\s*<`,
+      "s",
+    );
     for (const file of readdirSync(dir).filter((f) => f.endsWith(".tsx"))) {
       const source = readFileSync(join(dir, file), "utf8");
       const hit = pattern.exec(source);
+      const glyph = hit?.[1] ?? hit?.[2];
       expect(
-        hit?.[1],
-        `${file} renders "${hit?.[1]}" as an icon; use a lucide icon so the box positions it`,
+        glyph,
+        `${file} renders "${glyph}" as an icon; use a lucide icon so the box positions it`,
       ).toBeUndefined();
     }
   });

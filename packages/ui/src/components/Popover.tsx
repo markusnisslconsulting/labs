@@ -9,8 +9,9 @@ import "./Button.css";
 import "./Popover.css";
 interface PopoverOwnProps {
   /** Trigger label. */
-  trigger: string;
-  title?: string;
+  /** The trigger's content. A node, so it can carry an icon or a count. */
+  trigger: ReactNode;
+  title?: ReactNode;
   children: ReactNode;
 }
 

@@ -1,26 +1,42 @@
 "use client";
 
 import type { ComponentPropsWithoutRef } from "react";
-import { useId, type ChangeEvent } from "react";
+import { useId, type ChangeEvent, type ReactNode } from "react";
 
 import { cx } from "../cx";
 import "./_choice.css";
 import "./RadioGroup.css";
 export interface RadioOption {
   value: string;
-  label: string;
+  /** A node: an option often needs a description under its label. */
+  label: ReactNode;
   disabled?: boolean;
 }
 
 interface RadioGroupOwnProps {
   name: string;
-  legend: string;
-  options: RadioOption[];
+  /** A node, because a group's legend can carry a hint or a link. */
+  legend: ReactNode;
+  /**
+   * The convenience form. A shorthand over `RadioGroup.Option`, which is
+   * what an option with a paragraph of explanation under it — the common
+   * case for a shipping or plan choice — needs.
+   */
+  options?: RadioOption[];
   defaultValue?: string;
   value?: string;
   onChange?: (value: string) => void;
   disabled?: boolean;
+  children?: ReactNode;
 }
+
+export type RadioOptionProps = Omit<
+  ComponentPropsWithoutRef<"input">,
+  "type" | "children"
+> & {
+  /** The option's visible content. */
+  children?: ReactNode;
+};
 
 /**
  * Accepts every attribute of `<fieldset>` in addition to the props below;
@@ -45,6 +61,7 @@ export function RadioGroup({
   onChange,
   disabled,
   className,
+  children,
   ...rest
 }: RadioGroupProps) {
   const isControlled = value !== undefined;
@@ -57,16 +74,15 @@ export function RadioGroup({
       {...rest}
     >
       <legend className="uix-legend">{legend}</legend>
-      {options.map((option) => {
-        const id = `${baseId}-${option.value}`;
-        return (
-          <label key={option.value} className="uix-check" htmlFor={id}>
-            <input
+      {children ??
+        (options ?? []).map((option) => {
+          const id = `${baseId}-${option.value}`;
+          return (
+            <RadioOptionPart
+              key={option.value}
               id={id}
-              type="radio"
               name={name}
               value={option.value}
-              className="uix-radio-input"
               {...(isControlled
                 ? { checked: value === option.value }
                 : { defaultChecked: defaultValue === option.value })}
@@ -74,12 +90,31 @@ export function RadioGroup({
                 onChange?.(event.target.value)
               }
               disabled={disabled || option.disabled}
-            />
-            <span className="uix-radio-dot" aria-hidden />
-            <span className="uix-check-label">{option.label}</span>
-          </label>
-        );
-      })}
+            >
+              {option.label}
+            </RadioOptionPart>
+          );
+        })}
     </fieldset>
   );
 }
+
+/**
+ * One radio and its label, as one target.
+ *
+ * The label wraps the input rather than pointing at it with `htmlFor`
+ * alone, so the whole row is clickable — and the children are a node, so
+ * an option can carry a paragraph of explanation, which is the case a
+ * `label: string` list could not express at all.
+ */
+function RadioOptionPart({ className, children, ...rest }: RadioOptionProps) {
+  return (
+    <label className={cx("uix-check", className)}>
+      <input type="radio" className="uix-radio-input" {...rest} />
+      <span className="uix-radio-dot" aria-hidden />
+      <span className="uix-check-label">{children}</span>
+    </label>
+  );
+}
+
+RadioGroup.Option = RadioOptionPart;

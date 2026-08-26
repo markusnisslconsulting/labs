@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { useEffect } from "react";
 import { X } from "lucide-react";
 
@@ -11,8 +11,8 @@ type Severity = "info" | "success" | "warning" | "danger";
 export interface ToastItem {
   id: string;
   severity: Severity;
-  title: string;
-  description?: string;
+  title: ReactNode;
+  description?: ReactNode;
   /** Auto-dismiss after this many ms. Omit to require manual close. */
   timeout?: number;
 }

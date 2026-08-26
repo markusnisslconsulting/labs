@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { useId, useState } from "react";
 import { Switch as BaseSwitch } from "@base-ui-components/react/switch";
 
@@ -9,7 +9,11 @@ import "./Switch.css";
 interface SwitchOwnProps {
   /** Visible label; rendered inside the control, so the whole row
       toggles natively. */
-  label: string;
+  /**
+   * A node. The accessible name comes from aria-labelledby pointing at
+   * the visible label, so this does not have to be flat text.
+   */
+  label: ReactNode;
   checked?: boolean;
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;

@@ -12,11 +12,24 @@ export interface SegmentedOption {
 }
 
 interface SegmentedControlOwnProps {
+  /** The group's accessible name. */
   label: string;
-  options: SegmentedOption[];
-  value: string;
-  onChange: (value: string) => void;
+  /**
+   * The convenience form. A shorthand over `SegmentedControl.Option`,
+   * which is what an option carrying an icon and a count, or a divider
+   * between two sets, needs.
+   */
+  options?: SegmentedOption[];
+  value?: string;
+  /** Kept as `onChange` for the shorthand; the parts take `onClick`. */
+  onChange?: (value: string) => void;
+  children?: ReactNode;
 }
+
+export type SegmentedOptionProps = ComponentPropsWithoutRef<"button"> & {
+  /** Whether this option is the selected one. */
+  selected?: boolean;
+};
 
 /**
  * Accepts every attribute of `<div>` in addition to the props below;
@@ -43,6 +56,7 @@ export function SegmentedControl({
   value,
   onChange,
   className,
+  children,
   ...rest
 }: SegmentedControlProps) {
   return (
@@ -52,18 +66,34 @@ export function SegmentedControl({
       aria-label={label}
       {...rest}
     >
-      {options.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          className="uix-segment"
-          aria-pressed={value === option.value}
-          disabled={option.disabled}
-          onClick={() => onChange(option.value)}
-        >
-          {option.label}
-        </button>
-      ))}
+      {children ??
+        (options ?? []).map((option) => (
+          <Option
+            key={option.value}
+            selected={value === option.value}
+            disabled={option.disabled}
+            onClick={() => onChange?.(option.value)}
+          >
+            {option.label}
+          </Option>
+        ))}
     </div>
   );
 }
+
+/**
+ * One option. A native button with `aria-pressed`, so the state reaches
+ * assistive technology without a hidden radio hack.
+ */
+function Option({ selected, className, ...rest }: SegmentedOptionProps) {
+  return (
+    <button
+      type="button"
+      className={cx("uix-segment", className)}
+      aria-pressed={selected}
+      {...rest}
+    />
+  );
+}
+
+SegmentedControl.Option = Option;

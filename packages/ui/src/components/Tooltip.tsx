@@ -1,12 +1,15 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
 import { useId, type ReactElement } from "react";
 
 import "./Tooltip.css";
 export interface TooltipProps {
   /** Plain text; the tooltip is not a container for rich content. */
-  content: string;
+  /** A node: a tooltip often needs a keyboard hint or emphasis. */
+  content: ReactNode;
   /** The focusable trigger. It receives `aria-describedby` automatically. */
   children: ReactElement;
   placement?: "top" | "bottom";

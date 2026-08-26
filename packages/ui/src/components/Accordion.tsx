@@ -9,15 +9,32 @@ import { cxState } from "../cx";
 import "./Accordion.css";
 export interface AccordionItem {
   id: string;
-  title: string;
+  /** A node: a section heading often carries a count or a status. */
+  title: ReactNode;
   body: ReactNode;
 }
 
 interface AccordionOwnProps {
-  items: AccordionItem[];
+  /**
+   * The convenience form. A shorthand over the parts below and never the
+   * only way in: a section whose heading needs a badge, or whose panel
+   * needs its own layout, needs `Accordion.Item`.
+   */
+  items?: AccordionItem[];
   /** Allow several open sections at once. Default: one at a time. */
   multiple?: boolean;
+  children?: ReactNode;
 }
+
+export type AccordionItemProps = ComponentPropsWithoutRef<
+  typeof BaseAccordion.Item
+>;
+export type AccordionTriggerProps = ComponentPropsWithoutRef<
+  typeof BaseAccordion.Trigger
+>;
+export type AccordionPanelProps = ComponentPropsWithoutRef<
+  typeof BaseAccordion.Panel
+>;
 
 /**
  * Accepts every prop of Base UI's BaseAccordion.Root in addition to those below;
@@ -41,11 +58,23 @@ export type AccordionProps = AccordionOwnProps &
  *
  * Performance: closed panels are unmounted — toggling costs one
  * small mount, nothing else.
+ *
+ * ```tsx
+ * <Accordion>
+ *   <Accordion.Item value="what">
+ *     <Accordion.Trigger>
+ *       What is pinned here <Badge>4</Badge>
+ *     </Accordion.Trigger>
+ *     <Accordion.Panel>…</Accordion.Panel>
+ *   </Accordion.Item>
+ * </Accordion>
+ * ```
  */
 export function Accordion({
   items,
   multiple = false,
   className,
+  children,
   ...rest
 }: AccordionProps) {
   return (
@@ -54,26 +83,64 @@ export function Accordion({
       multiple={multiple}
       {...rest}
     >
-      {items.map((item) => (
-        <BaseAccordion.Item key={item.id} className="uix-accordion-item">
-          <BaseAccordion.Header className="uix-accordion-heading">
-            <BaseAccordion.Trigger className="uix-accordion-trigger">
-              {item.title}
-              <span aria-hidden className="uix-accordion-chevron">
-                <span className="uix-accordion-chevron-open">
-                  <Minus size={16} />
-                </span>
-                <span className="uix-accordion-chevron-closed">
-                  <Plus size={16} />
-                </span>
-              </span>
-            </BaseAccordion.Trigger>
-          </BaseAccordion.Header>
-          <BaseAccordion.Panel className="uix-accordion-body">
-            {item.body}
-          </BaseAccordion.Panel>
-        </BaseAccordion.Item>
-      ))}
+      {children ??
+        (items ?? []).map((item) => (
+          <AccordionItemPart key={item.id} value={item.id}>
+            <AccordionTrigger>{item.title}</AccordionTrigger>
+            <AccordionPanel>{item.body}</AccordionPanel>
+          </AccordionItemPart>
+        ))}
     </BaseAccordion.Root>
   );
 }
+
+function AccordionItemPart({ className, ...rest }: AccordionItemProps) {
+  return (
+    <BaseAccordion.Item
+      className={cxState("uix-accordion-item", className)}
+      {...rest}
+    />
+  );
+}
+
+/**
+ * The trigger owns the header element and the open/closed marker, so a
+ * caller composing sections cannot accidentally ship one without either.
+ */
+function AccordionTrigger({
+  className,
+  children,
+  ...rest
+}: AccordionTriggerProps) {
+  return (
+    <BaseAccordion.Header className="uix-accordion-heading">
+      <BaseAccordion.Trigger
+        className={cxState("uix-accordion-trigger", className)}
+        {...rest}
+      >
+        {children}
+        <span aria-hidden className="uix-accordion-chevron">
+          <span className="uix-accordion-chevron-open">
+            <Minus size={16} />
+          </span>
+          <span className="uix-accordion-chevron-closed">
+            <Plus size={16} />
+          </span>
+        </span>
+      </BaseAccordion.Trigger>
+    </BaseAccordion.Header>
+  );
+}
+
+function AccordionPanel({ className, ...rest }: AccordionPanelProps) {
+  return (
+    <BaseAccordion.Panel
+      className={cxState("uix-accordion-body", className)}
+      {...rest}
+    />
+  );
+}
+
+Accordion.Item = AccordionItemPart;
+Accordion.Trigger = AccordionTrigger;
+Accordion.Panel = AccordionPanel;

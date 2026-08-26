@@ -1,17 +1,24 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 import { cx } from "../cx";
 import "./_field.css";
 interface ComboboxOwnProps {
-  label: string;
-  options: string[];
+  /** A node: it goes into a real <label> element, which carries the
+   * accessible name, so it does not have to be flat text. */
+  label: ReactNode;
+  /**
+   * The convenience form. A shorthand over `Combobox.Option`, which a
+   * grouped or async list needs.
+   */
+  options?: string[];
   value?: string | null;
   onValueChange?: (value: string | null) => void;
   placeholder?: string;
+  children?: ReactNode;
   /**
    * Declared here rather than inherited from the wrapper div, because
    * `rest` lands on the wrapper and a `disabled` that never reaches the
@@ -48,12 +55,13 @@ export function Combobox({
   placeholder,
   disabled,
   className,
+  children,
   ...rest
 }: ComboboxProps) {
   const id = useId();
   const [query, setQuery] = useState("");
 
-  const matches = options.filter((option) =>
+  const matches = (options ?? []).filter((option) =>
     option.toLowerCase().includes(query.toLowerCase()),
   );
 
@@ -80,11 +88,19 @@ export function Combobox({
           <ChevronDown size={16} />
         </span>
         <datalist id={`${id}-options`}>
-          {matches.map((option) => (
-            <option key={option} value={option} />
-          ))}
+          {children ??
+            matches.map((option) => <option key={option} value={option} />)}
         </datalist>
       </div>
     </div>
   );
 }
+
+/* The datalist's only legal child. Composable so a caller can build the
+   list from somewhere other than a string array — an async fetch, a
+   grouped source — without leaving the component. */
+Combobox.Option = function ComboboxOptionPart(
+  props: ComponentPropsWithoutRef<"option">,
+) {
+  return <option {...props} />;
+};

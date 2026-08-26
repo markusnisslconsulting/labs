@@ -3,7 +3,7 @@ import type { ReactNode, ComponentPropsWithoutRef } from "react";
 import { cx } from "../cx";
 import "./Table.css";
 interface TableOwnProps {
-  caption?: string;
+  caption?: ReactNode;
   children: ReactNode;
 }
 

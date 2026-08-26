@@ -53,4 +53,23 @@
       color: HighlightText;
     }
   }
+
+  /* The structural parts. They existed in Base UI and not in our API, so
+     a menu with two groups of actions had to be two menus. */
+  .uix-menu-separator {
+    height: 1px;
+    margin: var(--uix-gap-xs) 0;
+    background: var(--uix-border-subtle);
+    border: 0;
+  }
+
+  .uix-menu-group-label {
+    padding: var(--uix-gap-xs) var(--uix-gap-md);
+    font-size: var(--uix-text-caption);
+    font-family: var(--uix-font-ui);
+    font-weight: var(--uix-weight-ui);
+    letter-spacing: var(--uix-tracking-ui);
+    text-transform: uppercase;
+    color: var(--uix-text-secondary);
+  }
 }

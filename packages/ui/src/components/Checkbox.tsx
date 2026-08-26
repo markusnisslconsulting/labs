@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 
 import { cxState } from "../cx";
@@ -8,7 +8,12 @@ import "./Checkbox.css";
 interface CheckboxOwnProps {
   /** Visible label; rendered inside the control, so the whole row
       toggles natively. */
-  label: string;
+  /**
+   * A node. Base UI wires the accessible name from the visible label
+   * element, so this is free to be rich — a consent line with a link in
+   * it is the common case and was not expressible.
+   */
+  label: ReactNode;
   checked?: boolean;
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;

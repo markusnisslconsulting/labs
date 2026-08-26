@@ -1,6 +1,7 @@
 import { expect, userEvent } from "storybook/test";
 import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Badge } from "./Badge";
 import { Tabs } from "./Tabs";
 
 const meta = {
@@ -54,6 +55,57 @@ export const Matrix: Story = {
         disabled: true,
       },
     ],
+  },
+};
+
+/**
+ * The compound API, and the reason it exists.
+ *
+ * A tab holding a count was not expressible before: `tabs` took
+ * `label: string`, so the only way to put a badge in a tab was to stop
+ * using Tabs. The array form is still there for the common case — it is
+ * now a shorthand over these parts rather than the only door.
+ */
+export const Composed: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  render: () => (
+    <Tabs defaultValue="open">
+      <Tabs.List aria-label="Orders">
+        <Tabs.Tab value="open">
+          Open <Badge tone="accent">12</Badge>
+        </Tabs.Tab>
+        <Tabs.Tab value="done">
+          Done <Badge tone="success">318</Badge>
+        </Tabs.Tab>
+        <Tabs.Tab value="audit" disabled>
+          Audit
+        </Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panel value="open">
+        <p>Twelve orders waiting on a person.</p>
+      </Tabs.Panel>
+      <Tabs.Panel value="done">
+        <p>Everything the agent closed without help.</p>
+      </Tabs.Panel>
+      <Tabs.Panel value="audit">
+        <p>Unavailable for this sample.</p>
+      </Tabs.Panel>
+    </Tabs>
+  ),
+  play: async ({ canvas }) => {
+    // The badge is inside the tab's accessible name, which is the point:
+    // the count is part of what the tab says.
+    await expect(
+      canvas.getByRole("tab", { name: /Open\s*12/ }),
+    ).toHaveAttribute("aria-selected", "true");
+    // aria-disabled, not the native attribute: a disabled tab stays
+    // focusable per the ARIA pattern, so Base UI marks it rather than
+    // removing it from the tab order. That is also why Tabs.css has to
+    // match [data-disabled] — :disabled never fires here.
+    await expect(canvas.getByRole("tab", { name: "Audit" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
   },
 };
 

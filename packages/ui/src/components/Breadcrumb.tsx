@@ -1,16 +1,35 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cx } from "../cx";
 import "./Breadcrumb.css";
 
 export interface BreadcrumbItem {
-  label: string;
+  /** A node: a crumb often carries an icon for its section. */
+  label: ReactNode;
   href?: string;
 }
 
 interface BreadcrumbOwnProps {
-  items: BreadcrumbItem[];
+  /**
+   * The convenience form, and the one that also decides which crumb is
+   * current: the last one. A shorthand over `Breadcrumb.Crumb`, which is
+   * what a trail with a dropdown in the middle, or a truncated middle
+   * section, needs.
+   */
+  items?: BreadcrumbItem[];
+  /**
+   * The trail's accessible name. Was the literal string "Breadcrumb",
+   * compiled in, which no other locale can read.
+   */
+  label?: string;
+  children?: ReactNode;
 }
+
+export type BreadcrumbCrumbProps = ComponentPropsWithoutRef<"li"> & {
+  href?: string;
+  /** Marks this crumb as the page the reader is on. */
+  current?: boolean;
+};
 
 /**
  * Accepts every attribute of `<nav>` in addition to `items`;
@@ -28,29 +47,55 @@ export type BreadcrumbProps = BreadcrumbOwnProps &
  * Accessibility: `nav` with a label, list semantics, separators
  * hidden from assistive technology.
  */
-export function Breadcrumb({ items, className, ...rest }: BreadcrumbProps) {
+export function Breadcrumb({
+  items,
+  label = "Breadcrumb",
+  className,
+  children,
+  ...rest
+}: BreadcrumbProps) {
   return (
     <nav
       className={cx("uix-breadcrumb", className)}
-      aria-label="Breadcrumb"
+      aria-label={label}
       {...rest}
     >
       <ol>
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1;
-          return (
-            <li key={`${item.label}-${index}`}>
-              {isLast || !item.href ? (
-                <span aria-current={isLast ? "page" : undefined}>
-                  {item.label}
-                </span>
-              ) : (
-                <a href={item.href}>{item.label}</a>
-              )}
-            </li>
-          );
-        })}
+        {children ??
+          (items ?? []).map((item, index) => (
+            <Crumb
+              key={index}
+              href={item.href}
+              current={index === (items ?? []).length - 1}
+            >
+              {item.label}
+            </Crumb>
+          ))}
       </ol>
     </nav>
   );
 }
+
+/**
+ * One crumb. A link unless it is the current page, which is text with
+ * `aria-current` — a page never links to itself.
+ */
+function Crumb({
+  href,
+  current,
+  children,
+  className,
+  ...rest
+}: BreadcrumbCrumbProps) {
+  return (
+    <li className={cx(className)} {...rest}>
+      {current || !href ? (
+        <span aria-current={current ? "page" : undefined}>{children}</span>
+      ) : (
+        <a href={href}>{children}</a>
+      )}
+    </li>
+  );
+}
+
+Breadcrumb.Crumb = Crumb;

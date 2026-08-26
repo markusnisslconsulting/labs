@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
+import { useId } from "react";
 import { X } from "lucide-react";
 import { Button } from "./Button";
 
@@ -10,7 +11,7 @@ type Severity = "info" | "success" | "warning" | "danger";
 
 interface AlertOwnProps {
   severity: Severity;
-  title?: string;
+  title?: ReactNode;
   children: ReactNode;
   /** When provided, a dismiss button renders and calls this. */
   onDismiss?: () => void;
@@ -53,16 +54,27 @@ export function Alert({
   className,
   ...rest
 }: AlertProps) {
+  const titleId = useId();
+
   return (
     <div
       className={cx("uix-alert", className)}
       data-severity={severity}
       role={roleFor[severity]}
-      aria-label={title}
+      /* Labelled by the visible title rather than by a copy of it in an
+         aria-label. That was needed once `title` became a node — an
+         aria-label can only be a string — and it is the better wiring
+         anyway: an aria-label duplicating visible text is a second
+         version of the same words that can drift out of step with it. */
+      aria-labelledby={title ? titleId : undefined}
       {...rest}
     >
       <div className="uix-alert-body">
-        {title ? <strong className="uix-alert-title">{title}</strong> : null}
+        {title ? (
+          <strong className="uix-alert-title" id={titleId}>
+            {title}
+          </strong>
+        ) : null}
         {children}
       </div>
       {onDismiss ? (

@@ -1,13 +1,14 @@
 "use client";
 
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { Progress as BaseProgress } from "@base-ui-components/react/progress";
 
 import { cxState } from "../cx";
 import "./ProgressBar.css";
 interface ProgressBarOwnProps {
   /** Accessible name; also rendered as visible text. */
-  label: string;
+  /** A node: it renders into a real label element, not an attribute. */
+  label: ReactNode;
   /** Omit for an indeterminate bar. */
   value?: number;
   max?: number;

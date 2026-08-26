@@ -1,10 +1,15 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cx } from "../cx";
 import "./Badge.css";
 
 interface BadgeOwnProps {
   tone?: "accent" | "neutral" | "danger" | "success";
-  children: string;
+  /**
+   * A node, not a string. A badge with an icon beside its count was
+   * unreachable while this was `string`, which is the whole shape of the
+   * problem: the type decided what a badge could ever say.
+   */
+  children: ReactNode;
 }
 
 /**

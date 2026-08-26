@@ -8,11 +8,12 @@ export interface TextFieldProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "id" | "prefix"
 > {
-  label: string;
+  /** A node, so a label can carry a required marker or a hint link. */
+  label: ReactNode;
   /** Supporting text under the field; wired via aria-describedby. */
-  hint?: string;
+  hint?: ReactNode;
   /** Validation message. Sets aria-invalid and links the same way. */
-  error?: string;
+  error?: ReactNode;
   /** Slot before the input (e.g. a unit). */
   prefix?: ReactNode;
   /** Slot after the input (e.g. an icon). */
