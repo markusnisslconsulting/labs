@@ -16,6 +16,8 @@ interface ComboboxOwnProps {
    */
   options?: string[];
   value?: string | null;
+  /** The uncontrolled half of the triple, which was missing. */
+  defaultValue?: string;
   onValueChange?: (value: string | null) => void;
   placeholder?: string;
   children?: ReactNode;
@@ -51,6 +53,7 @@ export function Combobox({
   label,
   options,
   value,
+  defaultValue,
   onValueChange,
   placeholder,
   disabled,
@@ -59,7 +62,10 @@ export function Combobox({
   ...rest
 }: ComboboxProps) {
   const id = useId();
-  const [query, setQuery] = useState("");
+  // The uncontrolled value doubles as the query, which is what an
+  // uncontrolled combobox means: what is typed is what is chosen until
+  // something else says otherwise.
+  const [query, setQuery] = useState(defaultValue ?? "");
 
   const matches = (options ?? []).filter((option) =>
     option.toLowerCase().includes(query.toLowerCase()),

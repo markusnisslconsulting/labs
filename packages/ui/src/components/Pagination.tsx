@@ -10,8 +10,14 @@ import { cx } from "../cx";
 import "./Pagination.css";
 interface PaginationOwnProps {
   pageCount: number;
+  /**
+   * The controlled page. It was missing entirely: Pagination had
+   * `defaultPage` and `onChange` and no way to be driven, so a page
+   * number held in a URL could not be pushed back into the control.
+   */
+  page?: number;
   defaultPage?: number;
-  onChange?: (page: number) => void;
+  onPageChange?: (page: number) => void;
 }
 
 /**
@@ -36,21 +42,26 @@ export type PaginationProps = PaginationOwnProps &
  */
 export function Pagination({
   pageCount,
+  page: controlledPage,
   defaultPage = 1,
-  onChange,
+  onPageChange,
   className,
   ...rest
 }: PaginationProps) {
-  const [page, setPage] = useState(
+  const isControlled = controlledPage !== undefined;
+  const [uncontrolled, setUncontrolled] = useState(
     Math.min(Math.max(defaultPage, 1), pageCount),
   );
 
+  const page = isControlled
+    ? Math.min(Math.max(controlledPage, 1), pageCount)
+    : uncontrolled;
+
   const go = (next: number) => {
     const clamped = Math.min(Math.max(next, 1), pageCount);
-    if (clamped !== page) {
-      setPage(clamped);
-      onChange?.(clamped);
-    }
+    if (clamped === page) return;
+    if (!isControlled) setUncontrolled(clamped);
+    onPageChange?.(clamped);
   };
 
   /** Sliding window; erste und letzte Seite bleiben sichtbar. */

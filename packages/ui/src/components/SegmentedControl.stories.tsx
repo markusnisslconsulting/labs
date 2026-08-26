@@ -18,7 +18,7 @@ function ViewSwitcherDemo() {
     <SegmentedControl
       label="View"
       value={view}
-      onChange={setView}
+      onValueChange={setView}
       options={[
         { value: "list", label: "List" },
         { value: "board", label: "Board" },
@@ -53,7 +53,7 @@ export const Matrix: StoryObj = {
       <SegmentedControl
         label="With an unavailable option"
         value="list"
-        onChange={() => {}}
+        onValueChange={() => {}}
         options={[
           { value: "list", label: "List" },
           { value: "board", label: "Board" },

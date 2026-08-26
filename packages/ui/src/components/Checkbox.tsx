@@ -16,7 +16,13 @@ interface CheckboxOwnProps {
   label: ReactNode;
   checked?: boolean;
   defaultChecked?: boolean;
-  onChange?: (checked: boolean) => void;
+  /**
+   * The checked triple, matching value/defaultValue/onValueChange
+   * elsewhere: checked, defaultChecked, onCheckedChange. It was
+   * `onChange`, which read like the DOM event and was not — it received a
+   * boolean. Six components expressed the same idea six ways.
+   */
+  onCheckedChange?: (checked: boolean) => void;
   disabled?: boolean;
   /** Tri-state support: aria-checked="mixed" plus a dash. */
   indeterminate?: boolean;
@@ -49,7 +55,7 @@ export function Checkbox({
   label,
   checked,
   defaultChecked,
-  onChange,
+  onCheckedChange,
   disabled,
   indeterminate,
   className,
@@ -61,7 +67,7 @@ export function Checkbox({
       checked={checked}
       defaultChecked={defaultChecked}
       indeterminate={indeterminate}
-      onCheckedChange={(next) => onChange?.(Boolean(next))}
+      onCheckedChange={(next) => onCheckedChange?.(Boolean(next))}
       disabled={disabled}
       {...rest}
     >

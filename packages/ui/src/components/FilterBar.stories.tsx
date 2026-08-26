@@ -59,13 +59,17 @@ function FilterBar() {
             key={tag}
             interactive
             active={tags.has(tag)}
-            onSelect={() => toggle(tag)}
+            onActiveChange={() => toggle(tag)}
           >
             {tag}
           </Chip>
         ))}
       </div>
-      <Switch label="Compact rows" checked={compact} onChange={setCompact} />
+      <Switch
+        label="Compact rows"
+        checked={compact}
+        onCheckedChange={setCompact}
+      />
       <Checkbox label="Include archived labs" defaultChecked />
     </div>
   );

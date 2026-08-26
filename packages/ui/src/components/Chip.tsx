@@ -2,6 +2,8 @@
 
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
+import { useState } from "react";
+
 import { cx } from "../cx";
 import { renderAsElement, type Renderable } from "../renderAs";
 import "./Chip.css";
@@ -21,7 +23,14 @@ interface ChipOwnProps {
    */
   interactive?: boolean;
   active?: boolean;
-  onSelect?: () => void;
+  /** The uncontrolled half; a filter chip that owns its own state. */
+  defaultActive?: boolean;
+  /**
+   * Was `onSelect`, which said nothing about what changed. The triple is
+   * active / defaultActive / onActiveChange, the same shape as every
+   * other stateful component here.
+   */
+  onActiveChange?: (active: boolean) => void;
 }
 
 /**
@@ -59,11 +68,19 @@ export function Chip({
   children,
   interactive,
   active,
-  onSelect,
+  defaultActive,
+  onActiveChange,
   className,
   renderAs,
   ...rest
 }: ChipProps) {
+  // Controlled when `active` is given, uncontrolled otherwise. A filter
+  // chip that owns its own state is the common case and used to require
+  // the caller to hold it.
+  const isControlled = active !== undefined;
+  const [uncontrolled, setUncontrolled] = useState(Boolean(defaultActive));
+  const pressed = isControlled ? Boolean(active) : uncontrolled;
+
   if (!interactive) {
     return (
       renderAsElement(
@@ -86,8 +103,11 @@ export function Chip({
     <button
       type="button"
       className={cx("uix-chip", className)}
-      aria-pressed={Boolean(active)}
-      onClick={onSelect}
+      aria-pressed={pressed}
+      onClick={() => {
+        if (!isControlled) setUncontrolled(!pressed);
+        onActiveChange?.(!pressed);
+      }}
       {...(rest as ComponentPropsWithoutRef<"button">)}
     >
       {children}

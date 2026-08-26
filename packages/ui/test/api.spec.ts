@@ -30,6 +30,25 @@ const source = new Map(
 );
 
 /**
+ * The component's own props block, not an item descriptor's.
+ *
+ * `SelectOption` also has a `value`, indented the same way, so scanning
+ * the whole file reported Select as a stateful component missing two
+ * thirds of its triple. The props a caller passes to the component are
+ * the only ones this contract is about.
+ */
+function ownProps(text: string): string {
+  const blocks = [
+    ...text.matchAll(
+      /(?:export )?interface \w*(?:Own)?Props[^{]*\{([\s\S]*?)\n\}/g,
+    ),
+  ]
+    .filter((hit) => !/Item|Option|Descriptor/.test(hit[0].split("{")[0]!))
+    .map((hit) => hit[1]!);
+  return blocks.join("\n");
+}
+
+/**
  * Components that contain nothing, so there is nothing to compose. Each is
  * a fixed picture whose whole content is derived from its props.
  */
@@ -153,6 +172,51 @@ describe("component API contract", () => {
         /cloneElement\(/.test(text),
         `${file} rolls its own cloneElement; the merge rules belong in one place`,
       ).toBe(false);
+    }
+  });
+
+  it("a stateful prop comes as a complete triple", () => {
+    /*
+     * Six components expressed the same idea six ways: checked with
+     * onChange, value with onChange, value with onValueChange and no
+     * defaultValue, defaultPage with onChange and no controlled page,
+     * open with onOpenChange and no defaultOpen. Every one is defensible
+     * alone; together they mean a reader has to look up each component
+     * before using it, which is the tax a design system exists to remove.
+     *
+     * The rule: a stateful prop X ships with defaultX and onXChange, so
+     * every component can be driven or left to itself.
+     */
+    const STATEFUL = ["value", "checked", "open", "active", "page"];
+    /*
+     * Props that look stateful and are not: a reading the caller always
+     * owns. A progress bar has nothing to default to and nothing to
+     * change — it displays what it is told.
+     */
+    const READ_ONLY: Record<string, string> = {
+      "ProgressBar.tsx": "value is a reading, not a state",
+    };
+    for (const [file, text] of source) {
+      if (READ_ONLY[file]) continue;
+      for (const prop of STATEFUL) {
+        const capital = prop[0]!.toUpperCase() + prop.slice(1);
+        const triple = [prop, `default${capital}`, `on${capital}Change`];
+        // Any one of the three implies all three. Checking only forwards
+        // from X missed Pagination, which had defaultPage and onChange and
+        // no controlled page at all — so a page number held in a URL could
+        // not be pushed back into the control. Required props were missed
+        // too, because the pattern demanded the `?`.
+        const props = ownProps(text);
+        const declared = triple.filter((name) =>
+          new RegExp(`^\\s+${name}\\??:`, "m").test(props),
+        );
+        if (declared.length === 0) continue;
+        expect(
+          declared,
+          `${file} declares ${declared.join(", ")}. A stateful prop ships as ` +
+            `${triple.join(" / ")} so a caller can drive it or leave it alone.`,
+        ).toHaveLength(3);
+      }
     }
   });
 

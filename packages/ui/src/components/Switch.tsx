@@ -16,7 +16,13 @@ interface SwitchOwnProps {
   label: ReactNode;
   checked?: boolean;
   defaultChecked?: boolean;
-  onChange?: (checked: boolean) => void;
+  /**
+   * The checked triple, matching value/defaultValue/onValueChange
+   * elsewhere: checked, defaultChecked, onCheckedChange. It was
+   * `onChange`, which read like the DOM event and was not — it received a
+   * boolean. Six components expressed the same idea six ways.
+   */
+  onCheckedChange?: (checked: boolean) => void;
   disabled?: boolean;
 }
 
@@ -71,7 +77,7 @@ export function Switch({
   label,
   checked,
   defaultChecked,
-  onChange,
+  onCheckedChange,
   disabled,
   className,
   ...rest
@@ -91,7 +97,7 @@ export function Switch({
         checked={isChecked}
         onCheckedChange={(next) => {
           if (!isControlled) setInternalChecked(next);
-          onChange?.(next);
+          onCheckedChange?.(next);
         }}
         disabled={disabled}
       >

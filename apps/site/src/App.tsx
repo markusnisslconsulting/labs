@@ -40,7 +40,11 @@ const Home = () => {
           onChange={(event) => setQuery(event.currentTarget.value)}
         />
         <div className="chip-row" role="group" aria-label="Filter by tag">
-          <Chip interactive active={tag === null} onSelect={() => setTag(null)}>
+          <Chip
+            interactive
+            active={tag === null}
+            onActiveChange={() => setTag(null)}
+          >
             All
           </Chip>
           {allTags.map((entry) => (
@@ -48,7 +52,7 @@ const Home = () => {
               key={entry}
               interactive
               active={tag === entry}
-              onSelect={() => setTag(tag === entry ? null : entry)}
+              onActiveChange={() => setTag(tag === entry ? null : entry)}
             >
               {entry}
             </Chip>

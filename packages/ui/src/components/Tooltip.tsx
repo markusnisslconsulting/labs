@@ -14,7 +14,10 @@ export interface TooltipProps {
   children: ReactElement;
   placement?: "top" | "bottom";
   /** Mount the popup open (for tests and docs). */
+  /** Controlled: a tooltip driven by something other than the pointer. */
+  open?: boolean;
   defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 /**
@@ -41,13 +44,19 @@ export function Tooltip({
   content,
   children,
   placement = "top",
+  open,
   defaultOpen,
+  onOpenChange,
 }: TooltipProps) {
   const id = useId();
 
   return (
     <BaseTooltip.Provider delay={0}>
-      <BaseTooltip.Root defaultOpen={defaultOpen}>
+      <BaseTooltip.Root
+        open={open}
+        defaultOpen={defaultOpen}
+        onOpenChange={onOpenChange}
+      >
         <BaseTooltip.Trigger
           className="uix-tooltip"
           render={children as ReactElement<Record<string, unknown>>}

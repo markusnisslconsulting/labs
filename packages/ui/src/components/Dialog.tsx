@@ -7,7 +7,13 @@ import { cxState } from "../cx";
 
 import "./Dialog.css";
 interface DialogOwnProps {
-  open: boolean;
+  /**
+   * Controlled. Optional now: a dialog opened from its own trigger has no
+   * reason to make the caller hold a boolean.
+   */
+  open?: boolean;
+  /** The uncontrolled half of the triple, which was missing. */
+  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   title: string;
   description?: string;
@@ -36,6 +42,7 @@ export type DialogProps = DialogOwnProps &
  */
 export function Dialog({
   open,
+  defaultOpen,
   onOpenChange,
   title,
   description,
@@ -50,6 +57,7 @@ export function Dialog({
   return (
     <BaseDialog.Root
       open={open}
+      defaultOpen={defaultOpen}
       onOpenChange={(next) => onOpenChange?.(Boolean(next))}
     >
       <BaseDialog.Portal>
@@ -78,7 +86,13 @@ export function Dialog({
 }
 
 interface AlertDialogOwnProps {
-  open: boolean;
+  /**
+   * Controlled. Optional now: a dialog opened from its own trigger has no
+   * reason to make the caller hold a boolean.
+   */
+  open?: boolean;
+  /** The uncontrolled half of the triple, which was missing. */
+  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   title: string;
   description?: string;
@@ -99,6 +113,7 @@ export type AlertDialogProps = AlertDialogOwnProps &
  */
 export function AlertDialog({
   open,
+  defaultOpen,
   onOpenChange,
   title,
   description,
@@ -113,6 +128,7 @@ export function AlertDialog({
   return (
     <BaseDialog.Root
       open={open}
+      defaultOpen={defaultOpen}
       onOpenChange={(next) => onOpenChange?.(Boolean(next))}
       modal
     >

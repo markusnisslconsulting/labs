@@ -33,8 +33,23 @@ interface TabsOwnProps {
    * the one you need.
    */
   tabs?: TabItem[];
-  /** Index into `tabs`. Ignored when composing with children. */
-  defaultActive?: number;
+  /**
+   * Which tab starts selected, as an index into `tabs`. Only meaningful
+   * with the shorthand; when composing, use `defaultValue`.
+   *
+   * Named `…Index` because it is one: as `defaultActiveIndex` it read like the
+   * uncontrolled half of an `active` triple, which it is not — there is
+   * no `active` state on Tabs, the value is a tab id.
+   *
+   * The value triple — `value`, `defaultValue`, `onValueChange` — comes
+   * from Base UI's root and reaches this component through `rest`. It is
+   * named here so it is part of the documented API rather than something
+   * a reader has to know to look for.
+   */
+  defaultActiveIndex?: number;
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
   /** Accessible name for the tablist, e.g. "Sample details". */
   label?: string;
   children?: ReactNode;
@@ -88,7 +103,7 @@ export type TabPanelProps = ComponentPropsWithoutRef<typeof BaseTabs.Panel>;
  */
 export function Tabs({
   tabs,
-  defaultActive = 0,
+  defaultActiveIndex = 0,
   label,
   className,
   children,
@@ -101,7 +116,7 @@ export function Tabs({
       className={cxState("uix-tabs", className)}
       {...(composed || !tabs
         ? {}
-        : { defaultValue: tabs[defaultActive]?.id ?? undefined })}
+        : { defaultValue: tabs[defaultActiveIndex]?.id ?? undefined })}
       {...rest}
     >
       {composed ? (

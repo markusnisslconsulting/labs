@@ -10,7 +10,7 @@ const meta = {
   tags: ["autodocs", "stable"],
   args: {
     label: "Sample details",
-    defaultActive: 0,
+    defaultActiveIndex: 0,
     tabs: [
       { id: "transcript", label: "Transcript", content: <p>The log view.</p> },
       {

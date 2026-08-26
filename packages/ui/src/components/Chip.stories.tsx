@@ -78,10 +78,10 @@ export const Matrix: StoryObj = {
       }}
     >
       <Chip>static tag</Chip>
-      <Chip interactive onSelect={() => {}}>
+      <Chip interactive onActiveChange={() => {}}>
         filter off
       </Chip>
-      <Chip interactive active onSelect={() => {}}>
+      <Chip interactive active onActiveChange={() => {}}>
         filter on
       </Chip>
     </div>

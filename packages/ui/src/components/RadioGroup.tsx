@@ -25,7 +25,8 @@ interface RadioGroupOwnProps {
   options?: RadioOption[];
   defaultValue?: string;
   value?: string;
-  onChange?: (value: string) => void;
+  /** The value triple: value, defaultValue, onValueChange. */
+  onValueChange?: (value: string) => void;
   disabled?: boolean;
   children?: ReactNode;
 }
@@ -58,7 +59,7 @@ export function RadioGroup({
   options,
   defaultValue,
   value,
-  onChange,
+  onValueChange,
   disabled,
   className,
   children,
@@ -87,7 +88,7 @@ export function RadioGroup({
                 ? { checked: value === option.value }
                 : { defaultChecked: defaultValue === option.value })}
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                onChange?.(event.target.value)
+                onValueChange?.(event.target.value)
               }
               disabled={disabled || option.disabled}
             >

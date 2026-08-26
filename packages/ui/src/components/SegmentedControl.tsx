@@ -2,6 +2,8 @@
 
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
+import { useState } from "react";
+
 import { cx } from "../cx";
 import "./SegmentedControl.css";
 export interface SegmentedOption {
@@ -21,8 +23,9 @@ interface SegmentedControlOwnProps {
    */
   options?: SegmentedOption[];
   value?: string;
-  /** Kept as `onChange` for the shorthand; the parts take `onClick`. */
-  onChange?: (value: string) => void;
+  /** The uncontrolled half of the triple, which was simply missing. */
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
   children?: ReactNode;
 }
 
@@ -54,11 +57,19 @@ export function SegmentedControl({
   label,
   options,
   value,
-  onChange,
+  defaultValue,
+  onValueChange,
   className,
   children,
   ...rest
 }: SegmentedControlProps) {
+  // Controlled when `value` is given, uncontrolled otherwise. It used to
+  // be controlled-only, so every caller had to hold the state even when
+  // nothing else needed it.
+  const isControlled = value !== undefined;
+  const [uncontrolled, setUncontrolled] = useState(defaultValue);
+  const selected = isControlled ? value : uncontrolled;
+
   return (
     <div
       className={cx("uix-segmented", className)}
@@ -70,9 +81,12 @@ export function SegmentedControl({
         (options ?? []).map((option) => (
           <Option
             key={option.value}
-            selected={value === option.value}
+            selected={selected === option.value}
             disabled={option.disabled}
-            onClick={() => onChange?.(option.value)}
+            onClick={() => {
+              if (!isControlled) setUncontrolled(option.value);
+              onValueChange?.(option.value);
+            }}
           >
             {option.label}
           </Option>
