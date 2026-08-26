@@ -24,6 +24,19 @@ export type StatusPillProps = StatusPillOwnProps &
  *
  * A live state, one line. The coloured dot is `aria-hidden`; the word
  * next to it carries the meaning for assistive technology.
+ *
+ * ### Theming
+ *
+ * Override slots for this component. None is declared: each is
+ * referenced with its semantic default inline, so a slot costs
+ * nothing until something fills it. Set one on any ancestor.
+ *
+ * | Token | Default | Meaning |
+ * | --- | --- | --- |
+ * | `--uix-pill-fg` | `var(--uix-text-primary)` | Status pill label |
+ * | `--uix-pill-off` | `var(--uix-status-off)` | Status pill dot, off |
+ * | `--uix-pill-ok` | `var(--uix-status-ok)` | Status pill dot, ok |
+ * | `--uix-pill-warn` | `var(--uix-status-warn)` | Status pill dot, warn |
  */
 export function StatusPill({
   tone,

@@ -16,7 +16,7 @@
 
   .uix-breadcrumb li:not(:last-child)::after {
     content: "/";
-    margin-left: var(--uix-gap-sm);
+    margin-inline-start: var(--uix-gap-sm);
     color: var(--uix-text-secondary);
   }
 

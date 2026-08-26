@@ -55,6 +55,17 @@ const SLOTS = [
   "render",
 ];
 
+/**
+ * `render` must never be listed.
+ *
+ * Storybook treats `render` as a story annotation, so declaring it as an
+ * argType makes the docs blocks call String.startsWith on a function and
+ * the whole page dies with "t.startsWith is not a function". The prop is
+ * still documented: docgen picks it up from the type, and the AsLink
+ * story shows it in use.
+ */
+const RESERVED = ["render", "play", "loaders", "decorators", "parameters"];
+
 function category(prop: string): string {
   if (AXES.includes(prop)) return "Appearance";
   if (STATES.includes(prop)) return "State";
@@ -68,6 +79,8 @@ function category(prop: string): string {
 /** Group the props a component actually declares. */
 export function grouped(...props: string[]): Partial<ArgTypes> {
   return Object.fromEntries(
-    props.map((prop) => [prop, { table: { category: category(prop) } }]),
+    props
+      .filter((prop) => !RESERVED.includes(prop))
+      .map((prop) => [prop, { table: { category: category(prop) } }]),
   ) as Partial<ArgTypes>;
 }

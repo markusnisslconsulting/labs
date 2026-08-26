@@ -18,10 +18,21 @@ export const NinePages: Story = {
   },
   args: { pageCount: 9, defaultPage: 4 },
   play: async ({ canvas }) => {
-    // aria-current marks where you are; prev/next have real names.
+    // Assertion only: aria-current marks where you are. Clicking Next
+    // here used to move the page while this story was still the
+    // snapshotted one, so the baseline showed page 5 under a name and
+    // args that both said page 4.
     await expect(
       canvas.getByRole("button", { name: "Page 4" }),
     ).toHaveAttribute("aria-current", "page");
+  },
+};
+
+/** Interaction only: the current page moves, so it does not snapshot. */
+export const MovingToTheNextPage: Story = {
+  args: NinePages.args,
+  parameters: { chromatic: { disableSnapshot: true } },
+  play: async ({ canvas }) => {
     await canvas.getByRole("button", { name: "Next page" }).click();
     await expect(
       canvas.getByRole("button", { name: "Page 5" }),

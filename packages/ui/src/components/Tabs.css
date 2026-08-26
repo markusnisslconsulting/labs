@@ -11,7 +11,9 @@
   }
 
   .uix-tab {
-    padding: var(--uix-gap-sm) var(--uix-gap-lg);
+    min-height: var(--uix-control-md);
+    padding-block: 0;
+    padding-inline: var(--uix-gap-lg);
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
@@ -36,5 +38,11 @@
 
   .uix-tabpanel {
     padding-top: var(--uix-gap-lg);
+  }
+
+  .uix-tab:disabled,
+  .uix-tab[data-disabled] {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
   }
 }

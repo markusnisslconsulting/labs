@@ -13,7 +13,7 @@
   }
 
   .uix-toaster--bottom-right {
-    right: var(--uix-gap-lg);
+    inset-inline-end: var(--uix-gap-lg);
     bottom: var(--uix-gap-lg);
   }
 
@@ -29,7 +29,7 @@
     gap: var(--uix-gap-sm);
     background: var(--uix-bg-surface);
     border: 1px solid var(--uix-panel-border, var(--uix-border-subtle));
-    border-left: 4px solid var(--uix-info);
+    border-inline-start: 4px solid var(--uix-info);
     border-radius: var(--uix-radius-m);
     box-shadow: var(--uix-shadow-2);
     padding: var(--uix-gap-md) var(--uix-gap-lg);
@@ -65,7 +65,9 @@
   }
 
   .uix-toast-close {
-    margin-left: auto;
+    margin-inline-start: auto;
+    min-height: var(--uix-control-sm);
+    min-width: var(--uix-control-sm);
     background: none;
     border: none;
     color: var(--uix-text-secondary);

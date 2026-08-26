@@ -16,10 +16,7 @@ type Variant = "solid" | "outline" | "ghost";
 type Tone = "accent" | "neutral";
 type Size = "sm" | "md" | "lg";
 
-export interface ButtonProps extends Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  "children"
-> {
+interface ButtonOwnProps {
   children: ReactNode;
   variant?: Variant;
   tone?: Tone;
@@ -36,7 +33,7 @@ export interface ButtonProps extends Omit<
   /**
    * Render as a different element, keeping every Button style and
    * behaviour. The case this exists for is a link that has to look like
-   * a button: `render={<a href="/pricing" />}`.
+   * a button: `renderAs={<a href="/pricing" />}`.
    *
    * Same convention Base UI uses, so the library has one mental model
    * for polymorphism rather than an `as` prop here and a `render` prop
@@ -44,17 +41,29 @@ export interface ButtonProps extends Omit<
    * copy the class names, and copied class names are how a design
    * system starts losing.
    */
-  render?: ReactElement<Record<string, unknown>>;
+  renderAs?: ReactElement<Record<string, unknown>>;
 }
 
 /**
- * **Use it for** anything that performs an action. **Reach for something else when** the control navigates: pass render={<a href />} so it stays a link.
+ * Accepts every attribute of `<button>` in addition to the props above;
+ * `className` merges with the component's own class.
+ *
+ * Written as an intersection rather than `interface … extends Omit<…>`,
+ * which is what every other component uses. Button was the exception,
+ * and its docs page died with "t.startsWith is not a function" while the
+ * others rendered.
+ */
+export type ButtonProps = ButtonOwnProps &
+  Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps>;
+
+/**
+ * **Use it for** anything that performs an action. **Reach for something else when** the control navigates: pass renderAs={<a href />} so it stays a link.
  *
  * The one button of the design system.
  *
  * API: three coherent axes — `variant`, `tone`, `size` — every
  * combination themed by component tokens, plus `leading`/`trailing`
- * slots, a `loading` state that keeps the label readable, and `render`
+ * slots, a `loading` state that keeps the label readable, and `renderAs`
  * for the cases that are not a `<button>`.
  *
  * Accessibility: a native `<button>` by default; the focus ring is
@@ -62,6 +71,26 @@ export interface ButtonProps extends Omit<
  * rather than the native `disabled`, because a disabled button leaves
  * the tab order — a user tabbing a form would lose their place the
  * moment a button started loading.
+ *
+ * ### Theming
+ *
+ * Override slots for this component. None is declared: each is
+ * referenced with its semantic default inline, so a slot costs
+ * nothing until something fills it. Set one on any ancestor.
+ *
+ * | Token | Default | Meaning |
+ * | --- | --- | --- |
+ * | `--uix-button-accent-bg` | `var(--uix-accent)` | Solid button background, accent tone |
+ * | `--uix-button-accent-fg` | `var(--uix-text-on-accent)` | Solid button label, accent tone |
+ * | `--uix-button-ghost-fg` | `var(--uix-text-primary)` | Ghost button label |
+ * | `--uix-button-ghost-hover-bg` | `var(--uix-bg-subtle)` | Ghost button hover surface |
+ * | `--uix-button-neutral-bg` | `var(--uix-surface-inverse)` | Solid button background, neutral tone |
+ * | `--uix-button-neutral-fg` | `var(--uix-text-on-inverse)` | Solid button label, neutral tone |
+ * | `--uix-button-outline-bg` | `var(--uix-bg-surface)` | Outline button background |
+ * | `--uix-button-outline-border` | `var(--uix-border-subtle)` | Outline button border, rest |
+ * | `--uix-button-outline-border-strong` | `var(--uix-border-strong)` | Button outline border strong |
+ * | `--uix-button-outline-fg` | `var(--uix-text-primary)` | Outline button label |
+ * | `--uix-button-radius` | `var(--uix-radius-m)` | Button corner radius, md |
  */
 export function Button({
   variant = "solid",
@@ -74,7 +103,7 @@ export function Button({
   children,
   className,
   onClick,
-  render,
+  renderAs,
   ...rest
 }: ButtonProps) {
   const busy = loading && !disabled;
@@ -107,9 +136,9 @@ export function Button({
     "aria-disabled": busy || undefined,
   } as const;
 
-  if (render && isValidElement(render)) {
-    const own = render.props;
-    return cloneElement(render, {
+  if (renderAs && isValidElement(renderAs)) {
+    const own = renderAs.props;
+    return cloneElement(renderAs, {
       ...rest,
       ...presentation,
       ...own,

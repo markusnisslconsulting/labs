@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -188,6 +188,119 @@ describe("the layering rules the architecture depends on", () => {
         expect(
           literal.test(line),
           `${file}:${index + 1} hardcodes a colour — bind to a token instead: ${line.trim()}`,
+        ).toBe(false);
+      }
+    }
+  });
+
+  /**
+   * RTL is a whole class of bug that only appears when someone looks in
+   * the right direction, so it is checked rather than reviewed. Every
+   * offset that has a direction must be logical; the exceptions are
+   * centring (`left: 50%` with a translate) and physical `top`/`bottom`,
+   * which do not mirror.
+   */
+  it("no component stylesheet uses a direction-dependent physical property", () => {
+    const physical =
+      /(?:^|[\s;{])((?:margin|padding|border)-(?:left|right)|left|right)\s*:\s*([^;]+);/g;
+    for (const { file, source } of componentCss) {
+      for (const hit of strip(source).matchAll(physical)) {
+        // centring an absolutely positioned surface is direction-neutral
+        if (/50%/.test(hit[2]!)) continue;
+        expect(
+          true,
+          `${file} uses ${hit[1]} — use the inline-start/inline-end form so RTL mirrors`,
+        ).toBe(false);
+      }
+    }
+  });
+
+  /**
+   * A `disabled` prop with no disabled styling is a control that lies.
+   * The Switch shipped exactly that: its rule used `:disabled`, which can
+   * never match the `<span role="switch">` Base UI renders, so a disabled
+   * switch was indistinguishable from an enabled one.
+   */
+  it("disabled support and disabled styling imply each other", () => {
+    const dir = "packages/ui/src/components";
+    // A component reaches the disabled state either by declaring the prop
+    // or by inheriting it from the native element it spreads onto. The
+    // earlier version of this test only looked for the declaration, so
+    // Button, IconButton, SearchInput, Select and TextField were never
+    // checked at all.
+    const NATIVE = [
+      "ButtonHTMLAttributes",
+      "InputHTMLAttributes",
+      "SelectHTMLAttributes",
+      "TextareaHTMLAttributes",
+    ];
+    for (const file of readdirSync(dir).filter(
+      (f) => f.endsWith(".tsx") && !f.includes(".stories."),
+    )) {
+      const name = file.replace(/\.tsx$/, "");
+      const source = readFileSync(join(dir, file), "utf8");
+      const canDisable =
+        /^\s*disabled\?:\s*boolean/m.test(source) ||
+        NATIVE.some((type) => source.includes(type));
+
+      // Only the sheets this component actually imports. Globbing the
+      // shared ones in made every component look styled, because
+      // _field.css carries a rule for the fields that do import it.
+      const sheets = [...source.matchAll(/import "\.\/([\w-]+\.css)"/g)]
+        .map((hit) => join(dir, hit[1]!))
+        .filter((path) => existsSync(path))
+        .map((path) => readFileSync(path, "utf8"))
+        .join("\n");
+      const styled = /:disabled|\[data-disabled\]|aria-disabled/.test(sheets);
+
+      if (canDisable) {
+        expect(
+          styled,
+          `${name} can be disabled but no stylesheet it imports reacts to it`,
+        ).toBe(true);
+      }
+      // The other direction, which is how the Switch bug survived: a rule
+      // for a state the component cannot enter is dead CSS that reads as
+      // coverage. Tabs styled .uix-tab:disabled while never passing
+      // disabled to a tab.
+      if (!canDisable && sheets && styled) {
+        const ownSheet = existsSync(join(dir, `${name}.css`))
+          ? readFileSync(join(dir, `${name}.css`), "utf8")
+          : "";
+        expect(
+          /:disabled|\[data-disabled\]|aria-disabled/.test(ownSheet),
+          `${name} styles a disabled state it cannot reach — either accept a disabled prop or drop the rule`,
+        ).toBe(false);
+      }
+    }
+  });
+
+  /**
+   * A snapshotted story that mutates in play() baselines the state AFTER
+   * the interaction, under a name that promised the state before it.
+   * Switch's Off story shipped an on switch that way, and NumberField's
+   * ReorderPoint baselined 810 while its args said 800.
+   */
+  it("no snapshotted story mutates in play()", () => {
+    const dir = "packages/ui/src/components";
+    const ALLOWED = ["Focus", "Dialog", "Modal", "OpenState"];
+    for (const file of readdirSync(dir).filter((f) =>
+      f.endsWith(".stories.tsx"),
+    )) {
+      const source = readFileSync(join(dir, file), "utf8");
+      const stories = [
+        ...source.matchAll(
+          /export const (\w+)[^=]*=\s*\{([\s\S]*?)(?=\nexport const |$)/g,
+        ),
+      ];
+      for (const [, name, body] of stories) {
+        if (!/disableSnapshot:\s*false/.test(body!)) continue;
+        if (ALLOWED.includes(name!)) continue;
+        expect(
+          /userEvent\.(click|type|keyboard|tab|selectOptions)|\.click\(\)/.test(
+            body!,
+          ),
+          `${file.replace(".stories.tsx", "")}/${name} is snapshotted and mutates in play(); split the interaction into its own story`,
         ).toBe(false);
       }
     }

@@ -12,6 +12,12 @@ interface NumberFieldOwnProps {
   defaultValue?: number;
   value?: number;
   onValueChange?: (value: number | null) => void;
+  /**
+   * Declared here rather than inherited from the wrapper div, because
+   * `rest` lands on the wrapper and a `disabled` that never reaches the
+   * control is a field that looks unavailable and still accepts input.
+   */
+  disabled?: boolean;
 }
 
 /**
@@ -41,6 +47,7 @@ export function NumberField({
   defaultValue,
   value,
   onValueChange,
+  disabled,
   className,
   ...rest
 }: NumberFieldProps) {
@@ -53,6 +60,7 @@ export function NumberField({
         min={min}
         max={max}
         step={step}
+        disabled={disabled}
         onValueChange={(next) => onValueChange?.(next)}
       >
         <BaseNumberField.Group className="uix-numberfield">

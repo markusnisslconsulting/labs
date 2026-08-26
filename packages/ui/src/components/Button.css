@@ -13,7 +13,9 @@
     cursor: pointer;
     border: 1px solid transparent;
     background: transparent;
-    padding: var(--uix-gap-sm) var(--uix-gap-xl);
+    min-height: var(--uix-control-md);
+    padding-block: 0;
+    padding-inline: var(--uix-gap-xl);
     border-radius: var(--uix-button-radius, var(--uix-radius-m));
   }
 
@@ -22,20 +24,23 @@
     outline-offset: 2px;
   }
 
-  .uix-button:disabled {
+  .uix-button:disabled,
+  .uix-button[aria-disabled="true"] {
     opacity: var(--uix-opacity-disabled);
     cursor: not-allowed;
   }
 
   .uix-button[data-size="sm"] {
-    padding: var(--uix-gap-xs) var(--uix-gap-md);
+    min-height: var(--uix-control-sm);
+    padding-inline: var(--uix-gap-md);
     font-size: var(--uix-font-size-200);
     gap: var(--uix-gap-sm);
     border-radius: var(--uix-radius-s);
   }
 
   .uix-button[data-size="lg"] {
-    padding: var(--uix-gap-md) var(--uix-gap-2xl);
+    min-height: var(--uix-control-lg);
+    padding-inline: var(--uix-gap-2xl);
     font-size: var(--uix-font-size-500);
     border-radius: var(--uix-radius-l);
   }

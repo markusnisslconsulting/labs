@@ -16,8 +16,12 @@
     border: none;
     background: transparent;
     color: var(--uix-text-secondary);
-    padding: var(--uix-gap-sm) var(--uix-gap-lg);
-    border-radius: calc(var(--uix-radius-m) - var(--uix-space-1));
+    min-height: var(--uix-control-sm);
+    padding-block: 0;
+    padding-inline: var(--uix-gap-lg);
+    /* radius-s, not a calc: the calc produced 7.2px, the only radius in
+       the library that was not on the scale. */
+    border-radius: var(--uix-radius-s);
     font-size: var(--uix-font-size-200);
     font-weight: var(--uix-font-weight-bold);
     cursor: pointer;
@@ -32,5 +36,10 @@
   .uix-segment:focus-visible {
     outline: 2px solid var(--uix-focus-ring);
     outline-offset: 2px;
+  }
+
+  .uix-segment:disabled {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
   }
 }

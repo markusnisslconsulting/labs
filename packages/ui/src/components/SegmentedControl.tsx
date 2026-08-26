@@ -5,6 +5,8 @@ import "./SegmentedControl.css";
 export interface SegmentedOption {
   value: string;
   label: ReactNode;
+  /** Renders the option present but not selectable. */
+  disabled?: boolean;
 }
 
 interface SegmentedControlOwnProps {
@@ -54,6 +56,7 @@ export function SegmentedControl({
           type="button"
           className="uix-segment"
           aria-pressed={value === option.value}
+          disabled={option.disabled}
           onClick={() => onChange(option.value)}
         >
           {option.label}

@@ -47,6 +47,18 @@ export type SwitchProps = SwitchOwnProps &
  *
  * Performance: the knob moves with a `transform` transition —
  * compositor only.
+ *
+ * ### Theming
+ *
+ * Override slots for this component. None is declared: each is
+ * referenced with its semantic default inline, so a slot costs
+ * nothing until something fills it. Set one on any ancestor.
+ *
+ * | Token | Default | Meaning |
+ * | --- | --- | --- |
+ * | `--uix-switch-thumb-bg` | `var(--uix-bg-surface)` | Switch knob |
+ * | `--uix-switch-track-bg` | `var(--uix-bg-subtle)` | Switch track, off |
+ * | `--uix-switch-track-on-bg` | `var(--uix-accent)` | Switch track, on |
  */
 export function Switch({
   label,

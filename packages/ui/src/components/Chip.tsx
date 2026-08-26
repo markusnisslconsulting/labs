@@ -24,6 +24,27 @@ interface ChipOwnProps {
 export type ChipProps = ChipOwnProps &
   Omit<ComponentPropsWithoutRef<"span">, keyof ChipOwnProps>;
 
+/**
+ * **Use it for** a compact tag, or a filter that toggles. **Reach for
+ * something else when** the choice is one of a few fixed views
+ * (SegmentedControl).
+ *
+ * Static chips are plain labels; interactive chips render a native
+ * button with `aria-pressed`, so the toggle state is announced.
+ *
+ * ### Theming
+ *
+ * Override slots for this component. None is declared: each is
+ * referenced with its semantic default inline, so a slot costs
+ * nothing until something fills it. Set one on any ancestor.
+ *
+ * | Token | Default | Meaning |
+ * | --- | --- | --- |
+ * | `--uix-chip-active-bg` | `var(--uix-surface-inverse)` | Active chip background |
+ * | `--uix-chip-active-fg` | `var(--uix-text-on-inverse)` | Active chip label |
+ * | `--uix-chip-bg` | `var(--uix-bg-subtle)` | Chip background |
+ * | `--uix-chip-fg` | `var(--uix-text-secondary)` | Chip label |
+ */
 export function Chip({
   children,
   interactive,

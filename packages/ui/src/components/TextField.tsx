@@ -28,6 +28,17 @@ export interface TextFieldProps extends Omit<
  * relying on the red border.
  *
  * Performance: static markup, zero effects.
+ *
+ * ### Theming
+ *
+ * Override slots for this component. None is declared: each is
+ * referenced with its semantic default inline, so a slot costs
+ * nothing until something fills it. Set one on any ancestor.
+ *
+ * | Token | Default | Meaning |
+ * | --- | --- | --- |
+ * | `--uix-field-pad-y` | `0` | Extra vertical padding inside a field; height comes from --uix-control-md |
+ * | `--uix-field-radius` | `var(--uix-radius-m)` | Field corner radius |
  */
 export function TextField({
   label,

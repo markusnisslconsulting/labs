@@ -6,6 +6,10 @@
     /* Text */
     --uix-text-primary: var(--uix-navy-900);
     --uix-text-secondary: var(--uix-slate-600);
+    /* Readable, not invisible. Measured against page, surface and subtle
+       in both themes by scripts/tokens/contrast.ts, because a disabled
+       label a user cannot read is still a label they need. */
+    --uix-text-disabled: var(--uix-slate-500);
     --uix-text-on-accent: var(--uix-white);
 
     /* Surfaces */
@@ -38,6 +42,16 @@
     --uix-gap-lg: calc(var(--uix-space-4) * var(--uix-density));
     --uix-gap-xl: calc(var(--uix-space-5) * var(--uix-density));
     --uix-gap-2xl: calc(var(--uix-space-6) * var(--uix-density));
+
+    /* Control heights.
+     Every control a finger or pointer aims at snaps to one of three
+     heights, so a button, a field and a stepper placed in a row line up
+     without anyone nudging padding. Measured before this existed: 43,
+     42, 41, 38, 35, 33 and 32px across components that sit next to each
+     other. Density-scaled, like the spacing roles. */
+    --uix-control-sm: calc(2rem * var(--uix-density));
+    --uix-control-md: calc(2.5rem * var(--uix-density));
+    --uix-control-lg: calc(3rem * var(--uix-density));
 
     /* The two ends of the neutral ramp for this theme. Components mix
      toward these to shade a fill, so a hover deepens on light and
@@ -110,6 +124,7 @@
   [data-theme="dark"] {
     --uix-text-primary: var(--uix-grey-25);
     --uix-text-secondary: var(--uix-slate-400);
+    --uix-text-disabled: var(--uix-slate-450);
     --uix-text-on-accent: var(--uix-grey-900);
     --uix-bg-page: var(--uix-grey-900);
     --uix-bg-surface: var(--uix-grey-800);

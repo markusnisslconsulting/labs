@@ -19,7 +19,8 @@
     justify-content: space-between;
     align-items: center;
     gap: var(--uix-gap-md);
-    padding: var(--uix-gap-md) 0;
+    min-height: var(--uix-control-md);
+    padding-block: 0;
     background: none;
     border: none;
     color: var(--uix-text-primary);

@@ -26,8 +26,34 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const ThreePanels: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+};
+
+/**
+ * Every state in one frame, and the component's only snapshotted story.
+ * It keeps the narrow and RTL modes: a tablist is the component most
+ * likely to overflow, and its underline sits on the inline edge.
+ */
+export const Matrix: Story = {
   parameters: {
     chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
+  },
+  args: {
+    label: "Sample details",
+    tabs: [
+      { id: "transcript", label: "Transcript", content: <p>The log view.</p> },
+      {
+        id: "row",
+        label: "Product row",
+        content: <p>The write lands here.</p>,
+      },
+      {
+        id: "audit",
+        label: "Audit (disabled)",
+        content: <p>Unavailable for this sample.</p>,
+        disabled: true,
+      },
+    ],
   },
 };
 

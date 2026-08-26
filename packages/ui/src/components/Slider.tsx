@@ -14,6 +14,12 @@ interface SliderOwnProps {
   onValueChange?: (value: number) => void;
   /** Show the live value next to the label. */
   showValue?: boolean;
+  /**
+   * Declared here rather than inherited from the div, because `rest`
+   * lands on the wrapper and a `disabled` that never reaches the input
+   * is a control that looks unavailable and still moves.
+   */
+  disabled?: boolean;
 }
 
 /**
@@ -45,6 +51,7 @@ export function Slider({
   value,
   onValueChange,
   showValue = true,
+  disabled,
   className,
   ...rest
 }: SliderProps) {
@@ -52,7 +59,11 @@ export function Slider({
   const id = useId();
 
   return (
-    <div className={cx("uix-slider", className)} {...rest}>
+    <div
+      className={cx("uix-slider", className)}
+      data-disabled={disabled || undefined}
+      {...rest}
+    >
       <div className="uix-slider-head">
         <label className="uix-field-label" htmlFor={id}>
           {label}
@@ -67,6 +78,7 @@ export function Slider({
         id={id}
         type="range"
         className="uix-range"
+        disabled={disabled}
         min={min}
         max={max}
         step={step}

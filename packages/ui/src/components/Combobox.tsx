@@ -9,6 +9,12 @@ interface ComboboxOwnProps {
   value?: string | null;
   onValueChange?: (value: string | null) => void;
   placeholder?: string;
+  /**
+   * Declared here rather than inherited from the wrapper div, because
+   * `rest` lands on the wrapper and a `disabled` that never reaches the
+   * control is a field that looks unavailable and still accepts input.
+   */
+  disabled?: boolean;
 }
 
 /**
@@ -37,6 +43,7 @@ export function Combobox({
   value,
   onValueChange,
   placeholder,
+  disabled,
   className,
   ...rest
 }: ComboboxProps) {
@@ -57,6 +64,7 @@ export function Combobox({
           id={id}
           className="uix-field-input"
           type="text"
+          disabled={disabled}
           list={`${id}-options`}
           placeholder={placeholder}
           value={value ?? query}

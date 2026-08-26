@@ -8,8 +8,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.4rem;
-    height: 2.4rem;
+    width: var(--uix-control-md);
+    height: var(--uix-control-md);
     border-radius: var(--uix-radius-m);
     border: 1px solid transparent;
     background: transparent;
@@ -18,8 +18,8 @@
   }
 
   .uix-iconbutton[data-size="sm"] {
-    width: 1.9rem;
-    height: 1.9rem;
+    width: var(--uix-control-sm);
+    height: var(--uix-control-sm);
   }
 
   .uix-iconbutton:hover {
@@ -43,5 +43,10 @@
   .uix-iconbutton:focus-visible {
     outline: 2px solid var(--uix-focus-ring);
     outline-offset: 2px;
+  }
+
+  .uix-iconbutton:disabled {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
   }
 }

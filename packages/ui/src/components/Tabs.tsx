@@ -7,6 +7,12 @@ export interface TabItem {
   id: string;
   label: string;
   content: React.ReactNode;
+  /**
+   * Renders the tab present but not selectable. It keeps its place in
+   * the list, because a tab that disappears when unavailable moves
+   * every tab after it.
+   */
+  disabled?: boolean;
 }
 
 interface TabsOwnProps {
@@ -51,7 +57,12 @@ export function Tabs({
     >
       <BaseTabs.List className="uix-tablist" aria-label={label}>
         {tabs.map((tab) => (
-          <BaseTabs.Tab key={tab.id} className="uix-tab" value={tab.id}>
+          <BaseTabs.Tab
+            key={tab.id}
+            className="uix-tab"
+            value={tab.id}
+            disabled={tab.disabled}
+          >
             {tab.label}
           </BaseTabs.Tab>
         ))}

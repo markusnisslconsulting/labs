@@ -14,7 +14,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     label: "Order number",
     placeholder: "4711",
@@ -42,6 +42,25 @@ export const TypingIntoTheLabelledField: Story = {
     await userEvent.type(input, "4711");
     await expect(input).toHaveValue("4711");
   },
+};
+
+/**
+ * Every state in one frame, and the component's only snapshotted story.
+ */
+export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <div style={{ display: "grid", gap: "1.2rem", maxWidth: "22rem" }}>
+      <TextField label="Rest" placeholder="4711" />
+      <TextField label="With hint" hint="Find it in your confirmation email." />
+      <TextField
+        label="With error"
+        error="We could not find that order number."
+      />
+      <TextField label="With affixes" prefix=">=" suffix="units" />
+      <TextField label="Disabled" defaultValue="4711" disabled />
+    </div>
+  ),
 };
 
 export const WithError: Story = {

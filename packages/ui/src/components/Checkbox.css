@@ -16,7 +16,8 @@
     color: var(--uix-text-primary);
   }
 
-  .uix-checkbox:disabled {
+  .uix-checkbox:disabled,
+  .uix-checkbox[data-disabled] {
     opacity: var(--uix-opacity-disabled);
     cursor: not-allowed;
   }

@@ -12,19 +12,36 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const SupplierRegion: Story = {
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     label: "Supplier region",
     options: ["European Union", "United Kingdom", "United States", "Japan"],
     placeholder: "Type to filter",
   },
   play: async ({ canvas }) => {
-    // Das Input traegt den Namen (aria-label); Filterung und Listbox
-    // sind Base UIs getestete Oberflaeche.
+    // The input carries the accessible name. Filtering and the option
+    // list are the platform's, via input[list] and datalist — this
+    // component is not on Base UI, whatever an earlier comment claimed.
     await expect(
       canvas.getByRole("combobox", { name: "Supplier region" }),
     ).toBeVisible();
   },
+};
+
+const REGIONS = ["European Union", "United Kingdom", "United States", "Japan"];
+
+/**
+ * Every state in one frame, and the component's only snapshotted story.
+ */
+export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <div style={{ display: "grid", gap: "1.2rem", maxWidth: "22rem" }}>
+      <Combobox label="Rest" options={REGIONS} placeholder="Type to filter" />
+      <Combobox label="Filled" options={REGIONS} value="Japan" />
+      <Combobox label="Disabled" options={REGIONS} value="Japan" disabled />
+    </div>
+  ),
 };
 
 /**

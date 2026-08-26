@@ -45,6 +45,21 @@ function PanelBodyBase({ children }: PanelBodyProps) {
  *
  * Slots: `Panel.Header` and `Panel.Body` map to styled subcomponents,
  * the way enterprise systems expose anatomy without extra props.
+ *
+ * ### Theming
+ *
+ * Override slots for this component. None is declared: each is
+ * referenced with its semantic default inline, so a slot costs
+ * nothing until something fills it. Set one on any ancestor.
+ *
+ * | Token | Default | Meaning |
+ * | --- | --- | --- |
+ * | `--uix-panel-accent` | `var(--uix-accent)` | Panel label dot |
+ * | `--uix-panel-bg` | `var(--uix-bg-surface)` | Panel background |
+ * | `--uix-panel-border` | `var(--uix-border-subtle)` | Panel border |
+ * | `--uix-panel-pad-x` | `var(--uix-gap-xl)` | Panel horizontal padding, density-aware |
+ * | `--uix-panel-pad-y` | `calc(var(--uix-gap-lg) + var(--uix-gap-xs))` | Panel vertical padding, density-aware |
+ * | `--uix-panel-radius` | `var(--uix-radius-l)` | Panel corner radius |
  */
 export function Panel({ label, children, className, ...rest }: PanelProps) {
   return (

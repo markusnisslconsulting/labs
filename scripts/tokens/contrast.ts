@@ -198,6 +198,12 @@ const PAIRINGS: Pairing[] = [
   { what: "secondary text on the page", fg: "--uix-text-secondary", bg: "--uix-bg-page", target: 4.5 },
   { what: "secondary text on a surface", fg: "--uix-text-secondary", bg: "--uix-bg-surface", target: 4.5 },
   { what: "secondary text on a subtle fill", fg: "--uix-text-secondary", bg: "--uix-bg-subtle", target: 4.5 },
+  // WCAG exempts an inactive control, and axe honours that for a native
+  // disabled element. It cannot honour it for label and value text beside
+  // a control, so disabled text keeps the full 4.5 target.
+  { what: "disabled text on the page", fg: "--uix-text-disabled", bg: "--uix-bg-page", target: 4.5 },
+  { what: "disabled text on a surface", fg: "--uix-text-disabled", bg: "--uix-bg-surface", target: 4.5 },
+  { what: "disabled text on a subtle fill", fg: "--uix-text-disabled", bg: "--uix-bg-subtle", target: 4.5 },
   { what: "label on an accent fill", fg: "--uix-text-on-accent", bg: "--uix-accent", target: 4.5 },
   { what: "label on an inverted surface", fg: "--uix-text-on-inverse", bg: "--uix-surface-inverse", target: 4.5 },
   { what: "positive status on a surface", fg: "--uix-status-ok", bg: "--uix-bg-surface", target: 4.5 },

@@ -27,7 +27,10 @@
     flex-shrink: 0;
   }
 
-  .uix-switch:disabled {
+  /* Base UI renders the track as a <span role="switch">, so :disabled
+     never matched and a disabled switch looked enabled. */
+  .uix-switch:disabled,
+  .uix-switch[data-disabled] {
     opacity: var(--uix-opacity-disabled);
     cursor: not-allowed;
   }
@@ -40,7 +43,7 @@
   .uix-switch-thumb {
     position: absolute;
     top: 50%;
-    left: 0.2rem;
+    inset-inline-start: 0.2rem;
     /* Motion is a transform so it stays on the compositor even with a
        hundred of these on a page. */
     transform: translate(0, -50%);
@@ -56,8 +59,16 @@
     background: var(--uix-switch-track-on-bg, var(--uix-accent));
   }
 
+  /* The knob travels toward the inline end, so its direction flips with
+     the writing direction; a physical translate sent it off the track.
+     Offered as a slot with its default inline, like every other
+     component token, and only *declared* for RTL. */
+  [dir="rtl"] .uix-switch {
+    --uix-switch-travel: -1.3rem;
+  }
+
   .uix-switch[data-checked] .uix-switch-thumb {
-    transform: translate(1.3rem, -50%);
+    transform: translate(var(--uix-switch-travel, 1.3rem), -50%);
   }
 
   .uix-switch-label {

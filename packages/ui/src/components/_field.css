@@ -17,12 +17,16 @@
     display: flex;
     align-items: center;
     gap: var(--uix-gap-sm);
-    padding-top: var(--uix-field-pad-y, var(--uix-gap-sm));
-    padding-bottom: var(--uix-field-pad-y, var(--uix-gap-sm));
+    /* Height comes from the control scale. The shorthand below used to
+       follow these longhands and silently cancel them, so
+       --uix-field-pad-y did nothing and a field was 25px tall next to a
+       43px button. */
+    min-height: var(--uix-control-md);
+    padding-block: var(--uix-field-pad-y, 0);
+    padding-inline: var(--uix-gap-md);
     background: var(--uix-bg-surface);
     border: 1px solid var(--uix-border-subtle);
     border-radius: var(--uix-field-radius, var(--uix-radius-m));
-    padding: 0 var(--uix-gap-md);
   }
 
   .uix-field-row:focus-within {
@@ -40,6 +44,15 @@
     background: transparent;
     padding: 0;
     min-width: 0;
+  }
+
+  .uix-field-row:has(:disabled) {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  .uix-field-input:disabled {
+    cursor: not-allowed;
   }
 
   .uix-field-input:focus {

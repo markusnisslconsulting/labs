@@ -12,7 +12,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const SupplierRegion: Story = {
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     label: "Supplier region",
     hint: "Determines delivery windows.",
@@ -22,6 +22,30 @@ export const SupplierRegion: Story = {
       { value: "us", label: "United States" },
     ],
   },
+};
+
+const REGIONS = [
+  { value: "eu", label: "European Union" },
+  { value: "uk", label: "United Kingdom" },
+  { value: "us", label: "United States" },
+];
+
+/**
+ * Every state in one frame, and the component's only snapshotted story.
+ */
+export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <div style={{ display: "grid", gap: "1.2rem", maxWidth: "22rem" }}>
+      <Select label="Rest" options={REGIONS} />
+      <Select
+        label="With hint"
+        hint="Determines delivery windows."
+        options={REGIONS}
+      />
+      <Select label="Disabled" options={REGIONS} disabled />
+    </div>
+  ),
 };
 
 /**

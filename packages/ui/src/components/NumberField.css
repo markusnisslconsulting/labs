@@ -18,8 +18,8 @@
   }
 
   .uix-numberfield-step {
-    width: 2.2rem;
-    height: 2.2rem;
+    width: var(--uix-control-md);
+    height: var(--uix-control-md);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -43,5 +43,13 @@
     text-align: center;
     padding: var(--uix-gap-sm) var(--uix-gap-md);
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Base UI stamps data-disabled on the group and both steppers; the
+     shared field rule only covers the native input. */
+  .uix-numberfield[data-disabled],
+  .uix-numberfield-step[data-disabled] {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
   }
 }

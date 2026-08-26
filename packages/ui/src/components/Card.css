@@ -21,6 +21,17 @@
     padding: var(--uix-gap-xl);
   }
 
+  /* The body's padding is the spacing; a trailing paragraph used to add
+     its margin on top, so the gap under the text was 38px against 24
+     above. */
+  .uix-card-body > :first-child {
+    margin-top: 0;
+  }
+
+  .uix-card-body > :last-child {
+    margin-bottom: 0;
+  }
+
   .uix-card-footer {
     padding: var(--uix-gap-md) var(--uix-gap-xl);
     border-top: 1px solid var(--uix-border-subtle);

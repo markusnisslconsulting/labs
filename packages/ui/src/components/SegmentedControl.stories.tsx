@@ -29,7 +29,7 @@ function ViewSwitcherDemo() {
 }
 
 export const ViewSwitcher: StoryObj = {
-  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => <ViewSwitcherDemo />,
   play: async ({ canvas }) => {
     // Reference state: assert what is on screen without changing it.
@@ -38,6 +38,30 @@ export const ViewSwitcher: StoryObj = {
       "true",
     );
   },
+};
+
+/**
+ * Every state in one frame, and the component's only snapshotted story.
+ * It keeps the RTL mode, because the selected segment's rounded corners
+ * follow the inline edges.
+ */
+export const Matrix: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
+  render: () => (
+    <div style={{ display: "grid", gap: "1.2rem", justifyItems: "start" }}>
+      <ViewSwitcherDemo />
+      <SegmentedControl
+        label="With an unavailable option"
+        value="list"
+        onChange={() => {}}
+        options={[
+          { value: "list", label: "List" },
+          { value: "board", label: "Board" },
+          { value: "timeline", label: "Timeline", disabled: true },
+        ]}
+      />
+    </div>
+  ),
 };
 
 /** Interaction only; selection moves, so it does not snapshot. */

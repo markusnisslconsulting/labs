@@ -15,12 +15,12 @@ const meta = {
     tone: {
       control: "radio",
       options: ["accent", "neutral"],
-      table: {
-        category: "Appearance",
-        defaultValue: { summary: "accent" },
-        description:
-          "Fill family for the solid variant; outline and ghost record it without changing their look.",
-      },
+      // `description` belongs at the argType root, not inside `table`.
+      // Nested here it never rendered, and it took the docs page down
+      // with "t.startsWith is not a function".
+      description:
+        "Fill family for the solid variant; outline and ghost record it without changing their look.",
+      table: { category: "Appearance", defaultValue: { summary: "accent" } },
     },
     size: {
       control: "radio",
@@ -126,6 +126,29 @@ export const Matrix: StoryObj = {
           ))}
         </section>
       ))}
+      <section>
+        <h3 style={{ margin: "0 0 0.5rem" }}>States</h3>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "0.5rem",
+            alignItems: "center",
+          }}
+        >
+          <Button>Rest</Button>
+          <Button disabled>Disabled</Button>
+          <Button loading>Loading</Button>
+          <Button variant="outline" disabled>
+            Disabled outline
+          </Button>
+          <Button variant="ghost" disabled>
+            Disabled ghost
+          </Button>
+          <Button leading="+">Leading</Button>
+          <Button trailing="→">Trailing</Button>
+        </div>
+      </section>
     </div>
   ),
 };
@@ -139,7 +162,7 @@ export const AsLink: Story = {
       // The anchor's content comes from Button's children, which
       // jsx-a11y cannot see at this call site.
       // eslint-disable-next-line jsx-a11y/anchor-has-content
-      render={<a href="#anchor" />}
+      renderAs={<a href="#anchor" />}
     />
   ),
   play: async ({ canvas }) => {

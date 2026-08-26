@@ -4,6 +4,25 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
+  .uix-slider {
+    display: grid;
+    gap: var(--uix-gap-sm);
+    max-width: 24rem;
+  }
+
+  .uix-slider-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    max-width: 24rem;
+  }
+
+  .uix-slider-value {
+    font-size: var(--uix-font-size-200);
+    color: var(--uix-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
   .uix-range {
     accent-color: var(--uix-accent);
     width: 100%;
@@ -16,34 +35,18 @@
     outline-offset: 2px;
   }
 
-  .uix-slider-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    max-width: 24rem;
+  .uix-range:disabled {
+    opacity: var(--uix-opacity-disabled);
+    cursor: not-allowed;
   }
 
-  .uix-slider-value {
-    font-size: var(--uix-font-size-200);
-    color: var(--uix-text-secondary);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .uix-slider {
-    display: grid;
-    gap: var(--uix-gap-sm);
-    max-width: 24rem;
-  }
-
-  .uix-slider-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-
-  .uix-slider-value {
-    font-size: var(--uix-font-size-200);
-    color: var(--uix-text-secondary);
-    font-variant-numeric: tabular-nums;
+  /* The label and value belong to the control, so they read as inert
+     with it. Not via opacity: a native disabled control is exempt from
+     the contrast requirement and axe knows it, but these two are plain
+     text beside the control, so dimming them produced a real 2:1
+     failure. A colour token can be measured; an opacity cannot. */
+  .uix-slider[data-disabled] .uix-field-label,
+  .uix-slider[data-disabled] .uix-slider-value {
+    color: var(--uix-text-disabled);
   }
 }

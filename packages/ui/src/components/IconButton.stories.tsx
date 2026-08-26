@@ -101,6 +101,18 @@ export const Matrix: StoryObj = {
           ))}
         </div>
       ))}
+      <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+        {(["solid", "outline", "ghost"] as const).map((variant) => (
+          <IconButton
+            key={variant}
+            variant={variant}
+            label={`${variant} disabled`}
+            disabled
+          >
+            <X size={14} />
+          </IconButton>
+        ))}
+      </div>
     </div>
   ),
 };
