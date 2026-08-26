@@ -1,3 +1,5 @@
+"use client";
+
 import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
 import { useId, type ReactElement } from "react";
 

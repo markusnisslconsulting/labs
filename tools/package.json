@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./vite-layer-order": "./vite-layer-order.ts"
+    "./vite-layer-order": "./vite-layer-order.ts",
+    "./vite-use-client": "./vite-use-client.ts"
   }
 }

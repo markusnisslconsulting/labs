@@ -1,0 +1,1570 @@
+{
+  "$description": "Generated from packages/ui/src/tokens.registry.ts. Do not edit: run `nx run ui:tokens-dtcg-write`. Theme: light.",
+  "primitive": {
+    "blue": {
+      "400": {
+        "$type": "color",
+        "$value": "#7aa5f7",
+        "$description": "Ocean accent on dark surfaces",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-blue-400",
+            "tier": "primitive"
+          }
+        }
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#1d4ed8",
+        "$description": "Ocean brand accent",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-blue-600",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "red": {
+      "400": {
+        "$type": "color",
+        "$value": "#ff6b85",
+        "$description": "Accent on dark surfaces",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-red-400",
+            "tier": "primitive"
+          }
+        }
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#b31234",
+        "$description": "Brand accent red (AA on paper and under white)",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-red-600",
+            "tier": "primitive"
+          }
+        }
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#8f0e29",
+        "$description": "Destructive red",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-red-700",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "navy": {
+      "900": {
+        "$type": "color",
+        "$value": "#172b4d",
+        "$description": "Deep navy ink",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-navy-900",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "slate": {
+      "400": {
+        "$type": "color",
+        "$value": "#a7b4c7",
+        "$description": "Secondary text on dark",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-slate-400",
+            "tier": "primitive"
+          }
+        }
+      },
+      "450": {
+        "$type": "color",
+        "$value": "#98a5b8",
+        "$description": "Dimmed slate, disabled text on dark",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-slate-450",
+            "tier": "primitive"
+          }
+        }
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#5b6880",
+        "$description": "Dimmed slate, disabled text on light",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-slate-500",
+            "tier": "primitive"
+          }
+        }
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#4b5870",
+        "$description": "Muted slate",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-slate-600",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "grey": {
+      "25": {
+        "$type": "color",
+        "$value": "#f7f9fc",
+        "$description": "Paper grey",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-grey-25",
+            "tier": "primitive"
+          }
+        }
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#e8eef6",
+        "$description": "Quiet fill grey",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-grey-100",
+            "tier": "primitive"
+          }
+        }
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#d5dbe6",
+        "$description": "Hairline grey",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-grey-300",
+            "tier": "primitive"
+          }
+        }
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#2c3a4f",
+        "$description": "Dark border",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-grey-700",
+            "tier": "primitive"
+          }
+        }
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#1d2939",
+        "$description": "Dark surface",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-grey-800",
+            "tier": "primitive"
+          }
+        }
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#101828",
+        "$description": "Dark page",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-grey-900",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "white": {
+      "$type": "color",
+      "$value": "#ffffff",
+      "$description": "Pure white",
+      "$extensions": {
+        "com.markusnissl.labs": {
+          "cssVariable": "--uix-white",
+          "tier": "primitive"
+        }
+      }
+    },
+    "green": {
+      "400": {
+        "$type": "color",
+        "$value": "#63c47a",
+        "$description": "Positive on dark surfaces",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-green-400",
+            "tier": "primitive"
+          }
+        }
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#14691f",
+        "$description": "Positive green",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-green-700",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "amber": {
+      "400": {
+        "$type": "color",
+        "$value": "#e2b04a",
+        "$description": "Caution on dark surfaces",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-amber-400",
+            "tier": "primitive"
+          }
+        }
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#8a5a00",
+        "$description": "Caution amber",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-amber-700",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "font": {
+      "sans": {
+        "$type": "dimension",
+        "$value": "\"Atkinson Hyperlegible\", -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif",
+        "$description": "Font sans",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-sans",
+            "tier": "primitive"
+          }
+        }
+      },
+      "mono": {
+        "$type": "fontFamily",
+        "$value": "ui-monospace, \"SF Mono\", Menlo, Consolas, monospace",
+        "$description": "Font mono",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-mono",
+            "tier": "primitive"
+          }
+        }
+      },
+      "size-100": {
+        "$type": "dimension",
+        "$value": "0.75rem",
+        "$description": "Caption size",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-size-100",
+            "tier": "primitive"
+          }
+        }
+      },
+      "size-200": {
+        "$type": "dimension",
+        "$value": "0.875rem",
+        "$description": "Small size",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-size-200",
+            "tier": "primitive"
+          }
+        }
+      },
+      "size-300": {
+        "$type": "dimension",
+        "$value": "1rem",
+        "$description": "Body size",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-size-300",
+            "tier": "primitive"
+          }
+        }
+      },
+      "size-400": {
+        "$type": "dimension",
+        "$value": "1.15rem",
+        "$description": "Large body size",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-size-400",
+            "tier": "primitive"
+          }
+        }
+      },
+      "size-500": {
+        "$type": "dimension",
+        "$value": "1.35rem",
+        "$description": "Heading size",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-size-500",
+            "tier": "primitive"
+          }
+        }
+      },
+      "size-600": {
+        "$type": "dimension",
+        "$value": "1.75rem",
+        "$description": "Display size",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-size-600",
+            "tier": "primitive"
+          }
+        }
+      },
+      "weight-regular": {
+        "$type": "fontWeight",
+        "$value": "400",
+        "$description": "Regular weight",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-weight-regular",
+            "tier": "primitive"
+          }
+        }
+      },
+      "weight-bold": {
+        "$type": "fontWeight",
+        "$value": "700",
+        "$description": "Bold weight",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-weight-bold",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "line": {
+      "height-tight": {
+        "$type": "number",
+        "$value": "1.15",
+        "$description": "Heading line height",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-line-height-tight",
+            "tier": "primitive"
+          }
+        }
+      },
+      "height-normal": {
+        "$type": "number",
+        "$value": "1.55",
+        "$description": "Body line height",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-line-height-normal",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "radius": {
+      "s": {
+        "$type": "dimension",
+        "$value": "0.5rem",
+        "$description": "Small radius",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-radius-s",
+            "tier": "primitive"
+          }
+        }
+      },
+      "m": {
+        "$type": "dimension",
+        "$value": "0.7rem",
+        "$description": "Medium radius",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-radius-m",
+            "tier": "primitive"
+          }
+        }
+      },
+      "l": {
+        "$type": "dimension",
+        "$value": "1rem",
+        "$description": "Large radius",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-radius-l",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "space": {
+      "1": {
+        "$type": "dimension",
+        "$value": "0.25rem",
+        "$description": "Quarter step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-space-1",
+            "tier": "primitive"
+          }
+        }
+      },
+      "2": {
+        "$type": "dimension",
+        "$value": "0.5rem",
+        "$description": "Half step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-space-2",
+            "tier": "primitive"
+          }
+        }
+      },
+      "3": {
+        "$type": "dimension",
+        "$value": "0.75rem",
+        "$description": "Base step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-space-3",
+            "tier": "primitive"
+          }
+        }
+      },
+      "4": {
+        "$type": "dimension",
+        "$value": "1rem",
+        "$description": "One step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-space-4",
+            "tier": "primitive"
+          }
+        }
+      },
+      "5": {
+        "$type": "dimension",
+        "$value": "1.5rem",
+        "$description": "Wide step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-space-5",
+            "tier": "primitive"
+          }
+        }
+      },
+      "6": {
+        "$type": "dimension",
+        "$value": "2.5rem",
+        "$description": "Section step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-space-6",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "duration": {
+      "fast": {
+        "$type": "duration",
+        "$value": "120ms",
+        "$description": "Micro transitions",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-duration-fast",
+            "tier": "primitive"
+          }
+        }
+      },
+      "base": {
+        "$type": "duration",
+        "$value": "200ms",
+        "$description": "Standard transitions",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-duration-base",
+            "tier": "primitive"
+          }
+        }
+      },
+      "slow": {
+        "$type": "duration",
+        "$value": "400ms",
+        "$description": "Large surfaces",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-duration-slow",
+            "tier": "primitive"
+          }
+        }
+      }
+    },
+    "ease": {
+      "out": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "$description": "Standard easing",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-ease-out",
+            "tier": "primitive"
+          }
+        }
+      }
+    }
+  },
+  "semantic": {
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "{primitive.navy.900}",
+        "$description": "Primary text",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-primary",
+            "tier": "semantic"
+          }
+        }
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{primitive.slate.600}",
+        "$description": "Secondary text",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-secondary",
+            "tier": "semantic"
+          }
+        }
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{primitive.slate.500}",
+        "$description": "Text belonging to an unavailable control",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-disabled",
+            "tier": "semantic"
+          }
+        }
+      },
+      "on-accent": {
+        "$type": "color",
+        "$value": "{primitive.white}",
+        "$description": "Text on accent fills",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-on-accent",
+            "tier": "semantic"
+          }
+        }
+      },
+      "on-inverse": {
+        "$type": "color",
+        "$value": "{semantic.paper}",
+        "$description": "Text on an inverted surface",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-on-inverse",
+            "tier": "semantic"
+          }
+        }
+      },
+      "body": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.size-300}",
+        "$description": "Body text role",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-body",
+            "tier": "semantic"
+          }
+        }
+      },
+      "heading": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.size-500}",
+        "$description": "Heading text role",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-heading",
+            "tier": "semantic"
+          }
+        }
+      },
+      "caption": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.size-100}",
+        "$description": "Caption text role",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-caption",
+            "tier": "semantic"
+          }
+        }
+      },
+      "ui": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.size-200}",
+        "$description": "Small UI text role: nav, meta, card chrome",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-ui",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "bg": {
+      "page": {
+        "$type": "color",
+        "$value": "{primitive.grey.25}",
+        "$description": "Page background",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-bg-page",
+            "tier": "semantic"
+          }
+        }
+      },
+      "surface": {
+        "$type": "color",
+        "$value": "{primitive.white}",
+        "$description": "Surface background",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-bg-surface",
+            "tier": "semantic"
+          }
+        }
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{primitive.grey.100}",
+        "$description": "Subtle fills: chips, code",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-bg-subtle",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "border": {
+      "subtle": {
+        "$type": "color",
+        "$value": "{primitive.grey.300}",
+        "$description": "Hairline borders",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-border-subtle",
+            "tier": "semantic"
+          }
+        }
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "{primitive.slate.600}",
+        "$description": "Emphasised borders",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-border-strong",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{primitive.red.600}",
+      "$description": "Brand accent (ocean brand overrides to blue)",
+      "$extensions": {
+        "com.markusnissl.labs": {
+          "cssVariable": "--uix-accent",
+          "tier": "semantic"
+        }
+      },
+      "soft": {
+        "$type": "color",
+        "$value": "color-mix(in srgb, {semantic.accent} 16%, transparent)",
+        "$description": "Accent washes",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-accent-soft",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "{semantic.accent}",
+        "$description": "Keyboard focus indicator",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-focus-ring",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "status": {
+      "ok": {
+        "$type": "color",
+        "$value": "{primitive.green.700}",
+        "$description": "Positive status",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-status-ok",
+            "tier": "semantic"
+          }
+        }
+      },
+      "warn": {
+        "$type": "color",
+        "$value": "{primitive.amber.700}",
+        "$description": "Caution status",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-status-warn",
+            "tier": "semantic"
+          }
+        }
+      },
+      "off": {
+        "$type": "color",
+        "$value": "{primitive.slate.600}",
+        "$description": "Neutral or absent status",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-status-off",
+            "tier": "semantic"
+          }
+        }
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "{primitive.red.700}",
+        "$description": "Destructive status",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-status-danger",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "info": {
+      "$type": "color",
+      "$value": "{primitive.navy.900}",
+      "$description": "Informational intent",
+      "$extensions": {
+        "com.markusnissl.labs": {
+          "cssVariable": "--uix-info",
+          "tier": "semantic"
+        }
+      }
+    },
+    "opacity": {
+      "disabled": {
+        "$type": "number",
+        "$value": "0.55",
+        "$description": "Disabled controls",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-opacity-disabled",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "gap": {
+      "xs": {
+        "$type": "dimension",
+        "$value": "calc({primitive.space.1} * {semantic.density})",
+        "$description": "Density-scaled quarter step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-gap-xs",
+            "tier": "semantic"
+          }
+        }
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "calc({primitive.space.2} * {semantic.density})",
+        "$description": "Density-scaled half step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-gap-sm",
+            "tier": "semantic"
+          }
+        }
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "calc({primitive.space.3} * {semantic.density})",
+        "$description": "Density-scaled base step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-gap-md",
+            "tier": "semantic"
+          }
+        }
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "calc({primitive.space.4} * {semantic.density})",
+        "$description": "Density-scaled single step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-gap-lg",
+            "tier": "semantic"
+          }
+        }
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "calc({primitive.space.5} * {semantic.density})",
+        "$description": "Density-scaled wide step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-gap-xl",
+            "tier": "semantic"
+          }
+        }
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "calc({primitive.space.6} * {semantic.density})",
+        "$description": "Density-scaled widest step",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-gap-2xl",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "ink": {
+      "$type": "color",
+      "$value": "{primitive.navy.900}",
+      "$description": "Strongest ink for this theme; mix toward it to deepen a fill",
+      "$extensions": {
+        "com.markusnissl.labs": {
+          "cssVariable": "--uix-ink",
+          "tier": "semantic"
+        }
+      }
+    },
+    "paper": {
+      "$type": "color",
+      "$value": "{primitive.white}",
+      "$description": "Brightest surface for this theme; mix toward it to lighten a fill",
+      "$extensions": {
+        "com.markusnissl.labs": {
+          "cssVariable": "--uix-paper",
+          "tier": "semantic"
+        }
+      }
+    },
+    "surface": {
+      "inverse": {
+        "$type": "color",
+        "$value": "{semantic.ink}",
+        "$description": "Inverted surface (dark on light, light on dark)",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-surface-inverse",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "control": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "max(24px, calc(2rem * {semantic.density}))",
+        "$description": "Small control height",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-control-sm",
+            "tier": "semantic"
+          }
+        }
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "max(24px, calc(2.5rem * {semantic.density}))",
+        "$description": "Default control height: buttons, fields, steppers",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-control-md",
+            "tier": "semantic"
+          }
+        }
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "max(24px, calc(3rem * {semantic.density}))",
+        "$description": "Large control height",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-control-lg",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "radius": {
+      "inset": {
+        "$type": "dimension",
+        "$value": "{primitive.radius.s}",
+        "$description": "A shape inside another shape",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-radius-inset",
+            "tier": "semantic"
+          }
+        }
+      },
+      "control": {
+        "$type": "dimension",
+        "$value": "{primitive.radius.m}",
+        "$description": "An interactive box",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-radius-control",
+            "tier": "semantic"
+          }
+        }
+      },
+      "surface": {
+        "$type": "dimension",
+        "$value": "{primitive.radius.m}",
+        "$description": "A floating or banded surface",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-radius-surface",
+            "tier": "semantic"
+          }
+        }
+      },
+      "container": {
+        "$type": "dimension",
+        "$value": "{primitive.radius.l}",
+        "$description": "A container that holds content",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-radius-container",
+            "tier": "semantic"
+          }
+        }
+      },
+      "pill": {
+        "$type": "dimension",
+        "$value": "999px",
+        "$description": "Fully rounded by brand decision, not by geometry",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-radius-pill",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "font": {
+      "body": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.sans}",
+        "$description": "Running text",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-body",
+            "tier": "semantic"
+          }
+        }
+      },
+      "display": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.sans}",
+        "$description": "Headings",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-display",
+            "tier": "semantic"
+          }
+        }
+      },
+      "code": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.mono}",
+        "$description": "Code and other fixed-width text",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-font-code",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "elevation": {
+      "raised": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0",
+          "offsetY": "1px",
+          "blur": "3px",
+          "spread": "0",
+          "color": "rgba(16, 24, 40, 0.1)"
+        },
+        "$description": "Lifted off the page",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-elevation-raised",
+            "tier": "semantic"
+          }
+        }
+      },
+      "overlay": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0",
+          "offsetY": "8px",
+          "blur": "20px",
+          "spread": "0",
+          "color": "rgba(16, 24, 40, 0.12)"
+        },
+        "$description": "Floating above the page",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-elevation-overlay",
+            "tier": "semantic"
+          }
+        }
+      },
+      "modal": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0",
+          "offsetY": "18px",
+          "blur": "45px",
+          "spread": "0",
+          "color": "rgba(16, 24, 40, 0.2)"
+        },
+        "$description": "Above everything",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-elevation-modal",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "container": {
+      "info": {
+        "$type": "color",
+        "$value": "color-mix( in srgb, {semantic.info} 10%, {semantic.bg.surface} )",
+        "$description": "Info container tint",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-container-info",
+            "tier": "semantic"
+          }
+        }
+      },
+      "success": {
+        "$type": "color",
+        "$value": "color-mix( in srgb, {semantic.status.ok} 12%, {semantic.bg.surface} )",
+        "$description": "Success container tint",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-container-success",
+            "tier": "semantic"
+          }
+        }
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "color-mix( in srgb, {semantic.status.warn} 14%, {semantic.bg.surface} )",
+        "$description": "Warning container tint",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-container-warning",
+            "tier": "semantic"
+          }
+        }
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "color-mix( in srgb, {semantic.status.danger} 10%, {semantic.bg.surface} )",
+        "$description": "Danger container tint",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-container-danger",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "z": {
+      "dropdown": {
+        "$type": "number",
+        "$value": "100",
+        "$description": "Menus",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-z-dropdown",
+            "tier": "semantic"
+          }
+        }
+      },
+      "popover": {
+        "$type": "number",
+        "$value": "150",
+        "$description": "Popovers",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-z-popover",
+            "tier": "semantic"
+          }
+        },
+        "$deprecated": "Redundant since Menu and Popover share one positioner, so there is no second layer to name. Use --uix-z-dropdown."
+      },
+      "modal": {
+        "$type": "number",
+        "$value": "200",
+        "$description": "Dialogs",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-z-modal",
+            "tier": "semantic"
+          }
+        }
+      },
+      "toast": {
+        "$type": "number",
+        "$value": "300",
+        "$description": "Toasts",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-z-toast",
+            "tier": "semantic"
+          }
+        }
+      },
+      "tooltip": {
+        "$type": "number",
+        "$value": "400",
+        "$description": "Tooltips",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-z-tooltip",
+            "tier": "semantic"
+          }
+        }
+      }
+    },
+    "density": {
+      "$type": "number",
+      "$value": "1",
+      "$description": "Spacing multiplier; data-density=compact sets 0.72",
+      "$extensions": {
+        "com.markusnissl.labs": {
+          "cssVariable": "--uix-density",
+          "tier": "semantic"
+        }
+      }
+    }
+  },
+  "component": {
+    "button": {
+      "accent-bg": {
+        "$type": "color",
+        "$value": "{semantic.accent}",
+        "$description": "Solid button background, accent tone",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-accent-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "accent-fg": {
+        "$type": "color",
+        "$value": "{semantic.text.on-accent}",
+        "$description": "Solid button label, accent tone",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-accent-fg",
+            "tier": "component"
+          }
+        }
+      },
+      "ghost-fg": {
+        "$type": "color",
+        "$value": "{semantic.text.primary}",
+        "$description": "Ghost button label",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-ghost-fg",
+            "tier": "component"
+          }
+        }
+      },
+      "ghost-hover-bg": {
+        "$type": "color",
+        "$value": "{semantic.bg.subtle}",
+        "$description": "Ghost button hover surface",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-ghost-hover-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "neutral-bg": {
+        "$type": "color",
+        "$value": "{semantic.surface.inverse}",
+        "$description": "Solid button background, neutral tone",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-neutral-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "neutral-fg": {
+        "$type": "color",
+        "$value": "{semantic.text.on-inverse}",
+        "$description": "Solid button label, neutral tone",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-neutral-fg",
+            "tier": "component"
+          }
+        }
+      },
+      "outline-bg": {
+        "$type": "color",
+        "$value": "{semantic.bg.surface}",
+        "$description": "Outline button background",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-outline-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "outline-border": {
+        "$type": "color",
+        "$value": "{semantic.border.subtle}",
+        "$description": "Outline button border, rest",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-outline-border",
+            "tier": "component"
+          }
+        }
+      },
+      "outline-border-strong": {
+        "$type": "color",
+        "$value": "{semantic.border.strong}",
+        "$description": "Button outline border strong",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-outline-border-strong",
+            "tier": "component"
+          }
+        }
+      },
+      "outline-fg": {
+        "$type": "color",
+        "$value": "{semantic.text.primary}",
+        "$description": "Outline button label",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-outline-fg",
+            "tier": "component"
+          }
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{semantic.radius.control}",
+        "$description": "Button corner radius, md",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-button-radius",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "chip": {
+      "active-bg": {
+        "$type": "color",
+        "$value": "{semantic.surface.inverse}",
+        "$description": "Active chip background",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-chip-active-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "active-fg": {
+        "$type": "color",
+        "$value": "{semantic.text.on-inverse}",
+        "$description": "Active chip label",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-chip-active-fg",
+            "tier": "component"
+          }
+        }
+      },
+      "bg": {
+        "$type": "color",
+        "$value": "{semantic.bg.subtle}",
+        "$description": "Chip background",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-chip-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "fg": {
+        "$type": "color",
+        "$value": "{semantic.text.secondary}",
+        "$description": "Chip label",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-chip-fg",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "field": {
+      "pad-y": {
+        "$type": "dimension",
+        "$value": "0",
+        "$description": "Extra vertical padding inside a field; height comes from --uix-control-md",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-field-pad-y",
+            "tier": "component"
+          }
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{semantic.radius.control}",
+        "$description": "Field corner radius",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-field-radius",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "panel": {
+      "accent": {
+        "$type": "color",
+        "$value": "{semantic.accent}",
+        "$description": "Panel label dot",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-panel-accent",
+            "tier": "component"
+          }
+        }
+      },
+      "bg": {
+        "$type": "color",
+        "$value": "{semantic.bg.surface}",
+        "$description": "Panel background",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-panel-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{semantic.border.subtle}",
+        "$description": "Panel border",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-panel-border",
+            "tier": "component"
+          }
+        }
+      },
+      "pad-x": {
+        "$type": "dimension",
+        "$value": "{semantic.gap.xl}",
+        "$description": "Panel horizontal padding, density-aware",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-panel-pad-x",
+            "tier": "component"
+          }
+        }
+      },
+      "pad-y": {
+        "$type": "dimension",
+        "$value": "calc({semantic.gap.lg} + {semantic.gap.xs})",
+        "$description": "Panel vertical padding, density-aware",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-panel-pad-y",
+            "tier": "component"
+          }
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{semantic.radius.container}",
+        "$description": "Panel corner radius",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-panel-radius",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "pill": {
+      "fg": {
+        "$type": "color",
+        "$value": "{semantic.text.primary}",
+        "$description": "Status pill label",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-pill-fg",
+            "tier": "component"
+          }
+        }
+      },
+      "off": {
+        "$type": "color",
+        "$value": "{semantic.status.off}",
+        "$description": "Status pill dot, off",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-pill-off",
+            "tier": "component"
+          }
+        }
+      },
+      "ok": {
+        "$type": "color",
+        "$value": "{semantic.status.ok}",
+        "$description": "Status pill dot, ok",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-pill-ok",
+            "tier": "component"
+          }
+        }
+      },
+      "warn": {
+        "$type": "color",
+        "$value": "{semantic.status.warn}",
+        "$description": "Status pill dot, warn",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-pill-warn",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "switch": {
+      "track-bg": {
+        "$type": "color",
+        "$value": "{semantic.bg.subtle}",
+        "$description": "Switch track, off",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-switch-track-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "track-on-bg": {
+        "$type": "color",
+        "$value": "{semantic.accent}",
+        "$description": "Switch track, on",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-switch-track-on-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "thumb-bg": {
+        "$type": "color",
+        "$value": "{semantic.bg.surface}",
+        "$description": "Switch knob",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-switch-thumb-bg",
+            "tier": "component"
+          }
+        }
+      },
+      "travel": {
+        "$type": "dimension",
+        "$value": "1.3rem",
+        "$description": "How far the knob travels; negated under dir=rtl",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-switch-travel",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "search": {
+      "border": {
+        "$type": "color",
+        "$value": "{semantic.border.subtle}",
+        "$description": "Search input border",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-search-border",
+            "tier": "component"
+          }
+        }
+      }
+    }
+  }
+}

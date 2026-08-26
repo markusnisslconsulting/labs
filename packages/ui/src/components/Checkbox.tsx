@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentPropsWithoutRef } from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 

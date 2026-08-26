@@ -522,6 +522,53 @@ describe("the layering rules the architecture depends on", () => {
     }
   });
 
+  /**
+   * A component that needs the client needs the directive, and one that
+   * does not must not have it.
+   *
+   * Both halves matter. Without the directive an interactive component
+   * throws in a React Server Components app — not here, in the
+   * consumer's build, with an error about hooks in a server component
+   * and no mention of this library. With the directive where it is not
+   * needed, a Badge that could have rendered on the server drags React
+   * into the client bundle for nothing, which is the whole cost RSC
+   * exists to avoid.
+   *
+   * Eleven of the thirty-four render on the server: Avatar, Badge,
+   * Banner, Breadcrumb, Card, Divider, Panel, Skeleton, Spinner,
+   * StatusPill, Table. Keeping that number honest is the point.
+   */
+  it("only the components that need the client are marked as client", () => {
+    const dir = "packages/ui/src/components";
+    const NEEDS = [
+      // A hook is state, and state is the client.
+      /\buse(State|Effect|Ref|Id|Callback|Memo|Reducer|LayoutEffect|Transition)\b/,
+      // Base UI is client-only throughout.
+      /@base-ui-components/,
+      // A component that binds a handler itself.
+      /\bon[A-Z]\w*=\{/,
+      // A component that renders a control the caller will bind a handler
+      // to. The caller cannot pass a function into a server component, so
+      // the boundary has to be here rather than in every consumer.
+      /<(button|input|select|textarea)\b/,
+    ];
+    for (const file of readdirSync(dir).filter(
+      (f) => f.endsWith(".tsx") && !f.includes(".stories."),
+    )) {
+      const source = readFileSync(join(dir, file), "utf8");
+      const marked = /^["']use client["'];/.test(source);
+      const needed = NEEDS.some((pattern) => pattern.test(source));
+
+      expect(
+        marked,
+        needed
+          ? `${file} needs "use client" as its first line`
+          : `${file} carries "use client" but renders nothing that requires it; ` +
+              `it could render on the server`,
+      ).toBe(needed);
+    }
+  });
+
   it("every component stylesheet lives in @layer components", () => {
     for (const { file, source } of componentCss) {
       expect(

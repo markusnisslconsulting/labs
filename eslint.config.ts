@@ -74,6 +74,13 @@ export default tseslint.config(
               sourceTag: "type:ui",
               onlyDependOnLibsWithTags: [],
             },
+            {
+              // Tooling sits outside the layering: a gate has to be able
+              // to read whatever it checks. Stated rather than left to the
+              // fall-through, so the exemption is visible.
+              sourceTag: "type:tooling",
+              onlyDependOnLibsWithTags: ["*"],
+            },
           ],
         },
       ],

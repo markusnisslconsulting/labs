@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentPropsWithoutRef } from "react";
 import { Progress as BaseProgress } from "@base-ui-components/react/progress";
 

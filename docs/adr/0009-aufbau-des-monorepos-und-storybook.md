@@ -77,6 +77,33 @@ können. Ein Designsystem, das von einem Produkt abhängt, ist keins mehr.
 - **CI läuft `nx affected`** gegen `defaultBase: main`, mit
   `fetch-depth: 0`, weil ein Shallow Clone keine Basis hat.
 
+## Versionieren ja, veroeffentlichen nein
+
+Alle vier Pakete sind `private: true` und stehen gleichzeitig in
+`nx.release.projects`. Das sah wie ein Widerspruch aus und ist eine
+Entscheidung: `nx release` erzeugt hier Versionen und Changelogs, damit
+ein Konsument im Workspace weiss, was sich geaendert hat, und
+veroeffentlicht nichts. Ein Designsystem, das nur in einem Monorepo
+konsumiert wird, braucht keine Registry, aber sehr wohl eine
+Versionsgeschichte.
+
+Die Form des Pakets wird trotzdem geprueft, und das ist der Teil, der
+sich gelohnt hat. Die `exports` im Workspace zeigen auf TypeScript-
+Quellen — richtig fuer ein Monorepo, weil Vite sie kompiliert und HMR
+funktioniert — und `publishConfig.exports` beschreibt die gebaute Form.
+`ui:package-check` baut daraus ein echtes Manifest in `dist` und laesst
+publint und attw darauf laufen.
+
+Beim ersten Lauf hat publint vier Fehler gemeldet, die niemandem
+aufgefallen waren: `./styles.css` und `./tokens/*` standen in der
+Exports-Map und wurden nie gebaut, `./tokens.registry` hatte keinen
+eigenen Entry. Ein Konsument der veroeffentlichten Form haette keine
+Token-Schicht bekommen. attw fand danach, dass jede Komponenten-`.d.ts`
+ein `import "./Button.css"` enthielt, das ins Nichts zeigte, und dass die
+Deklarationen relative Importe ohne Endung schreiben — was ein Bundler
+aufloest und Nodes ESM-Resolver nicht. npm haette all das anstandslos
+veroeffentlicht.
+
 ## Was wir bewusst nicht gemacht haben
 
 - **Nx Agents / verteilte Ausführung.** Bei dieser Größe ist die

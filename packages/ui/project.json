@@ -5,8 +5,15 @@
   "targets": {
     "build": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["^build"],
       "options": {
-        "command": "vite build --config packages/ui/vite.config.ts"
+        "commands": [
+          "vite build --config packages/ui/vite.config.ts",
+          "tsc -p packages/ui/tsconfig.build.json",
+          "node scripts/prepare-dist.mjs packages/ui dist/packages/ui"
+        ],
+        "parallel": false
       },
       "outputs": ["{workspaceRoot}/dist/packages/ui"]
     },
@@ -153,6 +160,32 @@
       "dependsOn": ["build-storybook"],
       "options": {
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4414 --silent\" \"wait-on tcp:127.0.0.1:4414 && pnpm exec playwright test --config packages/ui/playwright.browser.config.ts\""
+      }
+    },
+    "tokens-dtcg": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "tsx scripts/tokens/dtcg.ts check"
+      }
+    },
+    "tokens-dtcg-write": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/tokens/dtcg.ts write"
+      }
+    },
+    "package-check": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["build"],
+      "options": {
+        "cwd": "dist/packages/ui",
+        "commands": [
+          "pnpm exec publint --strict",
+          "pnpm exec attw --pack . --profile esm-only --exclude-entrypoints styles.css styles/* tokens/*"
+        ],
+        "parallel": false
       }
     }
   }

@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
 import { X } from "lucide-react";
 import { Button } from "./Button";

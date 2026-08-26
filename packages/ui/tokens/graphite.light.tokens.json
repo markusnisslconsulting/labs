@@ -1,0 +1,73 @@
+{
+  "$description": "Brand override: graphite. Theme: light. Generated.",
+  "semantic": {
+    "radius": {
+      "inset": {
+        "$type": "dimension",
+        "$value": "0.125rem",
+        "$description": "A shape inside another shape"
+      },
+      "control": {
+        "$type": "dimension",
+        "$value": "0.1875rem",
+        "$description": "An interactive box"
+      },
+      "surface": {
+        "$type": "dimension",
+        "$value": "0.1875rem",
+        "$description": "A floating or banded surface"
+      },
+      "container": {
+        "$type": "dimension",
+        "$value": "0.25rem",
+        "$description": "A container that holds content"
+      },
+      "pill": {
+        "$type": "dimension",
+        "$value": "0.25rem",
+        "$description": "Fully rounded by brand decision, not by geometry"
+      }
+    },
+    "font": {
+      "display": {
+        "$type": "fontFamily",
+        "$value": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+        "$description": "Headings"
+      }
+    },
+    "elevation": {
+      "raised": {
+        "$type": "shadow",
+        "$value": [],
+        "$description": "Lifted off the page"
+      },
+      "overlay": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0",
+          "offsetY": "0",
+          "blur": "0",
+          "spread": "0",
+          "color": "1px {semantic.border.strong}"
+        },
+        "$description": "Floating above the page"
+      },
+      "modal": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0",
+          "offsetY": "0",
+          "blur": "0",
+          "spread": "0",
+          "color": "1px {semantic.border.strong}"
+        },
+        "$description": "Above everything"
+      }
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{primitive.slate.600}",
+      "$description": "Brand accent (ocean brand overrides to blue)"
+    }
+  }
+}

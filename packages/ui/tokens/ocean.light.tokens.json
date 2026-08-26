@@ -1,0 +1,10 @@
+{
+  "$description": "Brand override: ocean. Theme: light. Generated.",
+  "semantic": {
+    "accent": {
+      "$type": "color",
+      "$value": "{primitive.blue.600}",
+      "$description": "Brand accent (ocean brand overrides to blue)"
+    }
+  }
+}

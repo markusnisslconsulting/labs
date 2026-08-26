@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentPropsWithoutRef } from "react";
 import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";

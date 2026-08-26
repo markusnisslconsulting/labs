@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
 import { cx } from "../cx";

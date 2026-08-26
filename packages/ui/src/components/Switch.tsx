@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentPropsWithoutRef } from "react";
 import { useId, useState } from "react";
 import { Switch as BaseSwitch } from "@base-ui-components/react/switch";

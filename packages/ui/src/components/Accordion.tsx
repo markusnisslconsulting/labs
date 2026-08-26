@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentPropsWithoutRef } from "react";
 import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
 import { Minus, Plus } from "lucide-react";

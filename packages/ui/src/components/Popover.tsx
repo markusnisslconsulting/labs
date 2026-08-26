@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 

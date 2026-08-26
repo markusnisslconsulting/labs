@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentPropsWithoutRef } from "react";
 import { useEffect } from "react";
 import { X } from "lucide-react";

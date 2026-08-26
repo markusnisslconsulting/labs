@@ -4,6 +4,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 import { layerOrder } from "@labs/tools/vite-layer-order";
+import { assertClientDirectiveFirst } from "@labs/tools/vite-use-client";
 
 const src = fileURLToPath(new URL("./src", import.meta.url));
 
@@ -48,14 +49,31 @@ function keepCssImports() {
             /import "\.\/([\w-]+)\.css";/g,
           ),
         ].map((hit) => `import "../${hit[1]}.css";`);
-        if (sheets.length) chunk.code = `${sheets.join("\n")}\n${chunk.code}`;
+        if (!sheets.length) continue;
+        // Insert *after* a leading "use client", not before it. A
+        // directive is only a directive while it is the first statement;
+        // putting an import above it turns it into a string expression
+        // that evaluates and is thrown away, and the component silently
+        // becomes a server component in the consumer's build.
+        const directive = /^\s*(["']use client["'];?)\s*/.exec(
+          chunk.code ?? "",
+        );
+        const block = sheets.join("\n");
+        chunk.code = directive
+          ? `${directive[1]}\n${block}\n${(chunk.code ?? "").slice(directive[0].length)}`
+          : `${block}\n${chunk.code}`;
       }
     },
   };
 }
 
 export default defineConfig({
-  plugins: [react(), keepCssImports(), layerOrder()],
+  plugins: [
+    react(),
+    keepCssImports(),
+    layerOrder(),
+    assertClientDirectiveFirst(),
+  ],
   build: {
     outDir: fileURLToPath(new URL("../../dist/packages/ui", import.meta.url)),
     emptyOutDir: true,
@@ -63,7 +81,13 @@ export default defineConfig({
     // component's CSS into one file — the opposite of the goal.
     cssCodeSplit: true,
     lib: {
-      entry: { index: `${src}/index.ts`, ...componentEntries },
+      entry: {
+        index: `${src}/index.ts`,
+        // A public export needs its own entry, or the published exports
+        // map points at a file the build never wrote. publint said so.
+        "tokens.registry": `${src}/tokens.registry.ts`,
+        ...componentEntries,
+      },
       formats: ["es"],
     },
     rollupOptions: {

@@ -8,7 +8,8 @@
     "./styles.css": "./src/styles.css",
     "./components/*": "./src/components/*.tsx",
     "./styles/*": "./src/styles/*",
-    "./tokens.registry": "./src/tokens.registry.ts"
+    "./tokens.registry": "./src/tokens.registry.ts",
+    "./tokens/*": "./tokens/*"
   },
   "sideEffects": [
     "*.css"
@@ -20,5 +21,25 @@
   "dependencies": {
     "@base-ui-components/react": "1.0.0-rc.0",
     "lucide-react": "^1.34.0"
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./index.d.ts",
+        "import": "./index.js"
+      },
+      "./styles.css": "./styles.css",
+      "./components/*": {
+        "types": "./components/*.d.ts",
+        "import": "./components/*.js"
+      },
+      "./styles/*": "./styles/*",
+      "./tokens.registry": {
+        "types": "./tokens.registry.d.ts",
+        "import": "./tokens.registry.js"
+      },
+      "./tokens/*": "./tokens/*"
+    }
   }
 }
