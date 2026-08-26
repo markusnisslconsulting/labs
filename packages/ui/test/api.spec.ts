@@ -37,6 +37,19 @@ const source = new Map(
  * thirds of its triple. The props a caller passes to the component are
  * the only ones this contract is about.
  */
+/**
+ * The code, without the comments.
+ *
+ * The second time prose changed a measurement. The story-coverage gate
+ * read `<a href />` out of a docstring and concluded three components
+ * were operable; this one read `aria-label="Orders"` out of a usage
+ * example in Tabs' TSDoc and called it a hardcoded string. A gate that
+ * reads comments is measuring the wrong text.
+ */
+function code(text: string): string {
+  return text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+}
+
 function ownProps(text: string): string {
   const blocks = [
     ...text.matchAll(
@@ -217,6 +230,59 @@ describe("component API contract", () => {
             `${triple.join(" / ")} so a caller can drive it or leave it alone.`,
         ).toHaveLength(3);
       }
+    }
+  });
+
+  it("no component compiles in a user-facing string", () => {
+    /*
+     * Seven were compiled in: "Breadcrumb", "Pagination", "Previous
+     * page", "Page 1", "Next page", "Dismiss", "Notifications". Every one
+     * is read aloud by a screen reader, and no product serving a second
+     * market could change any of them. Shipping English inside an
+     * aria-label decides that the consumers are English, which is a
+     * decision nobody made on purpose.
+     *
+     * The defaults now live in src/i18n.tsx, overridable per component by
+     * a prop and per application by the provider.
+     */
+    for (const [file, text] of source) {
+      const literals = [
+        ...code(text).matchAll(
+          /(aria-label|title|placeholder)=["']([^"']{2,})["']/g,
+        ),
+      ].map((hit) => `${hit[1]}="${hit[2]}"`);
+      expect(
+        literals,
+        `${file} hardcodes ${literals.join(", ")}. Add the string to Strings ` +
+          `in src/i18n.tsx and read it through useStrings, so an application ` +
+          `can translate it.`,
+      ).toEqual([]);
+    }
+  });
+
+  it("every string in the table has a default", () => {
+    // A key without a default is a key that renders "undefined" the first
+    // time a consumer forgets it.
+    const table = readFileSync("packages/ui/src/i18n.tsx", "utf8");
+    const keys = [
+      ...table.matchAll(/^\s{2}(?:\/\*\*[\s\S]*?\*\/\s*)?(\w+)[:?]/gm),
+    ];
+    const declared = new Set(
+      [...table.matchAll(/^\s{2}(\w+)\??:\s/gm)].map((hit) => hit[1]!),
+    );
+    const defaulted = new Set(
+      [
+        ...table
+          .slice(table.indexOf("defaultStrings"))
+          .matchAll(/^\s{2}(\w+):/gm),
+      ].map((hit) => hit[1]!),
+    );
+    expect(keys.length).toBeGreaterThan(5);
+    for (const key of declared) {
+      expect(
+        defaulted.has(key),
+        `Strings.${key} has no entry in defaultStrings`,
+      ).toBe(true);
     }
   });
 

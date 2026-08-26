@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { Button } from "./Button";
 
 import { cx } from "../cx";
+import { useStrings } from "../i18n";
 import "./Alert.css";
 type Severity = "info" | "success" | "warning" | "danger";
 
@@ -50,10 +51,11 @@ export function Alert({
   title,
   children,
   onDismiss,
-  dismissLabel = "Dismiss",
+  dismissLabel,
   className,
   ...rest
 }: AlertProps) {
+  const labels = useStrings();
   const titleId = useId();
 
   return (
@@ -81,7 +83,7 @@ export function Alert({
         <Button
           variant="ghost"
           size="sm"
-          aria-label={dismissLabel}
+          aria-label={dismissLabel ?? labels.dismiss}
           onClick={onDismiss}
         >
           <X size={14} />

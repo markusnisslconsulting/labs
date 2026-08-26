@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { X } from "lucide-react";
 
 import { cx } from "../cx";
+import { useStrings } from "../i18n";
 import "./Toaster.css";
 type Severity = "info" | "success" | "warning" | "danger";
 
@@ -46,6 +47,7 @@ function Toast({
   toast: ToastItem;
   onDismiss: (id: string) => void;
 }) {
+  const labels = useStrings();
   return (
     <div
       className="uix-toast"
@@ -61,7 +63,7 @@ function Toast({
       <button
         type="button"
         className="uix-toast-close"
-        aria-label="Dismiss"
+        aria-label={labels.dismiss}
         onClick={() => onDismiss(toast.id)}
       >
         <X size={14} aria-hidden />
@@ -90,13 +92,14 @@ export function Toaster({
   className,
   ...rest
 }: ToasterProps) {
+  const labels = useStrings();
   return (
     <div
       className={cx(
         `uix-toaster uix-toaster--${position.replace("-", "-")}`,
         className,
       )}
-      aria-label="Notifications"
+      aria-label={labels.notifications}
       {...rest}
     >
       {toasts.map((toast) => (

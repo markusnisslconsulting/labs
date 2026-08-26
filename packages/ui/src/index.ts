@@ -5,6 +5,7 @@ import { Badge, type BadgeProps } from "./components/Badge";
 import { Banner, type BannerProps } from "./components/Banner";
 import { Breadcrumb, type BreadcrumbItem } from "./components/Breadcrumb";
 import { Button, type ButtonProps } from "./components/Button";
+import { LabsStrings, defaultStrings, useStrings } from "./i18n";
 import { Card } from "./components/Card";
 import { Checkbox, type CheckboxProps } from "./components/Checkbox";
 import { Chip, type ChipProps } from "./components/Chip";
@@ -60,6 +61,9 @@ export {
   Button,
   type ButtonProps,
   Card,
+  LabsStrings,
+  defaultStrings,
+  useStrings,
   Checkbox,
   type CheckboxProps,
   Chip,

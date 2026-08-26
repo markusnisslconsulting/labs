@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./Button";
 
 import { cx } from "../cx";
+import { useStrings } from "../i18n";
 import "./Pagination.css";
 interface PaginationOwnProps {
   pageCount: number;
@@ -48,6 +49,7 @@ export function Pagination({
   className,
   ...rest
 }: PaginationProps) {
+  const labels = useStrings();
   const isControlled = controlledPage !== undefined;
   const [uncontrolled, setUncontrolled] = useState(
     Math.min(Math.max(defaultPage, 1), pageCount),
@@ -77,7 +79,7 @@ export function Pagination({
   return (
     <nav
       className={cx("uix-pagination", className)}
-      aria-label="Pagination"
+      aria-label={labels.pagination}
       {...rest}
     >
       <Button
@@ -85,7 +87,7 @@ export function Pagination({
         size="sm"
         onClick={() => go(page - 1)}
         disabled={page === 1}
-        aria-label="Previous page"
+        aria-label={labels.previousPage}
       >
         <ChevronLeft size={16} aria-hidden />
       </Button>
@@ -95,7 +97,7 @@ export function Pagination({
             variant="outline"
             size="sm"
             onClick={() => go(1)}
-            aria-label="Page 1"
+            aria-label={labels.page(1)}
             className="uix-pagination-page"
           >
             1
@@ -115,7 +117,7 @@ export function Pagination({
             tone="neutral"
             size="sm"
             aria-current="page"
-            aria-label={`Page ${p}`}
+            aria-label={labels.page(p)}
             className="uix-pagination-page"
           >
             {p}
@@ -126,7 +128,7 @@ export function Pagination({
             variant="outline"
             size="sm"
             onClick={() => go(p)}
-            aria-label={`Page ${p}`}
+            aria-label={labels.page(p)}
             className="uix-pagination-page"
           >
             {p}
@@ -143,7 +145,7 @@ export function Pagination({
           variant="outline"
           size="sm"
           onClick={() => go(pageCount)}
-          aria-label={`Page ${pageCount}`}
+          aria-label={labels.page(pageCount)}
           className="uix-pagination-page"
         >
           {pageCount}
@@ -160,7 +162,7 @@ export function Pagination({
         size="sm"
         onClick={() => go(page + 1)}
         disabled={page === pageCount}
-        aria-label="Next page"
+        aria-label={labels.nextPage}
       >
         <ChevronRight size={16} aria-hidden />
       </Button>

@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { cx } from "../cx";
+import { useStrings } from "../i18n";
 import "./Spinner.css";
 
 interface SpinnerOwnProps {
@@ -28,11 +29,12 @@ export type SpinnerProps = SpinnerOwnProps &
  * constant cost regardless of page complexity.
  */
 export function Spinner({
-  label = "Loading",
+  label,
   size = "md",
   className,
   ...rest
 }: SpinnerProps) {
+  const labels = useStrings();
   return (
     <span
       className={cx("uix-spinner", className)}
@@ -40,7 +42,7 @@ export function Spinner({
       role="status"
       {...rest}
     >
-      <span className="uix-visually-hidden">{label}</span>
+      <span className="uix-visually-hidden">{label ?? labels.loading}</span>
       <span className="uix-spinner-wheel" aria-hidden />
     </span>
   );

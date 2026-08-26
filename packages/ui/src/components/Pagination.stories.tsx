@@ -1,6 +1,7 @@
 import { expect } from "storybook/test";
 import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { LabsStrings } from "../i18n";
 import { Pagination } from "./Pagination";
 
 const meta = {
@@ -56,4 +57,28 @@ export const FirstPage: Story = {
       canvas.getByRole("button", { name: "Previous page" }),
     ).toBeDisabled();
   },
+};
+
+/**
+ * The same component under a different locale.
+ *
+ * Nothing about Pagination changed: the provider supplies the strings and
+ * the component reads them. Partial on purpose — this locale translates
+ * four keys and inherits the rest, so adding a key upstream cannot break
+ * a consumer who translated the ones that existed.
+ */
+export const Localized: StoryObj = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  render: () => (
+    <LabsStrings
+      strings={{
+        pagination: "Seitennummerierung",
+        previousPage: "Vorherige Seite",
+        nextPage: "Nächste Seite",
+        page: (n) => `Seite ${n}`,
+      }}
+    >
+      <Pagination pageCount={9} defaultPage={4} />
+    </LabsStrings>
+  ),
 };

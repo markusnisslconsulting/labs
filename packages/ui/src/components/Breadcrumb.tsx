@@ -1,6 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cx } from "../cx";
+import { useStrings } from "../i18n";
 import "./Breadcrumb.css";
 
 export interface BreadcrumbItem {
@@ -49,15 +50,16 @@ export type BreadcrumbProps = BreadcrumbOwnProps &
  */
 export function Breadcrumb({
   items,
-  label = "Breadcrumb",
+  label,
   className,
   children,
   ...rest
 }: BreadcrumbProps) {
+  const labels = useStrings();
   return (
     <nav
       className={cx("uix-breadcrumb", className)}
-      aria-label={label}
+      aria-label={label ?? labels.breadcrumb}
       {...rest}
     >
       <ol>
