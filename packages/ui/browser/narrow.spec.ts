@@ -20,7 +20,7 @@ const CASES = [
   { id: "components-tabs--matrix", row: null },
   { id: "components-segmentedcontrol--matrix", row: null },
   { id: "components-numberfield--matrix", row: ".uix-numberfield" },
-  { id: "patterns-filterbar--overview-filter-bar", row: null },
+  { id: "components-searchinput--matrix", row: null },
   { id: "components-breadcrumb--trail", row: null },
   { id: "components-table--ordering-desk", row: null },
 ];

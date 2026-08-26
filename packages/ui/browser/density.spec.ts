@@ -152,23 +152,38 @@ test("a brand's typography reaches prose and leaves the controls alone", async (
   // font-family and line-height are inherited properties: declared on
   // body, every descendant inherits the value computed there, so a brand
   // re-pointing --uix-font-body on a subtree changed a custom property
-  // nobody read again. The coaching column rendered in the consulting
+  // nobody read again. The coaching brand rendered in the consulting
   // typeface and looked plausible.
-  await page.goto(
-    "/iframe.html?id=foundations-brands--side-by-side&viewMode=story",
-    {
-      waitUntil: "networkidle",
-    },
-  );
+  //
+  // It used to read this off a side-by-side story, which was two things
+  // at once: a page showing the brands next to each other, and this
+  // test's only fixture. Storybook's toolbar already switches brands, so
+  // the page went — and the test built its own probes instead, the way
+  // the density test above does. A test that owns its fixture cannot be
+  // broken by a decision about the catalogue.
+  await page.goto("/iframe.html?id=components-button--matrix&viewMode=story", {
+    waitUntil: "networkidle",
+  });
 
-  const measured = await page.evaluate(() => {
-    const brand = document.querySelector('[data-brand="coaching"]')!;
-    const base = [...document.querySelectorAll("section")].find(
-      (el) => !el.hasAttribute("data-brand"),
-    )!;
-    const read = (scope: Element) => {
-      const prose = scope.querySelector("p")!;
-      const control = scope.querySelector("button.uix-button")!;
+  const measured = await page.evaluate(async () => {
+    const make = (brand?: string) => {
+      const host = document.createElement("div");
+      if (brand) host.setAttribute("data-brand", brand);
+      const prose = document.createElement("p");
+      prose.textContent = "Prose in the brand's own voice.";
+      const control = document.createElement("button");
+      control.className = "uix-button";
+      control.textContent = "Book a conversation";
+      host.append(prose, control);
+      document.body.appendChild(host);
+      return { host, prose, control };
+    };
+    const base = make();
+    const coaching = make("coaching");
+    await new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    );
+    const read = ({ prose, control }: { prose: Element; control: Element }) => {
       const p = getComputedStyle(prose);
       return {
         proseFace: p.fontFamily,
@@ -176,7 +191,10 @@ test("a brand's typography reaches prose and leaves the controls alone", async (
         controlFace: getComputedStyle(control).fontFamily,
       };
     };
-    return { base: read(base), coaching: read(brand) };
+    const result = { base: read(base), coaching: read(coaching) };
+    base.host.remove();
+    coaching.host.remove();
+    return result;
   });
 
   expect(

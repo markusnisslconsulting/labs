@@ -62,4 +62,12 @@ export const SlotsForwardTheirPropsBehaviour: Story = {
       canvas.getByRole("article", { name: "Supplier card" }),
     ).toBeVisible();
   },
+  render: () => (
+    <Card aria-label="Supplier card">
+      <Card.Header id="supplier-header">Nordwind Logistik</Card.Header>
+      <Card.Body>
+        <p>Every slot takes the attributes of the element it renders.</p>
+      </Card.Body>
+    </Card>
+  ),
 };

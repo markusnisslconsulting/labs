@@ -52,6 +52,11 @@ import "./_field.css";
  */
 export interface FieldRenderProps {
   id: string;
+  /**
+   * The label element's own id, for a control that must keep its own
+   * `id` and name itself with `aria-labelledby`.
+   */
+  labelId: string;
   /** For `aria-describedby` on the control. Undefined when nothing describes it. */
   describedBy: string | undefined;
   /** For `aria-invalid`. Undefined rather than false, so it stays off the DOM. */
@@ -85,6 +90,20 @@ interface FieldOwnProps {
    * one.
    */
   aside?: ReactNode;
+  /**
+   * How the control gets its accessible name.
+   *
+   * `"for"` (default) — the label's `htmlFor` points at the id Field
+   * minted, which the control renders.
+   *
+   * `"aria"` — the control keeps whatever id its own library gave it and
+   * names itself with `aria-labelledby={labelId}`. Base UI's NumberField
+   * points the steppers' `aria-controls` at its input's generated id, so
+   * overriding that id left two dangling references and axe failed both
+   * steppers. A component whose library owns its id has to be allowed to
+   * keep it.
+   */
+  nameBy?: "for" | "aria";
   children: (props: FieldRenderProps) => ReactNode;
 }
 
@@ -98,12 +117,14 @@ export function Field({
   required = false,
   hideLabel,
   aside,
+  nameBy = "for",
   className,
   children,
   ...rest
 }: FieldProps) {
   const strings = useStrings();
   const id = useId();
+  const labelId = `${id}-label`;
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
 
@@ -116,8 +137,11 @@ export function Field({
     <div className={cx("uix-field", className)} {...rest}>
       <div className="uix-field-head">
         <label
+          id={labelId}
           className={hideLabel ? "uix-visually-hidden" : "uix-field-label"}
-          htmlFor={id}
+          /* Omitted under nameBy="aria": a htmlFor pointing at an id
+             nothing renders is a broken association, not a harmless one. */
+          htmlFor={nameBy === "for" ? id : undefined}
         >
           {label}
           {required ? (
@@ -134,6 +158,7 @@ export function Field({
       </div>
       {children({
         id,
+        labelId,
         describedBy,
         invalid: error ? true : undefined,
         required,

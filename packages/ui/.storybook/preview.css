@@ -16,11 +16,23 @@
  * guessing what it wanted.
  */
 
-.sbdocs button:focus-visible,
-.sbdocs [role="button"]:focus-visible,
-.sbdocs a:focus-visible,
+/* Storybook's own classes only.
+ *
+ * The first version of this file also listed `.os-content button`, which
+ * is Storybook's scroll wrapper around the whole docs body — so it took
+ * the ring off every button in every example on the page, including the
+ * library's own. Measured: our Button in a docs page had a 1px #005fcc
+ * browser ring while the same Button in a story had the brand's 2px one.
+ * A fix aimed at the host that hits the guest.
+ *
+ * `.sbdocs` is not on this list for the same reason: it wraps the
+ * content, not the chrome. */
 .docblock-code-toggle:focus-visible,
-.os-content button:focus-visible {
+.docblock-argstable button:focus-visible,
+.docblock-argstable [role="button"]:focus-visible,
+.sbdocs-preview .docblock-code-toggle:focus-visible,
+.sb-bar button:focus-visible,
+.sb-bar a:focus-visible {
   outline: revert;
   outline-offset: revert;
   border-radius: revert;

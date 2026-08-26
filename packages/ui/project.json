@@ -218,6 +218,13 @@
       "options": {
         "command": "tsx scripts/adoption.ts write-floor"
       }
+    },
+    "visual-sweep": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-storybook"],
+      "options": {
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4530 --silent\" \"wait-on tcp:127.0.0.1:4530 && SWEEP_OUT=${SWEEP_OUT:-.visual-sweep} pnpm exec playwright test --config scripts/visual/sweep.config.ts\""
+      }
     }
   }
 }

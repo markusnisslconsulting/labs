@@ -182,4 +182,5 @@ export const StackBehaviour: Story = {
     await expect(canvas.getByRole("status")).toHaveTextContent("Saved");
     await expect(canvas.getByRole("alert")).toHaveTextContent("Stock low");
   },
+  render: () => <ToasterDemo />,
 };

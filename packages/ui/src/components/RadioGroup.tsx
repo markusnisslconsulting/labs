@@ -90,6 +90,10 @@ export function RadioGroup({
   return (
     <fieldset
       className={cx("uix-radiogroup", className)}
+      /* A bare fieldset maps to `group`, which supports neither
+         aria-required nor aria-invalid — axe rejected both. `radiogroup`
+         is the role this element actually is, and it takes them. */
+      role="radiogroup"
       disabled={disabled}
       /* On the fieldset, not on each radio: the requirement and the
          validation message belong to the choice, not to any one option. */

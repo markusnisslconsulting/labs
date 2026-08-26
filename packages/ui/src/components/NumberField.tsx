@@ -83,9 +83,10 @@ export function NumberField({
       required={required}
       hideLabel={hideLabel}
       className={className}
+      nameBy="aria"
       {...rest}
     >
-      {({ id, describedBy, invalid, required: isRequired }) => (
+      {({ labelId, describedBy, invalid, required: isRequired }) => (
         <BaseNumberField.Root
           value={value}
           defaultValue={defaultValue}
@@ -106,15 +107,18 @@ export function NumberField({
             >
               <Minus size={16} />
             </BaseNumberField.Decrement>
-            {/* The id from Field, so the visible <label> names this input.
-                It used to carry aria-label={label} instead: a second copy
-                of the same words, and — since label is a node — one that
-                React stringified to "[object Object]" for any label
-                carrying markup. A duplicated name is a name that drifts;
-                a stringified one is no name at all. */}
+            {/* Named by the visible <label> rather than by a copy of it in
+                an aria-label. It used to carry aria-label={label}: a second
+                copy of the same words, and — since label is a node — one
+                React stringified to "[object Object]" for any label with
+                markup in it.
+                aria-labelledby rather than an id from Field, because Base
+                UI points the steppers' aria-controls at this input's own
+                generated id. Overriding it left both steppers referring to
+                nothing, which axe reports and a screen reader acts on. */}
             <BaseNumberField.Input
-              id={id}
               className="uix-field-input"
+              aria-labelledby={labelId}
               aria-describedby={describedBy}
               aria-invalid={invalid}
             />

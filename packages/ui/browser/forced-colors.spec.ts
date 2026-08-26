@@ -125,9 +125,17 @@ test("the active tab is still marked", async ({ page }) => {
 });
 
 const FLOATING = [
-  { id: "components-popover--details", selector: ".uix-popover", open: true },
-  { id: "components-menu--row-actions", selector: ".uix-menu", open: true },
-  { id: "components-dialog--modal", selector: ".uix-dialog", open: false },
+  { id: "components-popover--open", selector: ".uix-popover", open: false },
+  { id: "components-menu--open", selector: ".uix-menu", open: false },
+  /* Was components-dialog--modal, whose dialog only existed after its
+     play function clicked the trigger — so this measured a closed dialog
+     the moment the play function moved into its own story. A fixture that
+     is open from the first frame cannot go ambiguous that way. */
+  {
+    id: "components-dialog--open-with-page-behind",
+    selector: ".uix-dialog",
+    open: false,
+  },
 ];
 
 for (const { id, selector, open: needsOpening } of FLOATING) {

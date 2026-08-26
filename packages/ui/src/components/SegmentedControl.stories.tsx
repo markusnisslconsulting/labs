@@ -111,4 +111,5 @@ export const ViewSwitcherBehaviour: StoryObj = {
       "true",
     );
   },
+  render: () => <ViewSwitcherDemo />,
 };

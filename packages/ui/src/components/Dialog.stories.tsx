@@ -174,4 +174,5 @@ export const ModalBehaviour: Story = {
     });
     await expect(dialog).toBeVisible();
   },
+  render: () => <DialogDemo />,
 };

@@ -149,6 +149,18 @@ export const SmallCountsBehaviour: StoryObj = {
     await expect(canvas.getByText("Page 1 of 2")).toBeVisible();
     await expect(canvas.getByText("Page 2 of 3")).toBeVisible();
   },
+  render: () => (
+    <div style={{ display: "grid", gap: "1.2rem", justifyItems: "start" }}>
+      {/* Each landmark is named distinctly. Four navigations called
+          "Pagination" is axe's landmark-unique violation, and it is not a
+          story artefact: a long table has a pagination above it and
+          another below. */}
+      <Pagination pageCount={0} label="No results" />
+      <Pagination pageCount={1} label="One page" />
+      <Pagination pageCount={2} label="Two pages" />
+      <Pagination pageCount={3} defaultPage={2} label="Three pages" />
+    </div>
+  ),
 };
 
 /**
