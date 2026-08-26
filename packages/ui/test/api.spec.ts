@@ -137,6 +137,25 @@ describe("component API contract", () => {
     }
   });
 
+  it("polymorphism has one implementation", () => {
+    // The convention existed on Button alone, which is how a convention
+    // ends up existing once. A second hand-rolled cloneElement is how the
+    // merge rules drift: whose className wins, whose onClick, whether the
+    // caller's props override ours.
+    for (const [file, text] of source) {
+      if (!/renderAs\?:/.test(text)) continue;
+      expect(
+        /renderAsElement\(/.test(text),
+        `${file} declares renderAs but does not use the shared helper in ` +
+          `src/renderAs.tsx`,
+      ).toBe(true);
+      expect(
+        /cloneElement\(/.test(text),
+        `${file} rolls its own cloneElement; the merge rules belong in one place`,
+      ).toBe(false);
+    }
+  });
+
   it("every part merges the caller's className rather than replacing it", () => {
     // Passing className used to strip a component's own styling. The roots
     // were fixed long ago; the parts are new, and this is the rule they

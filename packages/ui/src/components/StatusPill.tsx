@@ -1,10 +1,19 @@
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
 import { cx } from "../cx";
+import { renderAsElement, type Renderable } from "../renderAs";
 import "./StatusPill.css";
 type Tone = "ok" | "warn" | "off";
 
 interface StatusPillOwnProps {
+  /**
+   * Render as a different element, keeping every style and behaviour.
+   * `renderAs={<a href="/pricing" />}` — the same convention Base UI
+   * uses, so the library has one mental model for polymorphism rather
+   * than an `as` prop here and a `render` prop there.
+   */
+  renderAs?: Renderable;
+
   tone: Tone;
   /** The state in words. The dot is decorative; the text is the
       accessible content, so tone is never the only carrier. */
@@ -42,11 +51,15 @@ export function StatusPill({
   tone,
   children,
   className,
+  renderAs,
   ...rest
 }: StatusPillProps) {
+  const props = { ...rest, className, "data-tone": tone };
   return (
-    <span className={cx("uix-pill", className)} data-tone={tone} {...rest}>
-      {children}
-    </span>
+    renderAsElement(renderAs, "uix-pill", props, children) ?? (
+      <span className={cx("uix-pill", className)} data-tone={tone} {...rest}>
+        {children}
+      </span>
+    )
   );
 }

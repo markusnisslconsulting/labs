@@ -1,8 +1,17 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cx } from "../cx";
+import { renderAsElement, type Renderable } from "../renderAs";
 import "./Badge.css";
 
 interface BadgeOwnProps {
+  /**
+   * Render as a different element, keeping every style and behaviour.
+   * `renderAs={<a href="/pricing" />}` — the same convention Base UI
+   * uses, so the library has one mental model for polymorphism rather
+   * than an `as` prop here and a `render` prop there.
+   */
+  renderAs?: Renderable;
+
   tone?: "accent" | "neutral" | "danger" | "success";
   /**
    * A node, not a string. A badge with an icon beside its count was
@@ -32,11 +41,15 @@ export function Badge({
   tone = "neutral",
   children,
   className,
+  renderAs,
   ...rest
 }: BadgeProps) {
+  const props = { ...rest, className, "data-tone": tone };
   return (
-    <span className={cx("uix-badge", className)} data-tone={tone} {...rest}>
-      {children}
-    </span>
+    renderAsElement(renderAs, "uix-badge", props, children) ?? (
+      <span className={cx("uix-badge", className)} data-tone={tone} {...rest}>
+        {children}
+      </span>
+    )
   );
 }

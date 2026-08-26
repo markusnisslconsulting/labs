@@ -3,8 +3,16 @@
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
 import { cx } from "../cx";
+import { renderAsElement, type Renderable } from "../renderAs";
 import "./Chip.css";
 interface ChipOwnProps {
+  /**
+   * Render as a different element, keeping every style and behaviour.
+   * `renderAs={<a href="/pricing" />}` — the same convention Base UI
+   * uses, so the library has one mental model for polymorphism.
+   */
+  renderAs?: Renderable;
+
   children: ReactNode;
   /**
    * Static chips are plain labels (a card's tag list). Interactive
@@ -53,13 +61,21 @@ export function Chip({
   active,
   onSelect,
   className,
+  renderAs,
   ...rest
 }: ChipProps) {
   if (!interactive) {
     return (
-      <span className={cx("uix-chip", className)} {...rest}>
-        {children}
-      </span>
+      renderAsElement(
+        renderAs,
+        "uix-chip",
+        { ...rest, className },
+        children,
+      ) ?? (
+        <span className={cx("uix-chip", className)} {...rest}>
+          {children}
+        </span>
+      )
     );
   }
   // The interactive branch is a <button>, so the span attributes in

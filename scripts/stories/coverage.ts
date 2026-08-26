@@ -165,12 +165,26 @@ function stateBooleans(source: string): string[] {
 }
 
 /** Does the component render something a keyboard can reach? */
+/**
+ * Strip comments before deciding anything about a component.
+ *
+ * Without this, prose changed a measurement. The `renderAs` documentation
+ * shows `renderAs={<a href="/pricing" />}` in a docstring, and this
+ * function matched the `<a ` in it — so Badge, Panel and StatusPill were
+ * reported as operable and owing a keyboard story, on the strength of a
+ * comment. A gate that reads comments is measuring the wrong text.
+ */
+function code(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+}
+
 function isOperable(source: string): boolean {
+  const body = code(source);
   return (
-    /<(button|input|select|textarea)\b/.test(source) ||
-    /tabIndex/.test(source) ||
-    /Base\w+\.(Root|Trigger)/.test(source) ||
-    /<a\s/.test(source)
+    /<(button|input|select|textarea)\b/.test(body) ||
+    /tabIndex/.test(body) ||
+    /Base\w+\.(Root|Trigger)/.test(body) ||
+    /<a\s/.test(body)
   );
 }
 

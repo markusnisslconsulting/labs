@@ -3,6 +3,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cx } from "../cx";
+import { renderAsElement, type Renderable } from "../renderAs";
 
 import "./IconButton.css";
 type Variant = "solid" | "outline" | "ghost";
@@ -12,6 +13,13 @@ export interface IconButtonProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "children"
 > {
+  /**
+   * Render as a different element, keeping every style and behaviour.
+   * `renderAs={<a href="/pricing" />}` — the same convention Base UI
+   * uses, so the library has one mental model for polymorphism.
+   */
+  renderAs?: Renderable;
+
   /**
    * The accessible name. Required and typed as a string: an icon
    * button without a text alternative is the classic a11y defect.
@@ -37,6 +45,7 @@ export function IconButton({
   variant = "ghost",
   size = "md",
   className,
+  renderAs,
   ...rest
 }: IconButtonProps) {
   const variantClass =
@@ -45,15 +54,23 @@ export function IconButton({
       : variant === "outline"
         ? "uix-iconbutton--outline"
         : "";
+  const props = {
+    ...rest,
+    className: cx(variantClass, className),
+    "data-size": size,
+    "aria-label": label,
+  };
   return (
-    <button
-      type="button"
-      className={cx("uix-iconbutton", variantClass, className)}
-      data-size={size}
-      aria-label={label}
-      {...rest}
-    >
-      {children}
-    </button>
+    renderAsElement(renderAs, "uix-iconbutton", props, children) ?? (
+      <button
+        type="button"
+        className={cx("uix-iconbutton", variantClass, className)}
+        data-size={size}
+        aria-label={label}
+        {...rest}
+      >
+        {children}
+      </button>
+    )
   );
 }

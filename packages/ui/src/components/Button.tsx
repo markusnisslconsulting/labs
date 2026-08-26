@@ -1,15 +1,13 @@
 "use client";
 
 import {
-  cloneElement,
-  isValidElement,
   type ButtonHTMLAttributes,
   type MouseEvent,
-  type ReactElement,
   type ReactNode,
 } from "react";
 
 import { cx } from "../cx";
+import { renderAsElement, type Renderable } from "../renderAs";
 import { Spinner } from "./Spinner";
 
 import "./Button.css";
@@ -43,7 +41,7 @@ interface ButtonOwnProps {
    * copy the class names, and copied class names are how a design
    * system starts losing.
    */
-  renderAs?: ReactElement<Record<string, unknown>>;
+  renderAs?: Renderable;
 }
 
 /**
@@ -138,24 +136,24 @@ export function Button({
     "aria-disabled": busy || undefined,
   } as const;
 
-  if (renderAs && isValidElement(renderAs)) {
-    const own = renderAs.props;
-    return cloneElement(renderAs, {
-      ...rest,
-      ...presentation,
-      ...own,
-      // The rendered element's own class survives; ours is added to it,
-      // so neither side silently wins.
-      className: cx(
-        "uix-button",
+  if (renderAs) {
+    // One implementation of the convention, shared with every other
+    // polymorphic component. Button had its own, which is how a
+    // convention ends up existing once.
+    const element = renderAsElement(
+      renderAs,
+      "uix-button",
+      {
+        ...rest,
+        ...presentation,
         className,
-        own["className"] as string | undefined,
-      ),
-      onClick: busy
-        ? (event: MouseEvent<HTMLElement>) => event.preventDefault()
-        : ((own["onClick"] as ButtonProps["onClick"]) ?? onClick),
-      children: content,
-    });
+        onClick: busy
+          ? (event: MouseEvent<HTMLElement>) => event.preventDefault()
+          : onClick,
+      },
+      content,
+    );
+    if (element) return element;
   }
 
   return (

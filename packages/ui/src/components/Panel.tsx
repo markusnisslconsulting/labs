@@ -1,6 +1,7 @@
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
 import { cx } from "../cx";
+import { renderAsElement, type Renderable } from "../renderAs";
 import "./Panel.css";
 export interface PanelHeaderProps {
   /** Typically a title plus optional actions. */
@@ -12,6 +13,13 @@ export interface PanelBodyProps {
 }
 
 interface PanelOwnProps {
+  /**
+   * Render as a different element, keeping every style and behaviour.
+   * `renderAs={<a href="/pricing" />}` — the same convention Base UI
+   * uses, so the library has one mental model for polymorphism.
+   */
+  renderAs?: Renderable;
+
   /** Uppercase kicker; also the section's accessible name. */
   label?: string;
   /** Compose richer headers with <PanelHeader>/<PanelBody>. */
@@ -61,16 +69,31 @@ function PanelBodyBase({ children }: PanelBodyProps) {
  * | `--uix-panel-pad-y` | `calc(var(--uix-gap-lg) + var(--uix-gap-xs))` | Panel vertical padding, density-aware |
  * | `--uix-panel-radius` | `var(--uix-radius-container)` | Panel corner radius |
  */
-export function Panel({ label, children, className, ...rest }: PanelProps) {
-  return (
-    <section
-      className={cx("uix-panel", className)}
-      aria-label={label}
-      {...rest}
-    >
+export function Panel({
+  label,
+  children,
+  className,
+  renderAs,
+  ...rest
+}: PanelProps) {
+  const content = (
+    <>
       {label ? <p className="uix-panel-label">{label}</p> : null}
       {children}
-    </section>
+    </>
+  );
+  const props = { ...rest, className, "aria-label": label };
+
+  return (
+    renderAsElement(renderAs, "uix-panel", props, content) ?? (
+      <section
+        className={cx("uix-panel", className)}
+        aria-label={label}
+        {...rest}
+      >
+        {content}
+      </section>
+    )
   );
 }
 
