@@ -15,6 +15,13 @@
  *   3. If the component is operable, a story drives it from the keyboard.
  *      33 of 34 components had no keyboard story while the docs claimed
  *      keyboard support, which is the gap this closes.
+ *   4. Every value and state above appears in a story Chromatic actually
+ *      photographs. Rule 1 is satisfied by a story that exists, and one
+ *      photographed story per component is the policy that keeps the
+ *      snapshot bill flat — so a variant rendered only by an
+ *      interaction story is reviewed by nobody and baselined by
+ *      nothing. This is the rule behind "we still don't have everywhere
+ *      the matrix".
  *
  * Exceptions are listed in EXCEPTIONS with a reason, so an exemption is a
  * decision in the repository rather than a silence.
@@ -167,6 +174,34 @@ function isOperable(source: string): boolean {
   );
 }
 
+/**
+ * The bodies of the stories Chromatic photographs, concatenated.
+ *
+ * The project default in preview.tsx is disableSnapshot, so a story is
+ * photographed only where it says otherwise.
+ */
+function photographed(text: string): string {
+  const bodies: string[] = [];
+  for (const hit of text.matchAll(
+    /export const (\w+)[^=]*=\s*\{([\s\S]*?)(?=\nexport const |$)/g,
+  )) {
+    if (/disableSnapshot:\s*false/.test(hit[2]!)) bodies.push(hit[2]!);
+  }
+  let shot = bodies.join("\n");
+  if (!shot) return shot;
+
+  // A matrix usually maps over a list declared at module scope, so the
+  // values it renders are not inside its own body. Without this, Button's
+  // matrix — which renders all eighteen combinations — was reported as
+  // photographing none of them.
+  for (const hit of text.matchAll(
+    /^(?:const|let)\s+(\w+)\s*(?::[^=]+)?=\s*(\[[\s\S]*?\])/gm,
+  )) {
+    if (new RegExp(`\\b${hit[1]!}\\b`).test(shot)) shot += `\n${hit[2]!}`;
+  }
+  return shot;
+}
+
 const results = load().map((component) => {
   const unions = unionProps(component.source);
   const booleans = stateBooleans(component.source);
@@ -201,6 +236,27 @@ const results = load().map((component) => {
     return !(family && family.some(shown));
   });
 
+  // Rule 4: the same checks, but only against what Chromatic sees.
+  const shot = photographed(text);
+  const unphotographed: string[] = [];
+  if (shot) {
+    for (const [prop, values] of unions) {
+      if (exception?.props?.includes(prop)) continue;
+      for (const value of values) {
+        if (new RegExp(`["'\`]${value}["'\`]`).test(shot)) continue;
+        if (componentDefaults.get(prop) === value) continue;
+        unphotographed.push(`${prop}="${value}"`);
+      }
+    }
+    for (const prop of booleans) {
+      if (new RegExp(`\\b${prop}\\b`).test(shot)) continue;
+      const family = FAMILIES.find((f) => f.includes(prop));
+      if (family?.some((sibling) => new RegExp(`\\b${sibling}\\b`).test(shot)))
+        continue;
+      unphotographed.push(prop);
+    }
+  }
+
   const hasAssertion = /\bexpect\(/.test(text);
   const keyboardNeeded = isOperable(component.source) && !exception?.keyboard;
   const hasKeyboard = /userEvent\.(keyboard|tab)\b|\.focus\(\)/.test(text);
@@ -210,6 +266,7 @@ const results = load().map((component) => {
     hasStories: component.hasStories,
     missingValues,
     missingBooleans,
+    unphotographed,
     hasAssertion,
     keyboardNeeded,
     hasKeyboard,
@@ -228,6 +285,10 @@ const problems = results.flatMap((r) => {
   if (r.missingBooleans.length)
     items.push(
       `${r.name}: state booleans never shown — ${r.missingBooleans.join(", ")}`,
+    );
+  if (r.unphotographed.length)
+    items.push(
+      `${r.name}: never photographed — ${r.unphotographed.join(", ")}`,
     );
   if (r.hasStories && !r.hasAssertion)
     items.push(`${r.name}: no assertion in any story`);

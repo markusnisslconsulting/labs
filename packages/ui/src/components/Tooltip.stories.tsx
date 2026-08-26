@@ -29,9 +29,21 @@ export const OnButton: StoryObj = {
 export const OpenState: StoryObj = {
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <Tooltip content="Applies to draft rows only" defaultOpen>
-      <Button variant="outline">Bulk edit</Button>
-    </Tooltip>
+    // Both placements, because this is the only photographed story and a
+    // placement nothing baselines is a placement nobody reviews. Spaced
+    // so the two popups cannot overlap each other.
+    <div style={{ display: "grid", gap: "5rem", justifyItems: "start" }}>
+      <Tooltip content="Applies to draft rows only" defaultOpen>
+        <Button variant="outline">Bulk edit</Button>
+      </Tooltip>
+      <Tooltip
+        content="Undo walks through committing again"
+        placement="bottom"
+        defaultOpen
+      >
+        <Button variant="outline">What does undo do?</Button>
+      </Tooltip>
+    </div>
   ),
 };
 

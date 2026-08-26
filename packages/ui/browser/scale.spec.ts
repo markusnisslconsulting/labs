@@ -30,7 +30,8 @@
  * library had ever set box-sizing.
  */
 import { test, expect } from "@playwright/test";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 const SELECTORS = [
   ".uix-button",
@@ -69,20 +70,63 @@ const AXES = [
 
 const index = JSON.parse(
   readFileSync("dist/packages/ui-storybook/index.json", "utf8"),
-) as { entries: Record<string, { type: string; name: string }> };
+) as { entries: Record<string, { type: string; title: string; name: string }> };
 
-const matrices = Object.entries(index.entries)
-  .filter(([, entry]) => entry.type === "story" && entry.name === "Matrix")
-  .map(([id]) => id);
+/**
+ * The stories Chromatic photographs, which is one per component by
+ * policy and is the story that shows every variant at once.
+ *
+ * Selecting by the name "Matrix" was the first attempt and it skipped
+ * every component whose all-variants story carries a domain name —
+ * StatusPill's AllTones, Toaster's Stack, Card's WithSlots. A gate that
+ * silently measures two thirds of the library is worse than no gate,
+ * because it reports success.
+ */
+function snapshotted(): string[] {
+  const dir = "packages/ui/src/components";
+  const ids: string[] = [];
+  const byId = new Set(Object.keys(index.entries));
 
-test("there are matrix stories to measure", () => {
-  // A matrix renders every variant of its component at once, so measuring
-  // the matrices measures the library. If the naming convention changes,
-  // this suite would quietly shrink to nothing and still pass.
-  expect(matrices.length).toBeGreaterThan(10);
+  for (const file of readdirSync(dir).filter((f) =>
+    f.endsWith(".stories.tsx"),
+  )) {
+    const source = readFileSync(join(dir, file), "utf8");
+    const title = /title:\s*"([^"]+)"/.exec(source)?.[1];
+    if (!title) continue;
+    // Storybook's own id scheme, so the result can be checked against
+    // the built index rather than trusted.
+    const prefix = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    for (const [, name, body] of source.matchAll(
+      /export const (\w+)[^=]*=\s*\{([\s\S]*?)(?=\nexport const |$)/g,
+    )) {
+      if (!/disableSnapshot:\s*false/.test(body!)) continue;
+      const id = `${prefix}--${name!
+        .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+        .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
+        .toLowerCase()}`;
+      if (!byId.has(id)) {
+        throw new Error(
+          `derived story id ${id} (from ${file}, export ${name}) is not in the built index; the id scheme has drifted`,
+        );
+      }
+      ids.push(id);
+    }
+  }
+  return ids;
+}
+
+const targets = snapshotted();
+
+test("every component contributes a snapshotted story to measure", () => {
+  const components = readdirSync("packages/ui/src/components").filter((f) =>
+    f.endsWith(".stories.tsx"),
+  );
+  // One photographed story per component is the policy; this is where a
+  // component that quietly stopped being photographed shows up.
+  expect(targets.length).toBeGreaterThanOrEqual(components.length - 3);
 });
 
-for (const id of matrices) {
+for (const id of targets) {
   test(`${id} holds the scale across density and text size`, async ({
     page,
   }) => {
