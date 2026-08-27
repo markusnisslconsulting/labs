@@ -122,9 +122,9 @@ test("a table's cost grows with its rows, not their square", async ({
  * something per keystroke whose size grows with what has been typed.
  */
 test("a combobox filters a long list in linear time", async ({ page }) => {
-  await openStory(page, "components-combobox--supplier-region");
+  await openStory(page, "components-combobox--long-list");
 
-  const input = page.getByRole("combobox").first();
+  const input = page.getByRole("combobox", { name: "Supplier", exact: true });
   await input.focus();
 
   const perKeystroke: number[] = [];

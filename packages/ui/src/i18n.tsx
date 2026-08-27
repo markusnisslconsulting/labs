@@ -132,6 +132,17 @@ export interface Strings {
    * in the sentence.
    */
   commandResults: (count: number) => string;
+  /**
+   * How many options match, as a live status on a combobox.
+   *
+   * Separate from `commandResults` even though both count rows, because
+   * "3 commands" and "3 options" are different sentences and a translator
+   * needs both — a command is a thing you do and an option is a thing you
+   * pick.
+   */
+  optionResults: (count: number) => string;
+  /** The remove control on one chosen value of a multiple combobox. */
+  removeValue: (value: string) => string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -170,6 +181,13 @@ export const defaultStrings: Strings = {
   loading: "Loading",
   errorSummary: (count) =>
     count === 1 ? "1 field needs attention" : `${count} fields need attention`,
+  optionResults: (count) =>
+    count === 0
+      ? "No options match"
+      : count === 1
+        ? "1 option"
+        : `${count} options`,
+  removeValue: (value) => `Remove ${value}`,
   commandResults: (count) =>
     count === 0
       ? "No commands match"

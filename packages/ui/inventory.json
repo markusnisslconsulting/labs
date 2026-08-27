@@ -387,64 +387,78 @@
           "required": false,
           "doc": "The form field name."
         },
-        {
-          "name": "label",
-          "type": "ReactNode",
-          "required": true,
-          "doc": "A node: it goes into a real <label> element, which carries the accessible name, so it does not have to be flat text."
-        },
+        { "name": "label", "type": "ReactNode", "required": true },
         { "name": "hint", "type": "ReactNode", "required": false },
-        {
-          "name": "error",
-          "type": "ReactNode",
-          "required": false,
-          "doc": "Validation message."
-        },
-        {
-          "name": "required",
-          "type": "boolean",
-          "required": false,
-          "doc": "Marks the field required, visibly and for assistive technology."
-        },
-        {
-          "name": "hideLabel",
-          "type": "boolean",
-          "required": false,
-          "doc": "Render the label for assistive technology only."
-        },
+        { "name": "error", "type": "ReactNode", "required": false },
+        { "name": "required", "type": "boolean", "required": false },
+        { "name": "hideLabel", "type": "boolean", "required": false },
         {
           "name": "options",
-          "type": "string[]",
+          "type": "Array<ComboboxOption | string>",
           "required": false,
-          "doc": "The convenience form."
+          "doc": "The options, as strings or as descriptors."
         },
-        { "name": "value", "type": "string | null", "required": false },
+        {
+          "name": "value",
+          "type": "string | string[] | null",
+          "required": false,
+          "doc": "The chosen value, or values when `multiple` is set."
+        },
         {
           "name": "defaultValue",
-          "type": "string",
-          "required": false,
-          "doc": "The uncontrolled half of the triple, which was missing."
+          "type": "string | string[] | null",
+          "required": false
         },
         {
           "name": "onValueChange",
-          "type": "(value: string | null) => void",
+          "type": "(next: string | string[] | null) => void",
           "required": false
         },
-        { "name": "placeholder", "type": "string", "required": false },
-        { "name": "children", "type": "ReactNode", "required": false },
         {
-          "name": "disabled",
+          "name": "multiple",
           "type": "boolean",
           "required": false,
-          "doc": "Declared here rather than inherited from the wrapper div, because `rest` lands on the wrapper and a `disabled` that never reaches the control is a field that looks unavailable and still accepts input."
+          "doc": "Allow more than one."
+        },
+        {
+          "name": "onQueryChange",
+          "type": "(query: string) => void",
+          "required": false,
+          "doc": "Called as the reader types, for a list that comes from a server."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "doc": "Results are on their way."
+        },
+        {
+          "name": "filter",
+          "type": "(option: ComboboxOption, query: string) => boolean",
+          "required": false,
+          "doc": "Which options match what has been typed."
+        },
+        {
+          "name": "option",
+          "type": "(entry: ComboboxOption, state: { selected: boolean }) => ReactNode",
+          "required": false,
+          "doc": "Render one option yourself."
+        },
+        { "name": "placeholder", "type": "string", "required": false },
+        { "name": "disabled", "type": "boolean", "required": false },
+        {
+          "name": "empty",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Shown when nothing matches."
         }
       ],
-      "parts": ["Combobox.Option"],
+      "parts": [],
       "slots": [],
       "status": "beta",
-      "useFor": "choosing one value from a list too long to scan",
-      "insteadWhen": "the list is short and fixed (Select)",
-      "accessibility": "the platform combobox — typeahead, arrow selection and screen reader announcements come from the browser. Note: a Base UI combobox was evaluated and deferred (rc error #62 in test environments); adoption revisits at 1.0"
+      "useFor": "choosing from a list too long to scan, where the list may come from a server, hold more than one answer, or need rows that are not just text",
+      "insteadWhen": "the list is short and fixed: that is `Select`, and it costs a fraction of this and comes with the operating system's own picker",
+      "accessibility": "a `combobox` with `aria-expanded` and `aria-controls` over a `listbox` of `option`s, and **focus stays in the text field** while `aria-activedescendant` reports the highlighted row. That is the same pattern as `CommandPalette`, on purpose — the two are the same shape of problem, and a library where two components solve it differently is a library where one of them is wrong. The keyboard: ArrowDown"
     },
     {
       "component": "CommandPalette",

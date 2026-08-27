@@ -1,0 +1,188 @@
+/* Combobox styles, shipped with the component.
+   A page that never imports Combobox never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-combobox {
+    /* The list is positioned against this, so the field and its popup move
+       together. Relative rather than a portal: the list belongs to the
+       field, and a portalled popup has to be told where the field went on
+       every scroll. */
+    position: relative;
+  }
+
+  .uix-combobox-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    border: 1px solid var(--uix-border-strong);
+    border-radius: var(--uix-radius-control);
+    background: var(--uix-bg-surface);
+    min-block-size: var(--uix-control-md);
+  }
+
+  /* The ring goes on the row, because focus is in the input inside it and a
+     ring around a 6ch field inside a wide box reads as a rendering fault. */
+  .uix-combobox-row:has(.uix-combobox-input:focus-visible) {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+  }
+
+  .uix-combobox[data-invalid] .uix-combobox-row {
+    border-color: var(--uix-status-danger);
+  }
+
+  .uix-combobox-input {
+    flex: 1 1 6ch;
+    min-inline-size: 6ch;
+    border: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+  }
+
+  .uix-combobox-input:focus {
+    outline: none;
+  }
+
+  .uix-combobox-affordance {
+    flex: none;
+    display: inline-flex;
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-combobox-chosen {
+    display: contents;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .uix-combobox-token {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    padding-inline: var(--uix-gap-sm);
+    padding-block: 0.125rem;
+    border-radius: var(--uix-radius-pill);
+    background: var(--uix-bg-subtle);
+    font-size: var(--uix-font-size-100);
+  }
+
+  .uix-combobox-untoken {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    border: 0;
+    border-radius: var(--uix-radius-pill);
+    background: none;
+    color: var(--uix-text-secondary);
+    cursor: pointer;
+  }
+
+  .uix-combobox-untoken:hover:not(:disabled) {
+    background: var(--uix-bg-page);
+    color: var(--uix-text-body);
+  }
+
+  .uix-combobox-untoken:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: 1px;
+  }
+
+  /* Present in the DOM whether open or not, so `aria-controls` always
+     resolves, and hidden with `display: none` so its options are out of the
+     accessibility tree while it is closed. `visibility` would leave them
+     counted; `opacity` would leave them clickable. */
+  .uix-combobox-list {
+    display: none;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: calc(100% + var(--uix-gap-xs));
+    z-index: 1;
+    max-block-size: 15rem;
+    overflow-y: auto;
+    padding: var(--uix-gap-xs);
+    border-radius: var(--uix-radius-container);
+    background: var(--uix-bg-surface);
+    box-shadow: var(--uix-elevation-overlay);
+  }
+
+  .uix-combobox-list[data-open] {
+    display: block;
+  }
+
+  .uix-combobox-heading {
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    color: var(--uix-text-caption);
+    font-size: var(--uix-font-size-100);
+    font-weight: var(--uix-weight-ui);
+    text-transform: uppercase;
+    letter-spacing: var(--uix-tracking-ui);
+  }
+
+  .uix-combobox-option {
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    border-radius: var(--uix-radius-inset);
+    font-size: var(--uix-font-size-200);
+    cursor: pointer;
+  }
+
+  /* The highlight has to read without focus: nothing here is focused except
+     the input, so a :focus-visible treatment would never fire on a row. */
+  .uix-combobox-option[data-active] {
+    background: var(--uix-accent-soft);
+    color: var(--uix-text-heading);
+  }
+
+  .uix-combobox-option[data-disabled] {
+    cursor: default;
+    color: var(--uix-text-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .uix-combobox-option[data-active] {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+
+  .uix-combobox-label {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* The option's own characters decide its direction, so a supplier named
+       in Arabic reads correctly inside a left-to-right list. */
+    unicode-bidi: plaintext;
+  }
+
+  .uix-combobox-check {
+    flex: none;
+    color: var(--uix-accent);
+  }
+
+  .uix-combobox-empty {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: calc(100% + var(--uix-gap-xs));
+    z-index: 1;
+    padding: var(--uix-gap-md);
+    border-radius: var(--uix-radius-container);
+    background: var(--uix-bg-surface);
+    box-shadow: var(--uix-elevation-overlay);
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-200);
+    text-align: center;
+  }
+}

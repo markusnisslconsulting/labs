@@ -679,9 +679,6 @@ describe("the keyboard map", () => {
       "typeahead happens inside the operating system's own picker, which " +
       "the page cannot observe. The claim is that this is a native select, " +
       "and the reachability and focus tests cover that.",
-    Combobox:
-      "the datalist picker is browser chrome for the same reason. What is " +
-      "ours — the input, its label and its filtering — is covered elsewhere.",
   };
 
   it("every component that claims a key has a row or a stated reason", () => {

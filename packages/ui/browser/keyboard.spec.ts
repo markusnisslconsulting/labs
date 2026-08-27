@@ -1014,3 +1014,73 @@ test(`CommandPalette: End ${PALETTE_END.expectation}`, async ({ page }) => {
   ).toHaveAttribute("aria-selected", "true");
   await expect(field).toBeFocused();
 });
+
+/* -------------------------------------------------------------- Combobox */
+
+const COMBO_DOWN = row("Combobox", "ArrowDown");
+const COMBO_ESCAPE = row("Combobox", "Escape");
+
+/** The first combobox in the matrix: single-select, five options. */
+const singleCombobox = (page: Page) =>
+  page.getByRole("combobox", { name: "Supplier", exact: true }).first();
+
+/**
+ * ArrowDown opens, then moves the highlight, and focus never leaves.
+ *
+ * Two presses do two different things, which is the pattern: the first
+ * opens a closed list, and the rest walk it. A single press that opened
+ * *and* moved would skip the first option, which is the one a reader most
+ * often wants.
+ */
+test(`Combobox: ArrowDown ${COMBO_DOWN.expectation}`, async ({ page }) => {
+  await openStory(page, COMBO_DOWN.story);
+  const field = singleCombobox(page);
+
+  await field.focus();
+  /* Focus alone opens it, so close it again to test the key from a closed
+     state — which is the state the first press is about. */
+  await page.keyboard.press("Escape");
+  await expect(field).toHaveAttribute("aria-expanded", "false");
+
+  await page.keyboard.press("ArrowDown");
+  await expect(field, "the first press did not open the list").toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
+  const first = await field.getAttribute("aria-activedescendant");
+
+  await page.keyboard.press("ArrowDown");
+  const second = await field.getAttribute("aria-activedescendant");
+  expect(second, "the second press did not move the highlight").not.toBe(first);
+
+  await expect(
+    field,
+    "the arrows moved DOM focus, so the next letter typed goes nowhere",
+  ).toBeFocused();
+});
+
+/**
+ * Escape closes the list and stops there.
+ *
+ * The "stops there" half matters: a combobox inside a dialog must not close
+ * the dialog because somebody dismissed a list of options. What is asserted
+ * here is the closing and the focus; the propagation is asserted in the
+ * story, where a dialog can be put around it.
+ */
+test(`Combobox: Escape ${COMBO_ESCAPE.expectation}`, async ({ page }) => {
+  await openStory(page, COMBO_ESCAPE.story);
+  const field = singleCombobox(page);
+
+  await field.focus();
+  await expect(field).toHaveAttribute("aria-expanded", "true");
+
+  await page.keyboard.press("Escape");
+  await expect(field, "Escape did not close the list").toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
+  await expect(
+    field,
+    "Escape closed the list and took the keyboard with it",
+  ).toBeFocused();
+});

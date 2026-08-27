@@ -351,6 +351,12 @@ export {};
 ## Combobox
 
 ```ts
+export interface ComboboxOption {
+  value: string;
+  label?: ReactNode;
+  section?: string;
+  disabled?: boolean;
+}
 interface ComboboxOwnProps {
   name?: string;
   label: ReactNode;
@@ -358,38 +364,48 @@ interface ComboboxOwnProps {
   error?: ReactNode;
   required?: boolean;
   hideLabel?: boolean;
-  options?: string[];
-  value?: string | null;
-  defaultValue?: string;
-  onValueChange?: (value: string | null) => void;
+  options?: Array<ComboboxOption | string>;
+  value?: string | string[] | null;
+  defaultValue?: string | string[] | null;
+  onValueChange?: (next: string | string[] | null) => void;
+  multiple?: boolean;
+  onQueryChange?: (query: string) => void;
+  loading?: boolean;
+  filter?: (option: ComboboxOption, query: string) => boolean;
+  option?: (
+    entry: ComboboxOption,
+    state: {
+      selected: boolean;
+    },
+  ) => ReactNode;
   placeholder?: string;
-  children?: ReactNode;
   disabled?: boolean;
+  empty?: ReactNode;
 }
 export type ComboboxProps = ComboboxOwnProps &
-  Omit<ComponentPropsWithRef<"div">, keyof ComboboxOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof ComboboxOwnProps | "children">;
 export declare function Combobox({
   name,
   label,
-  options,
   hint,
   error,
   required,
   hideLabel,
+  options,
   value,
   defaultValue,
   onValueChange,
+  multiple,
+  onQueryChange,
+  loading,
+  filter,
+  option: renderOption,
   placeholder,
   disabled,
+  empty,
   className,
-  children,
   ...rest
 }: ComboboxProps): import("react").JSX.Element;
-export declare namespace Combobox {
-  var Option: (
-    props: ComponentPropsWithRef<"option">,
-  ) => import("react").JSX.Element;
-}
 export {};
 ```
 

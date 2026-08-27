@@ -22,7 +22,11 @@ import {
   type UploadItem,
 } from "./components/FileUpload";
 import { Form, type FormProps } from "./components/Form";
-import { Combobox, type ComboboxProps } from "./components/Combobox";
+import {
+  Combobox,
+  type ComboboxProps,
+  type ComboboxOption,
+} from "./components/Combobox";
 import {
   Dialog,
   type DialogProps,
@@ -116,6 +120,7 @@ export {
   type ChipProps,
   Combobox,
   type ComboboxProps,
+  type ComboboxOption,
   componentTokens,
   Divider,
   type DividerProps,

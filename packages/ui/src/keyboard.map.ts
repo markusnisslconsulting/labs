@@ -360,4 +360,25 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
     key: "End",
     expectation: "highlights the last command",
   },
+  /* Combobox — the same combobox-over-listbox contract as CommandPalette,
+     and it replaced an `<input list>` whose keyboard was the operating
+     system's. `UNTESTABLE` in `test/api.spec.ts` carried a reason for the
+     old one — "the datalist picker is browser chrome" — which stopped being
+     true the day this component did the work itself. Nothing caught that;
+     an exemption is a claim, and this is the row that replaces it. */
+  {
+    component: "Combobox",
+    story: "components-combobox--matrix",
+    owner: "component",
+    key: "ArrowDown",
+    expectation:
+      "opens the list, then moves the highlight without moving focus",
+  },
+  {
+    component: "Combobox",
+    story: "components-combobox--matrix",
+    owner: "component",
+    key: "Escape",
+    expectation: "closes the list and leaves the field focused",
+  },
 ];

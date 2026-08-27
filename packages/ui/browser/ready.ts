@@ -57,6 +57,31 @@ export async function openStory(
   await page.goto(`/iframe.html?id=${id}&viewMode=story${globals}`, {
     waitUntil: "domcontentloaded",
   });
+
+  /* A story id that no longer exists is a thirty-second timeout with a
+     message about tokens, and the actual cause is a renamed story. Measured
+     when `components-combobox--supplier-region` was deleted and a
+     performance test still asked for it: the run cost 30s and reported
+     "page.waitForFunction: Test timeout exceeded", which points at the
+     wrong file.
+
+     Storybook renders its own "couldn't find story" page in that case, so
+     the condition is cheap to check and the message can name the id. */
+  const missing = await page
+    .locator(".sb-nopreview, .sb-errordisplay")
+    .filter({ hasText: /find story/i })
+    .count()
+    .catch(() => 0);
+  const alsoMissing = await page
+    .evaluate(() => document.body.textContent ?? "")
+    .then((text) => /Couldn't find story matching/i.test(text))
+    .catch(() => false);
+  if (missing > 0 || alsoMissing) {
+    throw new Error(
+      `Storybook has no story with the id "${id}". It was probably renamed ` +
+        `or deleted; the caller is asking for the old one.`,
+    );
+  }
   /* Two conditions, and the first draft of this had only the second.
    *
    * Waiting for #storybook-root to be *attached* is not waiting for the

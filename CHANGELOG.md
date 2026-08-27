@@ -75,6 +75,12 @@ cut at the first release.
 
 ### added
 
+- **Combobox** — async options through `onQueryChange` (which turns local
+  filtering off, because filtering an answer a server gave hides rows it
+  deliberately returned), multiple selection with each held value removable
+  by name, and an `option` render prop. Same combobox-over-listbox pattern as
+  `CommandPalette`: focus stays in the field, `aria-activedescendant` reports
+  the highlighted row.
 - **CommandPalette** — reaching any action by typing. A `combobox` over a
   `listbox` inside a modal dialog, and **focus stays in the text field**
   while `aria-activedescendant` reports the highlighted row: moving DOM focus
@@ -204,6 +210,22 @@ cut at the first release.
   component existed while the type rejected the prop.
 
 ### breaking
+
+- **Combobox** — replaced. It was an `<input list>` over a `datalist`, which
+  is to say the operating system's own picker: honest, very small, and unable
+  to express async options, multiple selection or custom rows. Those three
+  are the reasons the component now does the work itself.
+
+  What changes for a caller: `options` takes `ComboboxOption` descriptors as
+  well as strings; `value` is `string | string[] | null` and is an array
+  exactly when `multiple` is set; `Combobox.Option` is gone, because a
+  `datalist`'s only legal child was an `<option>` and the list is no longer a
+  `datalist` — pass descriptors, or the new `option` render prop. `Select`
+  still covers the short-fixed-list case the `datalist` version was good at,
+  and costs a fraction of this.
+
+  Free to do now, and it will not be later: nothing in this workspace is
+  published yet.
 
 Nothing yet; nothing is published. The first published version starts the
 window in which this section matters.

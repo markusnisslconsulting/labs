@@ -99,9 +99,18 @@ the people the layout dropped.
 expensive component in any design system, and the last one open here
 alongside a real Combobox.
 
-**A real Combobox** — today an `<input list>` over a `datalist`, which is
-to say the operating system's picker. That is honest, and it does not cover
-async options, multi-select or custom rendering.
+**A real Combobox** — done. It was an `<input list>` over a `datalist`, the
+operating system's own picker: honest, very small, and unable to express the
+three things that were asked of it. It now shares `CommandPalette`'s pattern
+exactly, which is the point — the two are the same shape of problem, and a
+library where two components solve it differently is one where one of them is
+wrong.
+
+Replacing it also retired a false claim nothing could see. `UNTESTABLE` in
+`test/api.spec.ts` exempted `Combobox` from the keyboard map because "the
+datalist picker is browser chrome", and that stopped being true the moment
+the component did the work itself. An exemption is a claim, and no gate reads
+one.
 
 **Charts: a decision, not components** — made, in
 `docs/adr/0011-charts-a-library-and-a-token-contract.md`. Nothing is added to
