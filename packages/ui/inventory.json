@@ -447,6 +447,55 @@
       "accessibility": "the platform combobox — typeahead, arrow selection and screen reader announcements come from the browser. Note: a Base UI combobox was evaluated and deferred (rc error #62 in test environments); adoption revisits at 1.0"
     },
     {
+      "component": "CommandPalette",
+      "props": [
+        { "name": "commands", "type": "Command[]", "required": true },
+        { "name": "open", "type": "boolean", "required": false },
+        { "name": "defaultOpen", "type": "boolean", "required": false },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "onSelect",
+          "type": "(command: Command) => void",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "doc": "What this palette searches."
+        },
+        { "name": "placeholder", "type": "string", "required": false },
+        {
+          "name": "empty",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Shown when nothing matches."
+        },
+        {
+          "name": "filter",
+          "type": "(command: Command, query: string) => boolean",
+          "required": false,
+          "doc": "Match a command against what has been typed."
+        },
+        {
+          "name": "item",
+          "type": "(command: Command) => ReactNode",
+          "required": false,
+          "doc": "Render one row yourself."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "reaching any action or place in an application by typing",
+      "insteadWhen": "the set is small and stable: that is a `Menu`, and a palette over six commands is a search box in front of a list nobody needed to search",
+      "accessibility": "a `combobox` with `aria-expanded` and `aria-controls`, over a `listbox` of `option`s, inside a modal dialog. Focus **stays in the text field** the whole time and the highlighted row is reported with `aria-activedescendant` — which is the whole reason this is not the tree or toolbar pattern. Moving DOM focus onto each row as the arrows walk it would take focus out of the input, and then typing anot"
+    },
+    {
       "component": "DataTable",
       "props": [
         {

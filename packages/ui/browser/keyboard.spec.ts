@@ -954,3 +954,63 @@ test(`Tree: End ${TREE_END.expectation}`, async ({ page }) => {
     "End reached a row inside a collapsed branch, or did not move",
   ).toBeFocused();
 });
+
+/* -------------------------------------------------------- CommandPalette */
+
+const PALETTE_DOWN = row("CommandPalette", "ArrowDown");
+const PALETTE_END = row("CommandPalette", "End");
+
+/**
+ * The arrows move the highlight and leave focus in the field.
+ *
+ * The property that separates this from the tree and toolbar patterns, and
+ * the one a naive implementation loses: moving DOM focus onto each row as
+ * the arrows walk it takes focus out of the input, and the next letter typed
+ * goes nowhere. So the assertion is in two halves — the highlight moved, and
+ * focus did not.
+ *
+ * Trusted keys, because the handler reads the key from a real event on the
+ * input and because "which element has focus" is exactly the kind of thing a
+ * synthetic event model can be right about while the browser is not.
+ */
+test(`CommandPalette: ArrowDown ${PALETTE_DOWN.expectation}`, async ({
+  page,
+}) => {
+  await openStory(page, PALETTE_DOWN.story);
+  const field = page.getByRole("combobox", { name: "Commands", exact: true });
+  await expect(field).toBeFocused();
+
+  const first = await field.getAttribute("aria-activedescendant");
+  expect(first, "nothing was highlighted to begin with").toBeTruthy();
+
+  await page.keyboard.press("ArrowDown");
+
+  const second = await field.getAttribute("aria-activedescendant");
+  expect(second, "ArrowDown did not move the highlight").not.toBe(first);
+  await expect(
+    field,
+    "the arrows moved DOM focus, so the next letter typed goes nowhere",
+  ).toBeFocused();
+
+  /* And the row that is highlighted says so, which is what a reader reads. */
+  await expect(page.locator(`#${second}`)).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
+});
+
+test(`CommandPalette: End ${PALETTE_END.expectation}`, async ({ page }) => {
+  await openStory(page, PALETTE_END.story);
+  const field = page.getByRole("combobox", { name: "Commands", exact: true });
+  const options = page.getByRole("option");
+  const count = await options.count();
+  expect(count, "the fixture needs several commands").toBeGreaterThan(2);
+
+  await page.keyboard.press("End");
+
+  await expect(
+    options.nth(count - 1),
+    "End did not reach the last command",
+  ).toHaveAttribute("aria-selected", "true");
+  await expect(field).toBeFocused();
+});

@@ -112,6 +112,8 @@ const ACCESSIBLE_NAME: Record<string, string> = {
     "label is the control's aria-label in both states; the reading state has no visible label at all",
   "Tree.tsx":
     "label names the tree; two unnamed ones are two identical structures",
+  "CommandPalette.tsx":
+    "label names the dialog and the combobox inside it; both need a string",
   "Spinner.tsx": "label is the live region's text; a spinner has no other name",
   "Select.tsx":
     "SelectOption.label is an <option>'s text, and HTML forbids markup " +

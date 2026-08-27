@@ -393,6 +393,48 @@ export declare namespace Combobox {
 export {};
 ```
 
+## CommandPalette
+
+```ts
+export interface Command {
+  id: string;
+  label: string;
+  section?: string;
+  keywords?: string[];
+  shortcut?: string;
+  disabled?: boolean;
+}
+interface CommandPaletteOwnProps {
+  commands: Command[];
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onSelect?: (command: Command) => void;
+  label: string;
+  placeholder?: string;
+  empty?: ReactNode;
+  filter?: (command: Command, query: string) => boolean;
+  item?: (command: Command) => ReactNode;
+}
+export type CommandPaletteProps = CommandPaletteOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof CommandPaletteOwnProps | "children">;
+export declare function CommandPalette({
+  commands,
+  open,
+  defaultOpen,
+  onOpenChange,
+  onSelect,
+  label,
+  placeholder,
+  empty,
+  filter,
+  item: renderItem,
+  className,
+  ...rest
+}: CommandPaletteProps): import("react").JSX.Element;
+export {};
+```
+
 ## DataTable
 
 ```ts

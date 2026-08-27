@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "CommandPalette",
+    why: "focus stays in the input while aria-activedescendant moves: whether a reader hears the highlighted row change, and whether the count is said once per change rather than per keystroke",
+    cells: blank(),
+  },
+  {
     component: "Tree",
     why: 'level and position are carried by aria attributes on a flat list of items: whether a reader says "level 3, 2 of 7" and keeps count while branches open',
     cells: blank(),

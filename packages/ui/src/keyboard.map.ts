@@ -344,4 +344,20 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
     key: "End",
     expectation: "moves to the last visible row",
   },
+  /* CommandPalette — the combobox-over-listbox pattern: focus never leaves
+     the field, and the arrows move `aria-activedescendant` instead. */
+  {
+    component: "CommandPalette",
+    story: "components-commandpalette--matrix",
+    owner: "component",
+    key: "ArrowDown",
+    expectation: "moves the highlight to the next command without moving focus",
+  },
+  {
+    component: "CommandPalette",
+    story: "components-commandpalette--matrix",
+    owner: "component",
+    key: "End",
+    expectation: "highlights the last command",
+  },
 ];

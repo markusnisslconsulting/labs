@@ -75,6 +75,16 @@ cut at the first release.
 
 ### added
 
+- **CommandPalette** — reaching any action by typing. A `combobox` over a
+  `listbox` inside a modal dialog, and **focus stays in the text field**
+  while `aria-activedescendant` reports the highlighted row: moving DOM focus
+  onto each row as the arrows walk it would take focus out of the input, and
+  the next letter typed would go nowhere. The result count is announced when
+  the _count_ changes rather than when the query does, so typing eight
+  characters that match the same three rows announces once. A disabled
+  command is shown and announced as disabled rather than filtered out — one
+  that vanishes when it cannot be used is one the reader concludes does not
+  exist.
 - **Tree** — a hierarchy the reader navigates, as `role="tree"` with one tab
   stop for the whole thing: a hundred-node tree is one stop rather than a
   hundred, and the stop sits on the selected row so leaving and returning

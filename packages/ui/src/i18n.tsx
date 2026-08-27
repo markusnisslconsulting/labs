@@ -123,6 +123,15 @@ export interface Strings {
    */
   filesAdded: (count: number) => string;
   fileRemoved: (file: string) => string;
+  /**
+   * How many commands match, as a live status.
+   *
+   * Announced when the *count* changes rather than when the query does: a
+   * region that fired per keystroke would talk over the letters being
+   * typed. A function for the same reason as `errorSummary` — the number is
+   * in the sentence.
+   */
+  commandResults: (count: number) => string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -161,6 +170,12 @@ export const defaultStrings: Strings = {
   loading: "Loading",
   errorSummary: (count) =>
     count === 1 ? "1 field needs attention" : `${count} fields need attention`,
+  commandResults: (count) =>
+    count === 0
+      ? "No commands match"
+      : count === 1
+        ? "1 command"
+        : `${count} commands`,
   dropFiles: "Drop files here, or choose them",
   uploadProgress: (file) => `Uploading ${file}`,
   removeFile: (file) => `Remove ${file}`,

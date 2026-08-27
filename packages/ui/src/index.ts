@@ -8,6 +8,11 @@ import { Breadcrumb, type BreadcrumbItem } from "./components/Breadcrumb";
 import { Button, type ButtonProps } from "./components/Button";
 import { LabsStrings, defaultStrings, useStrings } from "./i18n";
 import { ToastProvider, useToast } from "./toast";
+import {
+  CommandPalette,
+  type CommandPaletteProps,
+  type Command,
+} from "./components/CommandPalette";
 import { Card } from "./components/Card";
 import { Checkbox, type CheckboxProps } from "./components/Checkbox";
 import { Chip, type ChipProps } from "./components/Chip";
@@ -190,4 +195,7 @@ export {
   Tree,
   type TreeProps,
   type TreeNode,
+  CommandPalette,
+  type CommandPaletteProps,
+  type Command,
 };

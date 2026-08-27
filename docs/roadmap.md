@@ -33,6 +33,14 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**Command palette** — done, and it closes this list. Two bugs came out of
+building it, both found by gates rather than by looking: `aria-controls`
+pointed at a listbox that was replaced by an empty-state message, so the
+combobox claimed `aria-expanded="true"` over an element that was not there
+(axe called it an invalid attribute value, correctly); and Base UI focuses
+the popup rather than the field, which for a component whose entire
+interaction is typing means the first keystroke goes nowhere.
+
 **Tree** — done. The keyboard works off a flattened list of visible rows
 rather than a recursive walk, which is what makes ArrowDown from the last
 child of a branch land on the next root — the case a recursive
@@ -88,13 +96,12 @@ of one for the split button, and an overflow counter whose label still names
 the people the layout dropped.
 
 **DatePicker** — calendar, range, localisation, keyboard. The single most
-expensive component in any design system.
+expensive component in any design system, and the last one open here
+alongside a real Combobox.
 
 **A real Combobox** — today an `<input list>` over a `datalist`, which is
 to say the operating system's picker. That is honest, and it does not cover
 async options, multi-select or custom rendering.
-
-**Command palette.**
 
 **Charts: a decision, not components** — made, in
 `docs/adr/0011-charts-a-library-and-a-token-contract.md`. Nothing is added to

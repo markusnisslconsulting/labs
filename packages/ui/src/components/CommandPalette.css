@@ -1,0 +1,138 @@
+/* CommandPalette styles, shipped with the component.
+   A page that never imports CommandPalette never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-palette-backdrop {
+    position: fixed;
+    inset: 0;
+    /* The scrim role, which always darkens rather than following the theme:
+       a theme-following scrim was near-white on dark, so the "dimmed" page
+       behind a modal came out brighter than the page. */
+    background: var(--uix-scrim);
+  }
+
+  .uix-palette {
+    position: fixed;
+    /* Near the top rather than centred. A palette is typed into, and a box
+       that grows downward from a fixed top does not move under the cursor
+       as results come and go — a vertically centred one jumps on every
+       keystroke. */
+    inset-block-start: 12vh;
+    inset-inline: 0;
+    margin-inline: auto;
+    inline-size: min(34rem, calc(100vw - 2 * var(--uix-gap-lg)));
+    display: flex;
+    flex-direction: column;
+    max-block-size: 60vh;
+    border-radius: var(--uix-radius-surface);
+    background: var(--uix-bg-surface);
+    color: var(--uix-text-body);
+    box-shadow: var(--uix-elevation-modal);
+    overflow: hidden;
+  }
+
+  .uix-palette-search {
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    padding: var(--uix-gap-md);
+    border-block-end: 1px solid var(--uix-border-subtle);
+  }
+
+  .uix-palette-icon {
+    flex: none;
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-palette-input {
+    flex: 1;
+    min-inline-size: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: var(--uix-font-size-300);
+  }
+
+  /* No ring. Focus is in this field for the whole life of the palette, so a
+     ring around it says nothing a reader does not already know and draws a
+     box inside a box. The dialog itself is the focused thing on screen. */
+  .uix-palette-input:focus-visible {
+    outline: none;
+  }
+
+  .uix-palette-list {
+    overflow-y: auto;
+    padding: var(--uix-gap-xs);
+  }
+
+  .uix-palette-heading {
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    color: var(--uix-text-caption);
+    font-size: var(--uix-font-size-100);
+    font-weight: var(--uix-weight-ui);
+    text-transform: uppercase;
+    /* The role, not the primitive. `--uix-tracking-wide` was the first
+       attempt and the rule rejected it too: `display` and `ui` are the two
+       roles a brand can re-point, and `wide` is the raw value one of them
+       happens to hold today. */
+    letter-spacing: var(--uix-tracking-ui);
+  }
+
+  .uix-palette-option {
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    border-radius: var(--uix-radius-inset);
+    cursor: pointer;
+  }
+
+  /* The highlight is a background, and it has to be visible without focus:
+     nothing here is focused except the input, so the usual :focus-visible
+     treatment would never fire on a row. */
+  .uix-palette-option[data-active] {
+    background: var(--uix-accent-soft);
+    color: var(--uix-text-heading);
+  }
+
+  .uix-palette-option[data-disabled] {
+    cursor: default;
+    color: var(--uix-text-disabled);
+  }
+
+  /* Forced colours drop the background, so the highlight would vanish and
+     the only cue left is a border. */
+  @media (forced-colors: active) {
+    .uix-palette-option[data-active] {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+
+  .uix-palette-label {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .uix-palette-shortcut {
+    flex: none;
+    padding-inline: var(--uix-gap-xs);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-inset);
+    color: var(--uix-text-secondary);
+    font-family: inherit;
+    font-size: var(--uix-font-size-100);
+  }
+
+  .uix-palette-empty {
+    padding: var(--uix-gap-lg);
+    color: var(--uix-text-secondary);
+    text-align: center;
+  }
+}
