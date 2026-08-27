@@ -187,33 +187,36 @@ describe("the WCAG 2.2 table", () => {
 describe("the agent instructions", () => {
   const RULES = "AGENTS.md";
 
-  it("cites files that exist", () => {
-    const text = readFileSync(RULES, "utf8");
-    const cited = new Set(
-      (text.match(/[\w./-]+\.(?:ts|tsx|css|mjs|json|yml)\b/g) ?? []).filter(
-        (reference) => reference.includes("/") || reference.includes("."),
-      ),
-    );
-    const dead: string[] = [];
-    for (const reference of cited) {
-      const candidates = [
-        reference,
-        `packages/ui/${reference}`,
-        `packages/ui/src/${reference}`,
-        `packages/ui/src/components/${reference}`,
-        `packages/ui/src/styles/${reference}`,
-        `scripts/${reference}`,
-      ];
-      if (!candidates.some((candidate) => existsSync(candidate))) {
-        dead.push(reference);
+  it.each([RULES, "docs/roadmap.md", "CONTRIBUTING.md"])(
+    "%s cites files that exist",
+    (document) => {
+      const text = readFileSync(document, "utf8");
+      const cited = new Set(
+        (text.match(/[\w./-]+\.(?:ts|tsx|css|mjs|json|yml)\b/g) ?? []).filter(
+          (reference) => reference.includes("/") || reference.includes("."),
+        ),
+      );
+      const dead: string[] = [];
+      for (const reference of cited) {
+        const candidates = [
+          reference,
+          `packages/ui/${reference}`,
+          `packages/ui/src/${reference}`,
+          `packages/ui/src/components/${reference}`,
+          `packages/ui/src/styles/${reference}`,
+          `scripts/${reference}`,
+        ];
+        if (!candidates.some((candidate) => existsSync(candidate))) {
+          dead.push(reference);
+        }
       }
-    }
-    expect(
-      dead,
-      "AGENTS.md names these and they are not on disk. An instruction that " +
-        "cites a gate which has moved reads as authoritative and is not.",
-    ).toEqual([]);
-  });
+      expect(
+        dead,
+        `${document} names these and they are not on disk. A document that ` +
+          `cites a gate which has moved reads as authoritative and is not.`,
+      ).toEqual([]);
+    },
+  );
 
   /**
    * And the inventory it tells a reader to consult exists and is current.

@@ -21,6 +21,61 @@ Zwei Grenzen werden erzwungen: Apps importieren nur über
 Package-Eintrittspunkte, und Component-Tokens stehen auf der
 Docs-Seite des Parts — nicht in Foundations.
 
+## Der Weg herein
+
+Erst ein RFC, dann Code. Das Formular unter _Issues → Komponente
+vorschlagen_ stellt fuenf Fragen, und zwei davon sind der eigentliche
+Zweck: **wer braucht sie sonst** und **was ersetzt sie**.
+
+Eine Komponente, die genau ein Produkt braucht, gehoert in dieses Produkt.
+Das ist keine Absage. Ein Design-System, das jede Anfrage aufnimmt, wird
+zu einer Sammlung von Sonderfaellen, die niemand zweimal benutzt — und der
+Weg zurueck ist offen, sobald ein zweites Produkt sie will.
+
+Was das RFC nicht braucht: fertigen Code, ein Figma-File, eine
+Aufwandsschaetzung.
+
+## Die Latte
+
+Was "reviewed" heisst, in Reihenfolge — technisch zuerst, weil das billig
+zu pruefen ist, und dann das, was nur ein Mensch sehen kann.
+
+1. **`pnpm gates` ist gruen.** Sechzehn Targets, dieselbe Liste wie CI.
+   Kein Review beginnt vorher; das ist kein Ritual, es spart beiden
+   Seiten die Runde.
+2. **Angeschaut.** `nx run ui:visual-sweep` rendert jede sichtbare Story
+   in zwei Engines. Beide Renderfehler, die zuletzt bis zu Markus
+   durchgekommen sind, waren engine-spezifisch und in genau der Engine
+   unsichtbar, die die Pipeline benutzt hat. Ein Gate, das eine
+   DOM-Eigenschaft prueft, ersetzt das Hinschauen nicht.
+3. **Die Achsen halten.** Generalisieren die Props, oder traegt die
+   Komponente noch ein Produkt-Detail?
+4. **Der Vertrag steht in der Doku.** "Use it for" und "reach for
+   something else when", die Accessibility-Zeile, und was der Aufrufer
+   noch selbst schuldet. `ui:inventory` prueft, dass die Saetze da sind.
+5. **Wer prueft.** Heute ein Maintainer, siehe `CODEOWNERS`. Das ist eine
+   Einzelperson und damit der Engpass dieses Systems — laenger als eine
+   Person es tragen kann, waechst es nicht. Das steht hier, weil es eine
+   Eigenschaft des Systems ist und nicht ein Versehen.
+
+## Antwortzeiten
+
+Vorhersagbarkeit ist der Grund, aus dem ein Team ein System benutzt statt
+es zu forken. Also Zusagen statt Absichten:
+
+| Was                               | Erste Antwort | Entscheidung                               |
+| --------------------------------- | ------------- | ------------------------------------------ |
+| Fehler, der ein Produkt blockiert | 1 Werktag     | so schnell es geht, mit Umweg falls noetig |
+| Fehler, sonst                     | 3 Werktage    | im naechsten Zyklus eingeordnet            |
+| Pull Request                      | 3 Werktage    | 2 Wochen                                   |
+| Komponenten-RFC                   | 1 Woche       | 2 Wochen, ja/nein/spaeter mit Grund        |
+
+"Erste Antwort" heisst gelesen und einsortiert, nicht geloest. Eine
+Antwort, die "das dauert bis Maerz" sagt, ist mehr wert als Stille.
+
+Der Fahrplan liegt in `docs/roadmap.md` und nennt pro Stufe, was steht
+und was nicht.
+
 ## Komponenten beitragen
 
 1. **Base UI zuerst prüfen:** Interaktive Komponenten sitzen auf

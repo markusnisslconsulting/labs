@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Fehler in einer Komponente
+    url: https://github.com/markusnisslconsulting/labs/issues/new
+    about: >-
+      Kein Formular. Nenne die Story-ID und was du erwartet hast — ein
+      Screenshot aus `nx run ui:visual-sweep` sagt meist mehr als eine
+      Beschreibung.
