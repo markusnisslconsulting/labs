@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { ComponentPropsWithRef, ReactNode } from "react";
 
 import { cx } from "../cx";
@@ -70,6 +71,22 @@ export function Slider({
   ...rest
 }: SliderProps) {
   const isControlled = value !== undefined;
+  /* The uncontrolled half of the triple, which was missing.
+   *
+   * Slider was the one stateful component here that held nothing: it put
+   * `defaultValue` on the input, let the DOM own the value from then on,
+   * and reported changes through `onValueChange`. The number beside the
+   * label was `defaultValue ?? min` — a constant. Measured by dragging
+   * one: the input's value went 20 to 25 and the number next to it stayed
+   * at 20, so the slider showed a reading that had stopped being true.
+   *
+   * Every story in the catalogue is uncontrolled, so every slider in the
+   * documentation showed a frozen number, and the component's own
+   * `showValue` default is `true`. Chip, Switch and Combobox all hold
+   * their uncontrolled value for exactly this reason; this is the one
+   * that did not. */
+  const [uncontrolled, setUncontrolled] = useState(defaultValue ?? min);
+  const current = isControlled ? value : uncontrolled;
 
   return (
     <Field
@@ -82,7 +99,7 @@ export function Slider({
          Slider's own. That private head row is why Slider was the only
          field with no hint and no error: its layout had already diverged
          from every other field before anyone asked it for one. */
-      aside={showValue ? (isControlled ? value : (defaultValue ?? min)) : null}
+      aside={showValue ? current : null}
       className={cx("uix-slider", className)}
       data-disabled={disabled || undefined}
       {...rest}
@@ -99,8 +116,12 @@ export function Slider({
           step={step}
           aria-describedby={describedBy}
           aria-invalid={invalid}
-          {...(isControlled ? { value } : { defaultValue })}
-          onChange={(event) => onValueChange?.(Number(event.target.value))}
+          value={current}
+          onChange={(event) => {
+            const next = Number(event.target.value);
+            if (!isControlled) setUncontrolled(next);
+            onValueChange?.(next);
+          }}
         />
       )}
     </Field>
