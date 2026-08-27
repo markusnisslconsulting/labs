@@ -54,6 +54,20 @@ cut at the first release.
   the registry knows every token's type, so it is exact rather than a guess
   at names.
 
+- **Select** — the popup is the width of the field, and the chosen value no
+  longer moves when it opens.
+
+  The popup anchors to the `<select>`, and the box a reader sees is the
+  `.uix-field-row` around it. The select sat inside that row's padding,
+  sharing it with the chevron, so a 384px field held a 334px select and a
+  332px popup — 52px narrower than the field, inset 14px on one side and
+  38px on the other. The horizontal padding now belongs to the select and
+  the chevron overlays its end, so the anchor is the field.
+
+  The checkmark moved from the front of a row to the end. Leading, it opened
+  a 20px column the options had and the field did not, so the value read at
+  one x when closed and another when open.
+
 - **SplitButton** — at `sm` and `lg` the two halves rendered as two
   lozenges with the page showing between them. `Button.css` sets the
   `border-radius` shorthand under `.uix-button[data-size="sm"]` and

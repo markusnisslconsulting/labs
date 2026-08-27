@@ -367,64 +367,88 @@ test("every avatar overlaps the one before it, counter included", async ({
 });
 
 /**
- * The customizable-select popup is the width of the field, at any width.
+ * The customizable-select popup is the width of the field a reader sees.
  *
- * Written because the comment in `Select.css` claimed the opposite for a
- * while. The first measurement was taken with
- * `getComputedStyle(el, "::picker(select)")`, which reports `inline-size:
- * auto` for a width it is in fact applying, so the conclusion "author
- * sizing on this pseudo-element is not honoured" was an artefact of the
- * instrument. Pixels for anything in the top layer.
+ * "The field" is `.uix-field-row`, not the `<select>`. That distinction is
+ * the entire history of this test. Markus reported twice that the menu was
+ * not the width of the select box; three rounds of measurement said it was,
+ * to the pixel — because all three compared the popup to the `<select>`,
+ * which is a transparent, borderless control sitting inside the row's
+ * padding and sharing it with the chevron. Measured: a 384px row held a
+ * 334px select and a 332px popup. The popup matched the select exactly and
+ * was 52px narrower than the box on screen.
  *
- * The property asserted is tracking, not a number: the field is widened at
- * runtime and the popup has to follow. A fixed expectation would pass on a
- * popup that happened to be 302px for its own reasons.
+ * A measurement against the wrong reference reads exactly like the thing
+ * being correct, and it is more convincing than no measurement at all. So
+ * this asserts against the element that draws the border, and separately
+ * that the chosen value does not move when the popup opens — the other half
+ * of the same report.
  *
- * What it can and cannot catch, because the first version of this comment
- * overstated it. An option wider than its picker overflows rather than
- * shrinking, so an option's box is the picker's content width only while
- * the picker is the wider of the two. Trying to break this by forcing the
- * picker to 200px changed nothing — Chromium floors the picker at the
- * anchor's width, so "narrower than the field" is not a state this engine
- * can be put in. What is left is real and is what this asserts: the popup
- * follows the field when the field's width changes, and it never comes out
- * wider than the field. Forcing `inline-size: 500px` on the picker does
- * fail it.
+ * An earlier docstring here also claimed author sizing on `::picker(select)`
+ * was ignored in Chromium 151. That came from reading `getComputedStyle` on
+ * the pseudo-element, which reports `inline-size: auto` for a width it is
+ * applying. It is not ignored. `anchor-size()` and percentages genuinely do
+ * not resolve there, so the width still cannot be derived from the anchor —
+ * it does not need to be, now that the anchor is the full field.
  */
-test("the select popup takes the width of the field, whatever it is", async ({
+test("the select popup is the width of the field, and its text does not move", async ({
   page,
 }) => {
   await openStory(page, "components-select--matrix");
 
-  /* Scoped by our own class: a bare `select` would also match anything
-     Storybook renders around the story. */
   const select = page.locator("select.uix-select").first();
 
-  for (const width of [302, 420, 560]) {
-    if (width !== 302) {
+  for (const width of [null, 420, 560]) {
+    if (width !== null) {
       await select.evaluate((node, px) => {
-        (node as HTMLElement).style.inlineSize = `${px}px`;
+        const row = node.closest(".uix-field-row") as HTMLElement;
+        row.style.inlineSize = `${px}px`;
       }, width);
     }
 
-    const field = await select.boundingBox();
     await select.click();
 
-    /* The option's own box, because `::picker(select)` has no node to
-       measure. Its width is the picker's content box, so the difference
-       from the field is exactly the picker's border and padding. */
-    const option = await select.locator("option").first().boundingBox();
-    expect(option, "the picker did not open").not.toBeNull();
+    const geometry = await select.evaluate((node) => {
+      const row = node.closest(".uix-field-row")!;
+      const chosen = node.querySelector("option:checked");
+      if (!chosen) return null;
+      const range = document.createRange();
+      range.selectNodeContents(chosen);
+      const rowBox = row.getBoundingClientRect();
+      const optionBox = chosen.getBoundingClientRect();
+      return {
+        rowWidth: rowBox.width,
+        optionWidth: optionBox.width,
+        /* Where the field's own value sits: the select's left edge plus its
+           padding. Read from computed style so density moves both. */
+        fieldTextLeft:
+          node.getBoundingClientRect().left +
+          Number.parseFloat(getComputedStyle(node).paddingInlineStart),
+        optionTextLeft: range.getBoundingClientRect().left,
+      };
+    });
 
-    const inset = field!.width - option!.width;
+    expect(geometry, "the popup did not open").not.toBeNull();
+
+    /* Four: one border on the row and one on the popup, each side. Anything
+       looser accepts the version that was reported as broken. */
+    const inset = geometry!.rowWidth - geometry!.optionWidth;
     expect(
       inset,
-      `field ${field!.width.toFixed(0)}px, option ${option!.width.toFixed(0)}px: ` +
-        `the popup is not tracking the field`,
-    ).toBeLessThanOrEqual(16);
+      `field ${geometry!.rowWidth.toFixed(0)}px, option ` +
+        `${geometry!.optionWidth.toFixed(0)}px: the popup is not the width ` +
+        `of the field`,
+    ).toBeLessThanOrEqual(4);
     expect(inset, "the popup is wider than the field").toBeGreaterThanOrEqual(
       0,
     );
+
+    expect(
+      Math.abs(geometry!.optionTextLeft - geometry!.fieldTextLeft),
+      `the value sits at ${geometry!.fieldTextLeft.toFixed(1)} in the field ` +
+        `and at ${geometry!.optionTextLeft.toFixed(1)} in the popup, so it ` +
+        `moves when the popup opens`,
+    ).toBeLessThanOrEqual(1.5);
 
     await page.keyboard.press("Escape");
   }

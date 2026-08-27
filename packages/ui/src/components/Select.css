@@ -10,9 +10,48 @@
     /* `appearance: none` moved to reset.css: stripping native control
        chrome is normalization every engine needs, not a decision this
        component gets to make differently. */
-    /* The chevron is a sibling, so the text must stop before it. */
-    padding-inline-end: var(--uix-gap-sm);
     cursor: pointer;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Why the select spans its whole row
+   *
+   * The popup anchors to the `<select>`. The box a reader sees is the
+   * `.uix-field-row` around it, and the select was a flex child *inside*
+   * that row's padding, sharing it with the chevron: measured, a 384px
+   * field held a 334px select, so the menu came out 332px — 52px narrower
+   * than the field, inset 14px on one side and 38px on the other.
+   *
+   * That is the "menu is not using full width" Markus reported twice, and
+   * three rounds of measurement missed it because every one of them
+   * compared the popup to the `<select>` — which it matched to the pixel —
+   * rather than to the box on screen. Comparing a thing to the wrong
+   * reference reads exactly like the thing being correct.
+   *
+   * So the horizontal padding moves from the row to the select, and the
+   * chevron stops taking row space and overlays the control's end instead.
+   * The select then fills the row, the popup fills the field, and the value
+   * has not moved: it sits one `--uix-gap-md` in either way.
+   *
+   * Scoped with `:has()` so it reaches only rows holding a select. Every
+   * other field keeps the shared layout.
+   * ------------------------------------------------------------------ */
+  .uix-field-row:has(> .uix-select) {
+    position: relative;
+    padding-inline: 0;
+  }
+
+  .uix-field-row:has(> .uix-select) > .uix-select {
+    padding-inline-start: var(--uix-gap-md);
+    /* The chevron's own width plus the space either side of it, so a long
+       option's text still stops before the glyph rather than under it. */
+    padding-inline-end: calc(var(--uix-gap-md) + 1rem + var(--uix-gap-sm));
+  }
+
+  .uix-field-row:has(> .uix-select) > .uix-field-affordance {
+    position: absolute;
+    inset-inline-end: var(--uix-gap-md);
+    inset-block: 0;
   }
 
   /* ------------------------------------------------ the popup, where we may
@@ -79,7 +118,16 @@
          controlled rather than inherited. */
       box-sizing: border-box;
       margin-block-start: var(--uix-gap-xs);
-      padding: var(--uix-gap-xs);
+      /* Block only. Horizontal padding here inset every row by 4px and, with
+         the option's own padding on top, put an option's text 5px right of
+         the field's — so the value moved sideways when the menu opened. The
+         horizontal space belongs to the option instead, in the same token
+         the field uses for its own, which is *why* the two line up. */
+      padding-block: var(--uix-gap-xs);
+      padding-inline: 0;
+      /* The rows now run edge to edge, so the first and last have to be
+         clipped to this element's corners. */
+      overflow: hidden;
       border: 1px solid var(--uix-border-subtle);
       border-radius: var(--uix-radius-container);
       background: var(--uix-bg-surface);
@@ -90,8 +138,12 @@
       display: flex;
       align-items: center;
       gap: var(--uix-gap-sm);
-      padding: var(--uix-gap-xs) var(--uix-gap-sm);
-      border-radius: var(--uix-radius-inset);
+      /* `--uix-gap-md` is the field row's own `padding-inline`. Sharing the
+         token is the whole mechanism: the field's text sits one border and
+         one gap-md from its left edge, and so does an option's, so the
+         chosen value does not move when the popup opens. */
+      padding-block: var(--uix-gap-xs);
+      padding-inline: var(--uix-gap-md);
       color: var(--uix-text-primary);
       font: inherit;
     }
@@ -119,11 +171,26 @@
       display: none;
     }
 
-    /* The UA draws a checkmark column in front of every option once the
-       popup is ours. Left in place: it is the only thing that says which
-       option is current, since colour alone would be 1.4.1. */
+    /* The UA draws a checkmark for every option once the popup is ours.
+       Kept, because it is the only thing that says which option is current
+       without relying on colour, which alone would be 1.4.1.
+
+       At the end of the row rather than in front of it. Leading, it opened a
+       20px column that only the options had, so the chosen value sat at x=129
+       in the closed field and its own row read at x=149: opening the menu
+       moved the text it was showing you. Measured in Chrome 151 on a 334px
+       field. Trailing, both land on 129 and nothing moves.
+
+       Both `order` and the auto margin, and the first attempt had only the
+       margin. `::checkmark` is generated *before* the option's content, so
+       an auto start-margin on it consumed the free space and pushed the
+       checkmark and the label together to the far end: the label measured
+       x=258 in a row starting at 58. `order: 1` moves it past the label,
+       and the auto margin then pins it to the end of the row, so a long
+       label and a short one still put their checkmarks in one column. */
     .uix-select option::checkmark {
-      order: -1;
+      order: 1;
+      margin-inline-start: auto;
       color: var(--uix-accent);
     }
   }

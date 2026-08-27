@@ -53,11 +53,35 @@ export type SelectGroupProps = ComponentPropsWithRef<"optgroup">;
  * behind `@supports`. The element is a real `<select>` either way, which is
  * what keeps typeahead, form participation and the iOS wheel.
  *
- * **What is still not possible: making it the width of the field.** Measured
- * against Chromium 151, author sizing on `::picker(select)` is ignored —
- * `inline-size`, `min-inline-size` and every form of `anchor-size()` produce
- * byte-identical layout, while background and border apply. So a wide select
- * can still show a narrower menu, and no CSS here changes that.
+ * **The popup is the width of the field.** It took three wrong answers to
+ * get there, and the wrong answers are the useful part.
+ *
+ * The popup anchors to the `<select>`. The box a reader sees is the
+ * `.uix-field-row` around it, and the select used to sit inside that row's
+ * padding, sharing it with the chevron — so a 384px field held a 334px
+ * select and a 332px popup. Every measurement I took compared the popup to
+ * the select, found them equal to the pixel, and reported the menu as
+ * correct while it was 52px narrower than the field. A measurement against
+ * the wrong reference reads exactly like the thing being right, and it is
+ * more convincing than no measurement at all.
+ *
+ * The fix is that the select now spans its row: the horizontal padding moved
+ * from the row to the select, and the chevron overlays the control's end
+ * instead of taking space beside it. The anchor is the field, so the popup is
+ * the field.
+ *
+ * The first version of this paragraph also said author sizing on
+ * `::picker(select)` was ignored in Chromium 151. It is not; that came from
+ * reading `getComputedStyle` on the pseudo-element, which reports
+ * `inline-size: auto` for a width it is applying. What genuinely does not
+ * resolve there is `anchor-size()`, and percentages resolve against the
+ * initial containing block — `min-inline-size: 100%` measured 837px on a
+ * 334px field. So the width still cannot be *derived* from the anchor. It no
+ * longer needs to be.
+ *
+ * The checkmark sits at the end of a row rather than in front of it, for the
+ * same reason: leading, it opened a column the options had and the field did
+ * not, so the chosen value moved sideways when the menu opened.
  *
  * When the popup's geometry matters, `Combobox` renders its own listbox and
  * takes the field's width. It costs 6.04 KB against this component's 2.79 KB
