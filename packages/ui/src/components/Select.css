@@ -85,18 +85,27 @@
       block-size: var(--uix-control-md);
       min-block-size: 0;
       padding-block: 0;
+      /* `base-select` turns the select itself into the button, and the
+         button is a flex container. With a fixed `block-size` and no
+         padding-block its content sits at the start, so the value rendered
+         about 9px above the middle of a 40px field while the chevron beside
+         it was centred. The boxes all measured centred — row, control and
+         chevron every one of them at the same midpoint — which is why this
+         survived: the misalignment was inside the control, between its box
+         and its own text, and nothing that measures boxes can see it.
+         Caught in a 3x crop. */
+      align-items: center;
     }
 
     .uix-select::picker(select) {
       /* Two things were asked for here: stop using the browser's option
-         list, and make the menu the width of the field. Everything in this
-         block does the first. The second turned out to need nothing, and
-         an earlier version of this comment said the opposite.
-
-         Measured in Chromium 151 against a 302px select, with this rule's
-         own padding and border taken off, an option's box comes out 302px.
-         The picker already takes the anchor's inline size; the 10px it
-         looks short by is the inset below, which is deliberate.
+         list, and make the menu the width of the field. This block does the
+         first. The second is done above, by making the select span its row
+         so that the anchor the popup follows is the box on screen — see the
+         long comment there, and note that two earlier versions of this one
+         claimed the width was impossible and then that it needed nothing.
+         Both were measuring the popup against the `<select>` rather than
+         against the field.
 
          Two things genuinely do not work, and they are worth keeping
          written down because they are the obvious first tries:

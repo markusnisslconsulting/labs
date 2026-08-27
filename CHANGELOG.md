@@ -54,6 +54,18 @@ cut at the first release.
   the registry knows every token's type, so it is exact rather than a guess
   at names.
 
+- **Select** — the value now sits on the middle of its own field. Under
+  `appearance: base-select` the select *is* the button and the button is a
+  flex container; with a fixed `block-size` and no `padding-block` its
+  content sat at the start, so the value rendered 7px above centre while the
+  chevron beside it was centred.
+
+  Nothing that measures boxes could see it — the row, the control and the
+  chevron all reported the same midpoint, because the misalignment was
+  between the control's box and its own glyphs. Measured at 3x over the
+  field: the text's centre was row 39 broken and row 60 fixed, against a box
+  centre of 60.
+
 - **Select** — the popup is the width of the field, and the chosen value no
   longer moves when it opens.
 

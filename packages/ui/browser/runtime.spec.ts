@@ -682,3 +682,65 @@ test("a split button's inner corners are square at every size", async ({
     "the matrix shows one size, so this test cannot see the size-specific bug",
   ).toBeGreaterThan(1);
 });
+
+/**
+ * The value in a customizable select sits on the middle of its own field.
+ *
+ * It rendered 7px above it. `appearance: base-select` makes the select
+ * itself the button and the button a flex container; with a fixed
+ * `block-size` and no `padding-block`, its content sits at the start. So the
+ * value read high while the chevron beside it was centred, which is what
+ * Markus saw and reported as "the text is not aligned".
+ *
+ * **What this test can and cannot see, because two instruments lied first.**
+ *
+ * Every box on that row measured centred — the field row, the control and
+ * the chevron, all three at the same midpoint — because the misalignment was
+ * inside the control, between its box and its own glyphs. Boxes cannot see
+ * it.
+ *
+ * `caretRangeFromPoint` does reach into the select's shadow content and
+ * returns an element for the rendered value, and that looked like the
+ * instrument. It is not: the element is a full-size wrapper starting at the
+ * field's own left edge, so its centre is the box's centre whatever the text
+ * does. It reported the field as correct in both the broken and the fixed
+ * build. Only pixels told them apart — measured at 3x over the field's own
+ * box, the text's centre was row 39 broken and row 60 fixed, against a box
+ * centre of 60.
+ *
+ * So the pixel property lives in `visual/visual.spec.ts`, where this
+ * repository keeps pixels, and in Chromatic, which snapshots this story. What
+ * is left here is the cascade: `align-items` has to survive to the select.
+ * That is weaker than measuring the glyphs and it is stated as such — it
+ * catches the rule being removed or outranked, not the rendering being wrong
+ * for some new reason.
+ */
+test("a base-select field centres its own value", async ({ page }) => {
+  await openStory(page, "components-select--matrix");
+
+  const supported = await page.evaluate(() =>
+    CSS.supports("appearance", "base-select"),
+  );
+  test.skip(!supported, "no base-select in this engine, so no button to align");
+
+  const styles = await page.locator("select.uix-select").evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const style = getComputedStyle(node);
+      return {
+        appearance: style.appearance,
+        alignItems: style.alignItems,
+        display: style.display,
+      };
+    }),
+  );
+
+  expect(styles.length, "no selects on the page").toBeGreaterThan(0);
+  for (const style of styles) {
+    expect(style.appearance, "the popup is not ours here").toBe("base-select");
+    expect(
+      style.alignItems,
+      "the select's own content is not centred, so its value renders above " +
+        "the middle of the field while the chevron stays on it",
+    ).toBe("center");
+  }
+});

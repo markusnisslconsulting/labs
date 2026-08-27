@@ -16,6 +16,7 @@
  * same two files.
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { PAIRINGS, SCREEN_READER_MATRIX } from "../src/audit/screen-readers";
@@ -450,5 +451,101 @@ describe("the agent instructions", () => {
     }
 
     expect(truncated, "these published prop types are cut off").toEqual([]);
+  });
+});
+
+/**
+ * Every story the visual suite names still exists.
+ *
+ * `visual/visual.spec.ts` listed `foundations-brands--side-by-side` for
+ * weeks after that story was deleted — the brand comparison came out of the
+ * foundations pages and nobody updated the list. Playwright's failure was
+ * "element is not visible", which reads like a rendering problem rather than
+ * a missing story, and `ui:visual-test` is deliberately not in `pnpm gates`
+ * because its baselines are per-platform and CI has none. So a gate rotted
+ * quietly, and the tool whose whole job is noticing that things changed was
+ * the thing nobody was watching.
+ *
+ * Ids are derived here the way Storybook derives them — the title and the
+ * export name, sanitised — rather than read from a built `index.json`, so
+ * this runs in the unit suite with no build behind it.
+ */
+describe("the visual suite points at stories that exist", () => {
+  const sanitize = (value: string) =>
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+
+  /** `AllTones` -> `all-tones`, the way `storyNameFromExport` does it. */
+  const fromExport = (name: string) =>
+    sanitize(name.replace(/([a-z0-9])([A-Z])/g, "$1 $2"));
+
+  /* Walked rather than listed. The first version named three directories and
+     got two of them wrong — the focus story lives in `foundations`, which
+     was not among them — so the check called an existing story missing. A
+     hard-coded list of places to look is the same kind of rot this test
+     exists to catch. */
+  const storyFiles = (dir: string): string[] =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+      entry.isDirectory()
+        ? storyFiles(join(dir, entry.name))
+        : entry.name.endsWith(".stories.tsx")
+          ? [join(dir, entry.name)]
+          : [],
+    );
+
+  const storyIds = (): Set<string> => {
+    const ids = new Set<string>();
+    const root = "packages/ui/src";
+    if (existsSync(root)) {
+      for (const path of storyFiles(root)) {
+        const source = readFileSync(path, "utf8");
+        const title = /title:\s*["'`]([^"'`]+)["'`]/.exec(source)?.[1];
+        if (!title) continue;
+        const prefix = sanitize(title);
+        for (const [, name] of source.matchAll(/^export const (\w+)[^=]*=/gm)) {
+          ids.add(`${prefix}--${fromExport(name!)}`);
+        }
+      }
+    }
+    return ids;
+  };
+
+  it("derives ids that match the ones in use", () => {
+    /* The derivation is a reimplementation of somebody else's rule, so it is
+       checked against ids known to exist before it is trusted to judge the
+       list. Without this the test could pass by deriving nothing. */
+    const ids = storyIds();
+    expect(ids.size, "no stories found at all").toBeGreaterThan(100);
+    for (const known of [
+      "components-button--matrix",
+      "components-select--matrix",
+      "components-statuspill--all-tones",
+    ]) {
+      expect(ids.has(known), `${known} was not derived`).toBe(true);
+    }
+  });
+
+  it("names only stories that exist", () => {
+    const spec = readFileSync("visual/visual.spec.ts", "utf8");
+    const list = /const stories = \[([\s\S]*?)\] as const;/.exec(spec)?.[1];
+    expect(list, "could not find the story list").toBeDefined();
+
+    /* Comments first: the list carries a paragraph naming the deleted story
+       as an example, and a check that read its own explanation would fail on
+       the thing it documents. */
+    const named = [
+      ...list!.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/"([^"]+)"/g),
+    ].map((hit) => hit[1]!);
+    expect(named.length, "the story list parsed as empty").toBeGreaterThan(2);
+
+    const ids = storyIds();
+    const missing = named.filter((id) => !ids.has(id));
+    expect(
+      missing,
+      "these stories are named in visual/visual.spec.ts and do not exist. " +
+        "Update the list and run `nx run ui:visual-update`.",
+    ).toEqual([]);
   });
 });

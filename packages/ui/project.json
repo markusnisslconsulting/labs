@@ -113,6 +113,7 @@
         "{workspaceRoot}/CONTRIBUTING.md",
         "{workspaceRoot}/docs/roadmap.md",
         "{workspaceRoot}/docs/screen-reader-pass.md",
+        "{workspaceRoot}/visual/visual.spec.ts",
         "{workspaceRoot}/nx.json"
       ]
     },
