@@ -33,6 +33,18 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**Tree** — done. The keyboard works off a flattened list of visible rows
+rather than a recursive walk, which is what makes ArrowDown from the last
+child of a branch land on the next root — the case a recursive
+implementation gets wrong. Both directions of ArrowRight and ArrowLeft are
+break-verified.
+
+Its stories also gave `test/locators.spec.ts` its first real catch: ten
+`getByRole("treeitem", { name: … })` queries without `exact`, one of them
+naming "Textiles" in a tree that also contains "Northwind Textiles". Not yet
+ambiguous in that fixture, and it would have become so the moment a test
+opened one more level.
+
 **FileUpload** — done. The decision worth recording is that the drop zone is
 a label over a file input rather than a div with a drop handler, so keyboard
 reachability comes from the platform instead of being reimplemented. And the
@@ -82,7 +94,7 @@ expensive component in any design system.
 to say the operating system's picker. That is honest, and it does not cover
 async options, multi-select or custom rendering.
 
-**Command palette, Tree.**
+**Command palette.**
 
 **Charts: a decision, not components** — made, in
 `docs/adr/0011-charts-a-library-and-a-token-contract.md`. Nothing is added to

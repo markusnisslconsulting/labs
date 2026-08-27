@@ -75,6 +75,14 @@ cut at the first release.
 
 ### added
 
+- **Tree** — a hierarchy the reader navigates, as `role="tree"` with one tab
+  stop for the whole thing: a hundred-node tree is one stop rather than a
+  hundred, and the stop sits on the selected row so leaving and returning
+  does not send anyone back to the top. Arrows do the work, including the two
+  that carry the structure — right opens a closed branch and then steps into
+  an open one, left closes an open branch and then steps out to the parent.
+  `aria-level`, `aria-setsize` and `aria-posinset` are on every item, because
+  a flat list of `treeitem`s conveys none of that on its own.
 - **FileUpload** — choosing files to send somewhere, with the result of each
   one visible. The drop zone is a `<label>` wrapping a real
   `<input type="file">`, not a div with a drop handler: a div can be dropped

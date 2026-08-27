@@ -1623,3 +1623,41 @@ export declare function Tooltip({
   onOpenChange,
 }: TooltipProps): import("react").JSX.Element;
 ```
+
+## Tree
+
+```ts
+export interface TreeNode {
+  id: string;
+  label: ReactNode;
+  children?: TreeNode[];
+  disabled?: boolean;
+}
+interface TreeOwnProps {
+  nodes: TreeNode[];
+  label: string;
+  expanded?: string[];
+  defaultExpanded?: string[];
+  onExpandedChange?: (next: string[]) => void;
+  selected?: string | null;
+  defaultSelected?: string | null;
+  onSelectedChange?: (next: string) => void;
+  node?: (entry: TreeNode, depth: number) => ReactNode;
+}
+export type TreeProps = TreeOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof TreeOwnProps | "children">;
+export declare function Tree({
+  nodes,
+  label,
+  expanded,
+  defaultExpanded,
+  onExpandedChange,
+  selected,
+  defaultSelected,
+  onSelectedChange,
+  node: renderNode,
+  className,
+  ...rest
+}: TreeProps): import("react").JSX.Element;
+export {};
+```

@@ -313,4 +313,35 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
     key: "Escape",
     expectation: "abandons the edit and restores the original value",
   },
+  /* Tree — the WAI-ARIA tree pattern: one tab stop, arrows do the work.
+     Right and left are the two that carry the structure, and they each do
+     two different things depending on where they are. */
+  {
+    component: "Tree",
+    story: "components-tree--matrix",
+    owner: "component",
+    key: "ArrowDown",
+    expectation: "moves to the next visible row, across branch boundaries",
+  },
+  {
+    component: "Tree",
+    story: "components-tree--matrix",
+    owner: "component",
+    key: "ArrowRight",
+    expectation: "opens a closed branch, then steps into an open one",
+  },
+  {
+    component: "Tree",
+    story: "components-tree--matrix",
+    owner: "component",
+    key: "ArrowLeft",
+    expectation: "closes an open branch, then steps out to the parent",
+  },
+  {
+    component: "Tree",
+    story: "components-tree--matrix",
+    owner: "component",
+    key: "End",
+    expectation: "moves to the last visible row",
+  },
 ];

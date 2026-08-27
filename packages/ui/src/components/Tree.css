@@ -1,0 +1,97 @@
+/* Tree styles, shipped with the component.
+   A page that never imports Tree never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-tree {
+    display: grid;
+    font-size: var(--uix-font-size-200);
+  }
+
+  .uix-tree-item {
+    /* Declared here as well as set inline, and the token check is what
+       asked for it: a custom property that only ever arrives from a style
+       attribute is invisible to anything reading the stylesheets, so it
+       reads as a reference to a token nobody defined. The default also
+       makes a bare `.uix-tree-item` render at level one instead of
+       collapsing its indent to nothing. */
+    --uix-tree-depth: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    /* The indent, from the level the item already carries for assistive
+       technology. One source for depth rather than a nested element per
+       level, which is what lets the rows be siblings in the DOM and the
+       keyboard move through a flat list. */
+    padding-inline-start: calc(
+      var(--uix-gap-xs) + (var(--uix-tree-depth) - 1) * var(--uix-gap-md)
+    );
+    padding-inline-end: var(--uix-gap-sm);
+    padding-block: var(--uix-gap-xs);
+    border-radius: var(--uix-radius-inset);
+    cursor: pointer;
+    /* A long name truncates rather than wrapping to a second line, because
+       a wrapped row breaks the alignment the indent is carrying. */
+    white-space: nowrap;
+  }
+
+  .uix-tree-item:hover:not([data-disabled]) {
+    background: var(--uix-bg-subtle);
+  }
+
+  .uix-tree-item[data-selected] {
+    background: var(--uix-accent-soft);
+    color: var(--uix-text-heading);
+  }
+
+  .uix-tree-item[data-disabled] {
+    cursor: default;
+    color: var(--uix-text-disabled);
+  }
+
+  .uix-tree-item:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: -1px;
+  }
+
+  /* Always in the layout, so a leaf's label lines up with its siblings'
+     rather than sitting a chevron's width to the left. */
+  .uix-tree-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    inline-size: 1rem;
+    color: var(--uix-text-secondary);
+  }
+
+  /* Rotated rather than swapped for a second icon: one glyph, and the
+     rotation follows the reading direction because the closed chevron
+     points the way the text runs. */
+  .uix-tree-chevron[data-open] svg {
+    rotate: 90deg;
+  }
+
+  .uix-tree:dir(rtl) .uix-tree-chevron svg {
+    scale: -1 1;
+  }
+
+  .uix-tree:dir(rtl) .uix-tree-chevron[data-open] svg {
+    rotate: -90deg;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .uix-tree-chevron svg {
+      transition: rotate 120ms ease;
+    }
+  }
+
+  .uix-tree-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* The node's own characters decide its direction, so a folder named in
+       Arabic reads correctly inside a left-to-right tree. */
+    unicode-bidi: plaintext;
+  }
+}

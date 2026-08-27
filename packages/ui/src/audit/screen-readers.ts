@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "Tree",
+    why: 'level and position are carried by aria attributes on a flat list of items: whether a reader says "level 3, 2 of 7" and keeps count while branches open',
+    cells: blank(),
+  },
+  {
     component: "FileUpload",
     why: "a drop zone that is really a label over a file input: whether a reader is told it can be activated, and whether progress on three files is distinguishable",
     cells: blank(),

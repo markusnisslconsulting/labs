@@ -61,6 +61,7 @@ import {
   type DataTableSort,
 } from "./components/DataTable";
 import { Table, type TableProps } from "./components/Table";
+import { Tree, type TreeProps, type TreeNode } from "./components/Tree";
 import { TagInput, type TagInputProps } from "./components/TagInput";
 import { Toolbar, type ToolbarProps } from "./components/Toolbar";
 import { Tabs, type TabsProps } from "./components/Tabs";
@@ -186,4 +187,7 @@ export {
   FileUpload,
   type FileUploadProps,
   type UploadItem,
+  Tree,
+  type TreeProps,
+  type TreeNode,
 };

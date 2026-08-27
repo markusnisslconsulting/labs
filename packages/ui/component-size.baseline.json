@@ -1,5 +1,5 @@
 {
-  "note": "Gzipped bytes a consumer downloads per component, counted transitively: the component's chunk plus every shared chunk and stylesheet it imports. A ratchet, not a ceiling \u2014 the check fails when one rises past its tolerance and when one drops well below without this file being tightened. Run `node scripts/component-size.mjs write` after a deliberate change. Moved 2026-08-27 for the Form work: every field component rose about 0.45 KB, which is the form integration itself \u2014 the context, the error resolution and the registration effect. The first version of that change cost 2.44 KB each instead, because `Field` imported `useFormContext` from `Form.tsx` and so dragged `Form.Summary`, its string-table use and `Form.css` into every page with one TextField. This gate is what found it; `packages/ui/src/components/_form-context.ts` is the fix. Added 2026-08-27: EmptyState at 0.89 KB, AvatarGroup at 1.85 KB, and SplitButton at 5.60 KB \u2014 the last carries Menu, because its popup is a Menu and its parts are Menu's re-exported rather than a second copy of them. Added Drawer at 1.70 KB. Added Stepper at 1.52 KB. Added Toolbar at 1.32 KB. Added TagInput at 4.39 KB. Added InlineEdit at 2.38 KB. Added FileUpload at 4.86 KB.",
+  "note": "Gzipped bytes a consumer downloads per component, counted transitively: the component's chunk plus every shared chunk and stylesheet it imports. A ratchet, not a ceiling — the check fails when one rises past its tolerance and when one drops well below without this file being tightened. Run `node scripts/component-size.mjs write` after a deliberate change. Moved 2026-08-27 for the Form work: every field component rose about 0.45 KB, which is the form integration itself — the context, the error resolution and the registration effect. The first version of that change cost 2.44 KB each instead, because `Field` imported `useFormContext` from `Form.tsx` and so dragged `Form.Summary`, its string-table use and `Form.css` into every page with one TextField. This gate is what found it; `packages/ui/src/components/_form-context.ts` is the fix. Added 2026-08-27: EmptyState at 0.89 KB, AvatarGroup at 1.85 KB, and SplitButton at 5.60 KB — the last carries Menu, because its popup is a Menu and its parts are Menu's re-exported rather than a second copy of them. Added Drawer at 1.70 KB. Added Stepper at 1.52 KB. Added Toolbar at 1.32 KB. Added TagInput at 4.39 KB. Added InlineEdit at 2.38 KB. Added FileUpload at 4.86 KB. Added Tree at 2.12 KB.",
   "tolerance": {
     "fraction": 0.12,
     "bytes": 150
@@ -50,6 +50,7 @@
     "TextField": 2626,
     "Toaster": 2193,
     "Toolbar": 1351,
-    "Tooltip": 797
+    "Tooltip": 797,
+    "Tree": 2176
   }
 }

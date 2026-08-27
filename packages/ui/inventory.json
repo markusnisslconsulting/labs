@@ -1883,6 +1883,48 @@
       "useFor": "naming an icon-only control, or a short hint",
       "insteadWhen": "the content is essential or interactive (put it in the page)",
       "accessibility": "the announcement is **ours**, not Base UI's, and the distinction is the whole reason this paragraph got rewritten. This used to say Base UI announced the hint \"(its own wiring)\". Measured against `1.0.0-rc.0` in the open state, the trigger's attributes were `type,class,data-variant,data-tone,data-size,id,data-popup-open` — no `aria-describedby` — and the popup carried no role. A tooltip with neith"
+    },
+    {
+      "component": "Tree",
+      "props": [
+        { "name": "nodes", "type": "TreeNode[]", "required": true },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "doc": "What the tree is."
+        },
+        { "name": "expanded", "type": "string[]", "required": false },
+        { "name": "defaultExpanded", "type": "string[]", "required": false },
+        {
+          "name": "onExpandedChange",
+          "type": "(next: string[]) => void",
+          "required": false
+        },
+        { "name": "selected", "type": "string | null", "required": false },
+        {
+          "name": "defaultSelected",
+          "type": "string | null",
+          "required": false
+        },
+        {
+          "name": "onSelectedChange",
+          "type": "(next: string) => void",
+          "required": false
+        },
+        {
+          "name": "node",
+          "type": "(entry: TreeNode, depth: number) => ReactNode",
+          "required": false,
+          "doc": "Render a node's label yourself."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a hierarchy the reader navigates — folders, an organisation, a category system",
+      "insteadWhen": "the nesting is one level deep: that is a list with headings, and a tree makes a promise about the keyboard that then has to be kept",
+      "accessibility": "`role=\"tree\"` with `treeitem` children, and **one tab stop for the whole tree**. Arrows do the work: down and up move through the visible items, right opens a closed branch or steps into an open one, left closes an open branch or steps out to the parent, Home and End go to the ends. That is the WAI-ARIA tree pattern, and it is the reason to reach for this instead of nested lists — a hundred-node t"
     }
   ]
 }

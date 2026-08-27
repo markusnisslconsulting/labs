@@ -811,3 +811,146 @@ test(`InlineEdit: Escape ${EDIT_ESCAPE.expectation}`, async ({ page }) => {
     "Escape committed, so an abandoned edit is permanent",
   ).toHaveText(original);
 });
+
+/* ------------------------------------------------------------------ Tree */
+
+const TREE_DOWN = row("Tree", "ArrowDown");
+const TREE_RIGHT = row("Tree", "ArrowRight");
+const TREE_LEFT = row("Tree", "ArrowLeft");
+const TREE_END = row("Tree", "End");
+
+/** The first tree in the matrix: collapsed, three roots, one disabled. */
+const collapsedTree = (page: Page) =>
+  page.getByRole("tree", { name: "Folders", exact: true });
+
+/**
+ * ArrowRight opens, then steps in. Two presses, not one.
+ *
+ * The pattern's own rule, and it is worth keeping: separating "open this"
+ * from "go into this" is what lets somebody survey a structure without
+ * losing their place in it. A single press that did both would make the
+ * first ArrowRight on a branch a navigation the reader did not ask for.
+ */
+test(`Tree: ArrowRight ${TREE_RIGHT.expectation}`, async ({ page }) => {
+  await openStory(page, TREE_RIGHT.story);
+  const tree = collapsedTree(page);
+  const eu = tree.getByRole("treeitem", {
+    name: "European Union",
+    exact: true,
+  });
+
+  await eu.focus();
+  await expect(eu).toHaveAttribute("aria-expanded", "false");
+
+  await page.keyboard.press("ArrowRight");
+  await expect(eu, "the first press did not open the branch").toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
+  await expect(
+    eu,
+    "the first press also moved, which is one press too many",
+  ).toBeFocused();
+
+  await page.keyboard.press("ArrowRight");
+  await expect(
+    tree.getByRole("treeitem", { name: "Textiles", exact: true }),
+    "the second press did not step into the open branch",
+  ).toBeFocused();
+});
+
+/**
+ * ArrowLeft closes, then steps out.
+ *
+ * The mirror, and the half that is easy to leave out: from a leaf there is
+ * nothing to close, so the key has to walk to the parent instead. Without
+ * that, getting out of a deep branch means arrowing up through every one of
+ * its siblings.
+ */
+test(`Tree: ArrowLeft ${TREE_LEFT.expectation}`, async ({ page }) => {
+  await openStory(page, TREE_LEFT.story);
+  const tree = collapsedTree(page);
+  const eu = tree.getByRole("treeitem", {
+    name: "European Union",
+    exact: true,
+  });
+
+  await eu.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+
+  const textiles = tree.getByRole("treeitem", {
+    name: "Textiles",
+    exact: true,
+  });
+  await expect(textiles).toBeFocused();
+
+  /* Nothing to close on a closed branch, so it steps out to the parent. */
+  await page.keyboard.press("ArrowLeft");
+  await expect(
+    eu,
+    "ArrowLeft from a closed row did not walk to the parent",
+  ).toBeFocused();
+
+  /* And on the open parent it closes rather than moving. */
+  await page.keyboard.press("ArrowLeft");
+  await expect(eu).toHaveAttribute("aria-expanded", "false");
+  await expect(eu).toBeFocused();
+});
+
+/**
+ * ArrowDown crosses a branch boundary.
+ *
+ * The assertion that makes the flattened model worth having. From the last
+ * child of an open branch, down has to land on the next root — a question
+ * about the visible list and an awkward one about the tree.
+ */
+test(`Tree: ArrowDown ${TREE_DOWN.expectation}`, async ({ page }) => {
+  await openStory(page, TREE_DOWN.story);
+  const tree = collapsedTree(page);
+  const eu = tree.getByRole("treeitem", {
+    name: "European Union",
+    exact: true,
+  });
+
+  await eu.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowDown");
+  await expect(
+    tree.getByRole("treeitem", { name: "Textiles", exact: true }),
+  ).toBeFocused();
+
+  await page.keyboard.press("ArrowDown");
+  await expect(
+    tree.getByRole("treeitem", { name: "Packaging", exact: true }),
+  ).toBeFocused();
+
+  /* Out of the branch and on to the next root, which is the case a
+     recursive walk gets wrong. */
+  await page.keyboard.press("ArrowDown");
+  await expect(
+    tree.getByRole("treeitem", { name: "United Kingdom", exact: true }),
+    "down from the last child of a branch did not reach the next root",
+  ).toBeFocused();
+});
+
+/**
+ * End goes to the last *visible* row, not the last node.
+ *
+ * With every branch closed that is the third root; the nodes inside the
+ * closed branches are not somewhere a reader can be sent.
+ */
+test(`Tree: End ${TREE_END.expectation}`, async ({ page }) => {
+  await openStory(page, TREE_END.story);
+  const tree = collapsedTree(page);
+
+  await tree
+    .getByRole("treeitem", { name: "European Union", exact: true })
+    .focus();
+  await page.keyboard.press("End");
+
+  await expect(
+    tree.getByRole("treeitem", { name: "Switzerland", exact: true }),
+    "End reached a row inside a collapsed branch, or did not move",
+  ).toBeFocused();
+});
