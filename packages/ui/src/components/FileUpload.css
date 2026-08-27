@@ -34,7 +34,7 @@
   .uix-fileupload-zone[data-over] {
     border-color: var(--uix-accent);
     background: var(--uix-accent-soft);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
   }
 
   .uix-fileupload-zone[data-disabled] {
@@ -154,7 +154,7 @@
 
   .uix-fileupload-remove:hover:not(:disabled) {
     background: var(--uix-bg-subtle);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
   }
 
   .uix-fileupload-remove:disabled {

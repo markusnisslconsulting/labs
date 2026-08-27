@@ -79,7 +79,7 @@
      moves to it — a column that jumps sideways on click is the same
      defect as one that jumps when the rows change. */
   .uix-datatable-arrow {
-    color: var(--uix-text-caption);
+    color: var(--uix-text-secondary);
     font-size: 0.85em;
   }
 

@@ -63,7 +63,7 @@
   .uix-datepicker-toggle:hover:not(:disabled),
   .uix-datepicker-page:hover:not(:disabled) {
     background: var(--uix-bg-subtle);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
   }
 
   .uix-datepicker-toggle:focus-visible,
@@ -102,7 +102,7 @@
   .uix-datepicker-month {
     font-size: var(--uix-font-size-200);
     font-weight: var(--uix-weight-ui);
-    color: var(--uix-text-heading);
+    color: var(--uix-text-primary);
     /* The month name changes length between months and locales, and a
        header that resizes makes the paging buttons move under the cursor. */
     min-inline-size: 10ch;
@@ -119,7 +119,7 @@
     align-items: center;
     justify-content: center;
     block-size: 1.75rem;
-    color: var(--uix-text-caption);
+    color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-100);
   }
 
@@ -142,7 +142,7 @@
      they are shown so the weeks are whole, and a row of blanks reads as a
      rendering fault. */
   .uix-datepicker-day[data-outside] {
-    color: var(--uix-text-caption);
+    color: var(--uix-text-secondary);
   }
 
   .uix-datepicker-day[data-between] {

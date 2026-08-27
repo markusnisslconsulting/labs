@@ -54,7 +54,7 @@
   }
 
   .uix-inlineedit-value[data-empty] {
-    color: var(--uix-text-caption);
+    color: var(--uix-text-secondary);
     font-style: italic;
   }
 
@@ -93,7 +93,7 @@
     border: 1px solid var(--uix-border-strong);
     border-radius: var(--uix-radius-control);
     background: var(--uix-bg-surface);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
     font: inherit;
   }
 

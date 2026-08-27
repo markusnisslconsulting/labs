@@ -28,7 +28,7 @@
     max-block-size: 60vh;
     border-radius: var(--uix-radius-surface);
     background: var(--uix-bg-surface);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
     box-shadow: var(--uix-elevation-modal);
     overflow: hidden;
   }
@@ -70,7 +70,7 @@
 
   .uix-palette-heading {
     padding: var(--uix-gap-xs) var(--uix-gap-sm);
-    color: var(--uix-text-caption);
+    color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-100);
     font-weight: var(--uix-weight-ui);
     text-transform: uppercase;
@@ -95,7 +95,7 @@
      treatment would never fire on a row. */
   .uix-palette-option[data-active] {
     background: var(--uix-accent-soft);
-    color: var(--uix-text-heading);
+    color: var(--uix-text-primary);
   }
 
   .uix-palette-option[data-disabled] {

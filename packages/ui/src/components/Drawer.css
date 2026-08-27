@@ -26,7 +26,7 @@
     --uix-drawer-size: 26rem;
     padding: var(--uix-gap-lg);
     background: var(--uix-bg-surface);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
     box-shadow: var(--uix-elevation-modal);
     overflow-y: auto;
   }
@@ -62,7 +62,7 @@
     margin: 0;
     font-size: var(--uix-font-size-300);
     font-weight: var(--uix-weight-display);
-    color: var(--uix-text-heading);
+    color: var(--uix-text-primary);
   }
 
   .uix-drawer-description {

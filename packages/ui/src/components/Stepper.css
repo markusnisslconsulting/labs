@@ -118,7 +118,7 @@
   }
 
   .uix-stepper-hint {
-    color: var(--uix-text-caption);
+    color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-100);
   }
 
@@ -138,7 +138,7 @@
   }
 
   .uix-stepper-step[data-state="current"] .uix-stepper-label {
-    color: var(--uix-text-heading);
+    color: var(--uix-text-primary);
     font-weight: var(--uix-weight-ui);
   }
 

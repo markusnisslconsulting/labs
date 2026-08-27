@@ -46,7 +46,7 @@
     padding-block: 0.125rem;
     border-radius: var(--uix-radius-pill);
     background: var(--uix-bg-subtle);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
     font-size: var(--uix-font-size-100);
     /* A tag is one thing: a long value wraps inside the pill rather than
        stretching the row, and a break mid-word beats a pill wider than
@@ -76,7 +76,7 @@
 
   .uix-taginput-remove:hover:not(:disabled) {
     background: var(--uix-bg-page);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
   }
 
   .uix-taginput-remove:disabled {

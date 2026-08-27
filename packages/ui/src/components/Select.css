@@ -92,20 +92,20 @@
       gap: var(--uix-gap-sm);
       padding: var(--uix-gap-xs) var(--uix-gap-sm);
       border-radius: var(--uix-radius-inset);
-      color: var(--uix-text-body);
+      color: var(--uix-text-primary);
       font: inherit;
     }
 
     /* `:checked` and the highlight are separate states here, the same as in
        Combobox: one is what is chosen, the other is where the keyboard is. */
     .uix-select option:checked {
-      color: var(--uix-text-heading);
+      color: var(--uix-text-primary);
     }
 
     .uix-select option:hover,
     .uix-select option:focus {
       background: var(--uix-accent-soft);
-      color: var(--uix-text-heading);
+      color: var(--uix-text-primary);
     }
 
     .uix-select option:disabled {

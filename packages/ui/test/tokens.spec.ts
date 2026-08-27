@@ -871,3 +871,85 @@ describe("the neutral ramp", () => {
     }
   });
 });
+
+/**
+ * A colour property may only name a token that holds a colour.
+ *
+ * `--uix-text-body`, `--uix-text-heading`, `--uix-text-caption` and
+ * `--uix-text-ui` are **font sizes**. `--uix-text-primary`,
+ * `--uix-text-secondary`, `--uix-text-disabled` and `--uix-text-on-accent`
+ * are colours. Two families under one prefix, and the size family reads like
+ * a colour: `color: var(--uix-text-caption)` is a sentence anyone would
+ * write.
+ *
+ * It is also `color: 0.75rem`, which is not a colour, so CSS drops the whole
+ * declaration and the element inherits. Twenty-eight of those had
+ * accumulated across thirteen components, every one of them silent — no
+ * warning from the browser, none from the build, and nothing to see unless
+ * you happened to know what the element was supposed to look like.
+ *
+ * What it cost, concretely: DatePicker's out-of-month days were meant to be
+ * dimmer than the month's own, and measured, both came out
+ * `rgb(23, 43, 77)`. A calendar of August showed the last five days of July
+ * in the same ink as August. That was found by taking a screenshot of a
+ * component nobody had looked at, then measuring because the screenshot was
+ * ambiguous.
+ *
+ * The registry knows every token's type, so the check is exact rather than a
+ * name heuristic.
+ */
+describe("colour properties name colour tokens", () => {
+  const COLOUR_PROPERTIES = new Set([
+    "color",
+    "background",
+    "background-color",
+    "border-color",
+    "border-top-color",
+    "border-right-color",
+    "border-bottom-color",
+    "border-left-color",
+    "border-block-start-color",
+    "border-block-end-color",
+    "border-inline-start-color",
+    "border-inline-end-color",
+    "outline-color",
+    "fill",
+    "stroke",
+    "caret-color",
+    "text-decoration-color",
+    "accent-color",
+  ]);
+
+  /* Types that legitimately appear in a colour property. `elevation` is a
+     box-shadow, `opacity` shows up inside colour functions. */
+  const COLOUR_LIKE = new Set(["color", "elevation", "opacity"]);
+
+  const typeOf = new Map(allTokens.map((token) => [token.name, token.type]));
+
+  it("never sets a colour from a size, a duration or a z-index", () => {
+    const wrong: string[] = [];
+    for (const { file, source } of componentCss) {
+      /* Comments first. This docstring names the exact pattern it forbids,
+         and a check that read its own prose has been the bug five times in
+         this repository. */
+      const lines = strip(source).split("\n");
+      lines.forEach((line, index) => {
+        const declaration = /^\s*([\w-]+)\s*:\s*(.+);\s*$/.exec(line);
+        if (!declaration) return;
+        if (!COLOUR_PROPERTIES.has(declaration[1]!)) return;
+        for (const [, name] of declaration[2]!.matchAll(
+          /var\((--uix-[\w-]+)/g,
+        )) {
+          const kind = typeOf.get(name!);
+          if (kind && !COLOUR_LIKE.has(kind)) {
+            wrong.push(
+              `${file}:${index + 1} ${declaration[1]}: var(${name}) is a ` +
+                `"${kind}" token, so this declaration is dropped`,
+            );
+          }
+        }
+      });
+    }
+    expect(wrong).toEqual([]);
+  });
+});

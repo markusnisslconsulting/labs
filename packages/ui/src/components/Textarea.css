@@ -57,7 +57,7 @@
     /* Aligned to the end and tabular, so the number does not shuffle the
        text beside it as it counts down. */
     justify-self: end;
-    color: var(--uix-text-caption);
+    color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-100);
     font-variant-numeric: tabular-nums;
   }

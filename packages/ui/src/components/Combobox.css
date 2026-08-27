@@ -88,7 +88,7 @@
 
   .uix-combobox-untoken:hover:not(:disabled) {
     background: var(--uix-bg-page);
-    color: var(--uix-text-body);
+    color: var(--uix-text-primary);
   }
 
   .uix-combobox-untoken:focus-visible {
@@ -120,7 +120,7 @@
 
   .uix-combobox-heading {
     padding: var(--uix-gap-xs) var(--uix-gap-sm);
-    color: var(--uix-text-caption);
+    color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-100);
     font-weight: var(--uix-weight-ui);
     text-transform: uppercase;
@@ -141,7 +141,7 @@
      the input, so a :focus-visible treatment would never fire on a row. */
   .uix-combobox-option[data-active] {
     background: var(--uix-accent-soft);
-    color: var(--uix-text-heading);
+    color: var(--uix-text-primary);
   }
 
   .uix-combobox-option[data-disabled] {

@@ -29,6 +29,31 @@ cut at the first release.
 
 ### fixed
 
+- **Combobox, CommandPalette, DataTable, DatePicker, Drawer, EmptyState,
+  FileUpload, InlineEdit, Select, Stepper, TagInput, Textarea, Tree** — 28
+  `color` declarations were being dropped by the browser, so those elements
+  inherited instead of taking the colour they asked for.
+
+  `--uix-text-body`, `--uix-text-heading`, `--uix-text-caption` and
+  `--uix-text-ui` are **font sizes**. The colour family is
+  `--uix-text-primary`, `--uix-text-secondary`, `--uix-text-disabled` and
+  `--uix-text-on-accent`. Two families under one prefix, and the size family
+  reads like a colour, so `color: var(--uix-text-caption)` is a line anyone
+  would write. It is also `color: 0.75rem`, which is not a colour, and CSS
+  drops the whole declaration in silence — no browser warning, nothing in
+  the build.
+
+  Visible where the colour carried meaning. DatePicker's out-of-month days
+  were meant to be dimmer than the month's own and measured identical, so a
+  calendar of August showed the last five days of July in August's ink.
+  Elsewhere the token happened to resolve to the colour the element
+  inherited anyway, and those declarations now say what was always
+  rendered.
+
+  `tokens.spec.ts` refuses a colour property naming a non-colour token, and
+  the registry knows every token's type, so it is exact rather than a guess
+  at names.
+
 - **Textarea** — it had no border and no background. `uix-field-input` is
   deliberately `border: none; background: transparent`, because every field
   here draws its frame on the `uix-field-row` wrapper, and this component put

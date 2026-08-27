@@ -542,3 +542,51 @@ test("an upload row keeps the name, the size and the remove button in line", asy
     }
   }
 });
+
+/**
+ * A calendar's three day states are three different colours.
+ *
+ * They were two. `DatePicker.css` asked for
+ * `color: var(--uix-text-caption)` on an out-of-month day, and
+ * `--uix-text-caption` is a font size — so the declaration was
+ * `color: 0.75rem`, which CSS drops. August showed the last five days of
+ * July in exactly the same ink as August: measured, both
+ * `rgb(23, 43, 77)`.
+ *
+ * `tokens.spec.ts` now refuses a colour property that names a non-colour
+ * token, which is the general form and caught twenty-eight of these. This
+ * test is the specific one, because the general check cannot know that a
+ * calendar needs its neighbouring months to look like neighbours. Compared
+ * as inequalities rather than against hex values, so a change of palette
+ * does not fail it.
+ */
+test("out-of-month, in-month and selected days are told apart", async ({
+  page,
+}) => {
+  await openStory(page, "components-datepicker--matrix");
+
+  const colours = await page
+    .locator(".uix-datepicker-day")
+    .evaluateAll((nodes) => {
+      const seen: Record<string, string> = {};
+      for (const node of nodes) {
+        const state = node.hasAttribute("data-outside")
+          ? "outside"
+          : node.hasAttribute("data-selected")
+            ? "selected"
+            : "inside";
+        seen[state] ??= getComputedStyle(node).color;
+      }
+      return seen;
+    });
+
+  for (const state of ["outside", "inside", "selected"]) {
+    expect(colours[state], `no ${state} day in the open calendar`).toBeTruthy();
+  }
+  expect(
+    colours["outside"],
+    "a day from the neighbouring month is the same colour as one from this " +
+      "month, so the calendar shows July as if it were August",
+  ).not.toBe(colours["inside"]);
+  expect(colours["selected"]).not.toBe(colours["inside"]);
+});

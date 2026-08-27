@@ -42,7 +42,7 @@
 
   .uix-tree-item[data-selected] {
     background: var(--uix-accent-soft);
-    color: var(--uix-text-heading);
+    color: var(--uix-text-primary);
   }
 
   .uix-tree-item[data-disabled] {
