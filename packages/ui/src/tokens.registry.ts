@@ -191,6 +191,8 @@ export const semanticTokens: TokenDescriptor[] = [
       "--uix-text-disabled, --uix-bg-disabled and --uix-border-disabled; " +
       "which of the three depends on the part, so there is no codemod and " +
       "no supersededBy.",
+    undefined,
+    { deprecatedOn: "2026-08-26", removeAfter: "2027-03-01" },
   ),
   t("--uix-gap-xs", "calc(var(--uix-space-1) * var(--uix-density))", "semantic", "space", "Density-scaled quarter step"),
   t("--uix-gap-sm", "calc(var(--uix-space-2) * var(--uix-density))", "semantic", "space", "Density-scaled half step"),
@@ -240,6 +242,8 @@ export const semanticTokens: TokenDescriptor[] = [
     "z-index",
     "Popovers",
     "Redundant since Menu and Popover share one positioner, so there is no second layer to name. Use --uix-z-dropdown.",
+    "--uix-z-dropdown",
+    { deprecatedOn: "2026-08-24", removeAfter: "2027-03-01" },
   ),
   t("--uix-z-modal", "200", "semantic", "z-index", "Dialogs"),
   t("--uix-z-toast", "300", "semantic", "z-index", "Toasts"),

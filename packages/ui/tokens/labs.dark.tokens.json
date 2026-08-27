@@ -918,7 +918,9 @@
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-opacity-disabled",
-            "tier": "semantic"
+            "tier": "semantic",
+            "deprecatedOn": "2026-08-26",
+            "removeAfter": "2027-03-01"
           }
         },
         "$deprecated": "Eleven components expressed disabled as this opacity and nothing else, which cannot be measured: an opacity has no value to check against a background, so a disabled ghost button sat near 2.6:1 and the contrast script had nothing to look at. Measured, it also made a disabled solid button identical to a loading one. Use --uix-text-disabled, --uix-bg-disabled and --uix-border-disabled; which of the three depends on the part, so there is no codemod and no supersededBy."
@@ -1366,7 +1368,10 @@
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-z-popover",
-            "tier": "semantic"
+            "tier": "semantic",
+            "deprecatedOn": "2026-08-24",
+            "removeAfter": "2027-03-01",
+            "supersededBy": "--uix-z-dropdown"
           }
         },
         "$deprecated": "Redundant since Menu and Popover share one positioner, so there is no second layer to name. Use --uix-z-dropdown."

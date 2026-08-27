@@ -171,6 +171,22 @@ function build(theme: "light" | "dark"): Group {
       },
     };
     if (token.deprecated) leaf["$deprecated"] = token.deprecated;
+    /* The window travels with the token.
+       DTCG's $deprecated is a boolean or a string, so the dates go in the
+       vendor extension rather than being crammed into the prose. A
+       consumer's own tooling can then read the deadline instead of
+       parsing an English sentence for it — which is the difference
+       between a deprecation a tool can plan around and a note. */
+    if (token.removeAfter) {
+      const labs = (
+        leaf["$extensions"] as {
+          "com.markusnissl.labs": Record<string, string>;
+        }
+      )["com.markusnissl.labs"];
+      if (token.deprecatedOn) labs["deprecatedOn"] = token.deprecatedOn;
+      labs["removeAfter"] = token.removeAfter;
+      if (token.supersededBy) labs["supersededBy"] = token.supersededBy;
+    }
 
     const segments = path(token);
     let cursor = root;

@@ -47,6 +47,49 @@ t(
 That mirrors DTCG's `$deprecated`, so it is data a tool can read rather
 than a comment a person has to notice.
 
+## "When does it go away?"
+
+The third question, and the one the machinery above could not answer for
+its first two deprecations. They had prose, a replacement and a ratchet —
+everything except a date, which is the only part a consuming team can
+plan around. A deprecation without a deadline is a note.
+
+So a window is required, in dates:
+
+```ts
+t(
+  "--uix-z-popover",
+  "150",
+  "semantic",
+  "z-index",
+  "Popovers",
+  "Redundant since Menu and Popover share one positioner…",
+  "--uix-z-dropdown",
+  { deprecatedOn: "2026-08-24", removeAfter: "2027-03-01" },
+),
+```
+
+`nx run ui:tokens-check` reads the clock and fails once `removeAfter` has
+passed, with different instructions depending on what it finds:
+
+- **the window closed and nothing references it** — remove the token and
+  its entry; the migration is finished and only the bookkeeping is left.
+- **the window closed with call sites remaining** — the deadline passed
+  while work was outstanding. That is a decision someone has to make out
+  loud: finish it, or move the date and record why it slipped.
+
+Both fail, because a window that quietly lapses is the same as no window.
+It also fails a deprecation with no window at all, which is how the first
+two got in.
+
+This check starts failing on a day nobody chose. That is what a deadline
+is; the message says what to do.
+
+The window travels to consumers too. `removeAfter`, `deprecatedOn` and
+`supersededBy` are written into the DTCG export under the vendor
+extension, so a consuming team's own tooling can read the deadline
+instead of parsing an English sentence for it.
+
 ## The ratchet
 
 A hard ban breaks another team's roadmap. A warning gets ignored and the

@@ -343,6 +343,54 @@ if (mode === "check") {
     }
   }
 
+  /**
+   * The window, enforced.
+   *
+   * A deprecation without a date is a note. The two tokens deprecated
+   * before `deprecatedOn`/`removeAfter` existed had prose, a replacement
+   * and a ratchet — everything except an answer to "when does this go
+   * away", which is the only part a consuming team can plan around.
+   *
+   * Two failures rather than one, because the two situations need
+   * different instructions:
+   *
+   *   - the window closed and nothing references it any more: remove it,
+   *     the migration is finished and only the entry is left;
+   *   - the window closed with call sites remaining: the deadline passed
+   *     while work was outstanding, which is a decision someone has to
+   *     make out loud — finish it, or move the date and say why.
+   *
+   * Both fail. A window that quietly lapses is the same as no window, and
+   * this repository already has one of those: `--uix-z-popover` has been
+   * deprecated since before dates existed and nobody could have told you
+   * when it was due.
+   *
+   * The date is read from the clock, so this check will start failing on a
+   * day nobody chose. That is the point of a deadline; the message says
+   * what to do.
+   */
+  const today = new Date().toISOString().slice(0, 10);
+  for (const token of allTokens) {
+    if (!token.deprecated) continue;
+    if (!token.deprecatedOn || !token.removeAfter) {
+      failures.push(
+        `${token.name} is deprecated with no window. Give it deprecatedOn ` +
+          `and removeAfter, or it is a note rather than a deprecation.`,
+      );
+      continue;
+    }
+    if (token.removeAfter >= today) continue;
+    const count = counts[token.name] ?? 0;
+    failures.push(
+      count === 0
+        ? `${token.name}: the removal window closed on ${token.removeAfter} ` +
+            `and nothing references it. Delete the token and its entry.`
+        : `${token.name}: the removal window closed on ${token.removeAfter} ` +
+            `with ${count} use(s) left. Finish the migration, or move ` +
+            `removeAfter and record why the date slipped.`,
+    );
+  }
+
   // A count that dropped is good news, but the baseline should follow so the
   // ratchet keeps tightening rather than silently allowing a regression later.
   for (const [name, allowed] of Object.entries(baseline.deprecated)) {
