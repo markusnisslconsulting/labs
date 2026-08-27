@@ -241,6 +241,10 @@ window in which this section matters.
 
 ### internal
 
+- **Release process** — a change to `packages/ui/api-surface.md` now requires
+  a `CHANGELOG.md` entry, enforced in CI against the same base `nx affected`
+  uses. The surface file made "which component moved" a line in a diff; this
+  is what makes somebody say what it meant.
 - **Build cache** — `build-storybook` no longer uses the `production` input
   set, which excludes `*.stories.tsx`. A Storybook build is made of stories,
   so editing one left the cache warm: measured at `Cache: 1/1 hit (100%)`

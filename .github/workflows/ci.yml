@@ -88,6 +88,15 @@ jobs:
           --targets=lint,typecheck,test,build,build-storybook,test-storybook,browser-test,package-check,tokens-check,tokens-dtcg,contrast-check,story-coverage,snapshot-budget,adoption,a11y,inventory,api-surface
           ${{ steps.base.outputs.args }}
 
+      # The base is the one `nx affected` used above, so two ways of
+      # deciding "what changed" cannot disagree about the same diff.
+      - name: A moved API surface has a changelog entry
+        run: >-
+          node scripts/changelog-gate.mjs
+          ${{ github.event_name == 'pull_request'
+              && format('origin/{0}', github.base_ref)
+              || 'HEAD~1' }}
+
       - name: Bundle budget
         run: pnpm run size-check
         # A separate step from Gates because it reads dist rather than

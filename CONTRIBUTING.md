@@ -39,7 +39,8 @@ What an RFC does not need: finished code, a Figma file, an estimate.
 What "reviewed" means, in order — technical first, because that is cheap to
 check, and then what only a person can see.
 
-1. **`pnpm gates` is green.** Seventeen Nx targets plus the bundle budget, which is everything CI gates on. No
+1. **`pnpm gates` is green.** Seventeen Nx targets, the bundle budget and
+   the changelog gate — everything CI gates on. No
    review starts before that; it is not a ritual, it saves both sides a
    round trip.
 2. **Looked at.** `nx run ui:visual-sweep` renders every visible story in

@@ -323,8 +323,15 @@ holds every exported signature with the prose stripped, and
 line in a diff instead of a reading exercise, and `CHANGELOG.md` is kept per
 component with a level — breaking, added, fixed, internal.
 
-Open within that: enforcing that an entry exists when the surface changes.
-That needs the merge base, which CI already computes via `nx affected`.
+That enforcement now exists. `scripts/changelog-gate.mjs` fails when
+`packages/ui/api-surface.md` differs from the base and `CHANGELOG.md` does
+not, using the same base `nx affected` uses — two ways of deciding "what
+changed" that can disagree is how a gate ends up reporting on a different
+diff than the one under review.
+
+It checks that somebody was made to write an entry and nothing more: not
+which component, not the level, not the wording. A check that read the prose
+would be guessing, and the mechanical half is the half worth mechanising.
 
 ## 08 — Design and code as one source (struck)
 
