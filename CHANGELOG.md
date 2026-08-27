@@ -1,0 +1,92 @@
+# Changelog
+
+Per component, not per repository.
+
+A breaking change to `Select` is a major version for everyone importing
+`Select` and nothing at all for a team that does not. A single version
+number for the whole library cannot express that, so every entry below
+names the component it concerns and the level of the change.
+
+Levels, in the sense a consumer cares about:
+
+- **breaking** — existing code stops compiling or changes behaviour. Needs
+  a codemod, or a written reason why one is impossible.
+- **added** — new surface, safe to ignore.
+- **fixed** — behaviour now matches what the documentation already
+  claimed. Worth reading: a component that was announcing its state twice
+  was not "working" before.
+- **internal** — no change to `packages/ui/api-surface.md`.
+
+`packages/ui/api-surface.md` is how you tell those apart without reading
+the implementation: it holds every component's exported signatures with
+the prose stripped, and `nx run ui:api-surface` fails when it drifts. If
+that file changed, this one needs an entry.
+
+## Unreleased
+
+Nothing is published yet, so this section is the whole history. It will be
+cut at the first release.
+
+### fixed
+
+- **Tooltip** — set `role="tooltip"` on the popup and point the trigger's
+  `aria-describedby` at it. Measured against Base UI `1.0.0-rc.0` the
+  trigger had neither, so the hint reached no screen reader at all while
+  the component's own docs said Base UI announced it.
+- **Field, Checkbox, Switch, RadioGroup** — stop appending the word
+  "required" to the label. `required` on the control is a programmatic
+  state every reader announces, so the word made it say so twice: the
+  computed accessible name came out `"Required required"`.
+- **Slider** — hold the uncontrolled value. It put `defaultValue` on the
+  input and displayed `defaultValue ?? min` for ever, so the number beside
+  the thumb stopped being true the moment anyone moved it.
+- **Dialog** — give the backdrop a box. It carried a colour and a
+  `z-index` and no `position`, so it laid out at height 0 and every modal
+  in the library opened over an undimmed page.
+- **Menu** — style disabled items. The prop was accepted and changed
+  nothing, so a disabled row was the same picture as an available one.
+- **SegmentedControl, Switch** — use `--uix-bg-raised` for the selected
+  segment and the thumb. `--uix-bg-surface` is the lightest surface role
+  on light and not on dark, so both sank into their own track in the dark
+  theme.
+- **Banner** — change the fill per severity, not only a 4px edge. All four
+  severities shared one background.
+- **Alert** — put the dismiss control at the far edge rather than against
+  the end of the title.
+- **Pagination** — declare a width. `container-type: inline-size` means
+  the width cannot come from the contents, so in a shrink-to-fit parent it
+  collapsed to about 40px and rendered as four stacked lines.
+- **Every field** — the built package shipped ten components whose
+  stylesheet import pointed at a file the build never wrote. TextField had
+  no stylesheet at all.
+
+### added
+
+- **Field** — owns label, hint, error, required and the aria wiring, and
+  hands back one object to spread. Before it, nine field components all
+  took `label`, two took `hint`, one took `error` and none took
+  `required`.
+- **Select, Combobox, NumberField, Slider, SearchInput, Checkbox,
+  RadioGroup, Switch** — `hint`, `error` and `required`.
+- **Menu, Popover** — `open`, `defaultOpen`, `onOpenChange`, `side`,
+  `align`. Both rendered their root with no props, so their open state was
+  unreachable from outside.
+- **NumberField, Slider** — `label` accepts a node again. It was typed
+  `string` because the accessible name came from `aria-label`.
+- **Chip** — `disabled`. The stylesheet had styled `:disabled` since the
+  component existed while the type rejected the prop.
+
+### breaking
+
+Nothing yet; nothing is published. The first published version starts the
+window in which this section matters.
+
+### internal
+
+- One focus contract in `base.css` replacing thirteen per-component rings
+  and fourteen components with none.
+- `disabled` expressed in colour rather than opacity across eleven
+  components; `--uix-opacity-disabled` deprecated with a removal window.
+- Shared stylesheets are their own build entries.
+- Interaction tests carry `!dev`: 81 of 156 stories were tests shown as
+  examples.

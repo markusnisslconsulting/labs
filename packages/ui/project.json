@@ -244,6 +244,20 @@
       "options": {
         "command": "tsx scripts/inventory.ts write"
       }
+    },
+    "api-surface": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "tsx scripts/api-surface.ts check"
+      }
+    },
+    "api-surface-write": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "tsx scripts/api-surface.ts write"
+      }
     }
   }
 }

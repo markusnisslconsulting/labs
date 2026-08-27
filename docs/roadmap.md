@@ -91,9 +91,15 @@ veröffentlichen, Canary-Builds aus `main`, und der Versions-Spread über
 die Consumer — die echte Version eines Design-Systems ist die älteste, die
 noch in Produktion läuft.
 
-Offen und machbar: Semver pro Komponente statt pro Repository. Eine
-Breaking Change an `Select` ist ein Major für jeden, der `Select`
-importiert, und das Changelog muss die Komponente nennen.
+Semver pro Komponente hat jetzt seine Grundlage: `packages/ui/api-surface.md`
+hält jede exportierte Signatur ohne Prosa, und `ui:api-surface` fällt, wenn
+sie abdriftet. Damit ist "welche Komponente hat sich bewegt" eine Zeile im
+Diff statt eine Lesearbeit, und `CHANGELOG.md` führt pro Komponente mit
+Stufe — breaking, added, fixed, internal.
+
+Offen daran: die Durchsetzung, dass ein Eintrag existiert, wenn die Fläche
+sich ändert. Das braucht die Merge-Basis, die CI über `nx affected` schon
+kennt.
 
 ## 08 — Design und Code als eine Quelle (offen)
 
