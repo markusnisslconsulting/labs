@@ -1,239 +1,251 @@
-# Fahrplan zur Enterprise-Reife
+# The road to enterprise readiness
 
-Zwölf Stufen, jede mit dem Stand von heute. Ein Fahrplan, den niemand
-vorhersagen kann, wird geforkt — also steht hier, was steht, was nicht
-steht, und woran man das jeweils messen kann.
+Twelve stages, each with where it stands today. A roadmap nobody can
+predict gets forked, so what is written here is what stands, what does
+not, and how each of those can be measured.
 
-Stand: 2026-08-27. Die Reihenfolge ist Wirkung, nicht Aufwand.
+As of 2026-08-27. The order is impact, not effort.
 
-| #   | Stufe                                              | Stand             |
-| --- | -------------------------------------------------- | ----------------- |
-| 01  | Der Komponenten-API-Vertrag                        | steht             |
-| 02  | Lokalisierung                                      | steht             |
-| 03  | Das Inventar, das eine Enterprise-App braucht      | offen, das Größte |
-| 04  | Formulare als System                               | steht             |
-| 05  | Zustände und Skalierung erstklassig                | steht             |
-| 06  | Barrierefreiheit jenseits der automatisierten 40 % | halb              |
-| 07  | Distribution und der Versionsvertrag               | halb              |
-| 08  | ~~Design und Code als eine Quelle~~                | gestrichen        |
-| 09  | Performance als Vertrag                            | steht             |
-| 10  | Governance und der menschliche Prozess             | halb              |
-| 11  | Observability aus echten Produkten                 | offen             |
-| 12  | Von einem Agenten lesbar                           | halb              |
+| #   | Stage                                 | Standing          |
+| --- | ------------------------------------- | ----------------- |
+| 01  | The component API contract            | stands            |
+| 02  | Localisation                          | stands            |
+| 03  | The inventory an enterprise app needs | open, the largest |
+| 04  | Forms as a system                     | stands            |
+| 05  | States and scale, first class         | stands            |
+| 06  | Accessibility past the automated 40 % | half              |
+| 07  | Distribution and the version contract | half              |
+| 08  | ~~Design and code as one source~~     | struck            |
+| 09  | Performance as a contract             | stands            |
+| 10  | Governance and the human process      | half              |
+| 11  | Observability from real products      | open              |
+| 12  | Readable by an agent                  | half              |
 
-## 03 — Das Inventar (offen)
+## 03 — The inventory (open)
 
-Die größte offene Stufe, und die einzige, bei der reine Menge das Problem
-ist. Fünfunddreißig Komponenten reichen für eine Website und nicht für
-eine Anwendung. Was fehlt, grob in der Reihenfolge, in der es ein Team
-blockiert:
+The largest open stage, and the only one where sheer quantity is the
+problem. Thirty-seven components are enough for a website and not for an
+application. What is missing, roughly in the order it blocks a team:
 
-**DataTable** — Sortieren, Spaltenbreiten, Auswahl, Virtualisierung,
-Sticky Header. `Table` ist heute Markup mit Stil, keine Datentabelle.
-`browser/runtime.spec.ts` misst schon, dass Layout mit den Zeilen und
-nicht mit ihrem Quadrat wächst; das ist die Grundlinie, gegen die eine
-DataTable antritt.
+**DataTable** — done. Sorting, column widths, selection, virtualisation,
+sticky header. `Table` is markup with styling and stays that way; the two
+are different jobs and both are worth having. Three findings from building
+it are in this file's stage 03 notes below, because each one says something
+about the gates rather than about the table.
 
-**DatePicker** — Kalender, Bereich, Lokalisierung, Tastatur. Die teuerste
-einzelne Komponente in jedem Design-System.
+**DatePicker** — calendar, range, localisation, keyboard. The single most
+expensive component in any design system.
 
-**Ein echter Combobox** — heute ein `<input list>` über einer `datalist`,
-also der Picker des Betriebssystems. Das ist ehrlich und deckt asynchrone
-Optionen, Mehrfachauswahl und eigenes Rendering nicht ab.
+**A real Combobox** — today an `<input list>` over a `datalist`, which is
+to say the operating system's picker. That is honest, and it does not cover
+async options, multi-select or custom rendering.
 
-**Drawer, Stepper, Command Palette, Tree, Toolbar, FileUpload, TagInput,
+**Drawer, Stepper, Command palette, Tree, Toolbar, FileUpload, TagInput,
 InlineEdit, EmptyState, AvatarGroup, SplitButton.**
 
-**Charts: eine Entscheidung, keine Komponenten.** Eigene Diagramme sind
-ein zweites Design-System. Die Entscheidung ist, welche Bibliothek und
-welche Token sie liest.
+**Charts: a decision, not components.** Hand-built charts are a second
+design system. The decision is which library, and which tokens it reads.
 
-## 04 — Formulare als System (steht)
+### What DataTable cost, and what it found
 
-`Field` steht: eine Stelle für Label, Hint, Error, Required und die
-Verdrahtung, und alle neun Feld-Komponenten benutzen sie. Vorher trugen
-neun Felder alle ein `label`, zwei ein `hint`, **eins** ein `error` und
-keins `required` — ein verpflichtendes Select mit Validierungsfehler war
-nicht ausdrückbar.
+Not a list of features. Three things it exposed, all of which were true
+before it existed:
 
-`Form` steht jetzt darüber. Fehler kommen als Abbildung von Feldnamen auf
-Meldungen, also in der Form, in der ein Server sie liefert, und jedes Feld
-findet seinen eigenen. Dazu `Form.Summary` mit Sprungmarken, die den
-**Fokus** setzen und nicht nur scrollen, `Form.Group` als echtes Fieldset
-mit Legende, ein `busy`-Zustand, und `summaryOn` für den Unterschied
-zwischen "beim Absenden prüfen" und "der Server hat schon geantwortet".
+**Two print gates were measuring Storybook.** `browser/print.spec.ts` asked a bare
+`thead` and a bare `tbody tr` for their computed style. Storybook puts its
+own args table in the story's DOM, earlier and with a height of zero, so
+both tests had been reporting on Storybook's table rather than on `Table`.
+Measured: the first `tbody tr` on that page reads "propertyName". The rules
+turned out to be correct — the tests simply were not testing them, which is
+a different problem and a worse one.
 
-Zwei Defekte, die dabei herausgefallen sind, gehören in die Zeile, weil
-sie sagen, warum diese Stufe nicht vorher stand:
+**"Every row of the keyboard map has a test" did not check that.** It
+counted rows and asserted the count had not shrunk. A row added without a
+test raises the length and the unique-key count together, so the assertion
+moved with the thing it was meant to constrain. It now records every lookup
+`row()` performs and names the rows nothing exercised. On its first real run
+it found one, immediately: a test this session had deleted by accident.
 
-**`aria-describedby` kam aus dem falschen Wert.** `Field` hat die
-Beschreibung aus der eigenen `error`-Prop berechnet und die Meldung aus dem
-tatsächlich geltenden Fehler gerendert. Ein Fehler aus der Form war damit
-sichtbar, `aria-invalid` gesetzt, und die Beschreibung zeigte auf nichts.
-Kein Bild-Test kann das sehen. Dieselbe Verwechslung hat in `Checkbox`,
-`Switch` und `RadioGroup` die Meldung ganz unterdrückt.
+**The "no component is driven only by an array of items" rule had a hole.**
+Its regex knew `items|options|tabs|pages` and not `columns|rows`. Widening
+it needed the rule's actual principle stated: what it protects against is a
+fixed arrangement, and a per-item render function returning a node removes
+that fixity as surely as compound parts do. Measured before changing it — of
+the nine components with a list-shaped prop, eight have parts and children
+and none has a render prop, and `DataTable` is the only one the other way
+round. So the rule got wider by exactly one component.
 
-**Die Übersicht wurde zweimal geschrieben.** Felder melden sich in einem
-Effekt an, also hatte im ersten Durchlauf kein Fehler einen Besitzer, und
-alle nahmen den Zweig für "Fehler ohne Feld". Die Übersicht rendert also
-die Meldungen ohne Feldnamen und ersetzt sie danach durch Links. Der
-Bereich ist `role="alert"`. Gemessen: **5 Schreibvorgänge vorher, 1
-nachher**, und `browser/announce.spec.ts` zählt sie seitdem. Genau das,
-wonach `docs/screen-reader-pass.md` bei `Toaster` hören lässt — hier hat es
-eine Zählung gefunden, weil beide Zustände am Ende gleich aussehen.
+## 04 — Forms as a system (stands)
 
-Und ein Fund, der ohne den ersten Fund verborgen blieb: `Button` setzt
-`type="button"`, richtig so, weshalb in keiner Story ein Formular
-überhaupt absenden konnte. Mit `type="submit"` lud die Testseite neu —
-`Form` hat `preventDefault` nie gerufen. Jetzt ruft es das, außer wenn ein
-`action` gesetzt ist; ein Formular ohne Ziel sendet an die eigene URL und
-verliert alles Getippte. Zwei Fehler, von denen der erste den zweiten
-verdeckte, sind der Grund, warum "die Tests sind grün" und "die Komponente
-funktioniert" verschiedene Aussagen sind.
+`Field` stands: one place for label, hint, error, required and the wiring,
+and all nine field components use it. Before it, nine fields all took
+`label`, two took `hint`, **one** took `error` and none took `required` — a
+required select with a validation error could not be expressed.
 
-Offen bleibt nichts Benanntes. Validierungszeitpunkte pro Feld (bei
-Änderung, bei Verlassen) sind bewusst nicht drin: was gültig ist, ist die
-Regel des Aufrufers, und eine Bibliothek, die das übernimmt, besitzt am
-Ende Geschäftslogik.
+`Form` now sits above it. Errors arrive as a map from field name to
+message, which is the shape a server returns them in, and each field finds
+its own. With `Form.Summary` and links that move **focus** rather than only
+scrolling, `Form.Group` as a real fieldset with a legend, a `busy` state,
+and `summaryOn` for the difference between "check on submit" and "the
+server has already answered".
 
-## 06 — Barrierefreiheit (halb)
+Two defects fell out on the way, and they belong in this line because they
+say why the stage did not stand earlier:
 
-Steht: der Tastaturvertrag als Daten mit einem Test pro Zeile; alle 55
-WCAG-2.2-Kriterien der Stufen A und AA mit dem Gate, das jedes prüft (25
-haben eins, 11 sind manuell, 9 gehören dem Produkt, 10 greifen hier
-nicht); und zwei automatisierte Screenreader-Schichten — Name,
-Beschreibung, Rolle und Zustand pro Knoten, sowie der Baum in
-Lesereihenfolge.
+**`aria-describedby` came from the wrong value.** `Field` computed the
+description from its own `error` prop and rendered the message from the
+error actually in force. So an error from the form was visible,
+`aria-invalid` was set, and the description pointed at nothing. No visual
+test can see that. The same mix-up suppressed the message entirely in
+`Checkbox`, `Switch` and `RadioGroup`.
 
-Offen: echte Hilfsmittel. 105 Zellen in `src/audit/screen-readers.ts`,
-alle "not yet". NVDA und VoiceOver lassen sich mit Guidepup fahren, aber
-das braucht einen Windows- oder macOS-Runner; dieses CI läuft auf Linux.
-Die Zeilen sind für das, was nur echte AT zeigt: Wortfülle, Satzzeichen,
-was ein Reader beim Betreten einer Region sagt.
+**The summary was written five times.** Fields register in an effect, so on
+the first pass no error had an owner and every one took the branch meant
+for an error whose field the form does not render — the messages appeared
+without field names and were then replaced by links. That region is
+`role="alert"`. Measured: **5 writes before, 3 with `useDeferredValue`, 1
+after**, and `browser/announce.spec.ts` counts them now. Exactly what
+`docs/screen-reader-pass.md` has a tester listen for on `Toaster`; here a
+count found it, because both states look the same once they settle.
 
-Der konkrete Einstieg steht in `docs/screen-reader-pass.md`: sechs
-Komponenten, eine Paarung, etwa vierzig Minuten — TextField, Select,
-Dialog, Toaster, Tabs, Table. Nicht 105 Zellen, weil eine Liste mit 105
-Zeilen niemand anfängt. Der Zettel sagt auch, wonach _nicht_ zu suchen
-ist: Namen, Beschreibungen, Rollen und Reihenfolge deckt
-`browser/announce.spec.ts` ab. Gehört wird, ob das Gesagte für einen
-Menschen brauchbar ist — zu viel, zu wenig, falsche Reihenfolge, oder
-zweimal.
+And one finding that stayed hidden behind another: `Button` sets
+`type="button"`, correctly, which meant no story could submit a form at
+all. With `type="submit"` the test page reloaded — `Form` had never called
+`preventDefault`. It does now, unless an `action` is set; a form with
+nowhere to go posts to its own URL and loses everything typed. Two bugs
+where the first masked the second are the reason "the tests are green" and
+"the component works" are different claims.
 
-Ebenfalls offen: die 11 manuellen WCAG-Kriterien einmal durchgehen und
-datieren. Sie stehen mit ihrem jeweiligen "wonach schauen" in
-`packages/ui/src/audit/wcag.ts`.
+Nothing named remains open. Per-field validation timing (on change, on
+blur) is deliberately absent: what counts as valid is the caller's rule,
+and a library that takes it over ends up owning business logic.
 
-## 07 — Distribution (halb)
+## 06 — Accessibility (half)
 
-Steht: die Paketform ist geprüft (publint, attw), jeder CSS-Import im
-Build löst auf, ein Consumer-Bundle beweist, dass eine Komponente eine
-Komponente kostet, und das Deprecation-Fenster hat Daten samt Gate, das
-fällt, wenn eine Frist verstreicht.
+Stands: the keyboard contract as data with one test per row; all 55 WCAG
+2.2 criteria at levels A and AA with the gate that checks each one (25 have
+one, 11 are manual, 9 belong to the product, 10 do not apply here); and two
+automated screen-reader layers — name, description, role and state per
+node, plus the tree in reading order.
 
-Offen und ohne Zugangsdaten nicht machbar: in eine private Registry
-veröffentlichen, Canary-Builds aus `main`, und der Versions-Spread über
-die Consumer — die echte Version eines Design-Systems ist die älteste, die
-noch in Produktion läuft.
+Open: real assistive technology. 108 cells in `src/audit/screen-readers.ts`,
+all "not yet". NVDA and VoiceOver can be driven with Guidepup, but that
+needs a Windows or macOS runner and this CI runs on Linux. The rows are for
+what only real AT shows: verbosity, punctuation, what a reader says on
+entering a region.
 
-Semver pro Komponente hat jetzt seine Grundlage: `packages/ui/api-surface.md`
-hält jede exportierte Signatur ohne Prosa, und `ui:api-surface` fällt, wenn
-sie abdriftet. Damit ist "welche Komponente hat sich bewegt" eine Zeile im
-Diff statt eine Lesearbeit, und `CHANGELOG.md` führt pro Komponente mit
-Stufe — breaking, added, fixed, internal.
+The concrete way in is `docs/screen-reader-pass.md`: seven components, one
+pairing, about forty-five minutes. Not 108 cells, because nobody starts a
+list of 108 rows. The note also says what _not_ to look for: names,
+descriptions, roles and order are covered by `browser/announce.spec.ts`.
+What is listened for is whether what gets said is usable by a person — too
+much, too little, wrong order, or twice.
 
-Offen daran: die Durchsetzung, dass ein Eintrag existiert, wenn die Fläche
-sich ändert. Das braucht die Merge-Basis, die CI über `nx affected` schon
-kennt.
+Also open: walking the 11 manual WCAG criteria once and dating them. Each
+is in `packages/ui/src/audit/wcag.ts` with its own "what to look for".
 
-## 08 — Design und Code als eine Quelle (gestrichen)
+## 07 — Distribution (half)
 
-Gestrichen, nicht verschoben. Figma-Variablen, Code Connect und ein
-Inventar-Diff brauchen alle eine Figma-Lizenz, die es hier nicht gibt und
-für die es keinen Plan gibt.
+Stands: the package shape is checked (publint, attw), every CSS import in
+the build resolves, a consumer bundle proves that one component costs one
+component, and the deprecation window has dates plus a gate that fails when
+one lapses.
 
-Eine Stufe, die auf unbestimmte Zeit "offen" steht, ist kein Fahrplan
-mehr, sondern eine Liste von Dingen, die man mal wollte — und sie
-verschiebt das Gewicht der anderen elf. Der DTCG-Export bleibt, weil er
-für sich nützlich ist: er macht den Token-Graph portabel, egal ob jemals
-ein Design-Werkzeug daraus liest.
+Open and not possible without credentials: publishing to a private
+registry, canary builds from `main`, and the version spread across
+consumers — the real version of a design system is the oldest one still in
+production.
 
-Falls sich das ändert, ist der Einstieg einseitig: Figma-Variablen **aus**
-dem DTCG-Export generieren, Code bleibt die Quelle. Zwei-Wege-Sync ist die
-Stelle, an der das schiefgeht.
+Per-component semver has its foundation now: `packages/ui/api-surface.md`
+holds every exported signature with the prose stripped, and
+`ui:api-surface` fails when it drifts. That makes "which component moved" a
+line in a diff instead of a reading exercise, and `CHANGELOG.md` is kept per
+component with a level — breaking, added, fixed, internal.
 
-## 10 — Governance (halb)
+Open within that: enforcing that an entry exists when the surface changes.
+That needs the merge base, which CI already computes via `nx affected`.
 
-Steht: `CODEOWNERS` pro Ebene, ein RFC-Formular als Eingangstür, die
-Review-Latte in `CONTRIBUTING.md`, Antwortzeiten als Zusage, und dieser
-Fahrplan.
+## 08 — Design and code as one source (struck)
 
-Offen und nicht durch Code lösbar: Office Hours und Gespräche mit den
-nutzenden Teams. Die Adoptionszahl sagt, dass ein Team am System
-vorbeigebaut hat; nur ein Gespräch sagt, warum.
+Struck, not deferred. Figma variables, Code Connect and an inventory diff
+all need a Figma licence that does not exist here and for which there is no
+plan.
 
-Der Engpass steht in `CONTRIBUTING.md` und gehört auch hierher: ein
-Maintainer. Länger als eine Person es tragen kann, wächst das System
-nicht.
+A stage that stands at "open" indefinitely is no longer a roadmap but a
+list of things somebody once wanted, and it shifts the weight of the other
+eleven. The DTCG export stays, because it is useful on its own: it makes
+the token graph portable whether or not a design tool ever reads it.
 
-## 11 — Observability (offen, braucht eine Liste von Repos)
+If that changes, the way in is one-directional: generate Figma variables
+**from** the DTCG export, with code as the source. Two-way sync is where
+this goes wrong.
 
-Adoption wird heute gemessen, indem dieses Repository seinen eigenen
-Quellcode liest. Das trägt für einen Consumer und nicht für eine Firma.
+## 10 — Governance (half)
 
-Was gebaut würde, in der Reihenfolge, in der es Nutzen bringt:
+Stands: `CODEOWNERS` per layer, an RFC form as the front door, the review
+bar in `CONTRIBUTING.md`, response times as a commitment, and this roadmap.
 
-**1. Ein statischer Scanner, als eigenes Target.** Er klont die Consumer
-flach, liest ihre `package.json` für die `@labs/ui`-Version und greppt
-ihren Quellcode gegen `packages/ui/inventory.json` — das gibt es jetzt,
-und es ist der Grund, warum dieser Schritt inzwischen klein ist. Ausgabe
-pro Repo: Version, benutzte Komponenten, benutzte Props pro Komponente,
-benutzte Tokens, und die Zahl, die am meisten sagt — **Stellen, die
-aussehen wie ein Nachbau**: ein `<button className=` ohne `uix-button`,
-eine Hex-Farbe in einer CSS-Datei, ein `border-radius` in px.
+Open and not solvable in code: office hours and conversations with the
+consuming teams. An adoption number says a team built around the system;
+only a conversation says why.
 
-**2. Der Versions-Spread.** Die echte Version eines Design-Systems ist die
-älteste, die noch in Produktion läuft. Eine Tabelle Repo → Version, mit
-dem Abstand zur neuesten, ist die Zahl, die entscheidet, ob eine
-Deprecation-Frist realistisch war.
+The bottleneck is in `CONTRIBUTING.md` and belongs here too: one
+maintainer. The system does not grow past what one person can carry.
 
-**3. Ein Report im CI dieses Repos**, damit die Zahl sich bewegt, ohne
-dass jemand daran denken muss — genau wie `ui:adoption` heute.
+## 11 — Observability (open, needs a list of repos)
 
-Was ich dafür brauche, und nur das:
+Adoption is measured today by this repository reading its own source. That
+holds for one consumer and not for a company.
 
-- **Die Liste der Repos**, die `@labs/ui` benutzen sollen oder sollten.
-  Auch die, die es noch nicht tun — "sollte und tut nicht" ist die
-  interessantere Hälfte.
-- **Lesezugriff** darauf. Ein Fine-grained-Token mit `contents: read` auf
-  diese Repos, als Secret; oder, falls alle in derselben Organisation
-  liegen, reicht `GITHUB_TOKEN` mit erweitertem Scope.
+What would be built, in the order it pays off:
 
-Runtime-Telemetrie steht ausdrücklich hinten an: "welche Props werden in
-Produktion benutzt" ist eine andere Frage als "welche werden importiert",
-aber sie braucht ein Flag, eine Einwilligung und einen Endpunkt — und der
-statische Scanner beantwortet 80 % davon ohne all das.
+**1. A static scanner, as its own target.** It clones the consumers
+shallowly, reads their `package.json` for the `@labs/ui` version and greps
+their source against `packages/ui/inventory.json` — which exists now, and is
+the reason this step is small today. Output per repo: version, components
+used, props used per component, tokens used, and the number that says the
+most — **places that look like a re-implementation**: a `<button className=`
+without `uix-button`, a hex colour in a CSS file, a `border-radius` in px.
 
-## 12 — Von einem Agenten lesbar (halb)
+**2. The version spread.** The real version of a design system is the
+oldest one still in production. A table of repo → version, with the
+distance to the newest, is the number that decides whether a deprecation
+window was realistic.
 
-Steht: `packages/ui/inventory.json`, generiert aus der Quelle — 35
-Komponenten, 202 eigene Props mit Typ und Doku, die Compound-Parts, die
-Override-Slots, der Status, und die Sätze, wann man zu etwas anderem
-greift. Ein Gate fällt, wenn die Datei abgedriftet ist. Dazu `AGENTS.md`:
-die Regeln als Anweisungen, jede mit dem Gate, das sie erzwingt, und ein
-Test, dass diese Zitate auflösen.
+**3. A report in this repo's CI**, so the number moves without anyone
+having to remember — exactly like `ui:adoption` today.
 
-Offen: ein MCP-Server über Inventar und Registry. Die Daten liegen jetzt in
-einer Form, die einer lesen kann.
+What I need for it, and only this:
 
-## Wie das gelesen werden sollte
+- **The list of repos** that use `@labs/ui` or should. Including the ones
+  that do not yet — "should and does not" is the more interesting half.
+- **Read access** to them. A fine-grained token with `contents: read` on
+  those repos, as a secret; or, if they are all in the same organisation,
+  `GITHUB_TOKEN` with a widened scope.
 
-"Steht" heißt: es gibt ein Gate, und das Gate ist einmal absichtlich
-kaputt gemacht und beim Fallen beobachtet worden. "Halb" heißt: der
-messbare Teil steht, der Rest ist benannt. "Offen" heißt: nichts davon
-existiert, und die Zeile sagt, warum — Zugangsdaten, ein zweites
-Repository, oder einfach Arbeit.
+Runtime telemetry is explicitly last: "which props are used in production"
+is a different question from "which are imported", but it needs a flag, a
+consent and an endpoint — and the static scanner answers 80 % of it without
+any of those.
 
-Was hier **nicht** steht, ist ein Datum pro Stufe. Ein Fahrplan mit
-erfundenen Terminen ist schlechter als einer ohne, weil er zweimal
-enttäuscht.
+## 12 — Readable by an agent (half)
+
+Stands: `packages/ui/inventory.json`, generated from source — 37
+components, their own props with type and documentation, the compound
+parts, the override slots, the status, and the sentences saying when to
+reach for something else. A gate fails when the file has drifted. Plus
+`AGENTS.md`: the rules as instructions, each with the gate that enforces
+it, and a test that those citations resolve.
+
+Open: an MCP server over the inventory and the registry. The data is now in
+a shape one can read.
+
+## How this should be read
+
+"Stands" means: there is a gate, and the gate has been broken on purpose
+once and watched while it fell. "Half" means: the measurable part stands
+and the rest is named. "Open" means: none of it exists, and the line says
+why — credentials, a second repository, or simply work.
+
+What is **not** here is a date per stage. A roadmap with invented deadlines
+is worse than one without, because it disappoints twice.

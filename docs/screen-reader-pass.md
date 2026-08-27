@@ -1,122 +1,132 @@
-# Der erste Screenreader-Durchgang
+# The first screen-reader pass
 
-Was zu prüfen ist, in der Reihenfolge, und woran man ein Problem erkennt.
+What to check, in order, and how to tell a problem when you hear one.
 
-Die Matrix in `packages/ui/src/audit/screen-readers.ts` hat 105 Zellen.
-Die sind nicht die Aufgabe. Die Aufgabe ist dieser Zettel: **sechs
-Komponenten, eine Paarung, etwa vierzig Minuten.** Danach weiß man mehr
-über diese Bibliothek als jeder automatisierte Lauf sagen kann, und die
-restlichen 99 Zellen sind eine Fleißarbeit, die man verteilen kann.
+The matrix in `packages/ui/src/audit/screen-readers.ts` has 108 cells.
+Those are not the task. The task is this note: **seven components, one
+pairing, about forty-five minutes.** After it you will know more about this
+library than any automated run can tell you, and the remaining 101 cells
+are legwork that can be shared out.
 
-## Vorbereitung
+## Setup
 
-Eine Paarung genügt für den ersten Durchgang. Auf dem Mac ist VoiceOver
-mit Safari das Naheliegende: **Cmd + F5** schaltet ein, **Ctrl + Option +
-Pfeiltasten** wandert, **Ctrl + Option + A** liest von hier ab weiter.
+One pairing is enough for a first pass. On a Mac, VoiceOver with Safari is
+the obvious choice: **Cmd + F5** turns it on, **Ctrl + Option + arrow
+keys** moves, **Ctrl + Option + A** reads on from here.
 
 ```sh
 pnpm nx run ui:storybook
 ```
 
-Was die automatisierten Schichten schon abdecken, damit du nicht danach
-suchst: dass jedes Control einen Namen hat, dass Hint und Fehler als
-Beschreibung ankommen, dass die Reihenfolge im Baum stimmt, dass Rollen
-und Zustände gesetzt sind. Das steht in `browser/announce.spec.ts` und
-läuft in CI.
+What the automated layers already cover, so you do not go looking for it:
+that every control has a name, that hint and error arrive as its
+description, that the order in the tree is right, that roles and states are
+set. That is in `browser/announce.spec.ts` and it runs in CI.
 
-**Wonach du also hörst, ist etwas anderes:** ob das, was gesagt wird, für
-einen Menschen brauchbar ist. Zu viel, zu wenig, in der falschen
-Reihenfolge, oder zweimal.
+**So what you are listening for is something else:** whether what gets said
+is usable by a person. Too much, too little, in the wrong order, or twice.
 
 ## 1. TextField — `components-textfield--matrix`
 
-Tab durch alle sechs Felder.
+Tab through all six fields.
 
-- Beim Feld "With error": kommt **Label, dann Fehler**, oder erst der
-  Fehler? Ein Reader, der mit dem Fehler anfängt, lässt jemanden raten,
-  worauf er sich bezieht.
-- Beim Feld "Required": wird "required" **einmal** gesagt? Genau das war
-  bis vor kurzem doppelt, und der automatisierte Name-Test fängt nur die
-  Verdopplung im Namen — nicht, wenn ein Reader den Zustand zusätzlich
-  aus dem Attribut ansagt und es dadurch trotzdem zweimal klingt.
-- Beim Feld "With affixes": werden `>=` und `units` mitgelesen? Sie sind
-  `aria-hidden`, also sollten sie **nicht** kommen. Wenn doch, ist die
-  Einheit für einen Reader verschwunden — und dann ist `aria-hidden` dort
-  die falsche Entscheidung.
+- On "With error": does the **label come before the error**, or the error
+  first? A reader that opens with the error leaves you guessing what it
+  refers to.
+- On "Required": is "required" said **once**? That was doubled until
+  recently, and the automated name test only catches duplication in the
+  name — not the case where a reader announces the state from the attribute
+  as well and it still ends up sounding twice.
+- On "With affixes": are `>=` and `units` read out? They are `aria-hidden`,
+  so they should **not** be. If they are, the unit has vanished for a
+  reader, and then `aria-hidden` is the wrong call there.
 
 ## 2. Select — `components-select--matrix`
 
-- Wird die Anzahl der Optionen angesagt? "1 von 3" ist nützlich, gar
-  nichts ist es nicht.
-- Beim Öffnen: liest der Reader die aktuelle Auswahl, bevor du wanderst?
-- Das deaktivierte Select: sagt er "dimmed" oder "unavailable" — oder
-  nichts?
+- Is the number of options announced? "1 of 3" is useful; nothing is not.
+- On opening: does the reader read the current selection before you move?
+- The disabled select: does it say "dimmed", "unavailable", or nothing?
 
 ## 3. Dialog — `components-dialog--open-with-page-behind`
 
-Die wichtigste Zelle der ganzen Matrix, weil die modale Semantik hier
-selbst gebaut ist und Base UI sie nicht geliefert hat.
+The most important cell in the whole matrix, because the modal semantics
+here are hand-built and Base UI did not supply them.
 
-- Beim Öffnen: wird **Titel und Beschreibung** angesagt, oder nur
-  "dialog"?
-- Wander mit Ctrl+Option+Pfeil **über den Dialog hinaus**. Kommst du an
-  den Button dahinter? Du solltest nicht. Wenn doch, ist `inert` nicht
-  wirksam — und das ist der Unterschied zwischen "sieht modal aus" und
-  "ist modal".
-- Escape: sagt der Reader danach, wo der Fokus gelandet ist?
+- On opening: are **title and description** announced, or only "dialog"?
+- Move with Ctrl+Option+arrow **past the dialog**. Do you reach the button
+  behind it? You should not. If you do, `inert` is not taking effect — and
+  that is the difference between "looks modal" and "is modal".
+- Escape: does the reader then say where focus landed?
 
 ## 4. Toaster — `components-toaster--imperative`
 
-Live-Regionen sind die Stelle, an der Bibliotheken am häufigsten falsch
-liegen, und kein statischer Test sieht es.
+Live regions are where libraries most often get it wrong, and no static
+test sees it.
 
-- Klick den Trigger. Wird der Toast **angesagt, während du woanders
-  bist**? Das ist der Zweck.
-- Wird er **unterbrechend** angesagt (mitten in einem Satz) oder wartet
-  er? Für `success` sollte er warten, für `danger` nicht.
-- Kommt er **zweimal**? Ein doppelt angesagter Toast heißt meist, dass
-  die Region und der Inhalt beide live sind.
+- Click the trigger. Is the toast **announced while you are elsewhere**?
+  That is the point of it.
+- Is it announced **interrupting** (mid-sentence), or does it wait? For
+  `success` it should wait; for `danger` it should not.
+- Does it come **twice**? A toast announced twice usually means the region
+  and its content are both live.
 
 ## 5. Tabs — `components-tabs--matrix`
 
-- Pfeiltaste rechts: sagt der Reader den neuen Tab an, **ohne** zu
-  behaupten, er sei ausgewählt? Diese Komponente aktiviert manuell, und
-  ein Reader, der "selected" sagt, während nur der Fokus gewandert ist,
-  führt in die Irre.
-- Nach Enter: kommt das Panel, oder muss man es suchen?
-- Der deaktivierte Tab: als "dimmed" angesagt oder übersprungen?
+- Arrow right: does the reader announce the new tab **without** claiming it
+  is selected? This component activates manually, and a reader saying
+  "selected" while only focus moved is misleading.
+- After Enter: does the panel arrive, or do you have to go find it?
+- The disabled tab: announced as "dimmed", or skipped?
 
 ## 6. Table — `components-table--wide-columns`
 
-- In einer Zelle: wird der **Spaltenkopf** mitgesagt? Ohne das ist eine
-  Tabelle eine Zahlenwüste.
-- Wird die Position angesagt ("Reihe 2 von 3")?
-- Beim Betreten und Verlassen: sagt er "Tabelle, 3 Reihen, 6 Spalten" und
-  am Ende "Tabellenende"?
+- Inside a cell: is the **column header** said too? Without it a table is a
+  desert of numbers.
+- Is the position announced ("row 2 of 3")?
+- On entering and leaving: does it say "table, 3 rows, 6 columns" and, at
+  the end, "end of table"?
 
-## Was du aufschreibst
+## 7. DataTable — `components-datatable--ten-thousand-rows`
 
-Pro Zelle in `screen-readers.ts`: das Datum und **was du gehört hast** —
-nicht, was hätte kommen sollen.
+New, and the most interesting cell in the matrix, because a number is at
+stake here that no visual test can check.
+
+- On entering: does the reader say **ten thousand rows**? It should. A
+  virtualised grid has only a few dozen `<tr>` in the DOM, and without
+  `aria-rowcount` a reader announces exactly those.
+  `browser/runtime.spec.ts` checks the attribute is there and correct; what
+  it cannot check is whether a real reader uses it.
+- Move down, past the edge of the window. Does it keep counting correctly,
+  or start again at 1? And **does anything happen at all** when the rows
+  beneath it are swapped in — or does it lose its place?
+- On sorting: does it say the new direction? `aria-sort` is on the header
+  cell. The arrow beside it is for the eye and says nothing.
+- On a selection: does "3 rows selected" arrive while you are elsewhere?
+  That is a `role="status"` region and the same mechanism as the toaster.
+
+## What you write down
+
+Per cell in `screen-readers.ts`: the date and **what you heard** — not what
+should have come.
 
 ```ts
 { component: "Dialog", why: "…", cells: {
   "voiceover-safari": {
     checked: "2026-08-28",
     notes:
-      "Titel und Beschreibung kommen. Wandern über den Dialog hinaus " +
-      "erreicht den Button dahinter nicht. Nach Escape sagt VO nur " +
-      "'Button', nicht welchen — der Fokus landet richtig, die Ansage " +
-      "ist dünn.",
+      "Title and description arrive. Moving past the dialog does not " +
+      "reach the button behind it. After Escape, VO says only 'button' " +
+      "and not which one — focus lands correctly, the announcement is " +
+      "thin.",
   },
   …
 }}
 ```
 
-Der Test in `packages/ui/test/audit.spec.ts` verlangt beides: ein
-ISO-Datum und Notizen. Ein datierter Durchgang ohne Aufschrieb ist von
-keinem Durchgang nicht zu unterscheiden.
+The test in `packages/ui/test/audit.spec.ts` requires both: an ISO date and
+notes. A dated pass with nothing written down is indistinguishable from no
+pass at all.
 
-Und wenn etwas falsch klingt, aber du nicht sicher bist, ob es die
-Komponente oder der Reader ist: aufschreiben, dass du unsicher warst. Das
-ist eine brauchbare Notiz. "Vermutlich in Ordnung" ist keine.
+And if something sounds wrong but you are not sure whether it is the
+component or the reader: write down that you were unsure. That is a usable
+note. "Probably fine" is not.

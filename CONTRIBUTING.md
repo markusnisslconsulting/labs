@@ -4,124 +4,119 @@
 
 ```sh
 pnpm install
-pnpm nx serve site        # labs.markusnissl.com lokal (:4300)
+pnpm nx serve site        # labs.markusnissl.com locally (:4300)
 pnpm nx storybook ui      # Workbench (:4400)
 ```
 
-## Was wohin gehört
+## What belongs where
 
-| Inhalt                    | Ort                                                         |
-| ------------------------- | ----------------------------------------------------------- |
-| Design-System-Komponenten | `packages/ui/src/components/`                               |
-| Token                     | `packages/ui/src/styles/tokens/` + `src/tokens.registry.ts` |
-| Produkt-Demos             | `apps/site/src/labs/<slug>/` (Demo + Manifest)              |
-| Logik mit Tests           | `packages/<name>` (eigene Nx-Projekte)                      |
+| Content                  | Place                                                       |
+| ------------------------ | ----------------------------------------------------------- |
+| Design system components | `packages/ui/src/components/`                               |
+| Tokens                   | `packages/ui/src/styles/tokens/` + `src/tokens.registry.ts` |
+| Product demos            | `apps/site/src/labs/<slug>/` (demo + manifest)              |
+| Logic with tests         | `packages/<name>` (their own Nx projects)                   |
 
-Zwei Grenzen werden erzwungen: Apps importieren nur über
-Package-Eintrittspunkte, und Component-Tokens stehen auf der
-Docs-Seite des Parts — nicht in Foundations.
+Two boundaries are enforced: apps import only through package entry
+points, and component tokens live on the part's own docs page — not in
+Foundations.
 
-## Der Weg herein
+## The way in
 
-Erst ein RFC, dann Code. Das Formular unter _Issues → Komponente
-vorschlagen_ stellt fuenf Fragen, und zwei davon sind der eigentliche
-Zweck: **wer braucht sie sonst** und **was ersetzt sie**.
+An RFC first, then code. The form under _Issues → Propose a component_ asks
+five questions, and two of them are the actual point: **who else needs it**
+and **what it replaces**.
 
-Eine Komponente, die genau ein Produkt braucht, gehoert in dieses Produkt.
-Das ist keine Absage. Ein Design-System, das jede Anfrage aufnimmt, wird
-zu einer Sammlung von Sonderfaellen, die niemand zweimal benutzt — und der
-Weg zurueck ist offen, sobald ein zweites Produkt sie will.
+A component exactly one product needs belongs in that product. That is not
+a refusal. A design system that takes in every request becomes a collection
+of special cases nobody uses twice — and the way back is open as soon as a
+second product wants it.
 
-Was das RFC nicht braucht: fertigen Code, ein Figma-File, eine
-Aufwandsschaetzung.
+What an RFC does not need: finished code, a Figma file, an estimate.
 
-## Die Latte
+## The bar
 
-Was "reviewed" heisst, in Reihenfolge — technisch zuerst, weil das billig
-zu pruefen ist, und dann das, was nur ein Mensch sehen kann.
+What "reviewed" means, in order — technical first, because that is cheap to
+check, and then what only a person can see.
 
-1. **`pnpm gates` ist gruen.** Sechzehn Targets, dieselbe Liste wie CI.
-   Kein Review beginnt vorher; das ist kein Ritual, es spart beiden
-   Seiten die Runde.
-2. **Angeschaut.** `nx run ui:visual-sweep` rendert jede sichtbare Story
-   in zwei Engines. Beide Renderfehler, die zuletzt bis zu Markus
-   durchgekommen sind, waren engine-spezifisch und in genau der Engine
-   unsichtbar, die die Pipeline benutzt hat. Ein Gate, das eine
-   DOM-Eigenschaft prueft, ersetzt das Hinschauen nicht.
-3. **Die Achsen halten.** Generalisieren die Props, oder traegt die
-   Komponente noch ein Produkt-Detail?
-4. **Der Vertrag steht in der Doku.** "Use it for" und "reach for
-   something else when", die Accessibility-Zeile, und was der Aufrufer
-   noch selbst schuldet. `ui:inventory` prueft, dass die Saetze da sind.
-5. **Wer prueft.** Heute ein Maintainer, siehe `CODEOWNERS`. Das ist eine
-   Einzelperson und damit der Engpass dieses Systems — laenger als eine
-   Person es tragen kann, waechst es nicht. Das steht hier, weil es eine
-   Eigenschaft des Systems ist und nicht ein Versehen.
+1. **`pnpm gates` is green.** Seventeen targets, the same list as CI. No
+   review starts before that; it is not a ritual, it saves both sides a
+   round trip.
+2. **Looked at.** `nx run ui:visual-sweep` renders every visible story in
+   two engines. Both rendering faults that last reached Markus were
+   engine-specific and invisible in exactly the engine the pipeline used. A
+   gate that checks a DOM property is not a substitute for looking.
+3. **The axes hold.** Do the props generalise, or is the component still
+   carrying a product detail?
+4. **The contract is in the docs.** "Use it for" and "reach for something
+   else when", the accessibility line, and what the caller still owes.
+   `ui:inventory` checks the sentences are there.
+5. **Who reviews.** Today one maintainer, see `CODEOWNERS`. That is a
+   single person and therefore this system's bottleneck — it does not grow
+   past what one person can carry. It is written here because it is a
+   property of the system and not an oversight.
 
-## Antwortzeiten
+## Response times
 
-Vorhersagbarkeit ist der Grund, aus dem ein Team ein System benutzt statt
-es zu forken. Also Zusagen statt Absichten:
+Predictability is why a team uses a system instead of forking it. So
+commitments rather than intentions:
 
-| Was                               | Erste Antwort | Entscheidung                               |
-| --------------------------------- | ------------- | ------------------------------------------ |
-| Fehler, der ein Produkt blockiert | 1 Werktag     | so schnell es geht, mit Umweg falls noetig |
-| Fehler, sonst                     | 3 Werktage    | im naechsten Zyklus eingeordnet            |
-| Pull Request                      | 3 Werktage    | 2 Wochen                                   |
-| Komponenten-RFC                   | 1 Woche       | 2 Wochen, ja/nein/spaeter mit Grund        |
+| What                   | First reply    | Decision                                  |
+| ---------------------- | -------------- | ----------------------------------------- |
+| Bug blocking a product | 1 working day  | as fast as possible, workaround if needed |
+| Bug, otherwise         | 3 working days | slotted into the next cycle               |
+| Pull request           | 3 working days | 2 weeks                                   |
+| Component RFC          | 1 week         | 2 weeks, yes/no/later with a reason       |
 
-"Erste Antwort" heisst gelesen und einsortiert, nicht geloest. Eine
-Antwort, die "das dauert bis Maerz" sagt, ist mehr wert als Stille.
+"First reply" means read and triaged, not solved. A reply saying "this will
+take until March" is worth more than silence.
 
-Der Fahrplan liegt in `docs/roadmap.md` und nennt pro Stufe, was steht
-und was nicht.
+The roadmap is in `docs/roadmap.md` and names, per stage, what stands and
+what does not.
 
-## Komponenten beitragen
+## Contributing components
 
-1. **Base UI zuerst prüfen:** Interaktive Komponenten sitzen auf
-   [`@base-ui-components/react`](https://base-ui.com)-Parts
-   (Fokus-Management, ARIA, Keyboard). Native Plattform-Elemente
-   bleiben, wo das Widget selbst die beste A11y ist (Button,
-   RadioGroup, TextField, Select, Breadcrumb, Pagination).
-   Abweichungen als ADR (`docs/adr/`).
-2. **Props, keine Use-Case-Varianten:** Achsen, die generalisieren
-   (`variant`, `tone`, `size`), keine Einzelfall-Varianten.
-3. **Slots nach Regel:** Prop-Slots für kleinen Inline-Inhalt, den die
-   Komponente stylen muss (`leading`, `prefix`); Compound-Slots in
-   place für strukturelle Regionen (`Card.Header`). Niemals
-   `child.type`-Filterung.
-4. **Tokens auf drei Stufen:** Komponenten binden an semantic- oder
-   component-tokens, nie an primitive Werte. Der Paritätstest
-   (`test/tokens.spec.ts`) blockt Drift.
-5. **Stories mit Aussage:** Jede Komponente bekommt Stories für alle
-   Zustände; Plays behaupten Semantik (Rollen, Attribute), nicht
-   Pixel. Axe-Findings failen (`a11y: { test: "error" }`).
+1. **Check Base UI first:** interactive components sit on
+   [`@base-ui-components/react`](https://base-ui.com) parts (focus
+   management, ARIA, keyboard). Native platform elements stay where the
+   widget itself is the best accessibility (Button, RadioGroup, TextField,
+   Select, Breadcrumb, Pagination). Deviations get an ADR (`docs/adr/`).
+2. **Props, not use-case variants:** axes that generalise (`variant`,
+   `tone`, `size`), not one-off variants.
+3. **Slots by rule:** prop slots for small inline content the component has
+   to style (`leading`, `prefix`); compound slots in place for structural
+   regions (`Card.Header`). Never filter on `child.type`.
+4. **Tokens at three tiers:** components bind to semantic or component
+   tokens, never to primitive values. The parity test
+   (`test/tokens.spec.ts`) blocks drift.
+5. **Stories that claim something:** every component gets stories for all
+   its states; plays assert semantics (roles, attributes), not pixels. Axe
+   findings fail (`a11y: { test: "error" }`).
 
-## Gates vor jedem Push
+## Gates before every push
 
 ```sh
-pnpm gates                        # genau die Targets, die CI faehrt
-pnpm nx run ui:visual-test        # lokal, gegen committed baselines
-pnpm nx run ui:visual-sweep       # Kontaktabzuege zum Anschauen, kein Gate
+pnpm gates                        # exactly the targets CI runs
+pnpm nx run ui:visual-test        # locally, against committed baselines
+pnpm nx run ui:visual-sweep       # contact sheets to look at, not a gate
 ```
 
-`pnpm gates` steht in der package.json und nennt dieselbe Liste wie der
-Gates-Schritt in `.github/workflows/ci.yml`. Vorher stand die Liste hier
-zweimal, an zwei Orten gepflegt, und hier fehlten drei Targets —
-`package-check`, `tokens-dtcg` und `adoption`. Genau `tokens-dtcg` ist
-dann in CI umgefallen, nachdem lokal alles gruen war: neue Tokens ohne
-neu geschriebenen DTCG-Export.
+`pnpm gates` lives in package.json and names the same list as the gates
+step in `.github/workflows/ci.yml`. The list used to be written here as
+well, maintained in two places, and three targets were missing here —
+`package-check`, `tokens-dtcg` and `adoption`. `tokens-dtcg` is exactly the
+one that then fell over in CI after everything was green locally: new
+tokens with no regenerated DTCG export.
 
-CI läuft affected; Axe- und Test-Findings blockieren Deploys.
+CI runs affected; axe and test findings block deploys.
 
 ## Releases
 
-`pnpm nx release --dry-run` für Vorschau, `pnpm nx release` für
-Version + Changelog der Packages (Konfiguration in `nx.json`).
+`pnpm nx release --dry-run` for a preview, `pnpm nx release` for the
+packages' version and changelog (configured in `nx.json`).
 
-## Entscheidungen
+## Decisions
 
-Architektur-Entscheidungen werden als kurze ADRs festgehalten:
-`docs/adr/` — Nummer, Status, Kontext, Entscheidung, Konsequenzen.
-Große Richtungen (Base UI als Headless-Foundation, Token-Tiers,
-Labs-Registry) haben je eine.
+Architecture decisions are recorded as short ADRs: `docs/adr/` — number,
+status, context, decision, consequences. The large directions (Base UI as
+the headless foundation, token tiers, the labs registry) each have one.

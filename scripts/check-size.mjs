@@ -1,22 +1,21 @@
 /**
- * Bundle-Budget fuer die ausgelieferten Artefakte.
+ * Bundle budget for the shipped artefacts.
  *
- * Gezaehlt wird gzip ueber die JS/CSS-Bundles der Site und des
- * Storybooks. Ueberschreitet ein Budget, faehrt der Prozess mit
- * Exit 1 — der CI-Step blockiert dann den Merge.
+ * Counts gzip over the JS/CSS bundles of the site and of Storybook. If a
+ * budget is exceeded the process exits 1 — the CI step then blocks the
+ * merge.
  *
  * Budgets (gzip):
- *   site js      220 KB    (React + Router + Demos)
- *   site css      60 KB
- *   storybook js 2600 KB   (Workbench inkl. Addons)
- *   token floor     4 KB   (was 10,7 KB, weil die kommentierten
- *                           Quelldateien unveraendert kopiert wurden)
- *   je Komponente   3 KB   (Median liegt bei 0,9 KB)
+ *   site js       220 KB   (React + Router + demos)
+ *   site css       60 KB
+ *   storybook js 2600 KB   (the workbench, addons included)
+ *   token floor     4 KB   (was 10.7 KB, because the commented source
+ *                           files were copied through unchanged)
+ *   per component   3 KB   (the median is 0.9 KB)
  *
- * Die letzten beiden sind neu und der Grund ist gemessen: das
- * veroeffentlichte Token-Layer war 31 KB, davon der grosse Teil
- * Kommentare fuer Wartende. Ein Konsument laedt die Kaskade, nicht die
- * Begruendung.
+ * The last two are newer, and the reason is measured: the published token
+ * layer was 31 KB, most of it comments for whoever maintains it. A
+ * consumer downloads the cascade, not the reasoning.
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";

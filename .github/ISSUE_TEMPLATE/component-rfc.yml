@@ -1,89 +1,89 @@
-name: Komponente vorschlagen
-description: Kurzes RFC, bevor Code entsteht. Fuenf Fragen, keine Formalie.
-title: "RFC: <Komponentenname>"
+name: Propose a component
+description: A short RFC before any code exists. Five questions, not a formality.
+title: "RFC: <component name>"
 labels: ["rfc", "component"]
 body:
   - type: markdown
     attributes:
       value: |
-        Der Zweck dieses Formulars ist, die zwei Antworten zu erzwingen, die
-        eine Komponente in ein System hinein statt daran vorbei bauen: wer sie
-        sonst noch braucht, und was sie ersetzt.
+        The purpose of this form is to force the two answers that build a
+        component into a system rather than alongside it: who else needs it,
+        and what it replaces.
 
-        Eine Komponente, die genau ein Produkt braucht, gehoert in dieses
-        Produkt. Das ist keine Absage, es ist die richtige Adresse — und der
-        Weg zurueck ist offen, sobald ein zweites Produkt sie will.
+        A component exactly one product needs belongs in that product. That
+        is not a refusal, it is the right address — and the way back is open
+        as soon as a second product wants it.
   - type: textarea
     id: problem
     attributes:
-      label: Welches Problem loest sie, aus Sicht der Person am Bildschirm
+      label: What problem it solves, from the point of view of the person at the screen
       description: >-
-        Nicht die technische Luecke. Die Aufgabe, die heute schwer ist.
+        Not the technical gap. The task that is hard today.
       placeholder: >-
-        Ein Einkaeufer muss aus 4000 Lieferanten einen finden und kennt nur
-        einen Teil des Namens.
+        A buyer has to find one supplier out of 4000 and only knows part of
+        the name.
     validations:
       required: true
   - type: textarea
     id: who-else
     attributes:
-      label: Wer braucht sie sonst
+      label: Who else needs it
       description: >-
-        Namentlich: welches zweite Produkt, welches Team. "Vermutlich alle"
-        ist keine Antwort — und wenn es nur eines gibt, sag das; dann ist die
-        Antwort auf dieses RFC vermutlich "baut sie erst mal bei euch".
+        By name: which second product, which team. "Probably everyone" is not
+        an answer — and if there is only one, say so; then the answer to this
+        RFC is probably "build it in your product for now".
     validations:
       required: true
   - type: textarea
     id: replaces
     attributes:
-      label: Was sie ersetzt
+      label: What it replaces
       description: >-
-        Welcher lokale Nachbau, welches Muster, welche Kombination
-        existierender Komponenten verschwindet dadurch. Wenn nichts
-        verschwindet, waechst das System nur.
+        Which local re-implementation, which pattern, which combination of
+        existing components disappears because of it. If nothing disappears,
+        the system has only grown.
     validations:
       required: true
   - type: textarea
     id: not-existing
     attributes:
-      label: Warum keine existierende Komponente
+      label: Why no existing component
       description: >-
-        Lies `packages/ui/inventory.json` oder Storybook und nenne die
-        naechstliegende. Jede Komponente dort sagt selbst, wann man zu
-        etwas anderem greifen soll — widerlege den Satz.
+        Read `packages/ui/inventory.json` or Storybook and name the closest
+        one. Every component there says for itself when to reach for
+        something else — refute that sentence.
     validations:
       required: true
   - type: textarea
     id: axes
     attributes:
-      label: Achsen statt Varianten
+      label: Axes rather than variants
       description: >-
-        Welche Props generalisieren (`variant`, `tone`, `size`)? Ein
-        Einzelfall-Prop wie `isCheckoutStyle` ist ein Hinweis darauf, dass
-        die Komponente noch ein Produkt-Detail traegt.
+        Which props generalise (`variant`, `tone`, `size`)? A one-off prop
+        like `isCheckoutStyle` is a sign the component is still carrying a
+        product detail.
     validations:
       required: false
   - type: checkboxes
     id: bar
     attributes:
-      label: Die Latte, bevor sie stable wird
+      label: The bar, before it becomes stable
       description: >-
-        Nichts davon muss beim RFC erfuellt sein. Es steht hier, damit
-        niemand es spaeter als Ueberraschung erlebt.
+        None of this has to be met at RFC time. It is here so that nobody
+        meets it later as a surprise.
       options:
         - label: >-
-            Zustaende vollstaendig in einer fotografierten Matrix-Story
+            States complete in one photographed matrix story
             (`ui:story-coverage`, `ui:snapshot-budget`)
         - label: >-
-            Tastaturvertrag in `src/keyboard.map.ts`, ein Test pro Zeile
+            Keyboard contract in `src/keyboard.map.ts`, one test per row
         - label: >-
-            Nur semantic- oder component-Tokens, keine primitiven Werte
+            Semantic or component tokens only, no primitive values
         - label: >-
-            Keine eingebauten Strings; alles ueber `useStrings()`
+            No built-in strings; everything through `useStrings()`
         - label: >-
-            Zeile in `src/audit/screen-readers.ts` mit dem Grund, warum ihre
-            Ansage eine Pruefung wert ist
+            A row in `src/audit/screen-readers.ts` with the reason its
+            announcement is worth checking
         - label: >-
-            Eine Zeile im Inventar, also "use it for" und "reach for
-            something else when" geschrieben
+            A line in the inventory, meaning "use it for" and "reach for
+            something else when" are written
