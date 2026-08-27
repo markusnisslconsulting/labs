@@ -17,7 +17,8 @@ type Story = StoryObj;
  * Base UI's own tested surface — same policy as Menu and Tooltip.
  */
 export const Details: Story = {
-  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
+  /* Not photographed. The open popover carries everything a closed trigger would. */
+  parameters: { chromatic: { disableSnapshot: true, modes: { ...RTL } } },
   args: {
     trigger: "Delivery details",
     title: "Nordwind Logistik",
@@ -67,6 +68,9 @@ export const DetailsBehaviour: Story = {
  * button in front of it.
  */
 export const Open: Story = {
+  /* The one photographed story: an open popover shows the popup, its
+     title, its body and its close control in a single frame. */
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { ...Details.args, defaultOpen: true },
 };
 
@@ -92,7 +96,10 @@ export const AboveTheTrigger: Story = {
 
 /** Every placement, for the same reason Menu has one. */
 export const Placements: StoryObj = {
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: {
+    /* Not photographed. Placement is exempted in the coverage script; see Menu. */
+    chromatic: { disableSnapshot: true },
+  },
   render: () => (
     <div
       style={{

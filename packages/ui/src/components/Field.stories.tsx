@@ -28,7 +28,11 @@ type Story = StoryObj<typeof meta>;
  * field is invalid.
  */
 export const AroundACustomControl: Story = {
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: {
+    /* Not photographed. The matrix already photographs every state; this is the worked
+     example, which is documentation rather than a baseline. */
+    chromatic: { disableSnapshot: true },
+  },
   args: {
     label: "Delivery window",
     hint: "Local time at the receiving warehouse.",

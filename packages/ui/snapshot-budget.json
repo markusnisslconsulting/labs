@@ -1,4 +1,4 @@
 {
-  "note": "ESTIMATED snapshots per full build (snapshotted stories x modes). This model has under-counted twice against real builds (240 and 204 measured vs 114 and 100 estimated), so treat it as a regression guard, not a bill forecast. The check fails when this is exceeded, so a rise in the bill arrives as a reviewable diff. Run `nx run ui:snapshot-budget-write` after an intentional change. Raised 100 -> 102 on purpose: two disabled states that were reachable, styled and unphotographed \u2014 a Menu item and a Chip \u2014 now appear in a snapshotted frame. Both were defects the catalogue could not show.",
-  "ceiling": 102
+  "note": "ESTIMATED snapshots per full build (snapshotted stories x modes). This model has under-counted twice against real builds (240 and 204 measured vs 114 and 100 estimated), so treat it as a regression guard, not a bill forecast. The check fails when this is exceeded, so a rise in the bill arrives as a reviewable diff. Run `nx run ui:snapshot-budget-write` after an intentional change. Lowered 102 -> 90 after four components were found photographing more than one story; the policy is one per component and a gate now checks it rather than leaving it to memory.",
+  "ceiling": 90
 }

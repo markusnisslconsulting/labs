@@ -163,6 +163,29 @@ const uncovered = [...byComponent.entries()]
   .map(([component]) => component)
   .filter((component) => !NOT_VISUAL[component]);
 
+/**
+ * More than one photographed story per component.
+ *
+ * The policy is one: the project default is `disableSnapshot: true` and
+ * each component turns exactly one story back on, so every baseline is a
+ * line somebody chose. The budget checked the floor — that nothing has
+ * *zero* — and never the ceiling per component, so the rule lived in
+ * people's memory. It drifted: four components ended up with two or
+ * three, three of them within a single afternoon of adding stories, and
+ * Markus caught it by remembering the rule rather than by being told.
+ *
+ * A number in a budget is not the same as the policy that produced it.
+ * This checks the policy.
+ */
+const MULTI_SHOT: Record<string, string> = {};
+
+const overshot = [...byComponent.entries()]
+  .map(
+    ([component, list]) =>
+      [component, list.filter((story) => story.snapshotted)] as const,
+  )
+  .filter(([component, shots]) => shots.length > 1 && !MULTI_SHOT[component]);
+
 const mode = process.argv[2] ?? "report";
 
 if (mode === "report") {
@@ -229,6 +252,14 @@ if (mode === "check") {
   const committed = existsSync(BUDGET)
     ? (JSON.parse(readFileSync(BUDGET, "utf8")).ceiling as number)
     : Infinity;
+  for (const [component, shots] of overshot) {
+    failures.push(
+      `${component} photographs ${shots.length} stories (` +
+        `${shots.map((story) => story.name).join(", ")}). One per component: ` +
+        `fold the extra states into that story's frame, or add ${component} ` +
+        `to MULTI_SHOT with the reason one frame cannot hold them.`,
+    );
+  }
   if (total > committed) {
     failures.push(
       `estimated snapshots ${total} exceed the committed ceiling ${committed}. ` +
@@ -243,7 +274,8 @@ if (mode === "check") {
   console.log(
     `Snapshot budget passed — ${total} projected snapshots ` +
       `(ceiling ${committed === Infinity ? "unset" : committed}), ` +
-      `${uncovered.length} components without coverage.`,
+      `${uncovered.length} without coverage, ${overshot.length} with more ` +
+      `than one.`,
   );
   process.exit(0);
 }

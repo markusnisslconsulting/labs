@@ -19,7 +19,9 @@ type Story = StoryObj;
  * browser does.
  */
 export const RowActions: Story = {
-  parameters: { chromatic: { disableSnapshot: false, modes: { ...RTL } } },
+  /* Not photographed. The open, structured menu is the one frame that shows the item
+     vocabulary; a closed trigger is a Button and Button photographs it. */
+  parameters: { chromatic: { disableSnapshot: true, modes: { ...RTL } } },
   args: {
     label: "Row actions",
     items: [
@@ -108,7 +110,11 @@ export const Structured: Story = {
  * of a page runs out of room every time.
  */
 export const Placements: StoryObj = {
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: {
+    /* Not photographed. Placement is exempted in the coverage script: floating-ui recalculates
+     it per viewport, so a pixel baseline of it is brittle by construction. */
+    chromatic: { disableSnapshot: true },
+  },
   render: () => (
     <div
       style={{

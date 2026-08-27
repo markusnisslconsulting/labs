@@ -14,8 +14,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const NinePages: Story = {
+  /* Not photographed. SmallCounts carries every count in one frame,
+     including this one, and the narrow and RTL modes moved with it —
+     one photographed story per component is what the snapshot budget is
+     built on. */
   parameters: {
-    chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
+    chromatic: { disableSnapshot: true },
   },
   args: { pageCount: 9, defaultPage: 4 },
 };
@@ -109,7 +113,13 @@ export const KeyboardReachable: Story = {
  * filter returns most afternoons.
  */
 export const SmallCounts: StoryObj = {
-  parameters: { chromatic: { disableSnapshot: false } },
+  /* The one photographed story for this component. It carries the counts
+     that used to be split across two baselines — the degenerate ones and
+     a nine-page set — and the narrow and RTL modes, because a paginator
+     is the control most likely to run out of room. */
+  parameters: {
+    chromatic: { disableSnapshot: false, modes: { ...NARROW_AND_RTL } },
+  },
   render: () => (
     /* Not justifyItems: "start". Pagination declares container-type, so a
        shrink-to-fit parent collapses it — which is exactly what this
@@ -125,6 +135,7 @@ export const SmallCounts: StoryObj = {
       <Pagination pageCount={1} label="One page" />
       <Pagination pageCount={2} label="Two pages" />
       <Pagination pageCount={3} defaultPage={2} label="Three pages" />
+      <Pagination pageCount={9} defaultPage={4} label="Nine pages" />
     </div>
   ),
 };

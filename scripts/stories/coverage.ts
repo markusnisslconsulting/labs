@@ -68,6 +68,20 @@ const EXCEPTIONS: Record<
   string,
   { props?: string[]; keyboard?: string; reason: string }
 > = {
+  Menu: {
+    props: ["side", "align"],
+    reason:
+      "Placement is floating-ui's, recalculated against the viewport on " +
+      "every render, and asserted geometrically in the browser suite. A " +
+      "pixel baseline of a popup's position is brittle by construction — " +
+      "it moves when the snapshot viewport moves — and it cost this " +
+      "component a second and third photographed story, against the one " +
+      "story per component the snapshot budget is built on.",
+  },
+  Popover: {
+    props: ["side", "align"],
+    reason: "The same, one component over.",
+  },
   Tooltip: {
     keyboard:
       "The trigger is the caller's own element, so there is no focusable element of ours to drive.",
