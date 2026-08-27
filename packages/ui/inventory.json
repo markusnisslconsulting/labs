@@ -746,6 +746,58 @@
       "accessibility": "this owns the four things a hand-rolled field forgets — a label bound by `htmlFor` to a real `id`, `aria-describedby` covering whichever of hint and error exist, `aria-invalid` whenever there is an error, and the required state as a word rather than only an asterisk. What the caller still owes: putting the id on the control it renders, and writing an error message that says what to do rather than "
     },
     {
+      "component": "FileUpload",
+      "props": [
+        { "name": "label", "type": "ReactNode", "required": true },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        { "name": "error", "type": "ReactNode", "required": false },
+        { "name": "required", "type": "boolean", "required": false },
+        { "name": "hideLabel", "type": "boolean", "required": false },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The form field name, so a `Form` can route an error here."
+        },
+        {
+          "name": "accept",
+          "type": "string",
+          "required": false,
+          "doc": "What the file picker accepts, in the `accept` attribute's own syntax."
+        },
+        { "name": "multiple", "type": "boolean", "required": false },
+        { "name": "disabled", "type": "boolean", "required": false },
+        {
+          "name": "items",
+          "type": "UploadItem[]",
+          "required": false,
+          "doc": "The files chosen so far, with their progress."
+        },
+        {
+          "name": "onFilesSelected",
+          "type": "(files: File[]) => void",
+          "required": false
+        },
+        {
+          "name": "onRemove",
+          "type": "(id: string) => void",
+          "required": false
+        },
+        {
+          "name": "item",
+          "type": "(entry: UploadItem) => ReactNode",
+          "required": false,
+          "doc": "Render one row of the list yourself."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "choosing files to send somewhere, with the result of each one visible",
+      "insteadWhen": "nothing is uploaded — a plain `<input type=\"file\">` inside a `Field` is the right amount of machinery for a form that submits its files with everything else",
+      "accessibility": "the drop zone is a **label wrapping a real `<input type=\"file\">`**, not a div with a drop handler. That is the whole design. A div can be dropped on and cannot be reached, focused, or activated from a keyboard, and there is no way to add those three back that a browser has not already done better. Drag and drop is the enhancement; the input is the control. Progress is a `<progress>` element with i"
+    },
+    {
       "component": "Form",
       "props": [
         {

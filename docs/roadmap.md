@@ -33,6 +33,13 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**FileUpload** — done. The decision worth recording is that the drop zone is
+a label over a file input rather than a div with a drop handler, so keyboard
+reachability comes from the platform instead of being reimplemented. And the
+input is cleared after every selection: a file input keeps its value, so
+re-choosing the file that just failed would otherwise fire nothing, and
+retrying a failed upload is the commonest thing a person does here.
+
 **InlineEdit** — done, and the gate asking for a complete value /
 defaultValue / onValueChange triple earned its place on it: implementing the
 uncontrolled half surfaced that the reading state rendered the `value` prop
@@ -75,7 +82,7 @@ expensive component in any design system.
 to say the operating system's picker. That is honest, and it does not cover
 async options, multi-select or custom rendering.
 
-**Command palette, Tree, FileUpload.**
+**Command palette, Tree.**
 
 **Charts: a decision, not components** — made, in
 `docs/adr/0011-charts-a-library-and-a-token-contract.md`. Nothing is added to

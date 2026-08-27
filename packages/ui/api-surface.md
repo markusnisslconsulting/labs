@@ -648,6 +648,53 @@ export declare function useFieldMessages({
 export {};
 ```
 
+## FileUpload
+
+```ts
+export interface UploadItem {
+  id: string;
+  name: string;
+  size?: number;
+  progress?: number;
+  error?: ReactNode;
+}
+interface FileUploadOwnProps {
+  label: ReactNode;
+  hint?: ReactNode;
+  error?: ReactNode;
+  required?: boolean;
+  hideLabel?: boolean;
+  name?: string;
+  accept?: string;
+  multiple?: boolean;
+  disabled?: boolean;
+  items?: UploadItem[];
+  onFilesSelected?: (files: File[]) => void;
+  onRemove?: (id: string) => void;
+  item?: (entry: UploadItem) => ReactNode;
+}
+export type FileUploadProps = FileUploadOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof FileUploadOwnProps | "children">;
+export declare function FileUpload({
+  label,
+  hint,
+  error,
+  required,
+  hideLabel,
+  name,
+  accept,
+  multiple,
+  disabled,
+  items,
+  onFilesSelected,
+  onRemove,
+  item: renderItem,
+  className,
+  ...rest
+}: FileUploadProps): import("react").JSX.Element;
+export {};
+```
+
 ## Form
 
 ```ts

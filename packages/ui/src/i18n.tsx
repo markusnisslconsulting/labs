@@ -103,6 +103,26 @@ export interface Strings {
   editing: (field: string) => string;
   editSaved: (field: string) => string;
   editCancelled: (field: string) => string;
+  /** The prompt inside a `FileUpload` drop zone. */
+  dropFiles: string;
+  /**
+   * The progress bar of one file, by name.
+   *
+   * "68 per cent" says nothing when three files are in flight, so the
+   * accessible name has to carry which file it belongs to.
+   */
+  uploadProgress: (file: string) => string;
+  /** The remove control on one chosen file. */
+  removeFile: (file: string) => string;
+  /**
+   * What a live region says when files arrive or one is removed.
+   *
+   * Both change a list the reader may not be looking at. Progress does not
+   * get one: a region that fires on every percentage point is a reader
+   * nobody can use.
+   */
+  filesAdded: (count: number) => string;
+  fileRemoved: (file: string) => string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -141,6 +161,12 @@ export const defaultStrings: Strings = {
   loading: "Loading",
   errorSummary: (count) =>
     count === 1 ? "1 field needs attention" : `${count} fields need attention`,
+  dropFiles: "Drop files here, or choose them",
+  uploadProgress: (file) => `Uploading ${file}`,
+  removeFile: (file) => `Remove ${file}`,
+  filesAdded: (count) =>
+    count === 1 ? "1 file added" : `${count} files added`,
+  fileRemoved: (file) => `${file} removed`,
   editValue: (field) => `Edit ${field}`,
   editing: (field) => `Editing ${field}`,
   editSaved: (field) => `${field} saved`,

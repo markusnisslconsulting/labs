@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "FileUpload",
+    why: "a drop zone that is really a label over a file input: whether a reader is told it can be activated, and whether progress on three files is distinguishable",
+    cells: blank(),
+  },
+  {
     component: "InlineEdit",
     why: "the control changes from a button to a text field under the reader's focus: whether the switch is announced, and whether the new thing says what it is",
     cells: blank(),

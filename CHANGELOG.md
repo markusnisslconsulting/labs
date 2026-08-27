@@ -75,6 +75,15 @@ cut at the first release.
 
 ### added
 
+- **FileUpload** — choosing files to send somewhere, with the result of each
+  one visible. The drop zone is a `<label>` wrapping a real
+  `<input type="file">`, not a div with a drop handler: a div can be dropped
+  on and cannot be reached, focused or activated from a keyboard, and there
+  is nothing to add back that a browser has not already done better. Drag and
+  drop is the enhancement. Each `<progress>` names its own file, because "68
+  per cent" says nothing when three are in flight — and progress is
+  deliberately _not_ announced, since a live region that fires on every
+  percentage point is a reader nobody can use.
 - **InlineEdit** — one value in a dense layout, usually read and
   occasionally changed. The reading state is a `<button>`, not a div with a
   click handler and not a flat text field: a button says "this does

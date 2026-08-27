@@ -11,6 +11,11 @@ import { ToastProvider, useToast } from "./toast";
 import { Card } from "./components/Card";
 import { Checkbox, type CheckboxProps } from "./components/Checkbox";
 import { Chip, type ChipProps } from "./components/Chip";
+import {
+  FileUpload,
+  type FileUploadProps,
+  type UploadItem,
+} from "./components/FileUpload";
 import { Form, type FormProps } from "./components/Form";
 import { Combobox, type ComboboxProps } from "./components/Combobox";
 import {
@@ -178,4 +183,7 @@ export {
   type TagInputProps,
   InlineEdit,
   type InlineEditProps,
+  FileUpload,
+  type FileUploadProps,
+  type UploadItem,
 };

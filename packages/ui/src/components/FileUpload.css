@@ -1,0 +1,146 @@
+/* FileUpload styles, shipped with the component.
+   A page that never imports FileUpload never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-fileupload {
+    display: grid;
+    gap: var(--uix-gap-sm);
+  }
+
+  .uix-fileupload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    padding: var(--uix-gap-lg);
+    /* Dashed, which is the one visual convention this pattern has: a solid
+       box reads as a filled field and a dashed one reads as an opening. */
+    border: 2px dashed var(--uix-border-strong);
+    border-radius: var(--uix-radius-container);
+    background: var(--uix-bg-surface);
+    color: var(--uix-text-secondary);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .uix-fileupload-zone:hover:not([data-disabled]) {
+    background: var(--uix-bg-subtle);
+  }
+
+  /* The dragged-over state, which needs to be unmistakable: someone is
+     holding a file over the page and cannot see a cursor change. */
+  .uix-fileupload-zone[data-over] {
+    border-color: var(--uix-accent);
+    background: var(--uix-accent-soft);
+    color: var(--uix-text-body);
+  }
+
+  .uix-fileupload-zone[data-disabled] {
+    cursor: default;
+    border-color: var(--uix-border-disabled);
+    background: var(--uix-bg-disabled);
+    color: var(--uix-text-disabled);
+  }
+
+  /* The ring goes on the zone, because focus is really on the visually
+     hidden input inside it. `:has` is what expresses that without a
+     wrapper element or a JS focus handler. */
+  .uix-fileupload-zone:has(input:focus-visible) {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+  }
+
+  .uix-fileupload[data-invalid] .uix-fileupload-zone {
+    border-color: var(--uix-status-danger);
+  }
+
+  .uix-fileupload-icon {
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-fileupload-prompt {
+    font-size: var(--uix-font-size-200);
+  }
+
+  .uix-fileupload-list {
+    display: grid;
+    gap: var(--uix-gap-xs);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .uix-fileupload-item {
+    display: grid;
+    /* Name takes the slack, size and controls take what they need. A
+       four-column grid rather than flex, so the sizes line up down the
+       list instead of drifting with each name's length. */
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-control);
+    background: var(--uix-bg-surface);
+    font-size: var(--uix-font-size-100);
+  }
+
+  .uix-fileupload-name {
+    /* A long file name truncates at the *start*, because the end is where
+       the extension and the distinguishing part usually are. */
+    direction: rtl;
+    text-align: start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* Plaintext, so the name's own characters decide its direction and an
+       Arabic file name in a left-to-right list still reads correctly. */
+    unicode-bidi: plaintext;
+  }
+
+  .uix-fileupload-size {
+    color: var(--uix-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .uix-fileupload-progress {
+    grid-column: 1 / -1;
+    inline-size: 100%;
+    block-size: 0.25rem;
+  }
+
+  .uix-fileupload-error {
+    grid-column: 1 / -1;
+    color: var(--uix-status-danger);
+  }
+
+  .uix-fileupload-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border: 0;
+    border-radius: var(--uix-radius-pill);
+    background: none;
+    color: var(--uix-text-secondary);
+    cursor: pointer;
+  }
+
+  .uix-fileupload-remove:hover:not(:disabled) {
+    background: var(--uix-bg-subtle);
+    color: var(--uix-text-body);
+  }
+
+  .uix-fileupload-remove:disabled {
+    color: var(--uix-text-disabled);
+    cursor: default;
+  }
+
+  .uix-fileupload-remove:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: 1px;
+  }
+}
