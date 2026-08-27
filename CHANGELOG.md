@@ -241,6 +241,11 @@ window in which this section matters.
 
 ### internal
 
+- **`@labs/ui-mcp`** — an MCP server over the inventory, the keyboard map, the
+  token registry and the API surface. Four tools and one resource over stdio;
+  it answers only from files that already have a gate behind them, which is
+  the constraint rather than a convenience — there is no second source to go
+  stale. Not part of `@labs/ui`; a separate private package.
 - **Release process** — a change to `packages/ui/api-surface.md` now requires
   a `CHANGELOG.md` entry, enforced in CI against the same base `nx affected`
   uses. The surface file made "which component moved" a line in a diff; this

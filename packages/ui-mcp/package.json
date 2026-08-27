@@ -1,0 +1,9 @@
+{
+  "name": "@labs/ui-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "labs-ui-mcp": "./src/server.ts"
+  }
+}

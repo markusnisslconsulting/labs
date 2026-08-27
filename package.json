@@ -22,6 +22,7 @@
     "@eslint/eslintrc": "^3.3.6",
     "@labs/tools": "workspace:*",
     "@labs/ui": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@nx/devkit": "23.1.1",
     "@nx/eslint-plugin": "23.1.1",
     "@nx/js": "23.1.1",
@@ -59,7 +60,8 @@
     "vite": "^8.2.1",
     "vitest": "^4.1.11",
     "wait-on": "^9.1.0",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
   },
   "dependencies": {
     "@base-ui-components/react": "1.0.0-rc.0",

@@ -19,7 +19,7 @@ As of 2026-08-27. The order is impact, not effort.
 | 09  | Performance as a contract             | stands   |
 | 10  | Governance and the human process      | half     |
 | 11  | Observability from real products      | open     |
-| 12  | Readable by an agent                  | half     |
+| 12  | Readable by an agent                  | stands   |
 
 ## 03 — The inventory (stands)
 
@@ -396,7 +396,7 @@ is a different question from "which are imported", but it needs a flag, a
 consent and an endpoint — and the static scanner answers 80 % of it without
 any of those.
 
-## 12 — Readable by an agent (half)
+## 12 — Readable by an agent (stands)
 
 Stands: `packages/ui/inventory.json`, generated from source — 37
 components, their own props with type and documentation, the compound
@@ -405,8 +405,25 @@ reach for something else. A gate fails when the file has drifted. Plus
 `AGENTS.md`: the rules as instructions, each with the gate that enforces
 it, and a test that those citations resolve.
 
-Open: an MCP server over the inventory and the registry. The data is now in
-a shape one can read.
+That server exists: `packages/ui-mcp`. Four tools and one resource over
+stdio, answering only from files that already have a gate behind them —
+the inventory, the keyboard map, the token registry and the API surface.
+The constraint is the design: it may not know anything this repository does
+not already check, so there is no second source to go stale.
+
+The question it answers that a props table cannot is "which one do I reach
+for". `find_component` ranks on the `insteadWhen` sentences, which exist to
+send somebody elsewhere: asked for "let someone pick several suppliers from
+a long list" it answers `Combobox`, because that component's own sentence
+says "a list too long to scan" and "hold more than one answer".
+
+Two of the four sources are parsed rather than imported, and that is where
+the risk sits — a regex over a file whose shape changes returns fewer rows
+rather than an error. `test/data.spec.ts` counts what it parsed against the
+imported source, and both earlier token parsers needed it: one produced
+`--uix-semantic-accent` for a property called `--uix-accent`, the next
+stopped inside a font stack's escaped quote and returned 151 of 154. Neither
+failed. Both answered.
 
 ## How this should be read
 

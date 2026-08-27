@@ -1,0 +1,23 @@
+{
+  "name": "ui-mcp",
+  "tags": ["scope:shared", "type:ui"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -p packages/ui-mcp/tsconfig.json --noEmit" }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --experimental-strip-types packages/ui-mcp/src/server.ts"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "vitest run --config packages/ui-mcp/vitest.config.ts"
+      }
+    }
+  }
+}
