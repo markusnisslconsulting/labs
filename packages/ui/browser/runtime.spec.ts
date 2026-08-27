@@ -365,3 +365,67 @@ test("every avatar overlaps the one before it, counter included", async ({
     }
   }
 });
+
+/**
+ * The customizable-select popup is the width of the field, at any width.
+ *
+ * Written because the comment in `Select.css` claimed the opposite for a
+ * while. The first measurement was taken with
+ * `getComputedStyle(el, "::picker(select)")`, which reports `inline-size:
+ * auto` for a width it is in fact applying, so the conclusion "author
+ * sizing on this pseudo-element is not honoured" was an artefact of the
+ * instrument. Pixels for anything in the top layer.
+ *
+ * The property asserted is tracking, not a number: the field is widened at
+ * runtime and the popup has to follow. A fixed expectation would pass on a
+ * popup that happened to be 302px for its own reasons.
+ *
+ * What it can and cannot catch, because the first version of this comment
+ * overstated it. An option wider than its picker overflows rather than
+ * shrinking, so an option's box is the picker's content width only while
+ * the picker is the wider of the two. Trying to break this by forcing the
+ * picker to 200px changed nothing — Chromium floors the picker at the
+ * anchor's width, so "narrower than the field" is not a state this engine
+ * can be put in. What is left is real and is what this asserts: the popup
+ * follows the field when the field's width changes, and it never comes out
+ * wider than the field. Forcing `inline-size: 500px` on the picker does
+ * fail it.
+ */
+test("the select popup takes the width of the field, whatever it is", async ({
+  page,
+}) => {
+  await openStory(page, "components-select--matrix");
+
+  /* Scoped by our own class: a bare `select` would also match anything
+     Storybook renders around the story. */
+  const select = page.locator("select.uix-select").first();
+
+  for (const width of [302, 420, 560]) {
+    if (width !== 302) {
+      await select.evaluate((node, px) => {
+        (node as HTMLElement).style.inlineSize = `${px}px`;
+      }, width);
+    }
+
+    const field = await select.boundingBox();
+    await select.click();
+
+    /* The option's own box, because `::picker(select)` has no node to
+       measure. Its width is the picker's content box, so the difference
+       from the field is exactly the picker's border and padding. */
+    const option = await select.locator("option").first().boundingBox();
+    expect(option, "the picker did not open").not.toBeNull();
+
+    const inset = field!.width - option!.width;
+    expect(
+      inset,
+      `field ${field!.width.toFixed(0)}px, option ${option!.width.toFixed(0)}px: ` +
+        `the popup is not tracking the field`,
+    ).toBeLessThanOrEqual(16);
+    expect(inset, "the popup is wider than the field").toBeGreaterThanOrEqual(
+      0,
+    );
+
+    await page.keyboard.press("Escape");
+  }
+});
