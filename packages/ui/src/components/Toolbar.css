@@ -1,0 +1,52 @@
+/* Toolbar styles, shipped with the component.
+   A page that never imports Toolbar never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    /* Wraps rather than overflows. A toolbar that scrolls sideways hides
+       controls behind a gesture, and unlike a table there is nothing here
+       whose width is inherent — the controls can simply take a second row. */
+    flex-wrap: wrap;
+  }
+
+  .uix-toolbar[data-orientation="vertical"] {
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+  }
+
+  .uix-toolbar-group {
+    display: flex;
+    align-items: center;
+    /* Tighter than the toolbar's own gap, which is what makes a group read
+       as one cluster rather than as three more controls. */
+    gap: var(--uix-gap-xs);
+  }
+
+  .uix-toolbar-separator {
+    /* A hairline that survives a zoom: 1px of border rather than a width,
+       because a 1px-wide element with a background disappears at some
+       fractional device pixel ratios. */
+    align-self: stretch;
+    border-inline-start: 1px solid var(--uix-border-subtle);
+    margin-inline: var(--uix-gap-xs);
+    /* Minimum height for the case where the toolbar's tallest control is a
+       plain text button and stretch gives almost nothing. */
+    min-block-size: 1.25em;
+  }
+
+  .uix-toolbar[data-orientation="vertical"] .uix-toolbar-separator {
+    align-self: auto;
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--uix-border-subtle);
+    margin-inline: 0;
+    margin-block: var(--uix-gap-xs);
+    min-block-size: 0;
+    min-inline-size: 1.25em;
+  }
+}

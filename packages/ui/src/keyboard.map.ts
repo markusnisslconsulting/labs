@@ -257,4 +257,27 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
        more than the test under it checks. */
     expectation: "closes the panel",
   },
+  /* Toolbar — "one tab stop for the whole group, arrows move between the
+     controls". The whole reason the component exists rather than a div. */
+  {
+    component: "Toolbar",
+    story: "components-toolbar--matrix",
+    owner: "component",
+    key: "ArrowRight",
+    expectation: "moves to the next enabled control, wrapping at the end",
+  },
+  {
+    component: "Toolbar",
+    story: "components-toolbar--matrix",
+    owner: "component",
+    key: "Home",
+    expectation: "moves to the first control",
+  },
+  {
+    component: "Toolbar",
+    story: "components-toolbar--matrix",
+    owner: "component",
+    key: "End",
+    expectation: "moves to the last control",
+  },
 ];

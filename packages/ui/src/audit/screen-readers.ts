@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "Toolbar",
+    why: "one tab stop with a roving ring: whether a reader is told how many controls are in the group and where in it they are",
+    cells: blank(),
+  },
+  {
     component: "Stepper",
     why: "whether a reader is told where in the sequence it is, and whether the state word beside each label reads as part of the step or as noise",
     cells: blank(),

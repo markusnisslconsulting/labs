@@ -14,14 +14,16 @@ test("the pagination labels come from the strings table", async ({ page }) => {
   await openStory(page, "components-pagination--nine-pages");
   // The English defaults, which is what a consumer gets for free.
   await expect(
-    page.getByRole("button", { name: "Previous page" }),
+    page.getByRole("button", { name: "Previous page", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("navigation", { name: "Pagination" }),
+    page.getByRole("navigation", { name: "Pagination", exact: true }),
   ).toBeVisible();
   // And the interpolated one, which is a function rather than a template
   // because word order is not universal.
-  await expect(page.getByRole("button", { name: "Page 4" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Page 4", exact: true }),
+  ).toBeVisible();
 });
 
 test("a locale replaces them without touching the component", async ({
@@ -29,12 +31,14 @@ test("a locale replaces them without touching the component", async ({
 }) => {
   await openStory(page, "components-pagination--localized");
   await expect(
-    page.getByRole("navigation", { name: "Seitennummerierung" }),
+    page.getByRole("navigation", { name: "Seitennummerierung", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Vorherige Seite" }),
+    page.getByRole("button", { name: "Vorherige Seite", exact: true }),
   ).toBeVisible();
   // The number moved: German puts it after the word, same as English, but
   // the point is that the *function* decided, not a template we wrote.
-  await expect(page.getByRole("button", { name: "Seite 4" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Seite 4", exact: true }),
+  ).toBeVisible();
 });

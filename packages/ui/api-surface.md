@@ -1452,6 +1452,38 @@ export declare function Toaster({
 export {};
 ```
 
+## Toolbar
+
+```ts
+interface ToolbarOwnProps {
+  label: string;
+  children: ReactNode;
+  orientation?: "horizontal" | "vertical";
+}
+export type ToolbarProps = ToolbarOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof ToolbarOwnProps>;
+export declare function Toolbar({
+  label,
+  children,
+  orientation,
+  className,
+  ...rest
+}: ToolbarProps): import("react").JSX.Element;
+export declare namespace Toolbar {
+  var Separator: typeof ToolbarSeparator;
+  var Group: typeof ToolbarGroup;
+}
+declare function ToolbarSeparator({
+  className,
+  ...rest
+}: ComponentPropsWithRef<"span">): import("react").JSX.Element;
+declare function ToolbarGroup({
+  className,
+  ...rest
+}: ComponentPropsWithRef<"div">): import("react").JSX.Element;
+export {};
+```
+
 ## Tooltip
 
 ```ts

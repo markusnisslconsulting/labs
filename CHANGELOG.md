@@ -75,6 +75,14 @@ cut at the first release.
 
 ### added
 
+- **Toolbar** — a row of controls that act on the same thing, with
+  `role="toolbar"`, a name, and **one tab stop for the whole group**. That
+  last part is the only reason to reach for this instead of a `div` with a
+  gap: eight buttons in a row are eight tab stops on the way to the content
+  below them, and arrow keys move between them instead. The roving ring is
+  read from the DOM at each key press, not from a prop — one `SplitButton`
+  contributes two controls, a conditional control comes and goes, and a
+  disabled one has to drop out.
 - **Stepper** — a fixed sequence with where-you-are and what-is-left. An
   ordered list inside a `nav` named by `label`, with `aria-current="step"` on
   the current item, because the visual position in a row of circles answers

@@ -106,6 +106,8 @@ const ACCESSIBLE_NAME: Record<string, string> = {
   "Drawer.tsx":
     "title is announced as the panel's name, for the same reason as Dialog",
   "Stepper.tsx": "label names the nav that holds the sequence",
+  "Toolbar.tsx":
+    "label names the toolbar; two unnamed ones are two identical landmarks",
   "Spinner.tsx": "label is the live region's text; a spinner has no other name",
   "Select.tsx":
     "SelectOption.label is an <option>'s text, and HTML forbids markup " +

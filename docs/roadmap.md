@@ -33,6 +33,10 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**Toolbar** — done. One tab stop for the group and arrows within it, which
+is the whole reason it exists rather than a styled `div`. Building it cost a
+third loose-selector bug, and that produced a gate: see below.
+
 **Stepper** — done. Two decisions worth naming: the state of each step is in
 text as well as in colour, and only finished steps are navigable. The second
 is the whole navigation model — going back to a step you completed is safe,
@@ -59,7 +63,7 @@ expensive component in any design system.
 to say the operating system's picker. That is honest, and it does not cover
 async options, multi-select or custom rendering.
 
-**Command palette, Tree, Toolbar, FileUpload, TagInput, InlineEdit.**
+**Command palette, Tree, FileUpload, TagInput, InlineEdit.**
 
 **Charts: a decision, not components** — made, in
 `docs/adr/0011-charts-a-library-and-a-token-contract.md`. Nothing is added to
@@ -102,6 +106,24 @@ emitted `import("./Menu").MenuItemProps` with no extension, two lines below
 an explicit import that was rewritten correctly. `attw` caught it; nothing
 else would have, because a bundler resolves both. Same class as the two
 cases the comment there already records.
+
+**Three assertions had been reading the wrong element, and now a gate says
+so.** `page.locator("thead th")` matched Storybook's own zero-height args
+table, so a sticky-header check compared 0 to 0 and passed against
+`position: static`. The same in `browser/print.spec.ts`, where both table
+tests reported on Storybook rather than on `Table`. And
+`getByRole("toolbar", { name: "Table actions" })` also matched "Table
+actions, with a disabled control", because Playwright matches an accessible
+name as a substring — the control list ran across two toolbars.
+
+`packages/ui/test/locators.spec.ts` holds two absolute rules now: a
+`page.locator` selector may not be nothing but element names, and a string
+accessible name needs `exact: true`. The first version tried to fire only on
+a loose query _followed by_ a strict-mode escape, to keep the count at one.
+It caught nothing — prettier wraps the call onto its own line, and the real
+toolbar bug had a `.locator()` in between — and the only thing it ever
+flagged was the sentence in its own docstring describing the pattern. The
+absolute version cost ten mechanical edits and is true.
 
 **Four gates were testing a Storybook nobody had built.**
 `build-storybook` used the `production` input set, which excludes

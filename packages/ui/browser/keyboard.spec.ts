@@ -149,7 +149,15 @@ test(`RadioGroup: ArrowDown ${row("RadioGroup", "ArrowDown").expectation}`, asyn
   page,
 }) => {
   await openStory(page, row("RadioGroup", "ArrowDown").story);
-  const radios = page.locator("fieldset").first().locator("input[type=radio]");
+  /* Scoped by class, not by element. `page.locator("fieldset").first()`
+     was the same shape of mistake the Toolbar tests were caught by: the
+     `.first()` silences Playwright's strict mode, so an extra fieldset on
+     the page — a `Form.Group`, another radio group — is picked up without
+     a word. */
+  const radios = page
+    .locator(".uix-radiogroup")
+    .first()
+    .locator("input[type=radio]");
   await tabTo(page, radios.first());
   await page.keyboard.press("ArrowDown");
   await expect(
@@ -449,7 +457,10 @@ test("Space on a row checkbox selects the row", async ({ page }) => {
     exact: true,
   });
 
-  const box = table.getByRole("checkbox", { name: "Select Vale Packaging" });
+  const box = table.getByRole("checkbox", {
+    name: "Select Vale Packaging",
+    exact: true,
+  });
   await expect(box).not.toBeChecked();
 
   await box.focus();
@@ -543,7 +554,7 @@ test("Enter in a text field submits the form", async ({ page }) => {
     });
   });
 
-  await page.getByRole("textbox", { name: "Warehouse" }).focus();
+  await page.getByRole("textbox", { name: "Warehouse", exact: true }).focus();
   await page.keyboard.press("Enter");
 
   expect(
@@ -561,7 +572,9 @@ test("Enter in a text field submits the form", async ({ page }) => {
   expect(page.url(), "the form navigated; preventDefault did not hold").toBe(
     before,
   );
-  await expect(page.getByRole("textbox", { name: "Warehouse" })).toBeFocused();
+  await expect(
+    page.getByRole("textbox", { name: "Warehouse", exact: true }),
+  ).toBeFocused();
 });
 
 /**
@@ -595,4 +608,94 @@ test("every row of the map is exercised by a test in this file", () => {
   ).toEqual([]);
 
   expect(new Set(keys).size, "the map has duplicate rows").toBe(keys.length);
+});
+
+/* --------------------------------------------------------------- Toolbar */
+
+const TOOLBAR = ["ArrowRight", "Home", "End"] as const;
+
+/**
+ * Arrows, Home and End move within the toolbar's ring.
+ *
+ * Component-owned: there is no platform behaviour to preserve here, because
+ * a row of buttons has none — every one of them is its own tab stop by
+ * default, which is the thing this component replaces.
+ *
+ * Trusted keys, and for a sharper reason than usual. The handler reads
+ * `document.activeElement` to decide where it is in the ring, so the test
+ * has to get real focus onto a real control first; `userEvent.tab()` in a
+ * story moves focus in the test library's own model and the two can
+ * disagree about what is active.
+ *
+ * Scoped to the first toolbar in the matrix, which has five controls and no
+ * disabled ones. The second toolbar exists to hold a disabled control and
+ * would make "the next control" ambiguous in a test about ordering.
+ *
+ * `exact: true` on that name, and it is not decoration. Playwright matches
+ * an accessible name as a **substring** by default, so "Table actions" also
+ * matched "Table actions, with a disabled control" — the control list ran
+ * across both toolbars, and `End` landed on the second one's menu trigger.
+ * Two other tests in this repository have been caught by a selector that
+ * matched more than it read like it did.
+ */
+for (const key of TOOLBAR) {
+  const entry = row("Toolbar", key);
+  test(`Toolbar: ${key} ${entry.expectation}`, async ({ page }) => {
+    await openStory(page, entry.story);
+    const toolbar = page.getByRole("toolbar", {
+      name: "Table actions",
+      exact: true,
+    });
+    const controls = toolbar.locator(
+      "button:not([disabled]), [href], [tabindex]:not([tabindex='-1'])",
+    );
+    const count = await controls.count();
+    expect(count, "the fixture needs several controls").toBeGreaterThan(2);
+
+    await controls.first().focus();
+    await expect(controls.first()).toBeFocused();
+
+    await page.keyboard.press(key);
+
+    if (key === "Home") {
+      await expect(
+        controls.first(),
+        "Home left the first control",
+      ).toBeFocused();
+    } else if (key === "End") {
+      await expect(
+        controls.nth(count - 1),
+        "End did not reach the last",
+      ).toBeFocused();
+    } else {
+      await expect(
+        controls.nth(1),
+        "ArrowRight did not move to the next control",
+      ).toBeFocused();
+    }
+  });
+}
+
+/**
+ * ArrowRight wraps at the end, and that is a decision rather than an
+ * oversight.
+ *
+ * A toolbar is a closed set. Stopping at the last control means pressing
+ * the other arrow as many times as there are controls to get back, which is
+ * the behaviour people work around by reaching for the mouse.
+ */
+test("Toolbar: ArrowRight wraps from the last control to the first", async ({
+  page,
+}) => {
+  await openStory(page, row("Toolbar", "ArrowRight").story);
+  const toolbar = page.getByRole("toolbar", {
+    name: "Table actions",
+    exact: true,
+  });
+  const controls = toolbar.locator("button:not([disabled])");
+  const count = await controls.count();
+
+  await controls.nth(count - 1).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(controls.first(), "the ring does not wrap").toBeFocused();
 });

@@ -1668,6 +1668,29 @@
       "accessibility": "one region per severity role — success/info announce politely, warning/danger assertively. The stack is a labelled region, so screen reader users can revisit it"
     },
     {
+      "component": "Toolbar",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "doc": "What this set of controls is for."
+        },
+        { "name": "children", "type": "ReactNode", "required": true },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "required": false
+        }
+      ],
+      "parts": ["Toolbar.Separator", "Toolbar.Group"],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a row of controls that act on the same thing — the actions above a table, the formatting controls over an editor",
+      "insteadWhen": "the controls are unrelated: a `div` with a gap is the right amount of structure for two buttons that happen to sit near each other, and a toolbar makes a promise about the keyboard that then has to be kept",
+      "accessibility": "`role=\"toolbar\"` with a name, and **one tab stop for the whole group**. That second part is the entire reason to reach for this instead of a `div`. Eight buttons in a row are eight tab stops on the way to the content below them; a toolbar is one, and the arrow keys move between the controls inside it. That is what WAI-ARIA's toolbar pattern is for, and it is the thing a styled `div` cannot give yo"
+    },
+    {
       "component": "Tooltip",
       "props": [
         {

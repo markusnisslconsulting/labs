@@ -55,6 +55,7 @@ import {
   type DataTableSort,
 } from "./components/DataTable";
 import { Table, type TableProps } from "./components/Table";
+import { Toolbar, type ToolbarProps } from "./components/Toolbar";
 import { Tabs, type TabsProps } from "./components/Tabs";
 import { TextField, type TextFieldProps } from "./components/TextField";
 import { ToastItem } from "./components/Toaster";
@@ -169,4 +170,6 @@ export {
   Stepper,
   type StepperProps,
   type StepperStep,
+  Toolbar,
+  type ToolbarProps,
 };
