@@ -29,7 +29,11 @@ export type TokenType =
   | "elevation"
   | "motion"
   | "opacity"
-  | "z-index";
+  | "z-index"
+  /* A dimensionless proportion, as `aspect-ratio` takes it. Its own type
+     rather than "space": a space token is a length and can be scaled by
+     density, and scaling a ratio by density would distort the box. */
+  | "ratio";
 
 export interface TokenDescriptor {
   name: string;
@@ -277,6 +281,7 @@ export const componentTokens: TokenDescriptor[] = [
   t("--uix-panel-pad-x", "var(--uix-gap-xl)", "component", "space", "Panel horizontal padding, density-aware"),
   t("--uix-panel-pad-y", "calc(var(--uix-gap-lg) + var(--uix-gap-xs))", "component", "space", "Panel vertical padding, density-aware"),
   t("--uix-panel-radius", "var(--uix-radius-container)", "component", "radius", "Panel corner radius"),
+  t("--uix-card-media-ratio", "16 / 9", "component", "ratio", "Box a card's banner image is cropped to"),
   t("--uix-pill-fg", "var(--uix-text-primary)", "component", "color", "Status pill label"),
   t("--uix-pill-off", "var(--uix-status-off)", "component", "color", "Status pill dot, off"),
   t("--uix-pill-ok", "var(--uix-status-ok)", "component", "color", "Status pill dot, ok"),

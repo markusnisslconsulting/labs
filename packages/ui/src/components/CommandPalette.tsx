@@ -59,6 +59,20 @@ interface CommandPaletteOwnProps {
   filter?: (command: Command, query: string) => boolean;
   /** Render one row yourself. */
   item?: (command: Command) => ReactNode;
+  /**
+   * The key legend along the bottom.
+   *
+   * Defaults to the three keys the palette actually binds. Pass `null` for
+   * no legend, or your own node to add to it — a product that opens this
+   * with a shortcut usually wants to say so here, and only the product
+   * knows what that shortcut is.
+   *
+   * It is `aria-hidden`. A screen reader reader already has the keys: the
+   * field is a combobox and the arrows and Enter come with that role. Read
+   * aloud on every open, the legend would be three sentences in front of
+   * the thing they came to do.
+   */
+  hints?: ReactNode;
 }
 
 /**
@@ -117,6 +131,7 @@ export function CommandPalette({
   empty,
   filter = defaultFilter,
   item: renderItem,
+  hints,
   className,
   ...rest
 }: CommandPaletteProps) {
@@ -343,6 +358,28 @@ export function CommandPalette({
           </div>
           {matches.length ? null : (
             <div className="uix-palette-empty">{empty}</div>
+          )}
+
+          {hints === null ? null : (
+            <div className="uix-palette-hints" aria-hidden="true">
+              {hints ?? (
+                <>
+                  <span className="uix-palette-hint">
+                    <kbd>&#8593;</kbd>
+                    <kbd>&#8595;</kbd>
+                    {strings.paletteNavigate}
+                  </span>
+                  <span className="uix-palette-hint">
+                    <kbd>&#8629;</kbd>
+                    {strings.paletteSelect}
+                  </span>
+                  <span className="uix-palette-hint">
+                    <kbd>{strings.paletteEscKey}</kbd>
+                    {strings.paletteClose}
+                  </span>
+                </>
+              )}
+            </div>
           )}
 
           <div role="status" className="uix-visually-hidden">

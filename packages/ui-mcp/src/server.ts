@@ -135,6 +135,53 @@ server.registerTool(
   },
 );
 
+/**
+ * Words that carry no evidence about which component someone wants.
+ *
+ * Not an optimisation. Without this list every word weighed the same, so
+ * "warn the user that saving failed" was answered by whichever component's
+ * documentation happened to contain "the", "that" and "user" — Stepper, as
+ * it turned out, three stopwords to Alert's one real word. The right answer
+ * appeared sometimes, and when it did it was for a reason that carried no
+ * information.
+ */
+const STOPWORDS = new Set(
+  (
+    "a an and are as at be but by can for from has have how if in into is it " +
+    "its let like make more much need of on once one only or over own same " +
+    "several should so some such than that the their them then there these " +
+    "they this those through to too under up use used user users using want " +
+    "was way we were what when where which while who why will with without " +
+    "you your someone something"
+  ).split(" "),
+);
+
+function words(text: string): string[] {
+  return text
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((word) => word.length > 2 && !STOPWORDS.has(word));
+}
+
+/**
+ * How well one query word matches a bag of words: 1 for the same word, 0.6
+ * for a shared four-letter prefix, 0 otherwise.
+ *
+ * The prefix rule is a stemmer small enough to explain. People type "sorting"
+ * and "steps" where the documentation says "sort" and "step", and a plain
+ * substring test — the previous rule — matched "list" inside "checklist" and
+ * "specialist" as readily as inside "listbox". Discounted rather than free,
+ * because a prefix match is a guess.
+ */
+function overlap(word: string, bag: string[]): number {
+  if (bag.includes(word)) return 1;
+  if (word.length < 4) return 0;
+  const stem = word.slice(0, 4);
+  return bag.some((other) => other.length >= 4 && other.startsWith(stem))
+    ? 0.6
+    : 0;
+}
+
 server.registerTool(
   "find_component",
   {
@@ -150,24 +197,44 @@ server.registerTool(
     },
   },
   async ({ need }) => {
-    const words = need
-      .toLowerCase()
-      .split(/\W+/)
-      .filter((word) => word.length > 2);
+    const queryWords = words(need);
 
     const scored = inventory
       .map((entry) => {
-        const haystack = [
-          entry.component,
-          entry.useFor,
-          entry.insteadWhen,
-          ...entry.props.map((prop) => `${prop.name} ${prop.doc}`),
-        ]
-          .join(" ")
-          .toLowerCase();
+        const name = words(entry.component);
+        const useFor = words(entry.useFor);
+        const props = words(
+          entry.props.map((prop) => `${prop.name} ${prop.doc}`).join(" "),
+        );
         return {
           entry,
-          score: words.filter((word) => haystack.includes(word)).length,
+          /* Weighted by which sentence the word was found in. The component's
+             own name and its "use it for" sentence say what it is; a prop doc
+             mentioning the word is weaker evidence, and a component with
+             thirty props would otherwise beat a component with four on volume
+             alone.
+
+             `insteadWhen` is not here on purpose. It is the sentence that
+             says *reach for something else*, so a hit in it is evidence
+             against this component and counting it as evidence for is
+             backwards. Concretely: ProgressBar's sentence says to reach for
+             Spinner, and while it was counted, searching "spinner" returned
+             ProgressBar.
+
+             Measured over twelve needs it never changed the first answer —
+             a name match outweighs it — but it moved the second and third
+             on half of them, and those are the suggestions a caller reads
+             before deciding. The sentence is still printed with every
+             result, because the pointer to the other component is the
+             useful half of it. */
+          score: queryWords.reduce(
+            (total, word) =>
+              total +
+              3 * overlap(word, name) +
+              2 * overlap(word, useFor) +
+              0.75 * overlap(word, props),
+            0,
+          ),
         };
       })
       .filter((row) => row.score > 0)

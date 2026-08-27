@@ -252,3 +252,88 @@ export const RowsRenderedByTheCaller: Story = {
     await expect(first).toHaveTextContent("New supplier");
   },
 };
+
+/**
+ * The key legend, replaced.
+ *
+ * A palette that opens on a shortcut usually wants to say which one, and
+ * only the application knows that. Passing a node replaces the default
+ * three rather than adding to them, so the caller has to restate the keys
+ * they still want — explicit, because a legend that silently grew a fourth
+ * item when we added one would rearrange somebody's footer.
+ */
+export const HintsReplaced: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  args: { label: "", commands: [] },
+  render: () => (
+    <CommandPalette
+      defaultOpen
+      label="Commands"
+      commands={COMMANDS.slice(0, 3)}
+      hints={
+        <span
+          style={{ display: "flex", gap: "0.375rem", alignItems: "center" }}
+        >
+          <kbd>⌘K</kbd>
+          reopens this
+        </span>
+      }
+    />
+  ),
+  play: async () => {
+    const body = within(document.body);
+    await expect(body.getByText("reopens this")).toBeVisible();
+    /* The default legend is gone, not appended to. */
+    await expect(body.queryByText("to navigate")).toBeNull();
+  },
+};
+
+/**
+ * The legend is not announced.
+ *
+ * The field is a combobox, and the arrow keys and Enter come with that role
+ * for a screen reader already. Read aloud, the legend would be three
+ * sentences between opening the palette and typing in it, every time.
+ */
+export const HintsAreNotAnnounced: Story = {
+  tags: ["!dev"],
+  parameters: { chromatic: { disableSnapshot: true } },
+  args: { label: "", commands: [] },
+  render: () => (
+    <CommandPalette
+      defaultOpen
+      label="Commands"
+      commands={COMMANDS.slice(0, 3)}
+    />
+  ),
+  play: async () => {
+    const body = within(document.body);
+    /* Visible to the eye. */
+    await expect(body.getByText("to navigate")).toBeVisible();
+    /* Absent from the accessibility tree: getByText finds it in the DOM,
+       and the ancestor carrying aria-hidden is what keeps it out. Asserted
+       on the attribute rather than through a role query, because there is
+       no role query that returns "nothing here has a name". */
+    const legend = body.getByText("to navigate").closest("[aria-hidden]");
+    await expect(legend).not.toBeNull();
+    await expect(legend).toHaveAttribute("aria-hidden", "true");
+  },
+};
+
+/** No legend at all. */
+export const HintsRemoved: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
+  args: { label: "", commands: [] },
+  render: () => (
+    <CommandPalette
+      defaultOpen
+      label="Commands"
+      commands={COMMANDS.slice(0, 3)}
+      hints={null}
+    />
+  ),
+  play: async () => {
+    const body = within(document.body);
+    await expect(body.queryByText("to navigate")).toBeNull();
+  },
+};

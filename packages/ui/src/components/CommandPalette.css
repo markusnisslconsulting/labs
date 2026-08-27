@@ -135,4 +135,37 @@
     color: var(--uix-text-secondary);
     text-align: center;
   }
+
+  /* Sits below the list rather than scrolling with it: the list is the only
+     thing that scrolls in the popup, and a legend that scrolled away would
+     be gone exactly when someone is far enough down the list to want it. */
+  .uix-palette-hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-md);
+    align-items: center;
+    padding: var(--uix-gap-xs) var(--uix-gap-md);
+    border-block-start: 1px solid var(--uix-border-subtle);
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-100);
+  }
+
+  .uix-palette-hint {
+    display: flex;
+    gap: var(--uix-gap-xs);
+    align-items: center;
+  }
+
+  .uix-palette-hint kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 1.5em;
+    padding-inline: var(--uix-gap-xs);
+    border: 1px solid var(--uix-border-subtle);
+    border-radius: var(--uix-radius-inset);
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.6;
+  }
 }

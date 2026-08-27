@@ -11,6 +11,25 @@
     overflow: hidden;
   }
 
+  /* No padding: the picture meets the card's edge, and the card's own
+     `overflow: hidden` is what rounds its corners. */
+  .uix-card-media {
+    aspect-ratio: var(--uix-card-media-ratio, 16 / 9);
+    background: var(--uix-bg-subtle, var(--uix-border-subtle));
+  }
+
+  /* `cover` and a fixed box, so a picture of any intrinsic ratio fills the
+     slot. Without `display: block` the image sits on the text baseline and
+     leaves a few pixels of background under it. */
+  .uix-card-media > img,
+  .uix-card-media > video,
+  .uix-card-media > picture > img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
   .uix-card-header {
     padding: var(--uix-gap-lg) var(--uix-gap-xl);
     border-bottom: 1px solid var(--uix-border-subtle);

@@ -113,24 +113,141 @@ describe("the MCP server over stdio", () => {
     expect(said(result)).toContain("DataTable");
   });
 
+  /**
+   * Twelve needs, phrased the way someone would ask, each with the component
+   * that is the right answer.
+   *
+   * This used to be one query, and the number it produced was 1 of 1. Run
+   * over a batch the ranker gets 10 of 12 into the top three and 7 of 12
+   * exactly first, which is the honest description of a word-overlap search
+   * over fifty short sentences. The single query was one of the seven.
+   *
+   * Top three rather than first, because that is what the tool can promise:
+   * it returns eight suggestions with their "instead when" sentences and the
+   * caller reads them. Several of these needs also have a defensible second
+   * answer — "show progress through a multi step checkout" is a fair
+   * description of ProgressBar — and a test demanding one true first result
+   * would be asserting a preference, not a contract.
+   */
+  const NEEDS: Array<[need: string, answer: string]> = [
+    ["let someone pick several suppliers from a long list", "Combobox"],
+    ["show tabular data the user can sort by column", "DataTable"],
+    ["let someone upload a contract file", "FileUpload"],
+    ["pick a delivery date", "DatePicker"],
+    ["show progress through a multi step checkout", "Stepper"],
+    ["a long piece of free text like a note", "Textarea"],
+    ["show a hierarchy of folders that can expand", "Tree"],
+    ["edit a title in place without a dialog", "InlineEdit"],
+    ["a panel that slides in from the side", "Drawer"],
+    ["one main action with more options next to it", "SplitButton"],
+  ];
+
+  /**
+   * The two needs the ranker does not answer, kept here rather than deleted.
+   *
+   * Neither is a ranking fault, and that is why they are written down. A
+   * word-overlap search can only find words that are there:
+   *
+   *   "warn the user that saving failed" misses Alert, whose sentence is
+   *   "feedback about what the user just did". It says nothing about warning
+   *   or failing. The old scorer did rank Alert second, by matching "the",
+   *   "user" and "that" — the right answer for no reason.
+   *
+   *   "let the user type several keywords as chips" returns Chip, which is
+   *   arguably what was asked for, ahead of TagInput, which is what was
+   *   meant.
+   *
+   * The fix for both is vocabulary in the documentation, not arithmetic in
+   * the search, so it belongs to whoever next edits those sentences.
+   */
+  const KNOWN_GAPS: Array<[need: string, answer: string]> = [
+    ["warn the user that saving failed", "Alert"],
+    ["let the user type several keywords as chips", "TagInput"],
+  ];
+
   it("answers the question a props table cannot", async () => {
-    const text = said(
-      await client.callTool({
-        name: "find_component",
-        arguments: {
-          need: "let someone pick several suppliers from a long list",
-        },
-      }),
-    );
-    /* "Which one do I reach for" is answered by the `useFor` and
-       `insteadWhen` sentences, and this is the assertion that the ranking
-       actually uses them: Combobox is the answer, and it is the answer
-       because its own sentence says "a list too long to scan" and "hold
-       more than one answer". */
-    expect(text.split("\n")[0]).toContain("Combobox");
-    expect(text, "every suggestion carries its own way out").toContain(
-      "instead when:",
-    );
+    const missed: string[] = [];
+    for (const [need, answer] of NEEDS) {
+      const text = said(
+        await client.callTool({ name: "find_component", arguments: { need } }),
+      );
+      const suggested = text
+        .split("\n")
+        .filter((line) => !line.startsWith(" "))
+        .map((line) => line.split(" — ")[0]);
+      if (!suggested.slice(0, 3).includes(answer)) {
+        missed.push(`"${need}" -> ${suggested.slice(0, 3).join(", ")}`);
+      }
+      expect(text, "every suggestion carries its own way out").toContain(
+        "instead when:",
+      );
+    }
+    expect(missed, "these needs stopped finding their component").toEqual([]);
+  });
+
+  it("still does not answer the two gaps, and says so out loud", async () => {
+    /* Asserted so the list above cannot quietly become a list of needs
+       nobody checks: if someone fixes Alert's sentence, this fails and the
+       need moves up into NEEDS. A known gap that is silently fixed is a
+       comment claiming a limitation that no longer exists. */
+    const stillMissing: string[] = [];
+    for (const [need, answer] of KNOWN_GAPS) {
+      const text = said(
+        await client.callTool({ name: "find_component", arguments: { need } }),
+      );
+      const suggested = text
+        .split("\n")
+        .filter((line) => !line.startsWith(" "))
+        .map((line) => line.split(" — ")[0]);
+      if (!suggested.slice(0, 3).includes(answer)) stillMissing.push(need);
+    }
+    expect(
+      stillMissing.length,
+      "a documented gap now works; move it into NEEDS and delete the note",
+    ).toBe(KNOWN_GAPS.length);
+  });
+
+  /**
+   * A component must not be suggested because it pointed somewhere else.
+   *
+   * Each row is a word, and the components whose only connection to it is a
+   * sentence recommending against themselves: ProgressBar's "reach for
+   * something else when" names Spinner, so while `insteadWhen` was scored as
+   * evidence, searching "spinner" returned ProgressBar. Twenty-one words in
+   * the inventory have this shape; these four are the check.
+   *
+   * A property rather than a query. The version of this file before it
+   * asserted one need and one expected answer, which said nothing about the
+   * other forty-nine components and happened to be one of the queries that
+   * worked.
+   */
+  const POINTS_AWAY: Array<[word: string, mustNotAppear: string[]]> = [
+    ["spinner", ["ProgressBar", "Skeleton"]],
+    ["menu", ["CommandPalette"]],
+    ["form", ["InlineEdit"]],
+    ["numberfield", ["Field"]],
+  ];
+
+  it("does not suggest a component for pointing elsewhere", async () => {
+    const wrong: string[] = [];
+    for (const [word, mustNotAppear] of POINTS_AWAY) {
+      const text = said(
+        await client.callTool({
+          name: "find_component",
+          arguments: { need: word },
+        }),
+      );
+      const suggested = text
+        .split("\n")
+        .filter((line) => !line.startsWith(" "))
+        .map((line) => line.split(" — ")[0]);
+      for (const name of mustNotAppear) {
+        if (suggested.includes(name)) {
+          wrong.push(`"${word}" suggested ${name}, which recommends against`);
+        }
+      }
+    }
+    expect(wrong).toEqual([]);
   });
 
   it("filters tokens by tier, because the tier is the rule", async () => {

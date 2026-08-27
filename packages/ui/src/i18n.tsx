@@ -181,6 +181,32 @@ export interface Strings {
    * to the reader, and translators need to be able to tell them apart.
    */
   close: string;
+  /**
+   * The key legend along the bottom of a command palette.
+   *
+   * Visible text rather than an aria-label, and still here rather than in
+   * the component: it is a sentence in a language, and a palette in a
+   * German product that says "to select" under a German placeholder is a
+   * palette that was translated halfway.
+   *
+   * The key names travel with them. "Enter" is "Eingabe" on a German
+   * keyboard and "Esc" is "Echap" on a French one, so a component that
+   * hardcoded the caps would have made them untranslatable.
+   */
+  paletteNavigate: string;
+  paletteSelect: string;
+  paletteClose: string;
+  /**
+   * The Escape key's cap, as it is printed on the reader's keyboard.
+   *
+   * Here rather than in the component because the paragraph above says key
+   * caps are words in a language, and the first version of that legend then
+   * hardcoded this one anyway. A gate caught it. The arrows and the return
+   * symbol stay in the component: those are glyphs, the same on every
+   * keyboard, and a string nobody would ever translate is a string nobody
+   * maintains.
+   */
+  paletteEscKey: string;
 }
 
 export const defaultStrings: Strings = {
@@ -233,6 +259,10 @@ export const defaultStrings: Strings = {
   decrease: "Decrease",
   required: "required",
   close: "Close",
+  paletteNavigate: "to navigate",
+  paletteSelect: "to select",
+  paletteClose: "to close",
+  paletteEscKey: "esc",
 };
 
 const StringsContext = createContext<Strings>(defaultStrings);

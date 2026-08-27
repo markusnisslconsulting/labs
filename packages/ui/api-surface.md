@@ -259,12 +259,16 @@ export {};
 ```ts
 export type CardProps = ComponentPropsWithRef<"article">;
 export type CardSlotProps = ComponentPropsWithRef<"div">;
+export interface CardMediaProps extends ComponentPropsWithRef<"div"> {
+  ratio?: number | string;
+}
 export declare function Card({
   children,
   className,
   ...rest
 }: CardProps): import("react").JSX.Element;
 export declare namespace Card {
+  var Media: typeof MediaBase;
   var Header: typeof HeaderBase;
   var Body: typeof BodyBase;
   var Footer: typeof FooterBase;
@@ -284,6 +288,13 @@ declare function FooterBase({
   className,
   ...rest
 }: CardSlotProps): import("react").JSX.Element;
+declare function MediaBase({
+  children,
+  className,
+  ratio,
+  style,
+  ...rest
+}: CardMediaProps): import("react").JSX.Element;
 export {};
 ```
 
@@ -431,6 +442,7 @@ interface CommandPaletteOwnProps {
   empty?: ReactNode;
   filter?: (command: Command, query: string) => boolean;
   item?: (command: Command) => ReactNode;
+  hints?: ReactNode;
 }
 export type CommandPaletteProps = CommandPaletteOwnProps &
   Omit<ComponentPropsWithRef<"div">, keyof CommandPaletteOwnProps | "children">;
@@ -445,6 +457,7 @@ export declare function CommandPalette({
   empty,
   filter,
   item: renderItem,
+  hints,
   className,
   ...rest
 }: CommandPaletteProps): import("react").JSX.Element;

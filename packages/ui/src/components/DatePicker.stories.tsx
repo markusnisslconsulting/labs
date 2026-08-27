@@ -255,9 +255,12 @@ export const ARangeHoldsOneEnd: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   args: { label: "" },
   render: function Render() {
+    /* Seeded with a finished range rather than `null`, so the grid opens on
+       a month the test names. Empty, it opens on today, and a test that then
+       reaches for a cell by position is testing whichever month it ran in. */
     const [value, setValue] = useState<
       IsoDate | [IsoDate, IsoDate | null] | null
-    >(null);
+    >(["2026-03-02", "2026-03-06"]);
     return (
       <>
         <DatePicker
@@ -276,29 +279,53 @@ export const ARangeHoldsOneEnd: Story = {
       canvas.getByRole("button", { name: "Open calendar" }),
     );
 
-    const day = (date: string) =>
-      canvas
+    const day = (date: string) => {
+      const cell = canvas
         .getAllByRole("gridcell")
-        .find((cell) => cell.getAttribute("data-date") === date)!;
+        .find((candidate) => candidate.getAttribute("data-date") === date);
+      /* Named, not indexed. The previous version took cell 10 of whatever
+         month happened to be open and then walked `nextElementSibling` for
+         the second end. A cell at the end of a week row has no next sibling
+         — it is the first cell of the next `<tr>` — so on those days the
+         walk fell back to the start date and the test quietly asserted a
+         same-day range instead. It passed either way, which is the whole
+         problem: it asserted whichever scenario the calendar handed it. */
+      if (!cell) throw new Error(`no cell for ${date}; the grid moved`);
+      return cell;
+    };
 
-    /* The calendar opens on today, so page to a month the test controls. */
-    const anyCell = canvas.getAllByRole("gridcell")[10]!;
-    const start = anyCell.getAttribute("data-date")!;
-    await userEvent.click(anyCell);
+    /* A finished range is showing, so the next click starts a new one. */
+    await userEvent.click(day("2026-03-10"));
     await expect(
       canvas.getByTestId("value"),
-      "the first click has to leave a start with no end",
-    ).toHaveTextContent(`["${start}",null]`);
+      "clicking with both ends set has to start over, not extend",
+    ).toHaveTextContent('["2026-03-10",null]');
 
-    const laterDate = day(start).nextElementSibling
-      ? (day(start).nextElementSibling as HTMLElement).getAttribute(
-          "data-date",
-        )!
-      : start;
-    await userEvent.click(day(laterDate));
+    /* Later than the start and in the same month, so this completes the
+       range rather than restarting it. */
+    await userEvent.click(day("2026-03-13"));
     await expect(canvas.getByTestId("value")).toHaveTextContent(
-      `["${start}","${laterDate}"]`,
+      '["2026-03-10","2026-03-13"]',
     );
+
+    /* Completing a range closes the calendar, so the next scenario has to
+       open it again. Worth stating rather than working around: the close is
+       the component telling the reader it is finished asking. */
+    await expect(
+      canvas.getByRole("button", { name: "Open calendar" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Open calendar" }),
+    );
+
+    /* The other half of the docstring, never asserted until now: a click
+       before the start begins again instead of being refused. */
+    await userEvent.click(day("2026-03-10"));
+    await userEvent.click(day("2026-03-04"));
+    await expect(
+      canvas.getByTestId("value"),
+      "a click before the start has to begin a new range",
+    ).toHaveTextContent('["2026-03-04",null]');
   },
 };
 

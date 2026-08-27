@@ -264,13 +264,13 @@
     {
       "component": "Card",
       "props": [],
-      "parts": ["Card.Header", "Card.Body", "Card.Footer"],
-      "slots": [],
+      "parts": ["Card.Media", "Card.Header", "Card.Body", "Card.Footer"],
+      "slots": [{ "token": "--uix-card-media-ratio", "default": "16 / 9" }],
       "passthrough": true,
       "status": "stable",
       "useFor": "a summary that links somewhere else",
       "insteadWhen": "the surface is a section of this page (Panel)",
-      "accessibility": "`article` with an optional labelled header. Every slot forwards its attributes, so `aria-label`, `id` and `role` can be set where they belong instead of being unreachable"
+      "accessibility": "`article` with an optional labelled header. Every slot forwards its attributes, so `aria-label`, `id` and `role` can be set where they belong instead of being unreachable. Theming: | Token | Default | Meaning | | --- | --- | --- | | `--uix-card-media-ratio` | `16 / 9` | Box a card's banner image is cropped to | The ratio is a slot as well as a prop because a brand usually wants one answer for ever"
     },
     {
       "component": "Checkbox",
@@ -498,6 +498,12 @@
           "type": "(command: Command) => ReactNode",
           "required": false,
           "doc": "Render one row yourself."
+        },
+        {
+          "name": "hints",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "The key legend along the bottom."
         }
       ],
       "parts": [],
