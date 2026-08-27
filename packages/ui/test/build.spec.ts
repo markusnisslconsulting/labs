@@ -96,25 +96,36 @@ describe("nx cache inputs", () => {
       namedInputs: Record<string, string[]>;
       targetDefaults: Record<string, { inputs?: string[] }>;
     };
-    const project = JSON.parse(
-      readFileSync("packages/ui/project.json", "utf8"),
-    ) as {
-      targets: Record<string, { options?: unknown; inputs?: string[] }>;
-    };
-
+    /* Every project, not `packages/ui` alone. Only `ui` runs a script from
+       there today — measured — and hardcoding that path would be the same
+       assumption one level up: the next project to add a script-driven
+       target would sit outside the check that exists for it. */
     const missing: string[] = [];
-    for (const [name, config] of Object.entries(project.targets)) {
-      const command = JSON.stringify(config.options ?? {});
-      /* Only the ones that actually run something from there. A target whose
-         command is `vitest` or `storybook build` is not implemented by a
-         file in `scripts/`. */
-      if (!command.includes("scripts/") && !command.includes("tools/")) {
-        continue;
-      }
-      const inputs = config.inputs ??
-        nxConfig.targetDefaults[name]?.inputs ?? ["default", "^default"];
-      if (!inputs.includes("gateScripts")) {
-        missing.push(name);
+    for (const root of ["packages", "apps"]) {
+      if (!existsSync(root)) continue;
+      for (const entry of readdirSync(root)) {
+        const config = join(root, entry, "project.json");
+        if (!existsSync(config)) continue;
+        const project = JSON.parse(readFileSync(config, "utf8")) as {
+          name?: string;
+          targets: Record<string, { options?: unknown; inputs?: string[] }>;
+        };
+        const projectName = project.name ?? entry;
+
+        for (const [name, target] of Object.entries(project.targets)) {
+          const command = JSON.stringify(target.options ?? {});
+          /* Only the ones that actually run something from there. A target
+             whose command is `vitest` or `storybook build` is not
+             implemented by a file in `scripts/`. */
+          if (!command.includes("scripts/") && !command.includes("tools/")) {
+            continue;
+          }
+          const inputs = target.inputs ??
+            nxConfig.targetDefaults[name]?.inputs ?? ["default", "^default"];
+          if (!inputs.includes("gateScripts")) {
+            missing.push(`${projectName}:${name}`);
+          }
+        }
       }
     }
 
