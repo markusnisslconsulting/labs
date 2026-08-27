@@ -42,23 +42,21 @@ function walk(dir, files = []) {
  * component quietly growing. The floor is separate because it is the only
  * thing a page pays before it has used anything.
  */
+/**
+ * The token floor only.
+ *
+ * The per-component budgets used to live here as a flat 3 KB ceiling over
+ * each component's own chunk and stylesheet — which understated the cost
+ * by leaving out every shared chunk a component imports, and said nothing
+ * when a component doubled from 0.5 KB to 2.9 KB. Measured transitively,
+ * two components were already over that ceiling while the check passed.
+ *
+ * `scripts/component-size.mjs` replaced it with a ratchet per component.
+ */
 function componentBudgets() {
   const dir = "dist/packages/ui";
   if (!existsSync(dir)) return [];
   const out = [];
-  for (const entry of readdirSync(path.join(dir, "components"))) {
-    if (!entry.endsWith(".js")) continue;
-    const name = entry.replace(/\.js$/, "");
-    const files = [path.join(dir, "components", entry)];
-    const css = path.join(dir, `${name}.css`);
-    if (existsSync(css)) files.push(css);
-    out.push({
-      label: `component ${name}`,
-      files,
-      max: 3 * 1024,
-      quiet: true,
-    });
-  }
   out.push({
     label: "token floor",
     files: walk(path.join(dir, "styles")),
