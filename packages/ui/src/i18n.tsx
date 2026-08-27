@@ -143,6 +143,11 @@ export interface Strings {
   optionResults: (count: number) => string;
   /** The remove control on one chosen value of a multiple combobox. */
   removeValue: (value: string) => string;
+  /** The control that opens a date picker's calendar. */
+  openCalendar: string;
+  /** The month paging controls. */
+  previousMonth: string;
+  nextMonth: string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -181,6 +186,9 @@ export const defaultStrings: Strings = {
   loading: "Loading",
   errorSummary: (count) =>
     count === 1 ? "1 field needs attention" : `${count} fields need attention`,
+  openCalendar: "Open calendar",
+  previousMonth: "Previous month",
+  nextMonth: "Next month",
   optionResults: (count) =>
     count === 0
       ? "No options match"

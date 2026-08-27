@@ -1,0 +1,177 @@
+/* DatePicker styles, shipped with the component.
+   A page that never imports DatePicker never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-datepicker {
+    position: relative;
+  }
+
+  .uix-datepicker-row {
+    display: flex;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    padding-inline: var(--uix-gap-sm);
+    border: 1px solid var(--uix-border-strong);
+    border-radius: var(--uix-radius-control);
+    background: var(--uix-bg-surface);
+    min-block-size: var(--uix-control-md);
+  }
+
+  .uix-datepicker-row:has(.uix-datepicker-input:focus-visible) {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+  }
+
+  .uix-datepicker[data-invalid] .uix-datepicker-row {
+    border-color: var(--uix-status-danger);
+  }
+
+  .uix-datepicker-input {
+    flex: 1;
+    min-inline-size: 0;
+    border: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    /* Figures of one width, so the digits do not shuffle as a date is
+       typed and a range does not change width when its ends do. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .uix-datepicker-input:focus {
+    outline: none;
+  }
+
+  .uix-datepicker-toggle,
+  .uix-datepicker-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    border: 0;
+    border-radius: var(--uix-radius-inset);
+    background: none;
+    color: var(--uix-text-secondary);
+    cursor: pointer;
+  }
+
+  .uix-datepicker-toggle:hover:not(:disabled),
+  .uix-datepicker-page:hover:not(:disabled) {
+    background: var(--uix-bg-subtle);
+    color: var(--uix-text-body);
+  }
+
+  .uix-datepicker-toggle:focus-visible,
+  .uix-datepicker-page:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: 1px;
+  }
+
+  /* In the DOM whether open or not, so `aria-controls` resolves; hidden
+     with `display: none` so forty-two cells leave the accessibility tree
+     while it is closed. `visibility` would leave them counted. */
+  .uix-datepicker-calendar {
+    display: none;
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: calc(100% + var(--uix-gap-xs));
+    z-index: 1;
+    padding: var(--uix-gap-sm);
+    border-radius: var(--uix-radius-container);
+    background: var(--uix-bg-surface);
+    box-shadow: var(--uix-elevation-overlay);
+  }
+
+  .uix-datepicker-calendar[data-open] {
+    display: block;
+  }
+
+  .uix-datepicker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--uix-gap-sm);
+    padding-block-end: var(--uix-gap-xs);
+  }
+
+  .uix-datepicker-month {
+    font-size: var(--uix-font-size-200);
+    font-weight: var(--uix-weight-ui);
+    color: var(--uix-text-heading);
+    /* The month name changes length between months and locales, and a
+       header that resizes makes the paging buttons move under the cursor. */
+    min-inline-size: 10ch;
+    text-align: center;
+  }
+
+  .uix-datepicker-week {
+    display: grid;
+    grid-template-columns: repeat(7, 2rem);
+  }
+
+  .uix-datepicker-weekday {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    block-size: 1.75rem;
+    color: var(--uix-text-caption);
+    font-size: var(--uix-font-size-100);
+  }
+
+  .uix-datepicker-day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    block-size: 2rem;
+    border-radius: var(--uix-radius-inset);
+    font-size: var(--uix-font-size-200);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+
+  .uix-datepicker-day:hover:not([data-refused]) {
+    background: var(--uix-bg-subtle);
+  }
+
+  /* Days from the neighbouring months stay legible rather than disappearing:
+     they are shown so the weeks are whole, and a row of blanks reads as a
+     rendering fault. */
+  .uix-datepicker-day[data-outside] {
+    color: var(--uix-text-caption);
+  }
+
+  .uix-datepicker-day[data-between] {
+    background: var(--uix-accent-soft);
+    border-radius: 0;
+  }
+
+  .uix-datepicker-day[data-selected] {
+    background: var(--uix-accent);
+    color: var(--uix-text-on-accent);
+  }
+
+  .uix-datepicker-day[data-refused] {
+    cursor: default;
+    color: var(--uix-text-disabled);
+    /* A line through, so "cannot be picked" is not carried by colour alone.
+       WCAG 1.4.1, and the case that matters is a calendar of booked days. */
+    text-decoration: line-through;
+  }
+
+  .uix-datepicker-day:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: -1px;
+  }
+
+  @media (forced-colors: active) {
+    .uix-datepicker-day[data-selected] {
+      outline: 2px solid Highlight;
+      outline-offset: -2px;
+    }
+  }
+}

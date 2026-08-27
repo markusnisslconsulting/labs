@@ -509,6 +509,68 @@ export declare function DataTable<Row>({
 export {};
 ```
 
+## DatePicker
+
+```ts
+export type IsoDate = string;
+interface DatePickerOwnProps {
+  label: ReactNode;
+  hint?: ReactNode;
+  error?: ReactNode;
+  required?: boolean;
+  hideLabel?: boolean;
+  name?: string;
+  value?: IsoDate | [IsoDate, IsoDate | null] | null;
+  defaultValue?: IsoDate | [IsoDate, IsoDate | null] | null;
+  onValueChange?: (next: IsoDate | [IsoDate, IsoDate | null] | null) => void;
+  range?: boolean;
+  locale?: string;
+  min?: IsoDate;
+  max?: IsoDate;
+  disabledDate?: (date: IsoDate) => boolean;
+  disabled?: boolean;
+  placeholder?: string;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  day?: (
+    date: IsoDate,
+    state: {
+      selected: boolean;
+      outside: boolean;
+      refused: boolean;
+    },
+  ) => ReactNode;
+}
+export type DatePickerProps = DatePickerOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof DatePickerOwnProps | "children">;
+export declare function DatePicker({
+  label,
+  hint,
+  error,
+  required,
+  hideLabel,
+  name,
+  value,
+  defaultValue,
+  onValueChange,
+  range,
+  locale,
+  min,
+  max,
+  disabledDate,
+  disabled,
+  placeholder,
+  open: openProp,
+  defaultOpen,
+  onOpenChange,
+  day: renderDay,
+  className,
+  ...rest
+}: DatePickerProps): import("react").JSX.Element;
+export {};
+```
+
 ## Dialog
 
 ```ts

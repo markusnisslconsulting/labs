@@ -28,6 +28,11 @@ import {
   type ComboboxOption,
 } from "./components/Combobox";
 import {
+  DatePicker,
+  type DatePickerProps,
+  type IsoDate,
+} from "./components/DatePicker";
+import {
   Dialog,
   type DialogProps,
   AlertDialog,
@@ -121,6 +126,9 @@ export {
   Combobox,
   type ComboboxProps,
   type ComboboxOption,
+  DatePicker,
+  type DatePickerProps,
+  type IsoDate,
   componentTokens,
   Divider,
   type DividerProps,

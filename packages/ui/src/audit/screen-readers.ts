@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "DatePicker",
+    why: "a month grid is the most verbose thing a reader meets: whether the weekday, the date and the month are said once each rather than on every cell",
+    cells: blank(),
+  },
+  {
     component: "CommandPalette",
     why: "focus stays in the input while aria-activedescendant moves: whether a reader hears the highlighted row change, and whether the count is said once per change rather than per keystroke",
     cells: blank(),

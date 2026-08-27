@@ -593,6 +593,100 @@
       "accessibility": "the header cells carry `aria-sort`, which is how a screen reader says a column is ordered and in which direction — the arrow is for the eye and announces nothing. Each sortable header is a real `<button>` inside its `<th>`, so it is reachable and operable with the keys the platform already gives a button. The scroll viewport is focusable with a name, because `overflow` makes a region only a pointe"
     },
     {
+      "component": "DatePicker",
+      "props": [
+        { "name": "label", "type": "ReactNode", "required": true },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        { "name": "error", "type": "ReactNode", "required": false },
+        { "name": "required", "type": "boolean", "required": false },
+        { "name": "hideLabel", "type": "boolean", "required": false },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The form field name, so a `Form` can route an error here."
+        },
+        {
+          "name": "value",
+          "type": "IsoDate | [IsoDate, IsoDate | null] | null",
+          "required": false,
+          "doc": "The chosen date, or the two ends when `range` is set."
+        },
+        {
+          "name": "defaultValue",
+          "type": "IsoDate | [IsoDate, IsoDate | null] | null",
+          "required": false
+        },
+        {
+          "name": "onValueChange",
+          "type": "(next: IsoDate | [IsoDate, IsoDate | null] | null) => void",
+          "required": false
+        },
+        {
+          "name": "range",
+          "type": "boolean",
+          "required": false,
+          "doc": "Pick two ends rather than one day."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "doc": "Which locale the calendar is written in."
+        },
+        {
+          "name": "min",
+          "type": "IsoDate",
+          "required": false,
+          "doc": "Nothing before this date can be picked."
+        },
+        {
+          "name": "max",
+          "type": "IsoDate",
+          "required": false,
+          "doc": "Nothing after this date can be picked."
+        },
+        {
+          "name": "disabledDate",
+          "type": "(date: IsoDate) => boolean",
+          "required": false,
+          "doc": "Refuse individual dates — holidays, days already booked."
+        },
+        { "name": "disabled", "type": "boolean", "required": false },
+        { "name": "placeholder", "type": "string", "required": false },
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "doc": "Whether the calendar is showing."
+        },
+        { "name": "defaultOpen", "type": "boolean", "required": false },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "day",
+          "type": "( date: IsoDate, state: { selected: boolean",
+          "required": false,
+          "doc": "Render one day's cell yourself."
+        },
+        { "name": "outside", "type": "boolean", "required": true },
+        {
+          "name": "refused",
+          "type": "boolean }, ) => ReactNode",
+          "required": true
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "picking a day, or two ends of a span",
+      "insteadWhen": "the reader knows the date and there is nothing to browse: a `TextField` with a pattern is faster to type into and far cheaper, and a calendar adds nothing to \"enter your date of birth\"",
+      "accessibility": "**a text input with a calendar beside it**, not a calendar alone. Typing is faster than clicking for anybody who already knows the date, and for many people using assistive technology it is the only practical route — a month grid is thirty-five stops to reach one day. The input is the control; the calendar is the enhancement, the same way `FileUpload`'s drop zone sits over a real file input. The g"
+    },
+    {
       "component": "Dialog",
       "props": [
         {

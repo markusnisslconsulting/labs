@@ -158,10 +158,16 @@ const SLOTS = [
  *
  * Measured before it was added: of the nine components with a list-shaped
  * prop, eight have parts and children and none has a render prop, and
- * `DataTable` is the only one the other way round. So this widens the rule
- * for exactly one component and lets nothing else through.
+ * `DataTable` is the only one the other way round. So this widened the rule
+ * for exactly one component and let nothing else through. Eight more have
+ * grown one since.
+ *
+ * `\(\s*` and not `\(`, because prettier wraps a signature whose parameters
+ * do not fit on one line — `DatePicker`'s `day` prop takes a date and a
+ * state object, so its opening paren is followed by a newline, and the first
+ * version of this pattern reported the component as having no way in at all.
  */
-const RENDERS_ITS_ITEMS = /\w+\??:\s*\((\w+)[^)]*\)\s*=>\s*ReactNode/;
+const RENDERS_ITS_ITEMS = /\w+\??:\s*\(\s*(\w+)[^)]*\)\s*=>\s*ReactNode/;
 
 describe("component API contract", () => {
   it("every component is composable, or says why it cannot be", () => {

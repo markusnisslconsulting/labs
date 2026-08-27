@@ -75,6 +75,15 @@ cut at the first release.
 
 ### added
 
+- **DatePicker** — a text input with a calendar beside it, not a calendar
+  alone: typing is faster for anyone who knows the date, and a month grid is
+  thirty-five stops to reach one day. Dates are `YYYY-MM-DD` strings, never
+  `Date` objects — `new Date("2026-08-27")` is midnight UTC, which is the 26th
+  in Los Angeles, so a date entered in Berlin reads a day early in California
+  for some users and not others. The week starts where `Intl` says the locale
+  starts it (`de-DE` Monday, `en-US` Sunday), the grid is one tab stop with
+  arrows that page the month by themselves, and refused days are shown and
+  struck through rather than removed.
 - **Combobox** — async options through `onQueryChange` (which turns local
   filtering off, because filtering an answer a server gave hides rows it
   deliberately returned), multiple selection with each held value removable

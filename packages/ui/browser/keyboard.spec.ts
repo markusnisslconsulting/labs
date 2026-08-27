@@ -1084,3 +1084,88 @@ test(`Combobox: Escape ${COMBO_ESCAPE.expectation}`, async ({ page }) => {
     "Escape closed the list and took the keyboard with it",
   ).toBeFocused();
 });
+
+/* ------------------------------------------------------------ DatePicker */
+
+const DATE_RIGHT = row("DatePicker", "ArrowRight");
+const DATE_PAGEUP = row("DatePicker", "PageUp");
+const DATE_HOME = row("DatePicker", "Home");
+
+/** The day the grid's single tab stop is on. */
+const cursorDate = (page: Page) =>
+  page
+    .locator('.uix-datepicker-day[tabindex="0"]')
+    .first()
+    .getAttribute("data-date");
+
+/**
+ * ArrowRight moves a day and pages the calendar at the month's end.
+ *
+ * The paging is the half worth asserting. Without it, reaching the first of
+ * next month means finding the paging button, which for a keyboard user is
+ * leaving the grid and coming back — and the fixture starts on 31 August
+ * precisely so the next press has to cross a boundary.
+ */
+test(`DatePicker: ArrowRight ${DATE_RIGHT.expectation}`, async ({ page }) => {
+  await openStory(page, DATE_RIGHT.story);
+  expect(await cursorDate(page)).toBe("2026-08-31");
+  await page.keyboard.press("ArrowRight");
+  expect(
+    await cursorDate(page),
+    "the cursor did not cross into the next month",
+  ).toBe("2026-09-01");
+
+  /* And the grid now says September, which is what a reader is told. */
+  await expect(page.getByRole("grid")).toHaveAttribute(
+    "aria-label",
+    /September/,
+  );
+});
+
+/**
+ * PageUp moves back a month and clamps the day.
+ *
+ * 31 October back a month is 30 September, not the 31st of a month that has
+ * none. Leap years make the alternative — a table of month lengths — a thing
+ * somebody has to maintain.
+ */
+test(`DatePicker: PageUp ${DATE_PAGEUP.expectation}`, async ({ page }) => {
+  await openStory(page, DATE_PAGEUP.story);
+  /* From 31 August, one month forward has to clamp: September has 30 days. */
+  await page.keyboard.press("PageDown");
+  expect(await cursorDate(page), "September was given a 31st day").toBe(
+    "2026-09-30",
+  );
+
+  /* And the clamp is sticky — the 30th of October, not a remembered 31st.
+     That is the decision rather than an accident: restoring the day somebody
+     originally wanted is hidden state, and it would mean PageDown twice then
+     PageUp twice does not return you to where you started. This test first
+     asserted the other behaviour, because I assumed it without reading the
+     arithmetic I had written. Pinned so a later "improvement" has to argue
+     with it. */
+  await page.keyboard.press("PageDown");
+  expect(await cursorDate(page)).toBe("2026-10-30");
+
+  await page.keyboard.press("PageUp");
+  expect(await cursorDate(page)).toBe("2026-09-30");
+});
+
+/**
+ * Home goes to the first day of the week, which the locale decides.
+ *
+ * The fixture is `de-DE`, so the week starts on Monday: 31 August 2026 is
+ * itself a Monday, and the day after it goes back to it. A component that
+ * hardcoded Sunday would land a day earlier and be wrong in half the world.
+ */
+test(`DatePicker: Home ${DATE_HOME.expectation}`, async ({ page }) => {
+  await openStory(page, DATE_HOME.story);
+  await page.keyboard.press("ArrowRight");
+  expect(await cursorDate(page)).toBe("2026-09-01");
+
+  await page.keyboard.press("Home");
+  expect(
+    await cursorDate(page),
+    "Home did not use the locale's own first day of the week",
+  ).toBe("2026-08-31");
+});

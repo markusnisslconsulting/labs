@@ -6,26 +6,27 @@ not, and how each of those can be measured.
 
 As of 2026-08-27. The order is impact, not effort.
 
-| #   | Stage                                 | Standing          |
-| --- | ------------------------------------- | ----------------- |
-| 01  | The component API contract            | stands            |
-| 02  | Localisation                          | stands            |
-| 03  | The inventory an enterprise app needs | open, the largest |
-| 04  | Forms as a system                     | stands            |
-| 05  | States and scale, first class         | stands            |
-| 06  | Accessibility past the automated 40 % | half              |
-| 07  | Distribution and the version contract | half              |
-| 08  | ~~Design and code as one source~~     | struck            |
-| 09  | Performance as a contract             | stands            |
-| 10  | Governance and the human process      | half              |
-| 11  | Observability from real products      | open              |
-| 12  | Readable by an agent                  | half              |
+| #   | Stage                                 | Standing |
+| --- | ------------------------------------- | -------- |
+| 01  | The component API contract            | stands   |
+| 02  | Localisation                          | stands   |
+| 03  | The inventory an enterprise app needs | stands   |
+| 04  | Forms as a system                     | stands   |
+| 05  | States and scale, first class         | stands   |
+| 06  | Accessibility past the automated 40 % | half     |
+| 07  | Distribution and the version contract | half     |
+| 08  | ~~Design and code as one source~~     | struck   |
+| 09  | Performance as a contract             | stands   |
+| 10  | Governance and the human process      | half     |
+| 11  | Observability from real products      | open     |
+| 12  | Readable by an agent                  | half     |
 
-## 03 — The inventory (open)
+## 03 — The inventory (stands)
 
-The largest open stage, and the only one where sheer quantity is the
-problem. Thirty-seven components are enough for a website and not for an
-application. What is missing, roughly in the order it blocks a team:
+It was the largest open stage and the only one where sheer quantity was the
+problem. Thirty-seven components were enough for a website and not for an
+application; there are forty-nine now, and every name that was on this list
+is built. What each one cost, in the order it was blocking a team:
 
 **DataTable** — done. Sorting, column widths, selection, virtualisation,
 sticky header. `Table` is markup with styling and stays that way; the two
@@ -95,9 +96,19 @@ markup: a polite live region for the empty state, two named buttons instead
 of one for the split button, and an overflow counter whose label still names
 the people the layout dropped.
 
-**DatePicker** — calendar, range, localisation, keyboard. The single most
-expensive component in any design system, and the last one open here
-alongside a real Combobox.
+**DatePicker** — done, and it was the most expensive as promised. The
+decision that matters is not the calendar: it is that a date is a
+`YYYY-MM-DD` string and never a `Date`. A `Date` is an instant with a
+timezone and a calendar date is not, so the same value read in two places
+is two different days — for some users, months after release.
+
+Two behaviours are pinned rather than left to whoever reads the code next.
+The month clamp is sticky: 31 August forward a month is 30 September, and
+forward again is 30 October rather than a remembered 31st, because
+remembering is hidden state and would mean PageDown twice then PageUp twice
+does not return you where you started. And Home goes to the locale's own
+first day of the week, which `Intl` knows and this component would otherwise
+have to guess.
 
 **A real Combobox** — done. It was an `<input list>` over a `datalist`, the
 operating system's own picker: honest, very small, and unable to express the

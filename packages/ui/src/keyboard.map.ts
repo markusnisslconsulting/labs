@@ -381,4 +381,28 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
     key: "Escape",
     expectation: "closes the list and leaves the field focused",
   },
+  /* DatePicker — the grid pattern, and the only component here whose keys
+     do arithmetic: every one of them lands on a date that depends on the
+     month's length and the locale's week start. */
+  {
+    component: "DatePicker",
+    story: "components-datepicker--a-known-month",
+    owner: "component",
+    key: "ArrowRight",
+    expectation: "moves a day, pacing the calendar past the month's end",
+  },
+  {
+    component: "DatePicker",
+    story: "components-datepicker--a-known-month",
+    owner: "component",
+    key: "PageUp",
+    expectation: "moves back a month, clamping the day to the month's length",
+  },
+  {
+    component: "DatePicker",
+    story: "components-datepicker--a-known-month",
+    owner: "component",
+    key: "Home",
+    expectation: "moves to the first day of the week, wherever that is",
+  },
 ];
