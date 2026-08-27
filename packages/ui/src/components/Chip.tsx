@@ -46,8 +46,6 @@ interface ChipOwnProps {
 }
 
 /**
- * **Use it for** a compact tag, or a filter that toggles. **Reach for something else when** the choice is one of a few fixed views (SegmentedControl).
- *
  * Accepts every attribute of `<span>` in addition to the props below;
  * `className` merges with the component's own class rather than
  * replacing it, and the rest land on the root element.

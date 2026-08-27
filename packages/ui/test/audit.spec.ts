@@ -15,7 +15,7 @@
  * wants to read are on the Guides/Conformance page, rendered from the
  * same two files.
  */
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { PAIRINGS, SCREEN_READER_MATRIX } from "../src/audit/screen-readers";
@@ -169,5 +169,72 @@ describe("the WCAG 2.2 table", () => {
       "more than two thirds of WCAG gated by CI would be a claim no " +
         "component library can make; check what was reclassified",
     ).toBeLessThan(38);
+  });
+});
+
+/**
+ * The instructions an assistant reads have to point at things that exist.
+ *
+ * `AGENTS.md` is stage 12's other half: the rules as instructions rather
+ * than as prose, so generated code is conformant by construction. Every
+ * rule in it names the gate that enforces it, and a named gate that has
+ * been renamed turns the document into confident fiction — which is worse
+ * for a model than for a person, because a model cannot tell.
+ *
+ * The same rule already applies to the WCAG table above, and it caught
+ * two dead citations there on its first run.
+ */
+describe("the agent instructions", () => {
+  const RULES = "AGENTS.md";
+
+  it("cites files that exist", () => {
+    const text = readFileSync(RULES, "utf8");
+    const cited = new Set(
+      (text.match(/[\w./-]+\.(?:ts|tsx|css|mjs|json|yml)\b/g) ?? []).filter(
+        (reference) => reference.includes("/") || reference.includes("."),
+      ),
+    );
+    const dead: string[] = [];
+    for (const reference of cited) {
+      const candidates = [
+        reference,
+        `packages/ui/${reference}`,
+        `packages/ui/src/${reference}`,
+        `packages/ui/src/components/${reference}`,
+        `packages/ui/src/styles/${reference}`,
+        `scripts/${reference}`,
+      ];
+      if (!candidates.some((candidate) => existsSync(candidate))) {
+        dead.push(reference);
+      }
+    }
+    expect(
+      dead,
+      "AGENTS.md names these and they are not on disk. An instruction that " +
+        "cites a gate which has moved reads as authoritative and is not.",
+    ).toEqual([]);
+  });
+
+  /**
+   * And the inventory it tells a reader to consult exists and is current.
+   *
+   * The first line of the document says to read `inventory.json` before
+   * anything else. If that file is missing or stale, every rule after it
+   * is being applied to a library that no longer looks like that.
+   */
+  it("points at an inventory that exists", () => {
+    expect(existsSync("packages/ui/inventory.json")).toBe(true);
+    const inventory = JSON.parse(
+      readFileSync("packages/ui/inventory.json", "utf8"),
+    ) as { components: Array<{ component: string }> };
+    const listed = new Set(
+      inventory.components.map((entry) => entry.component),
+    );
+    const missing = shipped().filter((name) => !listed.has(name));
+    expect(
+      missing,
+      "the inventory is missing components the library ships; run " +
+        "`nx run ui:inventory-write`",
+    ).toEqual([]);
   });
 });

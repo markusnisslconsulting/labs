@@ -1,0 +1,1324 @@
+{
+  "note": "Generated from packages/ui/src by scripts/inventory.ts. Every field is copied from something a person wrote — a prop signature, a doc sentence, a story tag — and a component missing one appears with the field absent rather than with a guess. Run `nx run ui:inventory-write` after a deliberate change; `nx run ui:inventory` fails when this file has drifted from the source.",
+  "components": [
+    {
+      "component": "Accordion",
+      "props": [
+        {
+          "name": "items",
+          "type": "AccordionItem[]",
+          "required": false,
+          "doc": "The convenience form."
+        },
+        {
+          "name": "multiple",
+          "type": "boolean",
+          "required": false,
+          "doc": "Allow several open sections at once."
+        },
+        { "name": "children", "type": "ReactNode", "required": false }
+      ],
+      "parts": ["Accordion.Item", "Accordion.Trigger", "Accordion.Panel"],
+      "slots": [],
+      "status": "stable",
+      "useFor": "sections where only one answer matters at a time",
+      "insteadWhen": "the sections are peer views to navigate between (Tabs)",
+      "accessibility": "Base UI renders header triggers with `aria-expanded`/`aria-controls` and labelled regions, and handles the keyboard (Enter/Space, Arrow navigation between triggers)"
+    },
+    {
+      "component": "Alert",
+      "props": [
+        { "name": "severity", "type": "Severity", "required": true },
+        { "name": "title", "type": "ReactNode", "required": false },
+        { "name": "children", "type": "ReactNode", "required": true },
+        {
+          "name": "onDismiss",
+          "type": "() => void",
+          "required": false,
+          "doc": "When provided, a dismiss button renders and calls this."
+        },
+        { "name": "dismissLabel", "type": "string", "required": false }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "feedback about what the user just did, next to the thing they did it to",
+      "insteadWhen": "the message concerns the whole view (Banner)",
+      "accessibility": "`warning` and `danger` render `role=\"alert\"` (assertive — something needs attention now); `info` and `success` render `role=\"status\"` (polite). Severity is always repeated in the title/text, never carried by colour alone"
+    },
+    {
+      "component": "Avatar",
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "doc": "Full name; initials derive from it when no image is given."
+        },
+        { "name": "src", "type": "string", "required": false },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "required": false,
+          "doc": "Silence the avatar for assistive technology."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "marking who a row or comment belongs to",
+      "insteadWhen": "the image carries meaning of its own (a plain img with alt text)",
+      "accessibility": "both branches announce the same thing. The image takes `alt={name}`, the initials take `role=\"img\"` with the same label, so whether someone uploaded a picture does not change what a screen reader says about them. Pass `decorative` where the name is already beside the avatar. The two branches used to disagree — the image silent, the initials announcing — which meant a row's accessibility depended o"
+    },
+    {
+      "component": "Badge",
+      "props": [
+        {
+          "name": "renderAs",
+          "type": "Renderable",
+          "required": false,
+          "doc": "Render as a different element, keeping every style and behaviour."
+        },
+        {
+          "name": "tone",
+          "type": "\"accent\" | \"neutral\" | \"danger\" | \"success\"",
+          "required": false
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "A node, not a string."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "labelling a state on a row or card",
+      "insteadWhen": "the label performs an action (Button), or the state changes on its own (StatusPill)",
+      "accessibility": "a `span` with no role, because a badge is text. Colour is never the only channel — the tone changes the fill and the word inside it still says what it means, so \"12 overdue\" reads the same to someone who cannot see that it is red. A badge that only shows a number needs the noun beside it in the markup, not in the colour"
+    },
+    {
+      "component": "Banner",
+      "props": [
+        { "name": "severity", "type": "Severity", "required": true },
+        { "name": "children", "type": "ReactNode", "required": true }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "an announcement that concerns the whole view",
+      "insteadWhen": "the message belongs to one control or row (Alert)",
+      "accessibility": "the role follows the severity — `status` for information, `alert` for danger — so a danger banner interrupts and an informational one waits its turn. A banner that appears after page load is announced; one present at load is read in document order"
+    },
+    {
+      "component": "Breadcrumb",
+      "props": [
+        {
+          "name": "items",
+          "type": "BreadcrumbItem[]",
+          "required": false,
+          "doc": "The convenience form, and the one that also decides which crumb is current: the last one."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "The trail's accessible name."
+        },
+        { "name": "children", "type": "ReactNode", "required": false }
+      ],
+      "parts": ["Breadcrumb.Crumb"],
+      "slots": [],
+      "status": "stable",
+      "useFor": "showing where a page sits in a hierarchy the reader can climb",
+      "insteadWhen": "the levels are not a hierarchy (a back link)",
+      "accessibility": "`nav` with a label, list semantics, separators hidden from assistive technology"
+    },
+    {
+      "component": "Button",
+      "props": [
+        { "name": "children", "type": "ReactNode", "required": true },
+        { "name": "variant", "type": "Variant", "required": false },
+        { "name": "tone", "type": "Tone", "required": false },
+        { "name": "size", "type": "Size", "required": false },
+        {
+          "name": "leading",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Icon/content before the label."
+        },
+        {
+          "name": "trailing",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Icon/content after the label."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "doc": "Shows an inline spinner, sets `aria-busy` and refuses activation."
+        },
+        {
+          "name": "renderAs",
+          "type": "Renderable",
+          "required": false,
+          "doc": "Render as a different element, keeping every Button style and behaviour."
+        }
+      ],
+      "parts": [],
+      "slots": [
+        { "token": "--uix-button-accent-bg", "default": "var(--uix-accent)" },
+        {
+          "token": "--uix-button-accent-fg",
+          "default": "var(--uix-text-on-accent)"
+        },
+        {
+          "token": "--uix-button-ghost-fg",
+          "default": "var(--uix-text-primary)"
+        },
+        {
+          "token": "--uix-button-ghost-hover-bg",
+          "default": "var(--uix-bg-subtle)"
+        },
+        {
+          "token": "--uix-button-neutral-bg",
+          "default": "var(--uix-surface-inverse)"
+        },
+        {
+          "token": "--uix-button-neutral-fg",
+          "default": "var(--uix-text-on-inverse)"
+        },
+        {
+          "token": "--uix-button-outline-bg",
+          "default": "var(--uix-bg-surface)"
+        },
+        {
+          "token": "--uix-button-outline-border",
+          "default": "var(--uix-border-subtle)"
+        },
+        {
+          "token": "--uix-button-outline-border-strong",
+          "default": "var(--uix-border-strong)"
+        },
+        {
+          "token": "--uix-button-outline-fg",
+          "default": "var(--uix-text-primary)"
+        },
+        {
+          "token": "--uix-button-radius",
+          "default": "var(--uix-radius-control)"
+        }
+      ],
+      "status": "stable",
+      "useFor": "anything that performs an action",
+      "insteadWhen": "the control navigates: pass `renderAs={<a href=\"…\" />}` so it stays a link",
+      "accessibility": "a native `<button>` by default; the focus ring is `focus-visible` only. `loading` sets `aria-busy` and `aria-disabled` rather than the native `disabled`, because a disabled button leaves the tab order — a user tabbing a form would lose their place the moment a button started loading. ### Theming Override slots for this component. None is declared: each is referenced with its semantic default inlin"
+    },
+    {
+      "component": "Card",
+      "props": [],
+      "parts": ["Card.Header", "Card.Body", "Card.Footer"],
+      "slots": [],
+      "passthrough": true,
+      "status": "stable",
+      "useFor": "a summary that links somewhere else",
+      "insteadWhen": "the surface is a section of this page (Panel)",
+      "accessibility": "`article` with an optional labelled header. Every slot forwards its attributes, so `aria-label`, `id` and `role` can be set where they belong instead of being unreachable"
+    },
+    {
+      "component": "Checkbox",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "Visible label; rendered inside the control, so the whole row toggles natively."
+        },
+        { "name": "checked", "type": "boolean", "required": false },
+        { "name": "defaultChecked", "type": "boolean", "required": false },
+        {
+          "name": "onCheckedChange",
+          "type": "(checked: boolean) => void",
+          "required": false,
+          "doc": "The checked triple, matching value/defaultValue/onValueChange elsewhere: checked, defaultChecked, onCheckedChange."
+        },
+        { "name": "disabled", "type": "boolean", "required": false },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "required": false,
+          "doc": "Tri-state support: aria-checked=\"mixed\" plus a dash."
+        },
+        {
+          "name": "hint",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Instruction under the control, linked with aria-describedby."
+        },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the control required, visibly and for assistive technology."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "independent options, each on or off",
+      "insteadWhen": "the options are mutually exclusive (RadioGroup), or the change applies immediately (Switch)",
+      "accessibility": "Base UI renders role/aria-checked (including \"mixed\"), keeps the root focusable and handles Space"
+    },
+    {
+      "component": "Chip",
+      "props": [
+        {
+          "name": "renderAs",
+          "type": "Renderable",
+          "required": false,
+          "doc": "Render as a different element, keeping every style and behaviour."
+        },
+        { "name": "children", "type": "ReactNode", "required": true },
+        {
+          "name": "interactive",
+          "type": "boolean",
+          "required": false,
+          "doc": "Static chips are plain labels (a card's tag list)."
+        },
+        { "name": "active", "type": "boolean", "required": false },
+        {
+          "name": "defaultActive",
+          "type": "boolean",
+          "required": false,
+          "doc": "The uncontrolled half; a filter chip that owns its own state."
+        },
+        {
+          "name": "onActiveChange",
+          "type": "(active: boolean) => void",
+          "required": false,
+          "doc": "Was `onSelect`, which said nothing about what changed."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "doc": "Unavailable."
+        }
+      ],
+      "parts": [],
+      "slots": [
+        {
+          "token": "--uix-chip-active-bg",
+          "default": "var(--uix-surface-inverse)"
+        },
+        {
+          "token": "--uix-chip-active-fg",
+          "default": "var(--uix-text-on-inverse)"
+        },
+        { "token": "--uix-chip-bg", "default": "var(--uix-bg-subtle)" },
+        { "token": "--uix-chip-fg", "default": "var(--uix-text-secondary)" }
+      ],
+      "status": "stable",
+      "useFor": "a compact tag, or a filter that toggles",
+      "insteadWhen": "the choice is one of a few fixed views (SegmentedControl)",
+      "accessibility": "a static chip is a `span` and says nothing on its own; a filter chip is a native `button` with `aria-pressed`, so its state reaches assistive technology without a hidden checkbox. It is a toggle rather than a link because activating it changes this page"
+    },
+    {
+      "component": "Combobox",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "A node: it goes into a real <label> element, which carries the accessible name, so it does not have to be flat text."
+        },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required, visibly and for assistive technology."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "required": false,
+          "doc": "Render the label for assistive technology only."
+        },
+        {
+          "name": "options",
+          "type": "string[]",
+          "required": false,
+          "doc": "The convenience form."
+        },
+        { "name": "value", "type": "string | null", "required": false },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "doc": "The uncontrolled half of the triple, which was missing."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string | null) => void",
+          "required": false
+        },
+        { "name": "placeholder", "type": "string", "required": false },
+        { "name": "children", "type": "ReactNode", "required": false },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "doc": "Declared here rather than inherited from the wrapper div, because `rest` lands on the wrapper and a `disabled` that never reaches the control is a field that looks unavailable and still accepts input."
+        }
+      ],
+      "parts": ["Combobox.Option"],
+      "slots": [],
+      "status": "beta",
+      "useFor": "choosing one value from a list too long to scan",
+      "insteadWhen": "the list is short and fixed (Select)",
+      "accessibility": "the platform combobox — typeahead, arrow selection and screen reader announcements come from the browser. Note: a Base UI combobox was evaluated and deferred (rc error #62 in test environments); adoption revisits at 1.0"
+    },
+    {
+      "component": "Dialog",
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "doc": "Controlled."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "doc": "The uncontrolled half of the triple, which was missing."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "modal",
+          "type": "boolean | \"trap-focus\"",
+          "required": false,
+          "doc": "Whether the page behind is inert while this is open."
+        },
+        { "name": "title", "type": "string", "required": true },
+        { "name": "description", "type": "string", "required": false },
+        { "name": "children", "type": "ReactNode", "required": false },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Footer slot, typically action buttons."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "a task that must be finished or abandoned before anything else",
+      "insteadWhen": "the content is supplementary (Popover), or it is a yes/no decision (AlertDialog)",
+      "accessibility": "Base UI restores focus to the trigger on close, wires `aria-labelledby`/`aria-describedby`, and closes on Escape or a backdrop click. The modal half is ours. Measured against `1.0.0-rc.0` the popup had `role=\"dialog\"` and nothing else: no `aria-modal`, nothing inert behind it, no focus trap — so a keyboard user could tab out of the dialog into the page it was covering and operate it. Passing Base "
+    },
+    {
+      "component": "Divider",
+      "props": [
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name when the divider groups content semantically."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "separating groups that already read as groups",
+      "insteadWhen": "the separation needs a name (a heading)",
+      "accessibility": "renders `role=\"separator\"`; purely decorative by default — pass a `label` only when the divider means something (e.g. between two form sections a screen reader user navigates)"
+    },
+    {
+      "component": "Field",
+      "props": [
+        { "name": "label", "type": "ReactNode", "required": true },
+        {
+          "name": "hint",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Instruction, shown before the error."
+        },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required, visibly and programmatically."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "required": false,
+          "doc": "Render the label for assistive technology only."
+        },
+        {
+          "name": "aside",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Content at the end of the label row: a live value, a character count, the word \"optional\"."
+        },
+        {
+          "name": "nameBy",
+          "type": "\"for\" | \"aria\"",
+          "required": false,
+          "doc": "How the control gets its accessible name."
+        },
+        {
+          "name": "children",
+          "type": "(props: FieldRenderProps) => ReactNode",
+          "required": true
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "building a control that needs a label, a hint, an error and the aria wiring between them — a date picker, a currency input, an uploader, anything not already in this library",
+      "insteadWhen": "the control exists here already: TextField, Select, Combobox, NumberField and Slider are all Field underneath, and using them means the wiring is already right",
+      "accessibility": "this owns the four things a hand-rolled field forgets — a label bound by `htmlFor` to a real `id`, `aria-describedby` covering whichever of hint and error exist, `aria-invalid` whenever there is an error, and the required state as a word rather than only an asterisk. What the caller still owes: putting the id on the control it renders, and writing an error message that says what to do rather than "
+    },
+    {
+      "component": "IconButton",
+      "props": [
+        {
+          "name": "renderAs",
+          "type": "Renderable",
+          "required": false,
+          "doc": "Render as a different element, keeping every style and behaviour."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "doc": "The accessible name."
+        },
+        { "name": "children", "type": "ReactNode", "required": true },
+        { "name": "variant", "type": "Variant", "required": false },
+        { "name": "size", "type": "Size", "required": false }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "an action whose icon is unambiguous, where space is tight",
+      "insteadWhen": "the action is primary, or the icon needs explaining (Button with a leading icon)",
+      "accessibility": "same native button as Button, but the accessible name is a required prop — TypeScript rejects an icon without one, so the failure mode never reaches production"
+    },
+    {
+      "component": "Menu",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "The trigger's content."
+        },
+        {
+          "name": "items",
+          "type": "MenuItemDescriptor[]",
+          "required": false,
+          "doc": "The convenience form: a list of items."
+        },
+        { "name": "children", "type": "ReactNode", "required": false },
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "doc": "Whether the popup is open."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "doc": "Open on mount, then uncontrolled."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "side",
+          "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+          "required": false,
+          "doc": "Which side of the trigger the popup prefers."
+        },
+        {
+          "name": "align",
+          "type": "\"start\" | \"center\" | \"end\"",
+          "required": false,
+          "doc": "How the popup lines up with the trigger along that side."
+        }
+      ],
+      "parts": ["Menu.Item", "Menu.Separator", "Menu.Group", "Menu.GroupLabel"],
+      "slots": [],
+      "status": "stable",
+      "useFor": "a list of actions triggered from one control",
+      "insteadWhen": "the items pick a value rather than act (Select)",
+      "accessibility": "Base UI renders the full menu pattern — trigger with `aria-haspopup`/`aria-expanded`, roving focus, Arrow/Home/End/ Escape, and typeahead. Items announce `menuitem` within a labelled menu"
+    },
+    {
+      "component": "NumberField",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "A node, now that a real `<label>` carries the accessible name."
+        },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required, visibly and for assistive technology."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "required": false,
+          "doc": "Render the label for assistive technology only."
+        },
+        { "name": "min", "type": "number", "required": false },
+        { "name": "max", "type": "number", "required": false },
+        { "name": "step", "type": "number", "required": false },
+        { "name": "defaultValue", "type": "number", "required": false },
+        { "name": "value", "type": "number", "required": false },
+        {
+          "name": "onValueChange",
+          "type": "(value: number | null) => void",
+          "required": false
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "doc": "Declared here rather than inherited from the wrapper div, because `rest` lands on the wrapper and a `disabled` that never reaches the control is a field that looks unavailable and still accepts input."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a quantity where stepping by one is a normal move",
+      "insteadWhen": "any text is valid (TextField)",
+      "accessibility": "Base UI renders a labelled-capable input with `aria-valuenow`-style announcements, and the steppers are real buttons with names (\"Decrease\"/\"Increase\" from the locale)"
+    },
+    {
+      "component": "Pagination",
+      "props": [
+        { "name": "pageCount", "type": "number", "required": true },
+        {
+          "name": "page",
+          "type": "number",
+          "required": false,
+          "doc": "The controlled page."
+        },
+        { "name": "defaultPage", "type": "number", "required": false },
+        {
+          "name": "onPageChange",
+          "type": "(page: number) => void",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "The landmark's accessible name, overriding the locale default."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "moving through pages a reader may want to return to",
+      "insteadWhen": "the list is an endless feed (load more)",
+      "accessibility": "one `nav` labelled \"Pagination\"; the current page is a button with `aria-current=\"page\"`; prev/next carry accessible names that survive translation because they are plain text here"
+    },
+    {
+      "component": "Panel",
+      "props": [
+        {
+          "name": "renderAs",
+          "type": "Renderable",
+          "required": false,
+          "doc": "Render as a different element, keeping every style and behaviour."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "Uppercase kicker; also the section's accessible name."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "Compose richer headers with <PanelHeader>/<PanelBody>."
+        }
+      ],
+      "parts": ["Panel.Header", "Panel.Body"],
+      "slots": [
+        { "token": "--uix-panel-accent", "default": "var(--uix-accent)" },
+        { "token": "--uix-panel-bg", "default": "var(--uix-bg-surface)" },
+        {
+          "token": "--uix-panel-border",
+          "default": "var(--uix-border-subtle)"
+        },
+        { "token": "--uix-panel-pad-x", "default": "var(--uix-gap-xl)" },
+        {
+          "token": "--uix-panel-pad-y",
+          "default": "calc(var(--uix-gap-lg) + var(--uix-gap-xs))"
+        },
+        {
+          "token": "--uix-panel-radius",
+          "default": "var(--uix-radius-container)"
+        }
+      ],
+      "status": "stable",
+      "useFor": "a titled region of this page",
+      "insteadWhen": "the surface summarises something that lives elsewhere (Card)",
+      "accessibility": "`label` names the section (aria-label). For richer content, compose PanelHeader/PanelBody and label the header heading instead — pass `labelledBy` then. Slots: `Panel.Header` and `Panel.Body` map to styled subcomponents, the way enterprise systems expose anatomy without extra props. ### Theming Override slots for this component. None is declared: each is referenced with its semantic default inline"
+    },
+    {
+      "component": "Popover",
+      "props": [
+        {
+          "name": "trigger",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The trigger's content."
+        },
+        { "name": "title", "type": "ReactNode", "required": false },
+        { "name": "children", "type": "ReactNode", "required": true },
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "doc": "Whether the popup is open."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "doc": "Open on mount, then uncontrolled."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "side",
+          "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+          "required": false,
+          "doc": "Which side of the trigger the popup prefers."
+        },
+        {
+          "name": "align",
+          "type": "\"start\" | \"center\" | \"end\"",
+          "required": false,
+          "doc": "How the popup lines up with the trigger along that side."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "detail or a small form without blocking the page",
+      "insteadWhen": "the task must be completed first (Dialog)",
+      "accessibility": "Base UI wires the trigger's `aria-haspopup` and `aria-expanded`, moves focus into the popup, traps it while open, closes on Escape and returns focus to the trigger. The popup is labelled by its title when there is one. It is non-modal: the page behind stays readable, which is the difference from Dialog"
+    },
+    {
+      "component": "ProgressBar",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "Accessible name; also rendered as visible text."
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "doc": "Omit for an indeterminate bar."
+        },
+        { "name": "max", "type": "number", "required": false }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "progress with a known proportion, or a named indeterminate wait",
+      "insteadWhen": "the wait is short and local (Spinner)",
+      "accessibility": "Base UI renders `role=\"progressbar\"` with `aria-valuenow/min/max`; in the indeterminate mode it drops the numbers (they would be noise) — the label is what gets announced"
+    },
+    {
+      "component": "RadioGroup",
+      "props": [
+        { "name": "name", "type": "string", "required": true },
+        {
+          "name": "legend",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "A node, because a group's legend can carry a hint or a link."
+        },
+        {
+          "name": "options",
+          "type": "RadioOption[]",
+          "required": false,
+          "doc": "The convenience form."
+        },
+        { "name": "defaultValue", "type": "string", "required": false },
+        { "name": "value", "type": "string", "required": false },
+        {
+          "name": "onValueChange",
+          "type": "(value: string) => void",
+          "required": false,
+          "doc": "The value triple: value, defaultValue, onValueChange."
+        },
+        { "name": "disabled", "type": "boolean", "required": false },
+        {
+          "name": "hint",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Instruction under the group, linked with aria-describedby."
+        },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the group required, visibly and for assistive technology."
+        },
+        { "name": "children", "type": "ReactNode", "required": false }
+      ],
+      "parts": ["RadioGroup.Option"],
+      "slots": [],
+      "status": "stable",
+      "useFor": "one choice from a small set, all of it visible",
+      "insteadWhen": "there are more than about seven options (Select)",
+      "accessibility": "a real `fieldset` with a real `legend`, so the group's name is announced once and each option inherits it. The platform gives arrow-key navigation and the single-tab-stop behaviour for free, which is why this is not a set of buttons with `aria-checked`"
+    },
+    {
+      "component": "SearchInput",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The field's accessible name, required."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "required": false,
+          "doc": "Render the label for assistive technology only."
+        },
+        {
+          "name": "showLabel",
+          "type": "boolean",
+          "required": false,
+          "doc": "@deprecated Use `hideLabel` — the inverse — for consistency with every other field."
+        },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required, visibly and for assistive technology."
+        }
+      ],
+      "parts": [],
+      "slots": [
+        { "token": "--uix-search-radius", "default": "var(--uix-radius-pill)" }
+      ],
+      "status": "stable",
+      "useFor": "filtering or querying a collection",
+      "insteadWhen": "it is an ordinary labelled field (TextField)",
+      "accessibility": "an accessible name is required, not optional. `label` renders a real `label` element, visually hidden by default because a search field beside a magnifier rarely wants a visible one — hidden is not absent. Before this the component took no label at all, so an unnamed search box was the default and every caller had to remember `aria-label`"
+    },
+    {
+      "component": "SegmentedControl",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "doc": "The group's accessible name."
+        },
+        {
+          "name": "options",
+          "type": "SegmentedOption[]",
+          "required": false,
+          "doc": "The convenience form."
+        },
+        { "name": "value", "type": "string", "required": false },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "doc": "The uncontrolled half of the triple, which was simply missing."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string) => void",
+          "required": false
+        },
+        { "name": "children", "type": "ReactNode", "required": false }
+      ],
+      "parts": ["SegmentedControl.Option"],
+      "slots": [
+        { "token": "--uix-segment-on-bg", "default": "var(--uix-bg-raised)" }
+      ],
+      "status": "stable",
+      "useFor": "switching between a few views of the same data",
+      "insteadWhen": "the options are separate content sections (Tabs)",
+      "accessibility": "`role=\"group\"` with `aria-label`; each option is a native button with `aria-pressed`, so state reaches assistive technology without a hidden radio hack"
+    },
+    {
+      "component": "Select",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "A node: a field label can carry a hint or a required marker."
+        },
+        {
+          "name": "options",
+          "type": "SelectOption[]",
+          "required": false,
+          "doc": "The convenience form."
+        },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required, visibly and for assistive technology."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "required": false,
+          "doc": "Render the label for assistive technology only."
+        },
+        { "name": "children", "type": "ReactNode", "required": false }
+      ],
+      "parts": ["Select.Option", "Select.Group"],
+      "slots": [],
+      "status": "stable",
+      "useFor": "one value from a short fixed list",
+      "insteadWhen": "the list is long enough that someone would rather type (Combobox)",
+      "accessibility": "a native `select`, so the picker, the typeahead, the keyboard and the form participation are the platform's. The chevron is `aria-hidden` decoration over the real control rather than a replacement for it, and the hint is linked with `aria-describedby` rather than left floating near the field"
+    },
+    {
+      "component": "Skeleton",
+      "props": [
+        {
+          "name": "shape",
+          "type": "\"line\" | \"circle\" | \"block\"",
+          "required": false,
+          "doc": "Text-line placeholder by default; circle for avatars."
+        },
+        { "name": "width", "type": "string", "required": false },
+        { "name": "height", "type": "string", "required": false }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "holding the shape of content that is about to arrive",
+      "insteadWhen": "the wait has no known shape (Spinner)",
+      "accessibility": "`aria-hidden` — the loading state belongs to the region that is loading, not to a decoration; pair it with a visually hidden or announced status where the wait matters"
+    },
+    {
+      "component": "Slider",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "A node, now that the accessible name comes from a real `<label>`."
+        },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required, visibly and for assistive technology."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "required": false,
+          "doc": "Render the label for assistive technology only."
+        },
+        { "name": "min", "type": "number", "required": false },
+        { "name": "max", "type": "number", "required": false },
+        { "name": "step", "type": "number", "required": false },
+        { "name": "defaultValue", "type": "number", "required": false },
+        { "name": "value", "type": "number", "required": false },
+        {
+          "name": "onValueChange",
+          "type": "(value: number) => void",
+          "required": false
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "required": false,
+          "doc": "Show the live value next to the label."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "doc": "Declared here rather than inherited from the div, because `rest` lands on the wrapper and a `disabled` that never reaches the input is a control that looks unavailable and still moves."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a value where the approximate position matters more than the number",
+      "insteadWhen": "the exact number matters (NumberField)",
+      "accessibility": "`input[type=range]` is a fully accessible slider — arrows, PageUp/Down, Home/End and screen reader announcements come from the platform. `accent-color` themes it with one token. Note: a Base UI slider was evaluated and deferred (rc error #62 in test environments); adoption revisits at 1.0"
+    },
+    {
+      "component": "Spinner",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "Announced via role=\"status\"; changes re-announce politely."
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "a short wait with no known duration",
+      "insteadWhen": "the layout is already known (Skeleton), or progress is measurable (ProgressBar)",
+      "accessibility": "`role=\"status\"` with a visually hidden label, so screen readers announce the wait without seeing a shape"
+    },
+    {
+      "component": "StatusPill",
+      "props": [
+        {
+          "name": "renderAs",
+          "type": "Renderable",
+          "required": false,
+          "doc": "Render as a different element, keeping every style and behaviour."
+        },
+        { "name": "tone", "type": "Tone", "required": true },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The state in words."
+        }
+      ],
+      "parts": [],
+      "slots": [
+        { "token": "--uix-pill-fg", "default": "var(--uix-text-primary)" },
+        { "token": "--uix-pill-off", "default": "var(--uix-status-off)" },
+        { "token": "--uix-pill-ok", "default": "var(--uix-status-ok)" },
+        { "token": "--uix-pill-warn", "default": "var(--uix-status-warn)" }
+      ],
+      "status": "stable",
+      "useFor": "a live state that changes on its own",
+      "insteadWhen": "the label is static (Badge)",
+      "accessibility": "the dot is `aria-hidden` and the words carry the state, so the pill means the same thing to someone who cannot distinguish the colours. This is the component that exists to make that rule concrete: a coloured dot on its own is a state only some readers can read"
+    },
+    {
+      "component": "Switch",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "Visible label; rendered inside the control, so the whole row toggles natively."
+        },
+        { "name": "checked", "type": "boolean", "required": false },
+        { "name": "defaultChecked", "type": "boolean", "required": false },
+        {
+          "name": "onCheckedChange",
+          "type": "(checked: boolean) => void",
+          "required": false,
+          "doc": "The checked triple, matching value/defaultValue/onValueChange elsewhere: checked, defaultChecked, onCheckedChange."
+        },
+        { "name": "disabled", "type": "boolean", "required": false },
+        {
+          "name": "hint",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Instruction under the control, linked with aria-describedby."
+        },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the control required, visibly and for assistive technology."
+        }
+      ],
+      "parts": [],
+      "slots": [
+        { "token": "--uix-switch-thumb-bg", "default": "var(--uix-bg-raised)" },
+        { "token": "--uix-switch-track-bg", "default": "var(--uix-bg-subtle)" },
+        { "token": "--uix-switch-track-on-bg", "default": "var(--uix-accent)" },
+        { "token": "--uix-switch-travel", "default": "1.3rem" }
+      ],
+      "status": "stable",
+      "useFor": "a setting that takes effect the moment it is flipped",
+      "insteadWhen": "the choice is submitted with a form (Checkbox)",
+      "accessibility": "`role=\"switch\"` with a literal `aria-checked`, named by `aria-labelledby` pointing at the visible label. The wrapping <label> makes the text clickable, but it does NOT name the control: implicit label association only works for real form elements, not for an ARIA role on a span, so without this the switch reaches assistive technology unnamed"
+    },
+    {
+      "component": "Table",
+      "props": [
+        { "name": "caption", "type": "ReactNode", "required": false },
+        { "name": "children", "type": "ReactNode", "required": true }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "rows compared across the same columns",
+      "insteadWhen": "each row is an object to open (a list of Cards)",
+      "accessibility": "markup stays yours — `thead`, `tbody` and `th scope` are what make a table navigable, and no wrapper can supply them for you. The caption is the table's accessible name and is visually hidden. The scroll container is focusable. `overflow-x: auto` creates a region only a pointer can reach, so a keyboard-only user could not scroll a wide table sideways at all — WCAG 2.1.1 in its plainest form. It ha"
+    },
+    {
+      "component": "Tabs",
+      "props": [
+        {
+          "name": "tabs",
+          "type": "TabItem[]",
+          "required": false,
+          "doc": "The convenience form."
+        },
+        {
+          "name": "defaultActiveIndex",
+          "type": "number",
+          "required": false,
+          "doc": "Which tab starts selected, as an index into `tabs`."
+        },
+        { "name": "value", "type": "string", "required": false },
+        { "name": "defaultValue", "type": "string", "required": false },
+        {
+          "name": "onValueChange",
+          "type": "(value: string) => void",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "doc": "Accessible name for the tablist, e.g."
+        },
+        { "name": "children", "type": "ReactNode", "required": false }
+      ],
+      "parts": ["Tabs.List", "Tabs.Tab", "Tabs.Panel"],
+      "slots": [],
+      "status": "stable",
+      "useFor": "peer sections of content in one context",
+      "insteadWhen": "the sections are filters over one list (SegmentedControl)",
+      "accessibility": "Base UI renders the tablist/tab/tabpanel wiring — `aria-selected`, `aria-controls`/`aria-labelledby`, roving tabindex — and handles Arrow/Home/End. Name the list with `label` in the shorthand form, or with `aria-label` on `Tabs.List` when composing. **Manual activation**, which is the half this used to leave out. The ARIA tabs pattern has two variants and \"per the ARIA pattern\" names neither, so a"
+    },
+    {
+      "component": "TextField",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "A node, so a label can carry a required marker or a hint link."
+        },
+        {
+          "name": "hint",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Supporting text under the field; wired via aria-describedby."
+        },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Validation message."
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "doc": "Marks the field required, visibly and for assistive technology."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "required": false,
+          "doc": "Render the label for assistive technology only."
+        },
+        {
+          "name": "prefix",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Slot before the input (e.g."
+        },
+        {
+          "name": "suffix",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Slot after the input (e.g."
+        }
+      ],
+      "parts": [],
+      "slots": [
+        { "token": "--uix-field-pad-y", "default": "0" },
+        {
+          "token": "--uix-field-radius",
+          "default": "var(--uix-radius-control)"
+        }
+      ],
+      "status": "stable",
+      "useFor": "any single-line text entry",
+      "insteadWhen": "the field queries a collection (SearchInput)",
+      "accessibility": "`label` is bound with `for`; hint and error are linked through `aria-describedby`; an error also sets `aria-invalid`, so the state reaches assistive technology without relying on the red border"
+    },
+    {
+      "component": "Toaster",
+      "props": [
+        { "name": "toasts", "type": "ToastItem[]", "required": true },
+        {
+          "name": "onDismiss",
+          "type": "(id: string) => void",
+          "required": true
+        },
+        {
+          "name": "position",
+          "type": "\"bottom-right\" | \"top-center\"",
+          "required": false,
+          "doc": "Position of the stack."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "confirming something that already happened, without interrupting",
+      "insteadWhen": "the reader must act on it (Dialog or Alert)",
+      "accessibility": "one region per severity role — success/info announce politely, warning/danger assertively. The stack is a labelled region, so screen reader users can revisit it"
+    },
+    {
+      "component": "Tooltip",
+      "props": [
+        {
+          "name": "content",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "Plain text; the tooltip is not a container for rich content."
+        },
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "required": true,
+          "doc": "The focusable trigger."
+        },
+        {
+          "name": "placement",
+          "type": "\"top\" | \"bottom\"",
+          "required": false
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "doc": "Mount the popup open (for tests and docs)."
+        },
+        { "name": "defaultOpen", "type": "boolean", "required": false },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "naming an icon-only control, or a short hint",
+      "insteadWhen": "the content is essential or interactive (put it in the page)",
+      "accessibility": "the announcement is **ours**, not Base UI's, and the distinction is the whole reason this paragraph got rewritten. This used to say Base UI announced the hint \"(its own wiring)\". Measured against `1.0.0-rc.0` in the open state, the trigger's attributes were `type,class,data-variant,data-tone,data-size,id,data-popup-open` — no `aria-describedby` — and the popup carried no role. A tooltip with neith"
+    }
+  ]
+}

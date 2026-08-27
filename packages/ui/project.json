@@ -232,6 +232,18 @@
       "options": {
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4530 --silent\" \"wait-on tcp:127.0.0.1:4530 && SWEEP_OUT=${SWEEP_OUT:-.visual-axes} pnpm exec playwright test --config scripts/visual/axes.config.ts\""
       }
+    },
+    "inventory": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/inventory.ts check"
+      }
+    },
+    "inventory-write": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx scripts/inventory.ts write"
+      }
     }
   }
 }
