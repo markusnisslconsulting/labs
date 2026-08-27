@@ -65,7 +65,25 @@ design system that depends on a product is no longer one.
 ## What is in `nx.json`, and why
 
 - **`namedInputs.production`** excludes tests and stories, so a story change
-  does not invalidate a build cache.
+  does not invalidate the library build cache. The bundle does not contain
+  stories, so it should not be rebuilt for them.
+- **`namedInputs.storybook`** is the same set _with_ stories, and
+  `build-storybook` uses it. Reusing `production` there was a real defect
+  and it lasted a long time: a Storybook build is made of stories, so
+  excluding them from its inputs meant editing a story left the cache warm.
+  Measured, with one word changed in a story and a warm cache — `production`
+  inputs gave `Cache: 1/1 hit (100%)` and the word never reached `dist`;
+  `storybook` inputs gave `Cache: 0/1 hit` and it did.
+
+  The stale bundle was not the cost. Four gates depend on that build —
+  `browser-test`, `visual-test`, `visual-sweep`, `visual-axes` — so each was
+  testing the previous set of stories and reporting success about a build
+  nobody had made. It surfaced as a habit of passing `--skip-nx-cache` to
+  make a change visible, which is what working around a wrong cache looks
+  like from the inside. `packages/ui/test/build.spec.ts` asserts both halves
+  now, because the two targets have to differ and a one-sided rule invites
+  somebody to make them the same.
+
 - **`targetDefaults.*.dependsOn: ["^build"]`** — typecheck and Storybook
   need the built dependencies, not their sources.
 - **`cache: true` everywhere except `serve` and `storybook`.** A gate

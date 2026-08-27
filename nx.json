@@ -12,6 +12,11 @@
       "!{projectRoot}/**/*.spec.ts",
       "!{projectRoot}/**/test/**",
       "!{projectRoot}/**/*.stories.tsx"
+    ],
+    "storybook": [
+      "default",
+      "!{projectRoot}/**/*.spec.ts",
+      "!{projectRoot}/**/test/**"
     ]
   },
   "plugins": [
@@ -45,7 +50,7 @@
     "build-storybook": {
       "dependsOn": ["^build"],
       "cache": true,
-      "inputs": ["production", "{workspaceRoot}/tsconfig.base.json"]
+      "inputs": ["storybook", "{workspaceRoot}/tsconfig.base.json"]
     },
     "storybook": {
       "cache": false
