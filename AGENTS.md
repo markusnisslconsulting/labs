@@ -4,7 +4,7 @@ Rules an assistant needs before writing a component or a screen, and the
 gate that enforces each. Every line here is checkable; where it is not, it
 says so.
 
-The inventory of what exists — 35 components, their props, their compound
+The inventory of what exists — 49 components, their props, their compound
 parts, their override slots, and the sentence saying when to reach for
 something else — is generated at `packages/ui/inventory.json`. Read that
 first. It is regenerated from source and `nx run ui:inventory` fails when

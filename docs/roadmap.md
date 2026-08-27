@@ -289,14 +289,14 @@ one, 11 are manual, 9 belong to the product, 10 do not apply here); and two
 automated screen-reader layers — name, description, role and state per
 node, plus the tree in reading order.
 
-Open: real assistive technology. 108 cells in `src/audit/screen-readers.ts`,
+Open: real assistive technology. 147 cells in `src/audit/screen-readers.ts`,
 all "not yet". NVDA and VoiceOver can be driven with Guidepup, but that
 needs a Windows or macOS runner and this CI runs on Linux. The rows are for
 what only real AT shows: verbosity, punctuation, what a reader says on
 entering a region.
 
 The concrete way in is `docs/screen-reader-pass.md`: seven components, one
-pairing, about forty-five minutes. Not 108 cells, because nobody starts a
+pairing, about forty-five minutes. Not 147 cells, because nobody starts a
 list of 108 rows. The note also says what _not_ to look for: names,
 descriptions, roles and order are covered by `browser/announce.spec.ts`.
 What is listened for is whether what gets said is usable by a person — too
@@ -398,10 +398,10 @@ any of those.
 
 ## 12 — Readable by an agent (stands)
 
-Stands: `packages/ui/inventory.json`, generated from source — 37
-components, their own props with type and documentation, the compound
-parts, the override slots, the status, and the sentences saying when to
-reach for something else. A gate fails when the file has drifted. Plus
+Stands: `packages/ui/inventory.json`, generated from source — 49
+components, 352 own props with type and documentation, 28 compound parts,
+the override slots, the status, and the sentences saying when to reach for
+something else. A gate fails when the file has drifted. Plus
 `AGENTS.md`: the rules as instructions, each with the gate that enforces
 it, and a test that those citations resolve.
 

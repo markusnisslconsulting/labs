@@ -21,6 +21,15 @@ import { describe, expect, it } from "vitest";
 import { PAIRINGS, SCREEN_READER_MATRIX } from "../src/audit/screen-readers";
 import { WCAG_22_AA } from "../src/audit/wcag";
 
+/** The generated inventory, read from disk like every other consumer. */
+function inventory(): Array<{ props: unknown[] }> {
+  return (
+    JSON.parse(readFileSync("packages/ui/inventory.json", "utf8")) as {
+      components: Array<{ props: unknown[] }>;
+    }
+  ).components;
+}
+
 const COMPONENTS = "packages/ui/src/components";
 
 /** The components the library ships. */
@@ -185,6 +194,90 @@ describe("the WCAG 2.2 table", () => {
  * two dead citations there on its first run.
  */
 describe("the agent instructions", () => {
+  /**
+   * A number a document claims about something countable is that number.
+   *
+   * The citation check above asks whether the *files* a document names
+   * exist. Nothing asked whether its numbers do, and four went stale
+   * silently in one session: `AGENTS.md` said 35 components when there were
+   * 49, the screen-reader matrix was described as 108 cells when it held
+   * 147, and stage 12 was still reporting 37 components and no prop count
+   * at all. Every one of those reads as authoritative, which is the same
+   * failure the citation check exists to prevent.
+   *
+   * Declared rather than inferred, and that is the whole design. A rule that
+   * checked every number in every document would have to decide which are
+   * live claims and which are history, and it cannot: ADR 0006 says a page
+   * loaded 30.4 kB for 33 components and ADR 0007 says 33 of 34 had no
+   * keyboard test. Both are measurements of a moment and both must stay
+   * exactly as written. So the list below is short on purpose — a quantity
+   * gets an entry when a document states it in the present tense, and
+   * anything absent is simply not checked.
+   */
+  const LIVE_COUNTS: Array<{
+    what: string;
+    file: string;
+    pattern: RegExp;
+    actual: () => number;
+  }> = [
+    {
+      what: "components, in the AGENTS.md preamble",
+      file: "AGENTS.md",
+      pattern: /inventory of what exists — (\d+) components/,
+      actual: () => inventory().length,
+    },
+    {
+      what: "components, in roadmap stage 12",
+      file: "docs/roadmap.md",
+      pattern: /generated from source — (\d+)\s*\n?components/,
+      actual: () => inventory().length,
+    },
+    {
+      what: "own props, in roadmap stage 12",
+      file: "docs/roadmap.md",
+      pattern: /(\d+) own props with type/,
+      actual: () =>
+        inventory().reduce((total, entry) => total + entry.props.length, 0),
+    },
+    {
+      what: "screen-reader cells, in the roadmap",
+      file: "docs/roadmap.md",
+      pattern: /real assistive technology\. (\d+) cells/,
+      actual: () => SCREEN_READER_MATRIX.length * PAIRINGS.length,
+    },
+    {
+      what: "screen-reader cells, in the pass note",
+      file: "docs/screen-reader-pass.md",
+      pattern: /screen-readers\.ts` has (\d+) cells/,
+      actual: () => SCREEN_READER_MATRIX.length * PAIRINGS.length,
+    },
+    {
+      what: "WCAG criteria at A and AA",
+      file: "docs/roadmap.md",
+      pattern: /all (\d+) WCAG\s*\n?2\.2 criteria/,
+      actual: () => WCAG_22_AA.length,
+    },
+  ];
+
+  it.each(LIVE_COUNTS)(
+    "$what is stated correctly",
+    ({ file, pattern, actual }) => {
+      const text = readFileSync(file, "utf8");
+      const match = pattern.exec(text);
+      /* A pattern that stops matching is as much a failure as a wrong number:
+       it means the sentence was rewritten and this check quietly stopped
+       looking at anything. */
+      expect(
+        match,
+        `the sentence this counts is no longer in ${file}, so the check has ` +
+          `stopped checking. Update the pattern or drop the entry`,
+      ).not.toBeNull();
+      expect(Number(match![1]), `${file} states the wrong number`).toBe(
+        actual(),
+      );
+    },
+  );
+
   const RULES = "AGENTS.md";
 
   it.each([RULES, "docs/roadmap.md", "CONTRIBUTING.md"])(
