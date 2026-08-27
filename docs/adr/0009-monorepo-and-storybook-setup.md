@@ -119,6 +119,28 @@ design system that depends on a product is no longer one.
   project can legitimately have nothing to unit-test and cannot legitimately
   be unchecked.
 
+- **`namedInputs.gateScripts`**, and a gate's own implementation counts as an
+  input to it. This is the widest of the five and the last found. Seven
+  cached targets are implemented by a file in `scripts/` and none of them
+  counted it. Measured: editing `scripts/stories/coverage.ts` so the check
+  must fail, then running `nx run ui:story-coverage`, reported "Story
+  coverage passed — 49 components" from the cache.
+
+  That is worse than a stale artefact. A gate could be broken, or quietly
+  weakened, and CI would replay the previous pass until something else in the
+  project happened to change — the verdict outliving the code that produced
+  it.
+
+  `gateScripts` covers `scripts/**` and `tools/**` together rather than
+  naming each file, and the coarseness is deliberate: a per-file input misses
+  the shared helper a script imports, and these gates are seconds each while
+  a wrong one is invisible.
+
+  All five instances share one shape — the thing that decides the answer sits
+  outside the thing being checked. Stories outside the Storybook build's
+  inputs, documents outside a test's, numbers outside any check, a project
+  outside the lint run, and a gate's own code outside the gate.
+
 - **`targetDefaults.*.dependsOn: ["^build"]`** — typecheck and Storybook
   need the built dependencies, not their sources.
 - **`cache: true` everywhere except `serve` and `storybook`.** A gate

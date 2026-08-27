@@ -241,6 +241,12 @@ window in which this section matters.
 
 ### internal
 
+- **Build cache** — a gate's own implementation is now an input to it. Seven
+  cached targets are implemented by a file in `scripts/` and none counted it:
+  editing `scripts/stories/coverage.ts` so the check must fail still reported
+  "Story coverage passed — 49 components" from the cache. A broken or
+  weakened gate would have replayed its previous verdict until something else
+  in the project changed.
 - **Workspace configuration** — every project declares `lint` and
   `typecheck`, checked by a gate. `nx run-many` runs a target for the projects
   that have it and reports nothing about the ones that do not, so `ui-mcp`

@@ -15,7 +15,12 @@
         ],
         "parallel": false
       },
-      "outputs": ["{workspaceRoot}/dist/packages/ui"]
+      "outputs": ["{workspaceRoot}/dist/packages/ui"],
+      "inputs": [
+        "production",
+        "{workspaceRoot}/tsconfig.base.json",
+        "gateScripts"
+      ]
     },
     "build-storybook": {
       "executor": "nx:run-commands",
@@ -31,14 +36,16 @@
       "options": {
         "command": "tsx scripts/tokens/contrast.ts check",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "contrast-report": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/tokens/contrast.ts report",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "lint": {
       "executor": "nx:run-commands",
@@ -52,21 +59,24 @@
       "options": {
         "command": "tsx scripts/stories/snapshots.ts check",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "snapshot-budget-report": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/stories/snapshots.ts report",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "snapshot-budget-write": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/stories/snapshots.ts write-budget",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "story-coverage": {
       "executor": "nx:run-commands",
@@ -74,14 +84,16 @@
       "options": {
         "command": "tsx scripts/stories/coverage.ts check",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "story-coverage-report": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/stories/coverage.ts report",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "storybook": {
       "executor": "nx:run-commands",
@@ -121,7 +133,8 @@
       "options": {
         "command": "tsx scripts/tokens/usage.ts baseline",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "tokens-check": {
       "executor": "nx:run-commands",
@@ -129,14 +142,16 @@
       "options": {
         "command": "tsx scripts/tokens/usage.ts check",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "tokens-report": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/tokens/usage.ts report",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "typecheck": {
       "executor": "nx:run-commands",
@@ -176,13 +191,15 @@
       "cache": true,
       "options": {
         "command": "tsx scripts/tokens/dtcg.ts check"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "tokens-dtcg-write": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/tokens/dtcg.ts write"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "package-check": {
       "executor": "nx:run-commands",
@@ -201,72 +218,83 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/tokens/codemod.ts report"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "tokens-codemod-write": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/tokens/codemod.ts write"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "adoption": {
       "executor": "nx:run-commands",
       "cache": true,
       "options": {
         "command": "tsx scripts/adoption.ts check"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "adoption-report": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/adoption.ts report"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "adoption-write-floor": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/adoption.ts write-floor"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "visual-sweep": {
       "executor": "nx:run-commands",
       "dependsOn": ["build-storybook"],
       "options": {
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4530 --silent\" \"wait-on tcp:127.0.0.1:4530 && SWEEP_OUT=${SWEEP_OUT:-.visual-sweep} pnpm exec playwright test --config scripts/visual/sweep.config.ts\""
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "visual-axes": {
       "executor": "nx:run-commands",
       "dependsOn": ["build-storybook"],
       "options": {
         "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4530 --silent\" \"wait-on tcp:127.0.0.1:4530 && SWEEP_OUT=${SWEEP_OUT:-.visual-axes} pnpm exec playwright test --config scripts/visual/axes.config.ts\""
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "inventory": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/inventory.ts check"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "inventory-write": {
       "executor": "nx:run-commands",
       "options": {
         "command": "tsx scripts/inventory.ts write"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "api-surface": {
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
         "command": "tsx scripts/api-surface.ts check"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "api-surface-write": {
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
         "command": "tsx scripts/api-surface.ts write"
-      }
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     }
   }
 }

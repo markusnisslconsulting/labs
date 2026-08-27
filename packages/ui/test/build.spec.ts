@@ -71,6 +71,62 @@ const excludesStories = (target: string) =>
 
 describe("nx cache inputs", () => {
   /**
+   * A gate's own implementation is an input to it.
+   *
+   * The widest instance of everything above, and the last one found. Seven
+   * cached targets run a script from `scripts/`, and none of them counted
+   * that script as an input. Measured: editing
+   * `scripts/stories/coverage.ts` so the check must fail, then running
+   * `nx run ui:story-coverage`, reported "Story coverage passed — 49
+   * components" from the cache.
+   *
+   * What that means is worse than a stale artefact. A gate could be broken,
+   * or quietly weakened, and CI would keep replaying the previous pass until
+   * something else in the project happened to change. The verdict would
+   * outlive the code that produced it.
+   *
+   * `gateScripts` covers `scripts/**` and `tools/**` together rather than
+   * naming each file. Coarse — editing any script invalidates every
+   * script-driven gate — and the coarseness is the point: a per-file input
+   * misses the shared helper a script imports, and those gates are seconds
+   * each while a wrong one is invisible.
+   */
+  it("every target that runs a workspace script counts it as an input", () => {
+    const nxConfig = nx as unknown as {
+      namedInputs: Record<string, string[]>;
+      targetDefaults: Record<string, { inputs?: string[] }>;
+    };
+    const project = JSON.parse(
+      readFileSync("packages/ui/project.json", "utf8"),
+    ) as {
+      targets: Record<string, { options?: unknown; inputs?: string[] }>;
+    };
+
+    const missing: string[] = [];
+    for (const [name, config] of Object.entries(project.targets)) {
+      const command = JSON.stringify(config.options ?? {});
+      /* Only the ones that actually run something from there. A target whose
+         command is `vitest` or `storybook build` is not implemented by a
+         file in `scripts/`. */
+      if (!command.includes("scripts/") && !command.includes("tools/")) {
+        continue;
+      }
+      const inputs = config.inputs ??
+        nxConfig.targetDefaults[name]?.inputs ?? ["default", "^default"];
+      if (!inputs.includes("gateScripts")) {
+        missing.push(name);
+      }
+    }
+
+    expect(
+      missing,
+      "these targets are implemented by a file in scripts/ or tools/ and do " +
+        "not count it as an input, so editing the check replays the previous " +
+        "verdict",
+    ).toEqual([]);
+  });
+
+  /**
    * Every project declares the targets the gate list runs.
    *
    * `nx run-many -t lint` runs lint for the projects that *have* a lint

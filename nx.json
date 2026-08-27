@@ -17,6 +17,10 @@
       "default",
       "!{projectRoot}/**/*.spec.ts",
       "!{projectRoot}/**/test/**"
+    ],
+    "gateScripts": [
+      "{workspaceRoot}/scripts/**/*",
+      "{workspaceRoot}/tools/**/*"
     ]
   },
   "plugins": [
