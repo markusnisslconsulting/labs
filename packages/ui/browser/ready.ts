@@ -21,11 +21,38 @@ import type { Page } from "@playwright/test";
  * sentinel because it is derived from the density multiplier: if it has a
  * value, primitive, semantic and the density roles have all landed.
  */
+/**
+ * Which root attribute each toolbar global ends up as.
+ *
+ * The decorators in .storybook/preview.tsx stamp these in an effect, so
+ * they land *after* the first render commit. Asking for
+ * `globals=theme:dark` and measuring as soon as the story appears reads
+ * the light theme: measured, `data-theme` was still null at that moment
+ * and `dark` 600ms later. Three theme tests failed that way and all three
+ * blamed `color-scheme`.
+ */
+const GLOBAL_ATTRIBUTES: Record<string, string> = {
+  theme: "data-theme",
+  direction: "dir",
+  brand: "data-brand",
+  density: "data-density",
+};
+
 export async function openStory(
   page: Page,
   id: string,
   options: { globals?: string; fonts?: boolean } = {},
 ) {
+  const requested = (options.globals ?? "")
+    .split(";")
+    .filter(Boolean)
+    .map((pair) => pair.split(":"))
+    .flatMap(([name, value]) =>
+      name && value && GLOBAL_ATTRIBUTES[name]
+        ? [[GLOBAL_ATTRIBUTES[name]!, value] as const]
+        : [],
+    );
+
   const globals = options.globals ? `&globals=${options.globals}` : "";
   await page.goto(`/iframe.html?id=${id}&viewMode=story${globals}`, {
     waitUntil: "domcontentloaded",
@@ -54,6 +81,18 @@ export async function openStory(
     undefined,
     { timeout: 30_000 },
   );
+  /* And the globals this call asked for have actually been stamped. */
+  if (requested.length) {
+    await page.waitForFunction(
+      (pairs) =>
+        pairs.every(
+          ([attribute, value]) =>
+            document.documentElement.getAttribute(attribute) === value,
+        ),
+      requested.map(([a, v]) => [a, v] as [string, string]),
+      { timeout: 30_000 },
+    );
+  }
   if (options.fonts !== false) {
     await page.evaluate(() => document.fonts.ready);
   }

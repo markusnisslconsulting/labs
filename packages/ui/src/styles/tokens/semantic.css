@@ -219,18 +219,39 @@
 
      "only" matters: a bare `light` still lets a UA in forced-dark mode
      flip it. */
+  /* On the root only, and that is a limitation stated rather than a
+     scoping accident.
+     These used to match any element, which made a dark panel on a light
+     page look supported. It is not. Measured in Chromium: inside a
+     nested [data-theme="dark"], `color-scheme` inherits correctly to the
+     subtree and a `light-dark()` written locally resolves dark — but
+     `var(--uix-bg-page)` comes back rgb(247,249,252). light-dark() inside
+     a custom property resolves against the color-scheme of the element
+     where the property is *declared*, and every theme-dependent role is
+     declared once on :root.
+     So a nested attribute changed the scrollbars, the caret, the
+     spellcheck underline and every native control in that subtree to dark
+     while all forty tokens stayed light. A half-dark panel is worse than
+     no panel, so the attribute now does nothing off the root.
+     Making it work means re-declaring every theme-dependent role on
+     [data-theme], the way the density roles are re-declared on
+     [data-density] and [data-brand] below. That is a real option and a
+     bigger decision: a [data-theme] block would also reset an ancestor
+     [data-brand]'s overrides, since a declaration on the element beats
+     one inherited from above. A test in browser/theme.spec.ts pins the
+     current behaviour so the day someone implements it, it says so. */
   :root,
-  [data-theme="light"] {
+  :root[data-theme="light"] {
     color-scheme: only light;
   }
 
-  [data-theme="dark"] {
+  :root[data-theme="dark"] {
     color-scheme: only dark;
   }
 
   /* Follow the operating system. This is what the second block could not
      express. */
-  [data-theme="auto"] {
+  :root[data-theme="auto"] {
     color-scheme: light dark;
   }
 

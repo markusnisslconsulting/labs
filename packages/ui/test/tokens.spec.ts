@@ -434,18 +434,29 @@ describe("the layering rules the architecture depends on", () => {
     // light-dark(), and light-dark() reads the used color-scheme. Losing
     // one of these does not merely change a scrollbar, it picks the wrong
     // half of twenty declarations.
+    //
+    // And each selector is anchored to :root, which is the other half of
+    // the same fact. light-dark() inside a custom property resolves
+    // against the element where the property is declared, so a nested
+    // [data-theme] could only ever have flipped the native controls in
+    // that subtree while every token stayed light. The anchors are what
+    // stop that from looking supported.
     expect(
-      /:root,\s*\[data-theme="light"\]\s*\{[^}]*color-scheme:\s*only light/.test(
+      /:root,\s*:root\[data-theme="light"\]\s*\{[^}]*color-scheme:\s*only light/.test(
         source,
       ),
       "the default and explicit light theme must declare color-scheme: only light",
     ).toBe(true);
     expect(
-      /\[data-theme="dark"\]\s*\{[^}]*color-scheme:\s*only dark/.test(source),
+      /:root\[data-theme="dark"\]\s*\{[^}]*color-scheme:\s*only dark/.test(
+        source,
+      ),
       "the dark theme must declare color-scheme: only dark",
     ).toBe(true);
     expect(
-      /\[data-theme="auto"\]\s*\{[^}]*color-scheme:\s*light dark/.test(source),
+      /:root\[data-theme="auto"\]\s*\{[^}]*color-scheme:\s*light dark/.test(
+        source,
+      ),
       "the auto theme must declare color-scheme: light dark so it follows the system",
     ).toBe(true);
   });
