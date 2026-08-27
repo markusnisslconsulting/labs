@@ -89,6 +89,24 @@ cut at the first release.
 
 ### added
 
+- **Card** — `Card.Media`, a banner image slot, and
+  `--uix-card-media-ratio` to theme it. The slot sizes the box rather than
+  the picture, because a grid of cards whose images keep their own ratios
+  starts every title at a different height. `ratio` overrides it per card,
+  and the docstring says what that costs: the crop is real, and a portrait
+  in a 16:9 box loses its top and bottom.
+
+- **CommandPalette** — `hints`, the key legend along the bottom, on by
+  default and showing the three keys the palette binds. It is `aria-hidden`:
+  the field is a combobox, so a screen reader already announces the arrows
+  and Enter, and reading the legend aloud would put three sentences in front
+  of the reader every time it opens. `hints={null}` removes it, a node
+  replaces it.
+
+- **Strings** — `paletteNavigate`, `paletteSelect`, `paletteClose` and
+  `paletteEscKey`. The last one is a key cap and not a sentence, and it is
+  here because "Esc" is "Echap" on a French keyboard.
+
 - **Textarea** — text longer than a line. `resize` is left to the browser:
   `resize: none` is the most common line in a textarea's stylesheet and it
   removes the one control the platform gives somebody whose text does not fit
