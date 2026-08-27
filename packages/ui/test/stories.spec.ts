@@ -56,7 +56,24 @@ describe("the story catalogue", () => {
     for (const file of files) {
       const source = readFileSync(join(DIR, file), "utf8");
       for (const { name, body } of stories(source)) {
-        if (!code(body).includes("play: async")) continue;
+        const play = code(body);
+        if (!play.includes("play: async")) continue;
+
+        /* Mutation is the disqualifier, not the presence of a `play`.
+           The reason above is that those 81 stories showed the resting
+           state *because the assertion had already run* — which is what a
+           click or a keystroke does, and what a plain `expect` does not.
+           ADR 0007 puts it the same way: a reference story does not
+           mutate, it shows a state and at most checks it.
+
+           Keyed on this because the rule as written and the rule as
+           reasoned had come apart, and a story that only reads the DOM was
+           being pushed out of the sidebar it belongs in. */
+        const mutates = /\buserEvent\.|\bfireEvent\.|\.click\(|\.type\(/.test(
+          play,
+        );
+        if (!mutates) continue;
+
         if (!body.includes('"!dev"')) offenders.push(`${file} › ${name}`);
       }
     }

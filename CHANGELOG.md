@@ -75,6 +75,15 @@ cut at the first release.
 
 ### added
 
+- **Stepper** — a fixed sequence with where-you-are and what-is-left. An
+  ordered list inside a `nav` named by `label`, with `aria-current="step"` on
+  the current item, because the visual position in a row of circles answers
+  "where am I" for exactly one kind of reader. Each state is a fill **and** a
+  word in a visually hidden span: colour alone is WCAG 1.4.1, and the mark
+  inside a completed circle is `aria-hidden` so it cannot carry the meaning
+  either. Finished steps become buttons when `onStepChange` is passed; steps
+  ahead never do, because a control that looks available and then refuses is
+  worse than one plainly not there yet.
 - **Drawer** — a panel of detail or controls beside the thing it belongs to.
   Sides are logical (`inline-start`, `inline-end`, `block-end`), so a details
   panel lands on the side the reading ends on rather than a fixed edge of the

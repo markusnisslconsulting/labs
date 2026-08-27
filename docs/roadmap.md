@@ -33,6 +33,12 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**Stepper** — done. Two decisions worth naming: the state of each step is in
+text as well as in colour, and only finished steps are navigable. The second
+is the whole navigation model — going back to a step you completed is safe,
+jumping past one is usually not, and a stepper that made all four steps
+buttons would put four tab stops in the page for two usable destinations.
+
 **Drawer** — done. The one prop worth naming is `modal`, because a drawer is
 the component where the answer is genuinely sometimes no: a filter panel
 beside a list is meant to be used _with_ the list. Measured while building
@@ -53,11 +59,19 @@ expensive component in any design system.
 to say the operating system's picker. That is honest, and it does not cover
 async options, multi-select or custom rendering.
 
-**Drawer, Stepper, Command palette, Tree, Toolbar, FileUpload, TagInput,
-InlineEdit.**
+**Command palette, Tree, Toolbar, FileUpload, TagInput, InlineEdit.**
 
-**Charts: a decision, not components.** Hand-built charts are a second
-design system. The decision is which library, and which tokens it reads.
+**Charts: a decision, not components** — made, in
+`docs/adr/0011-charts-a-library-and-a-token-contract.md`. Nothing is added to
+the inventory. What ships from here is the vocabulary: a categorical series
+ramp, chart-shaped semantic tokens, and the non-visual contract. The library
+is chosen against criteria when a product needs one — naming a winner today
+would be a preference dressed as a decision.
+
+The token half is real work and is not blocked on that choice: the ramp and
+the roles can be defined, contrast-checked in both themes and exported
+through DTCG first, which is what turns the eventual choice into a mapping
+exercise rather than a set of opinions typed into a config.
 
 ### What DataTable cost, and what it found
 
@@ -96,6 +110,10 @@ on a build made of stories it inverts. Measured with a warm cache and one
 word changed in a story: `Cache: 1/1 hit (100%)` and the word never reached
 `dist`. `browser-test`, `visual-test`, `visual-sweep` and `visual-axes` all
 depend on that build, so each was exercising the previous set of stories.
+
+Not only local: CI restores `.nx/cache` between runs through `restore-keys`,
+so a push that changed only stories would replay that build and then test
+it.
 
 Found because Markus asked why a break test needed `--skip-nx-cache` to see
 an edit. It is the right question: reaching for that flag is what working

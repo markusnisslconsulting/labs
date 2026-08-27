@@ -1263,6 +1263,41 @@ export declare function StatusPill({
 export {};
 ```
 
+## Stepper
+
+```ts
+export interface StepperStep {
+  id: string;
+  label: ReactNode;
+  hint?: ReactNode;
+  disabled?: boolean;
+}
+interface StepperOwnProps {
+  steps: StepperStep[];
+  current: number;
+  label: string;
+  onStepChange?: (index: number, step: StepperStep) => void;
+  orientation?: "horizontal" | "vertical";
+  errorAt?: number;
+  marker?: (entry: StepperStep, state: StepperState) => ReactNode;
+}
+export type StepperState = "completed" | "current" | "failed" | "ahead";
+export type StepperProps = StepperOwnProps &
+  Omit<ComponentPropsWithRef<"nav">, keyof StepperOwnProps | "children">;
+export declare function Stepper({
+  steps,
+  current,
+  label,
+  onStepChange,
+  orientation,
+  errorAt,
+  marker,
+  className,
+  ...rest
+}: StepperProps): import("react").JSX.Element;
+export {};
+```
+
 ## Switch
 
 ```ts

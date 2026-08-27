@@ -1,0 +1,154 @@
+/* Stepper styles, shipped with the component.
+   A page that never imports Stepper never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-stepper-list {
+    display: flex;
+    /* No bullets and no indent: the numbers are the markers, and a browser
+       default disc beside a numbered circle reads as two list systems. */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: var(--uix-gap-md);
+  }
+
+  .uix-stepper[data-orientation="vertical"] .uix-stepper-list {
+    flex-direction: column;
+    gap: var(--uix-gap-sm);
+  }
+
+  .uix-stepper-step {
+    display: flex;
+    align-items: flex-start;
+    /* Equal shares across a row, so the connector lengths match and the
+       row does not reflow when one label is longer than the others. */
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  .uix-stepper[data-orientation="vertical"] .uix-stepper-step {
+    flex: none;
+  }
+
+  .uix-stepper-control {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--uix-gap-sm);
+    inline-size: 100%;
+    min-inline-size: 0;
+    /* A button that looks like the text it replaces. The control is real
+       for the keyboard and the reader; only its chrome is gone. */
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-align: start;
+  }
+
+  /* Only the navigable ones are buttons, so only they get a pointer. */
+  button.uix-stepper-control {
+    cursor: pointer;
+  }
+
+  .uix-stepper-marker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    inline-size: var(--uix-control-sm);
+    block-size: var(--uix-control-sm);
+    border-radius: var(--uix-radius-pill);
+    border: 1px solid var(--uix-border-subtle);
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-100);
+    font-weight: var(--uix-weight-ui);
+    /* The numbers line up whatever the count, and a step 9 does not shift
+       the circle's contents against a step 1. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .uix-stepper-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-inline-size: 0;
+  }
+
+  .uix-stepper-label {
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-200);
+  }
+
+  .uix-stepper-hint {
+    color: var(--uix-text-caption);
+    font-size: var(--uix-font-size-100);
+  }
+
+  /* The states. Each is a fill *and* a text change, never a fill alone —
+     the visually hidden state word in the markup is the other half, and
+     the mark inside the circle is aria-hidden so it cannot carry it. */
+  .uix-stepper-step[data-state="completed"] .uix-stepper-marker {
+    background: var(--uix-status-ok);
+    border-color: var(--uix-status-ok);
+    color: var(--uix-text-on-accent);
+  }
+
+  .uix-stepper-step[data-state="current"] .uix-stepper-marker {
+    background: var(--uix-accent);
+    border-color: var(--uix-accent);
+    color: var(--uix-text-on-accent);
+  }
+
+  .uix-stepper-step[data-state="current"] .uix-stepper-label {
+    color: var(--uix-text-heading);
+    font-weight: var(--uix-weight-ui);
+  }
+
+  .uix-stepper-step[data-state="failed"] .uix-stepper-marker {
+    background: var(--uix-status-danger);
+    border-color: var(--uix-status-danger);
+    color: var(--uix-text-on-accent);
+  }
+
+  .uix-stepper-step[data-state="failed"] .uix-stepper-label {
+    color: var(--uix-status-danger);
+  }
+
+  .uix-stepper-control:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+    border-radius: var(--uix-radius-inset);
+  }
+
+  /* Forced colours drop every background, so the state would be carried by
+     nothing at all. A border weight survives, and the state word in the
+     markup carries the rest. */
+  @media (forced-colors: active) {
+    .uix-stepper-step[data-state="current"] .uix-stepper-marker,
+    .uix-stepper-step[data-state="completed"] .uix-stepper-marker,
+    .uix-stepper-step[data-state="failed"] .uix-stepper-marker {
+      border-width: 3px;
+    }
+  }
+}
+
+@layer components {
+  /* A finished step the caller does not want revisited. It stays legible —
+     dimming a completed step to unreadable removes the only record of what
+     was already done — and it is not a control, so nothing about it invites
+     a click. The strike-through is the part that says "closed" without
+     relying on colour. */
+  .uix-stepper-step[data-disabled] .uix-stepper-label {
+    color: var(--uix-text-disabled);
+    text-decoration: line-through;
+  }
+
+  .uix-stepper-step[data-disabled] .uix-stepper-marker {
+    border-color: var(--uix-border-disabled);
+    background: var(--uix-bg-disabled);
+    color: var(--uix-text-disabled);
+  }
+}

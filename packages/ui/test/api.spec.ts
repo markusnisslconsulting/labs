@@ -105,6 +105,7 @@ const ACCESSIBLE_NAME: Record<string, string> = {
   "Dialog.tsx": "title is announced as the dialog's name",
   "Drawer.tsx":
     "title is announced as the panel's name, for the same reason as Dialog",
+  "Stepper.tsx": "label names the nav that holds the sequence",
   "Spinner.tsx": "label is the live region's text; a spinner has no other name",
   "Select.tsx":
     "SelectOption.label is an <option>'s text, and HTML forbids markup " +
@@ -501,7 +502,13 @@ describe("component API contract", () => {
         if (/cx\(|cxState\(|renderAsElement\(/.test(body_!)) merged.add(name_!);
       }
 
-      const branches = [...fn.matchAll(/\n\s*return \(([\s\S]*?)\n\s*\);/g)];
+      /* The component's own returns, at the body's indentation. A
+         `\s*` here also matched a `return (` inside a `.map()` callback,
+         which is a different function and has no business merging the
+         component's className — it failed `Stepper` for rendering a list
+         item per step. Two spaces is the same assumption the `merged`
+         scan above already makes. */
+      const branches = [...fn.matchAll(/\n  return \(([\s\S]*?)\n  \);/g)];
       for (const [, branch] of branches) {
         if ([...merged].some((name_) => branch!.includes(`{${name_}}`)))
           continue;

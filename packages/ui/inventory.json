@@ -1433,6 +1433,54 @@
       "accessibility": "the dot is `aria-hidden` and the words carry the state, so the pill means the same thing to someone who cannot distinguish the colours. This is the component that exists to make that rule concrete: a coloured dot on its own is a state only some readers can read"
     },
     {
+      "component": "Stepper",
+      "props": [
+        { "name": "steps", "type": "StepperStep[]", "required": true },
+        {
+          "name": "current",
+          "type": "number",
+          "required": true,
+          "doc": "Which step the person is on, by index."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "doc": "What the sequence is called."
+        },
+        {
+          "name": "onStepChange",
+          "type": "(index: number, step: StepperStep) => void",
+          "required": false,
+          "doc": "Make completed steps navigable."
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "required": false,
+          "doc": "Lay it out down the page rather than across it."
+        },
+        {
+          "name": "errorAt",
+          "type": "number",
+          "required": false,
+          "doc": "A step that failed, by index."
+        },
+        {
+          "name": "marker",
+          "type": "(entry: StepperStep, state: StepperState) => ReactNode",
+          "required": false,
+          "doc": "Render the circle yourself."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a task split into a fixed sequence where the reader needs to know how far along they are and what is left",
+      "insteadWhen": "the sections can be done in any order — that is `Tabs`, and numbering them implies a dependency that does not exist",
+      "accessibility": "an ordered list inside a `nav` named by `label`, and the current step carries `aria-current=\"step\"`. That combination is what lets a screen reader answer \"where am I\" — the visual position in a row of circles answers it for nobody else. The state of each step is in text as well as in colour, in a visually hidden span: \"completed\", \"current\", \"failed\". A stepper that says where you are only by fill"
+    },
+    {
       "component": "Switch",
       "props": [
         {

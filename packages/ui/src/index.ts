@@ -36,6 +36,11 @@ import {
   type SegmentedControlProps,
 } from "./components/SegmentedControl";
 import { Select, type SelectProps } from "./components/Select";
+import {
+  Stepper,
+  type StepperProps,
+  type StepperStep,
+} from "./components/Stepper";
 import { Skeleton, type SkeletonProps } from "./components/Skeleton";
 import { Slider, type SliderProps } from "./components/Slider";
 import { Spinner, type SpinnerProps } from "./components/Spinner";
@@ -161,4 +166,7 @@ export {
   Field,
   type FieldProps,
   useFieldMessages,
+  Stepper,
+  type StepperProps,
+  type StepperStep,
 };

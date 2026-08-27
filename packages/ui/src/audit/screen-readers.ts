@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "Stepper",
+    why: "whether a reader is told where in the sequence it is, and whether the state word beside each label reads as part of the step or as noise",
+    cells: blank(),
+  },
+  {
     component: "Drawer",
     why: "modal and non-modal from the same component: whether a reader can reach the page behind each, and whether it says which",
     cells: blank(),
