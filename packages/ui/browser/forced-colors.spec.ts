@@ -19,15 +19,14 @@
  * is used instead because it was verified to work.
  */
 import { test, expect, type Page } from "@playwright/test";
+import { openStory } from "./ready";
 
 test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ forcedColors: "active" });
 });
 
 async function open(page: Page, id: string) {
-  await page.goto(`/iframe.html?id=${id}&viewMode=story`, {
-    waitUntil: "networkidle",
-  });
+  await openStory(page, id);
 }
 
 /**

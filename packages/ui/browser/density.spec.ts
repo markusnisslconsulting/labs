@@ -14,11 +14,10 @@
  * 2.2 target size, whatever multiplier a product picks.
  */
 import { test, expect } from "@playwright/test";
+import { openStory } from "./ready";
 
 test("a compact subtree is denser than its cozy page", async ({ page }) => {
-  await page.goto("/iframe.html?id=components-button--matrix&viewMode=story", {
-    waitUntil: "networkidle",
-  });
+  await openStory(page, "components-button--matrix");
 
   const measured = await page.evaluate(async () => {
     const root = document.documentElement;
@@ -72,9 +71,7 @@ test("a compact subtree is denser than its cozy page", async ({ page }) => {
 test("an invalid density falls back instead of poisoning the page", async ({
   page,
 }) => {
-  await page.goto("/iframe.html?id=components-button--matrix&viewMode=story", {
-    waitUntil: "networkidle",
-  });
+  await openStory(page, "components-button--matrix");
   const height = await page.evaluate(async () => {
     const root = document.documentElement;
     // Not a number. Unregistered, this would substitute into every calc()
@@ -106,9 +103,7 @@ test("a brand can set the density, and it reaches the controls", async ({
   // declaration would sit on the brand element while the heights stayed
   // resolved against the root, and the brand would look identical — the
   // same failure as subtree density, one attribute over.
-  await page.goto("/iframe.html?id=components-button--matrix&viewMode=story", {
-    waitUntil: "networkidle",
-  });
+  await openStory(page, "components-button--matrix");
 
   const measured = await page.evaluate(async () => {
     const make = (brand?: string) => {
@@ -161,9 +156,7 @@ test("a brand's typography reaches prose and leaves the controls alone", async (
   // the page went — and the test built its own probes instead, the way
   // the density test above does. A test that owns its fixture cannot be
   // broken by a decision about the catalogue.
-  await page.goto("/iframe.html?id=components-button--matrix&viewMode=story", {
-    waitUntil: "networkidle",
-  });
+  await openStory(page, "components-button--matrix");
 
   const measured = await page.evaluate(async () => {
     const make = (brand?: string) => {

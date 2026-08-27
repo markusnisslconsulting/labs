@@ -21,6 +21,7 @@
  * two would survive someone switching to a different mechanism.
  */
 import { test, expect, type Page } from "@playwright/test";
+import { openStory } from "./ready";
 
 /** The x midpoint of the first occurrence of `needle` inside `selector`. */
 async function xOf(page: Page, selector: string, needle: string) {
@@ -47,12 +48,10 @@ async function xOf(page: Page, selector: string, needle: string) {
 }
 
 async function field(page: Page, direction: "ltr" | "rtl") {
-  await page.goto(
-    `/iframe.html?id=components-field--matrix&viewMode=story&globals=direction:${direction}`,
-    { waitUntil: "domcontentloaded" },
-  );
+  await openStory(page, "components-field--matrix", {
+    globals: `direction:${direction}`,
+  });
   await page.locator(".uix-field-aside").first().waitFor();
-  await page.evaluate(() => document.fonts.ready);
 }
 
 test("a numeric counter keeps its order under RTL", async ({ page }) => {

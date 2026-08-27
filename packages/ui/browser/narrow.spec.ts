@@ -11,6 +11,7 @@
  * row stays one row.
  */
 import { test, expect } from "@playwright/test";
+import { openStory } from "./ready";
 
 const NARROW = 360;
 
@@ -28,9 +29,7 @@ const CASES = [
 for (const { id, row } of CASES) {
   test(`${id} fits ${NARROW}px`, async ({ page }) => {
     await page.setViewportSize({ width: NARROW, height: 900 });
-    await page.goto(`/iframe.html?id=${id}&viewMode=story`, {
-      waitUntil: "networkidle",
-    });
+    await openStory(page, id);
     const root = page.locator("#storybook-root");
     await expect(root).toBeVisible();
 
@@ -92,12 +91,7 @@ test("pagination keeps its width where the parent would shrink it", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1100, height: 700 });
-  await page.goto(
-    "/iframe.html?id=components-pagination--nine-pages&viewMode=story",
-    {
-      waitUntil: "networkidle",
-    },
-  );
+  await openStory(page, "components-pagination--nine-pages");
 
   const width = await page.evaluate(() => {
     const nav = document.querySelector(".uix-pagination")!;

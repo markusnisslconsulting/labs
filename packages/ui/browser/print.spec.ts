@@ -11,11 +11,10 @@
  * the only way that counts: with print media in force.
  */
 import { test, expect, type Page } from "@playwright/test";
+import { openStory } from "./ready";
 
 async function story(page: Page, id: string) {
-  await page.goto(`/iframe.html?id=${id}&viewMode=story`, {
-    waitUntil: "networkidle",
-  });
+  await openStory(page, id);
 }
 
 /** The same element, measured on screen and then on paper. */

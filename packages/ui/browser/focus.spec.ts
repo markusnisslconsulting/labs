@@ -14,13 +14,12 @@
  * remount on close — and none of those would fail anything else.
  */
 import { test, expect, type Page } from "@playwright/test";
+import { openStory } from "./ready";
 
 const STORY = "#storybook-root";
 
 async function open(page: Page, id: string) {
-  await page.goto(`/iframe.html?id=${id}&viewMode=story`, {
-    waitUntil: "networkidle",
-  });
+  await openStory(page, id);
 }
 
 const OVERLAYS = [

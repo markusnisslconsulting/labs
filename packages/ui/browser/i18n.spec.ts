@@ -8,12 +8,10 @@
  * the same as a hardcoded string with extra steps.
  */
 import { test, expect } from "@playwright/test";
+import { openStory } from "./ready";
 
 test("the pagination labels come from the strings table", async ({ page }) => {
-  await page.goto(
-    "/iframe.html?id=components-pagination--nine-pages&viewMode=story",
-    { waitUntil: "networkidle" },
-  );
+  await openStory(page, "components-pagination--nine-pages");
   // The English defaults, which is what a consumer gets for free.
   await expect(
     page.getByRole("button", { name: "Previous page" }),
@@ -29,12 +27,7 @@ test("the pagination labels come from the strings table", async ({ page }) => {
 test("a locale replaces them without touching the component", async ({
   page,
 }) => {
-  await page.goto(
-    "/iframe.html?id=components-pagination--localized&viewMode=story",
-    {
-      waitUntil: "networkidle",
-    },
-  );
+  await openStory(page, "components-pagination--localized");
   await expect(
     page.getByRole("navigation", { name: "Seitennummerierung" }),
   ).toBeVisible();

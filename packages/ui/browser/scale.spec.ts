@@ -32,6 +32,7 @@
 import { test, expect } from "@playwright/test";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { openStory } from "./ready";
 
 const SELECTORS = [
   ".uix-button",
@@ -130,9 +131,7 @@ for (const id of targets) {
   test(`${id} holds the scale across density and text size`, async ({
     page,
   }) => {
-    await page.goto(`/iframe.html?id=${id}&viewMode=story`, {
-      waitUntil: "networkidle",
-    });
+    await openStory(page, id);
 
     for (const axis of AXES) {
       const result = await page.evaluate(

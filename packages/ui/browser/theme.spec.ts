@@ -13,6 +13,7 @@
  * the wrong half of twenty declarations and keeps rendering.
  */
 import { test, expect, type Page } from "@playwright/test";
+import { openStory } from "./ready";
 
 async function pageBackground(page: Page, theme: string | null) {
   await page.evaluate((value) => {
@@ -39,9 +40,7 @@ async function pageBackground(page: Page, theme: string | null) {
 }
 
 async function story(page: Page) {
-  await page.goto("/iframe.html?id=components-button--matrix&viewMode=story", {
-    waitUntil: "networkidle",
-  });
+  await openStory(page, "components-button--matrix");
 }
 
 test("light and dark are distinct, and the default is light", async ({
