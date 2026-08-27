@@ -193,9 +193,9 @@ const LabPage = () => {
 const App = () => {
   return (
     <>
-      {/* Globale Chrome-Konstante: Marke plus externe Ziele. Labor-
-          Entdeckung lebt im Ueberblick (Suche/Tags), nicht hier --
-          sonst waechst der Header mit jedem Labor. */}
+      {/* The constant chrome: the brand plus external destinations.
+          Discovering a lab happens in the overview through search and tags,
+          not here, or the header would grow with every lab. */}
       <header className="site-header">
         <div className="site-header-inner">
           <Link to="/" className="site-brand">

@@ -39,7 +39,7 @@ What an RFC does not need: finished code, a Figma file, an estimate.
 What "reviewed" means, in order — technical first, because that is cheap to
 check, and then what only a person can see.
 
-1. **`pnpm gates` is green.** Seventeen targets, the same list as CI. No
+1. **`pnpm gates` is green.** Seventeen Nx targets plus the bundle budget, which is everything CI gates on. No
    review starts before that; it is not a ritual, it saves both sides a
    round trip.
 2. **Looked at.** `nx run ui:visual-sweep` renders every visible story in
@@ -101,12 +101,19 @@ pnpm nx run ui:visual-test        # locally, against committed baselines
 pnpm nx run ui:visual-sweep       # contact sheets to look at, not a gate
 ```
 
-`pnpm gates` lives in package.json and names the same list as the gates
-step in `.github/workflows/ci.yml`. The list used to be written here as
-well, maintained in two places, and three targets were missing here —
-`package-check`, `tokens-dtcg` and `adoption`. `tokens-dtcg` is exactly the
-one that then fell over in CI after everything was green locally: new
-tokens with no regenerated DTCG export.
+`pnpm gates` lives in package.json and covers both gating steps in
+`.github/workflows/ci.yml` — the Nx targets and the bundle budget. The list
+used to be written here as well, maintained in two places, and three targets
+were missing here — `package-check`, `tokens-dtcg` and `adoption`.
+`tokens-dtcg` is exactly the one that then fell over in CI after everything
+was green locally: new tokens with no regenerated DTCG export.
+
+The same shape recurred with the bundle budget, which CI ran as its own step
+and `pnpm gates` did not run at all. So a change that made every field
+component 2.44 KB gzip heavier passed locally and failed in CI, and the
+number that mattered was the one only CI saw. `size-check` is part of
+`pnpm gates` now. The rule behind both: if CI checks it, this command runs
+it — one list, or it is not a list.
 
 CI runs affected; axe and test findings block deploys.
 

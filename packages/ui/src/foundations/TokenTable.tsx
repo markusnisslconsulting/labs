@@ -1,6 +1,6 @@
 import type { TokenDescriptor } from "../tokens.registry";
 
-/** Klick kopiert den Namen — der haeufigste naechste Schritt. */
+/** Clicking copies the name, which is the most common next step. */
 function copyName(name: string) {
   void navigator.clipboard?.writeText(name).catch(() => {});
 }
@@ -139,7 +139,7 @@ function Preview({ token }: { token: TokenDescriptor }) {
 /**
  * Token-Tabelle mit typgerechter Vorschau (Farbe = Swatch, Radius =
  * Form, Space = Balken, Typografie = Specimen, Elevation = Schatten).
- * Klick auf den Namen kopiert ihn.
+ * Clicking the name copies it.
  */
 export function TokenTable({ tokens }: { tokens: TokenDescriptor[] }) {
   return (

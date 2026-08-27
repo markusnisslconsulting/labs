@@ -193,7 +193,7 @@
     );
   }
 
-  /* Z-index scale: eine Achse, dokumentiert. */
+  /* Z-index scale: one axis, documented. */
   :root {
     --uix-z-dropdown: 100;
     --uix-z-popover: 150;
@@ -202,7 +202,7 @@
     --uix-z-tooltip: 400;
   }
 
-  /* Dark: Schatten wirken als Kanten, nicht als Wolken. */
+  /* Dark: shadows read as edges rather than as clouds. */
   /* color-scheme is the theme switch, not just a hint to the engine.
      Every theme-dependent role above is one light-dark() declaration, and
      light-dark() reads the used color-scheme — so setting it here picks a

@@ -564,21 +564,7 @@ export {};
 ## Form
 
 ```ts
-interface Registration {
-  id: string;
-  linkText: string;
-}
-interface FormContextValue {
-  errors: Record<string, ReactNode>;
-  busy: boolean;
-  register: (name: string, entry: Registration) => void;
-  fields: Array<
-    {
-      name: string;
-    } & Registration
-  >;
-}
-export declare function useFormContext(): FormContextValue | null;
+export { useFormContext, type Registration } from "./_form-context.js";
 interface FormOwnProps {
   errors?: Record<string, ReactNode>;
   busy?: boolean;
@@ -623,7 +609,6 @@ declare function FormGroup({
   ComponentPropsWithRef<"fieldset">,
   "legend"
 >): import("react").JSX.Element;
-export {};
 ```
 
 ## IconButton

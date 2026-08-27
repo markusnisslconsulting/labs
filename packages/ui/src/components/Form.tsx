@@ -14,65 +14,15 @@ import {
 
 import { cx } from "../cx";
 import { useStrings } from "../i18n";
+import {
+  FormContext,
+  useFormContext,
+  type FormContextValue,
+  type Registration,
+} from "./_form-context";
 import "./Form.css";
 
-/**
- * The context a field reads to find its own error.
- *
- * Registration lives in a ref rather than in state: a field mounting must
- * not re-render its siblings, and the summary reads the registry only
- * while rendering itself.
- */
-interface Registration {
-  /** The control's id, for the summary's link target. */
-  id: string;
-  /**
-   * The summary's link text, which is the field's label when that label is
-   * a plain string and the field's name otherwise.
-   *
-   * Called `linkText` rather than `label` on purpose. It is not a label —
-   * a label can be a node, and this has to be a string because it goes
-   * inside an anchor. Naming it `label` also tripped the rule that content
-   * props must be nodes, correctly: a reader of that name would expect to
-   * be able to pass one.
-   */
-  linkText: string;
-}
-
-interface FormContextValue {
-  errors: Record<string, ReactNode>;
-  busy: boolean;
-  register: (name: string, entry: Registration) => void;
-  /**
-   * The registered fields, in mount order, so the summary reads in the
-   * order the form is laid out rather than in whatever order the errors
-   * object happens to have.
-   *
-   * State rather than a ref, and that was not the first design. A ref is
-   * cheaper — a field mounting would not re-render its siblings — but the
-   * summary has to read the registry while it renders, and reading a ref
-   * during render is unsafe under concurrent rendering: the value can
-   * belong to a different pass. The React compiler's lint said so, and it
-   * was right.
-   *
-   * The cost is one batched re-render when a form mounts. `register` is
-   * idempotent, so a field re-rendering does not cause another.
-   */
-  fields: Array<{ name: string } & Registration>;
-}
-
-const FormContext = createContext<FormContextValue | null>(null);
-
-/**
- * The form around this field, or null.
- *
- * Null rather than a throw, because a field outside a form is the ordinary
- * case and not a mistake — unlike `useToast`, where a notification with
- * nowhere to go is a message silently lost.
- */
-export function useFormContext(): FormContextValue | null {
-  return useContext(FormContext);
-}
+export { useFormContext, type Registration } from "./_form-context";
 
 /**
  * Whether the summary should render, deliberately a second context.

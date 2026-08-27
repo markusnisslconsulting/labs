@@ -21,8 +21,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      # Prod-Abhängigkeiten: high/critical blockiert. Dev-Abhängigkeiten
-      # werden wöchentlich gemeldet, ohne zu blockieren.
+      # Production dependencies: high and critical block. Dev dependencies
+      # are reported weekly without blocking.
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level high
       - name: Audit full tree (non-blocking)

@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Zwei Build-Artefakte: die Site und der Storybook der Workbench.
+      # Two build artefacts: the site, and the workbench's Storybook.
       - name: Build everything
         run: |
           pnpm exec nx run-many -t build

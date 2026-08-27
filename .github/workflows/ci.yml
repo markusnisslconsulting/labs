@@ -60,9 +60,9 @@ jobs:
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium
 
-      # Affected überall: PRs gegen die Merge-Base, Pushes auf main
-      # gegen HEAD~1 (alles seit dem letzten Push). Beim ersten Commit
-      # ohne Vorgänger fällt der Lauf auf das ganze Graph zurück.
+      # Affected everywhere: PRs against the merge base, pushes to main
+      # against HEAD~1 (everything since the last push). On a first commit
+      # with no predecessor the run falls back to the whole graph.
       - name: Determine base
         id: base
         run: |
@@ -90,4 +90,7 @@ jobs:
 
       - name: Bundle budget
         run: pnpm run size-check
-        # Skript skippt sauber, wenn nichts gebaut wurde.
+        # A separate step from Gates because it reads dist rather than
+        # running an Nx target, and it skips cleanly when nothing was
+        # built. `pnpm gates` runs it too, which it did not until a field
+        # component grew 2.44 KB and only CI said so.

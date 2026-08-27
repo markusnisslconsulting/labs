@@ -98,17 +98,26 @@ const mode = process.argv[2] ?? "report";
 const names = Object.keys(measured).sort();
 
 if (mode === "write") {
+  /* The note is the audit trail — it carries why the numbers last moved,
+     which is the only part of this file a reviewer can judge. Kept when it
+     exists, so raising a baseline does not erase the reason the previous
+     one was chosen; the reason for a move is then a deliberate edit next
+     to the numbers. Same fix as `scripts/stories/snapshots.ts`, which had
+     the same flaw. */
+  const previousNote = baseline.note || undefined;
+
   writeFileSync(
     BASELINE,
     `${JSON.stringify(
       {
         note:
+          previousNote ??
           "Gzipped bytes a consumer downloads per component, counted " +
-          "transitively: the component's chunk plus every shared chunk and " +
-          "stylesheet it imports. A ratchet, not a ceiling — the check " +
-          "fails when one rises past its tolerance and when one drops well " +
-          "below without this file being tightened. Run " +
-          "`node scripts/component-size.mjs write` after a deliberate change.",
+            "transitively: the component's chunk plus every shared chunk and " +
+            "stylesheet it imports. A ratchet, not a ceiling — the check " +
+            "fails when one rises past its tolerance and when one drops well " +
+            "below without this file being tightened. Run " +
+            "`node scripts/component-size.mjs write` after a deliberate change.",
         tolerance: TOLERANCE,
         components: Object.fromEntries(
           names.map((name) => [name, measured[name].total]),

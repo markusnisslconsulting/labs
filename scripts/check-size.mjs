@@ -176,7 +176,7 @@ for (const budget of [...budgets, ...componentBudgets()]) {
     continue;
   }
   if (!existsSync(budget.dir)) {
-    console.log(`- ${budget.label}: übersprungen (nichts gebaut)`);
+    console.log(`- ${budget.label}: skipped (nothing built)`);
     continue;
   }
   const total = walk(budget.dir)

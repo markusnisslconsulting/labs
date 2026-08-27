@@ -3,13 +3,12 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 
 /**
- * Visual regression über kuratierte Stories.
+ * Visual regression over a curated set of stories.
  *
- * Baselines unter visual/__screenshots__/<platform>/, erzeugt lokal
- * mit `pnpm nx run ui:visual-update`. CI überspringt den Test
- * (Font-/Rendering-Unterschiede zwischen Plattformen machen
- * Pixelvergleiche ohne Chromatic unzuverlässig); der lokale Lauf ist
- * der Gate vor jedem ui-Release.
+ * Baselines live under visual/__screenshots__/<platform>/ and are produced
+ * locally with `pnpm nx run ui:visual-update`. CI skips the test — font and
+ * rendering differences between platforms make pixel comparison unreliable
+ * without Chromatic — so the local run is the gate before a ui release.
  */
 
 const server = process.env.VISUAL_SERVER ?? "http://127.0.0.1:4520";
@@ -34,7 +33,7 @@ test.describe("visual regression", () => {
       const baseline = path.join(baselineDir, `${story}.png`);
       test.skip(
         process.env.CI === "true" && !existsSync(baseline),
-        "keine Baseline für diese Plattform",
+        "no baseline for this platform",
       );
 
       await page.goto(`${server}/iframe.html?id=${story}&viewMode=story`, {

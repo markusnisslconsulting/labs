@@ -124,8 +124,8 @@ function ToastWithTimeout({
   toast: ToastItem;
   onDismiss: (id: string) => void;
 }) {
-  // Ein Timer pro Toast, einmalig: ohne Effect wuerde jedes Re-Render
-  // den Timeout neu stellen und den Toast vorzeitig entfernen.
+  // One timer per toast, set once. Without an effect, every re-render
+  // would restart the timeout and remove the toast early.
   useEffect(() => {
     if (!toast.timeout) return;
     const handle = window.setTimeout(() => onDismiss(toast.id), toast.timeout);

@@ -10,7 +10,7 @@
       "dependencyDashboardApproval": true
     },
     {
-      "description": "Dev-Dependencies patch/minor automatisch, wenn Tests gruen",
+      "description": "Dev dependencies: patch and minor automatically, when tests are green",
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["patch", "minor"],
       "automerge": true,

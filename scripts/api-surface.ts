@@ -65,6 +65,13 @@ function surface(file: string): string {
 function build(): string {
   const files = readdirSync(TYPES)
     .filter((file) => file.endsWith(".d.ts"))
+    /* Underscore means shared-and-internal here, the same convention the
+       stylesheets use. `_form-context.ts` holds the context `Field` and
+       `Form` both need, and listing it as `## _form-context` would read as
+       a component. Nothing is hidden by skipping it: the two names a
+       consumer can use, `useFormContext` and `Registration`, are
+       re-exported from `Form` and appear in its section. */
+    .filter((file) => !file.startsWith("_"))
     .sort();
 
   const sections = files.map((file) => {
