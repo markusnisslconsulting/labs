@@ -138,18 +138,64 @@ function props(source: string, component: string): Prop[] {
     )?.[1];
   if (!body) return [];
   const out: Prop[] = [];
-  // Each entry is an optional doc block followed by `name?: type;`
-  const entry = /(?:\/\*\*([\s\S]*?)\*\/\s*)?(\w+)(\?)?:\s*([^;]+);/g;
-  let hit: RegExpExecArray | null;
-  while ((hit = entry.exec(body))) {
-    const [, doc, name, optional, type] = hit;
-    const cleaned = sentence(doc ?? "");
+
+  /* A prop ends at the first `;` **at nesting depth zero**, not at the first
+     `;` anywhere. The type used to be matched with `[^;]+`, which is right
+     until a type contains one of its own — and two do:
+
+       person?: (entry: { name: string; src?: string }) => ReactNode;
+       day?: (date: IsoDate, state: { selected: boolean; … }) => ReactNode;
+
+     The old pattern cut `person`'s type at `name: string;`, then resumed
+     inside the leftovers and matched `src?: string }) => ReactNode` as a
+     second prop called `src`. So the inventory listed a prop that does not
+     exist, twice, and did not list `person` or `day` at all. Everything
+     downstream believed it: the API surface, the MCP server, and Markus,
+     who asked what the nine render props were and got told one of them was
+     called `src`.
+
+     Hand-rolled rather than another regex, because "balanced" is not
+     something a regular expression expresses. */
+  let at = 0;
+  while (at < body.length) {
+    const doc = /^\s*\/\*\*([\s\S]*?)\*\//.exec(body.slice(at));
+    if (doc) at += doc[0].length;
+
+    const head = /^\s*(\w+)(\?)?:\s*/.exec(body.slice(at));
+    if (!head) {
+      /* Not a declaration: skip to the next line and try again, so a stray
+         comment or blank line does not end the scan early. */
+      const nextLine = body.indexOf("\n", at);
+      if (nextLine === -1) break;
+      at = nextLine + 1;
+      continue;
+    }
+    at += head[0].length;
+
+    let depth = 0;
+    let end = at;
+    while (end < body.length) {
+      const char = body[end];
+      /* Braces, parens and square brackets only. Angle brackets are not
+         nesting here: `=> void` ends in a `>` with no `<` to match it, so
+         counting them sent depth negative on the first callback prop and the
+         scan swallowed every prop after it. DatePicker lost eleven props that
+         way, `day` among them. A `;` inside a generic argument is always
+         inside a `{}` as well, so dropping `<>` costs nothing. */
+      if (char === "{" || char === "(" || char === "[") depth += 1;
+      else if (char === "}" || char === ")" || char === "]") depth -= 1;
+      else if (char === ";" && depth === 0) break;
+      end += 1;
+    }
+
+    const cleaned = sentence(doc?.[1] ?? "");
     out.push({
-      name: name!,
-      type: type!.replace(/\s+/g, " ").trim(),
-      required: !optional,
+      name: head[1]!,
+      type: body.slice(at, end).replace(/\s+/g, " ").trim(),
+      required: !head[2],
       ...(cleaned ? { doc: cleaned.split(/(?<=\.)\s/)[0] } : {}),
     });
+    at = end + 1;
   }
   return out;
 }

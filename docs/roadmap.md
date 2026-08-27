@@ -399,7 +399,7 @@ any of those.
 ## 12 — Readable by an agent (stands)
 
 Stands: `packages/ui/inventory.json`, generated from source — 50
-components, 361 own props with type and documentation, 28 compound parts,
+components, 357 own props with type and documentation, 28 compound parts,
 the override slots, the status, and the sentences saying when to reach for
 something else. A gate fails when the file has drifted. Plus
 `AGENTS.md`: the rules as instructions, each with the gate that enforces

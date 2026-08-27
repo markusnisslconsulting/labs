@@ -80,11 +80,10 @@
       "props": [
         {
           "name": "people",
-          "type": "Array<{ name: string",
+          "type": "Array<{ name: string; src?: string }>",
           "required": true,
           "doc": "Who is in the group, in the order they should be shown."
         },
-        { "name": "src", "type": "string }>", "required": false },
         {
           "name": "max",
           "type": "number",
@@ -98,11 +97,10 @@
         },
         {
           "name": "person",
-          "type": "(entry: { name: string",
+          "type": "(entry: { name: string; src?: string }) => ReactNode",
           "required": false,
           "doc": "Render one face yourself."
         },
-        { "name": "src", "type": "string }) => ReactNode", "required": false },
         {
           "name": "label",
           "type": "string",
@@ -281,7 +279,7 @@
           "name": "label",
           "type": "ReactNode",
           "required": true,
-          "doc": "Visible label; rendered inside the control, so the whole row toggles natively."
+          "doc": "A node."
         },
         { "name": "checked", "type": "boolean", "required": false },
         { "name": "defaultChecked", "type": "boolean", "required": false },
@@ -668,15 +666,9 @@
         },
         {
           "name": "day",
-          "type": "( date: IsoDate, state: { selected: boolean",
+          "type": "( date: IsoDate, state: { selected: boolean; outside: boolean; refused: boolean }, ) => ReactNode",
           "required": false,
           "doc": "Render one day's cell yourself."
-        },
-        { "name": "outside", "type": "boolean", "required": true },
-        {
-          "name": "refused",
-          "type": "boolean }, ) => ReactNode",
-          "required": true
         }
       ],
       "parts": [],
@@ -1309,7 +1301,7 @@
           "name": "label",
           "type": "ReactNode",
           "required": true,
-          "doc": "Accessible name; also rendered as visible text."
+          "doc": "A node: it renders into a real label element, not an attribute."
         },
         {
           "name": "value",
@@ -1755,7 +1747,7 @@
           "name": "label",
           "type": "ReactNode",
           "required": true,
-          "doc": "Visible label; rendered inside the control, so the whole row toggles natively."
+          "doc": "A node."
         },
         { "name": "checked", "type": "boolean", "required": false },
         { "name": "defaultChecked", "type": "boolean", "required": false },
@@ -2053,7 +2045,7 @@
           "name": "content",
           "type": "ReactNode",
           "required": true,
-          "doc": "Plain text; the tooltip is not a container for rich content."
+          "doc": "A node: a tooltip often needs a keyboard hint or emphasis."
         },
         {
           "name": "children",
@@ -2070,7 +2062,7 @@
           "name": "open",
           "type": "boolean",
           "required": false,
-          "doc": "Mount the popup open (for tests and docs)."
+          "doc": "Controlled: a tooltip driven by something other than the pointer."
         },
         { "name": "defaultOpen", "type": "boolean", "required": false },
         {

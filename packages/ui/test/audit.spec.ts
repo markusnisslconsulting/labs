@@ -347,4 +347,108 @@ describe("the agent instructions", () => {
         "`nx run ui:inventory-write`",
     ).toEqual([]);
   });
+
+  /**
+   * The test above checks that the inventory names every component. It said
+   * nothing about what it says *about* them, and for a while that was wrong
+   * in both directions: the extractor in `scripts/inventory.ts` matched a
+   * prop's type as `[^;]+`, so a type containing its own semicolon was cut
+   * short and the leftovers were parsed as another prop. `AvatarGroup.person`
+   * was published as a prop called `src`. Then the fix counted `<` and `>` as
+   * nesting, and `=> void` drove the depth negative, so the scan ate every
+   * prop after the first callback: 105 of 357 props were simply absent.
+   *
+   * Both defects passed the component check, because the component check
+   * looked at the list and not at the entries. So this reads the props back
+   * with a deliberately different method: the repo is prettier-formatted, so
+   * a top-level interface member is indented exactly two spaces, and a member
+   * nested inside a multi-line type is indented four or more. A balanced-
+   * bracket scanner and an indentation rule have no failure mode in common,
+   * which is the only reason one is evidence about the other.
+   */
+  it("lists exactly the props each component declares", () => {
+    const inventory = JSON.parse(
+      readFileSync("packages/ui/inventory.json", "utf8"),
+    ) as {
+      components: Array<{
+        component: string;
+        props: Array<{ name: string; type: string }>;
+      }>;
+    };
+
+    const wrong: string[] = [];
+    for (const entry of inventory.components) {
+      const file = `packages/ui/src/components/${entry.component}.tsx`;
+      if (!existsSync(file)) continue;
+      const source = readFileSync(file, "utf8");
+
+      const body =
+        new RegExp(
+          `interface ${entry.component}OwnProps[^{]*\\{([\\s\\S]*?)\\n\\}`,
+        ).exec(source)?.[1] ??
+        new RegExp(
+          `interface ${entry.component}Props[^{]*\\{([\\s\\S]*?)\\n\\}`,
+        ).exec(source)?.[1];
+      if (body === undefined) continue;
+
+      const declared = new Set(
+        [...body.matchAll(/^ {2}(\w+)\??:/gm)].map((hit) => hit[1]!),
+      );
+      const listed = new Set(entry.props.map((prop) => prop.name));
+
+      for (const name of declared) {
+        if (!listed.has(name)) {
+          wrong.push(`${entry.component}.${name} is declared but not listed`);
+        }
+      }
+      for (const name of listed) {
+        if (!declared.has(name)) {
+          wrong.push(`${entry.component}.${name} is listed but not declared`);
+        }
+      }
+    }
+
+    expect(
+      wrong,
+      "inventory.json disagrees with the source about which props exist; " +
+        "run `nx run ui:inventory-write` and if that does not fix it, the " +
+        "extractor in scripts/inventory.ts is misparsing a signature",
+    ).toEqual([]);
+  });
+
+  /**
+   * The truncation defect also left types that ended mid-signature, which is
+   * visible without any second parse: a published type whose brackets do not
+   * balance was cut off somewhere.
+   */
+  it("publishes prop types that are bracket-balanced", () => {
+    const inventory = JSON.parse(
+      readFileSync("packages/ui/inventory.json", "utf8"),
+    ) as {
+      components: Array<{
+        component: string;
+        props: Array<{ name: string; type: string }>;
+      }>;
+    };
+
+    const pairs: Record<string, string> = { "}": "{", ")": "(", "]": "[" };
+    const truncated: string[] = [];
+    for (const entry of inventory.components) {
+      for (const prop of entry.props) {
+        const stack: string[] = [];
+        for (const char of prop.type) {
+          if (char === "{" || char === "(" || char === "[") stack.push(char);
+          else if (char in pairs && stack.pop() !== pairs[char]) {
+            stack.push("!");
+            break;
+          }
+        }
+        if (stack.length > 0) {
+          truncated.push(`${entry.component}.${prop.name}: ${prop.type}`);
+        }
+      }
+    }
+
+    expect(truncated, "these published prop types are cut off").toEqual([]);
+  });
 });
