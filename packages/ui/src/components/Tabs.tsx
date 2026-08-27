@@ -80,13 +80,34 @@ export type TabPanelProps = ComponentPropsWithRef<typeof BaseTabs.Panel>;
  * all work on the parts and not only on the root.
  *
  * Accessibility: Base UI renders the tablist/tab/tabpanel wiring —
- * `aria-selected`, `aria-controls`/`aria-labelledby`, roving
- * tabindex — and handles Arrow/Home/End per the ARIA pattern. Name the
- * list with `label` in the shorthand form, or with `aria-label` on
- * `Tabs.List` when composing.
+ * `aria-selected`, `aria-controls`/`aria-labelledby`, roving tabindex —
+ * and handles Arrow/Home/End. Name the list with `label` in the shorthand
+ * form, or with `aria-label` on `Tabs.List` when composing.
  *
- * Performance: inactive panels stay out of the DOM flow (hidden), one
- * value state drives the whole set.
+ * **Manual activation**, which is the half this used to leave out. The
+ * ARIA tabs pattern has two variants and "per the ARIA pattern" names
+ * neither, so a reader could not tell the thing they most need to know:
+ * whether arrowing changes the panel. It does not. Arrow, Home and End
+ * move focus; Enter or Space selects the focused tab. Measured —
+ * ArrowRight moved focus to the third tab while `aria-selected` stayed on
+ * the second.
+ *
+ * It is also the right variant here rather than an accident of the
+ * library underneath, for the reason in the next paragraph: arrowing
+ * across five tabs under automatic activation would mount and unmount
+ * five panels on the way past.
+ *
+ * Performance: one value state drives the set, and only the selected
+ * panel is in the DOM. This used to say the inactive ones stay "out of
+ * the DOM flow (hidden)", which is a different and weaker claim —
+ * measured, three tabs render exactly one `[role=tabpanel]`, so they are
+ * absent rather than hidden. The difference matters to anyone deciding
+ * what to put in a panel: a hidden panel still pays for its subtree on
+ * every render, and an absent one does not.
+ *
+ * Both paragraphs are asserted in `packages/ui/browser/keyboard.spec.ts`,
+ * which is where the activation variant was pinned down in the first
+ * place.
  *
  * ```tsx
  * <Tabs defaultValue="open">

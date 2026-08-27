@@ -527,3 +527,74 @@ describe("the field family", () => {
     );
   });
 });
+
+/**
+ * A keyboard claim needs a row in the map.
+ *
+ * Eleven components name a key in their documentation — Arrow, Home, End,
+ * Escape, Enter, Space, PageUp, typeahead. Before the map existed, six key
+ * presses were asserted in the whole repository, three of them written the
+ * same afternoon for one slider. The rest was prose.
+ *
+ * Two defects came out of writing the map, and both were in the prose
+ * rather than the behaviour, which is the point: Tabs said "Arrow/Home/End
+ * per the ARIA pattern" without saying which of the pattern's two
+ * activation variants, and Tooltip said Base UI announced its hint when
+ * measurement showed nothing announced it at all.
+ */
+describe("the keyboard map", () => {
+  const KEYS =
+    /\b(Arrow(Up|Down|Left|Right)?|Home|End|Escape|PageUp|PageDown|typeahead)\b/;
+
+  /**
+   * Components whose claim cannot be exercised from a page, with the
+   * reason. Kept short: each entry is a promise nothing checks.
+   */
+  const UNTESTABLE: Record<string, string> = {
+    Select:
+      "typeahead happens inside the operating system's own picker, which " +
+      "the page cannot observe. The claim is that this is a native select, " +
+      "and the reachability and focus tests cover that.",
+    Combobox:
+      "the datalist picker is browser chrome for the same reason. What is " +
+      "ours — the input, its label and its filtering — is covered elsewhere.",
+  };
+
+  it("every component that claims a key has a row or a stated reason", () => {
+    const map = readFileSync("packages/ui/src/keyboard.map.ts", "utf8");
+    const missing: string[] = [];
+
+    for (const [file, text] of source) {
+      const name = file.replace(/\.tsx$/, "");
+      const docs = (code(text).match(/\/\*\*[\s\S]*?\*\//g) ?? []).join("\n");
+      // The docstrings are stripped by code(), so read them from the raw
+      // text — a claim lives in prose by definition.
+      const prose = (text.match(/\/\*\*[\s\S]*?\*\//g) ?? []).join("\n");
+      void docs;
+      if (!KEYS.test(prose)) continue;
+      if (name in UNTESTABLE) continue;
+      if (map.includes(`component: "${name}"`)) continue;
+      missing.push(name);
+    }
+
+    expect(
+      missing,
+      `these components document a key and have no row in ` +
+        `packages/ui/src/keyboard.map.ts. Add the row and its test, or ` +
+        `add the component to UNTESTABLE with the reason a page cannot ` +
+        `observe it.`,
+    ).toEqual([]);
+  });
+
+  it("has no exemption for a component that now has a row", () => {
+    // The other direction: an exemption left behind after the row landed
+    // is a stale note pretending to be a decision.
+    const map = readFileSync("packages/ui/src/keyboard.map.ts", "utf8");
+    for (const name of Object.keys(UNTESTABLE)) {
+      expect(
+        map.includes(`component: "${name}"`),
+        `${name} is exempted as untestable but now has a map row`,
+      ).toBe(false);
+    }
+  });
+});

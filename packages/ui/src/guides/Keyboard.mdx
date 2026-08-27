@@ -1,0 +1,63 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { KeyboardTable } from "./KeyboardTable";
+
+<Meta title="Guides/Keyboard" />
+
+# Keyboard
+
+Every row below is asserted by a test in
+`packages/ui/browser/keyboard.spec.ts`. The table is generated from
+`packages/ui/browser/keyboard.map.ts`, which is the same file those tests
+read — so a promise cannot appear on this page without something checking
+it, and a check cannot exist without appearing here.
+
+That arrangement exists because the alternative was measured. Eleven
+components named a key in their documentation; six key presses were
+asserted in the whole repository, three of them written the same afternoon
+for one slider. Everything else was prose.
+
+## What writing it down found
+
+Both defects were in the prose rather than the behaviour, which is the
+argument for the table.
+
+**Tabs** said it handled "Arrow/Home/End per the ARIA pattern". That
+pattern has two variants, and the sentence named neither — so a reader
+could not tell whether arrowing changes the panel. It does not: arrows
+move focus and Enter commits. The first three tests written against it
+assumed the other variant, two failed, and one passed for the wrong
+reason.
+
+**Tooltip** said Base UI announced its hint "(its own wiring)". Measured
+in the open state, the trigger had no `aria-describedby` and the popup no
+role. The component minted an id, handed it to the popup and never
+referenced it — half the wiring. Sighted users saw a box; a screen reader
+was told nothing.
+
+## Who implements each row
+
+The last column matters when a row fails.
+
+**The component** means a JavaScript keydown handler, ours or Base UI's. A
+failure there is a bug in this library.
+
+**The browser** means a native control's own behaviour — arrow keys on a
+radio group, Space on a checkbox, Home on a range input. The library's
+claim is narrower and still worth holding: that nothing here took it
+away. CSS can. A wrapper with `pointer-events: none`, an input moved
+off-screen instead of clipped, an `appearance` reset that swallows focus —
+each removes platform behaviour while the component goes on calling it the
+platform's.
+
+Rows owned by the browser only respond to trusted key events, which is why
+every row is exercised from Playwright rather than from a story. Measured:
+`userEvent.keyboard` moves a range input's label and never its thumb.
+
+## Two claims with no row
+
+`Select` and `Combobox` both promise typeahead, and both hand it to a
+picker drawn by the operating system. A page cannot observe what happens
+inside it. Those two are listed as untestable in `api.spec.ts` with that
+reason, and a gate refuses a third entry unless someone writes one down.
+
+<KeyboardTable />
