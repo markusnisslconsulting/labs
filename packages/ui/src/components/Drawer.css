@@ -1,0 +1,118 @@
+/* Drawer styles, shipped with the component.
+   A page that never imports Drawer never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    /* The scrim role, which always darkens rather than following the
+       theme. A theme-following scrim was near-white on dark, so the
+       "dimmed" page behind a modal was brighter than the page itself. */
+    background: var(--uix-scrim);
+  }
+
+  .uix-drawer {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: var(--uix-gap-sm);
+    /* A readable measure by default, not a fraction of the viewport. At
+       40vw a drawer is a comfortable panel on a laptop and a column of
+       two-word lines on a wide monitor, and line length is what decides
+       whether a panel can be read. `min` keeps it inside a narrow screen
+       without a media query. */
+    --uix-drawer-size: 26rem;
+    padding: var(--uix-gap-lg);
+    background: var(--uix-bg-surface);
+    color: var(--uix-text-body);
+    box-shadow: var(--uix-elevation-modal);
+    overflow-y: auto;
+  }
+
+  /* Logical insets, so the side follows the reading direction rather than
+     a fixed edge of the screen. `inline-end` is the right in English and
+     the left in Arabic, which is where a details panel belongs in each. */
+  .uix-drawer[data-side="inline-end"] {
+    inset-block: 0;
+    inset-inline-end: 0;
+    inline-size: min(var(--uix-drawer-size), 100vw);
+    border-start-start-radius: var(--uix-radius-surface);
+    border-end-start-radius: var(--uix-radius-surface);
+  }
+
+  .uix-drawer[data-side="inline-start"] {
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: min(var(--uix-drawer-size), 100vw);
+    border-start-end-radius: var(--uix-radius-surface);
+    border-end-end-radius: var(--uix-radius-surface);
+  }
+
+  .uix-drawer[data-side="block-end"] {
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: min(var(--uix-drawer-size), 90vh);
+    border-start-start-radius: var(--uix-radius-surface);
+    border-start-end-radius: var(--uix-radius-surface);
+  }
+
+  .uix-drawer-title {
+    margin: 0;
+    font-size: var(--uix-font-size-300);
+    font-weight: var(--uix-weight-display);
+    color: var(--uix-text-heading);
+  }
+
+  .uix-drawer-description {
+    margin: 0;
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-drawer-body {
+    /* Takes the slack, so the footer stays at the bottom of a short panel
+       and scrolls with the content of a long one. */
+    flex: 1;
+    min-block-size: 0;
+  }
+
+  .uix-drawer-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--uix-gap-sm);
+    padding-block-start: var(--uix-gap-sm);
+  }
+
+  /* Slide in from the edge it belongs to. Skipped entirely under
+     reduced-motion rather than shortened: a panel that flies in from the
+     side is exactly the motion that causes trouble, and there is nothing
+     the movement communicates that its arrival does not. */
+  @media (prefers-reduced-motion: no-preference) {
+    .uix-drawer[data-starting-style],
+    .uix-drawer[data-ending-style] {
+      opacity: 0;
+    }
+
+    .uix-drawer[data-side="inline-end"][data-starting-style],
+    .uix-drawer[data-side="inline-end"][data-ending-style] {
+      translate: 100% 0;
+    }
+
+    .uix-drawer[data-side="inline-start"][data-starting-style],
+    .uix-drawer[data-side="inline-start"][data-ending-style] {
+      translate: -100% 0;
+    }
+
+    .uix-drawer[data-side="block-end"][data-starting-style],
+    .uix-drawer[data-side="block-end"][data-ending-style] {
+      translate: 0 100%;
+    }
+
+    .uix-drawer {
+      transition:
+        translate 200ms ease,
+        opacity 200ms ease;
+    }
+  }
+}

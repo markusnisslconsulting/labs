@@ -243,4 +243,18 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
       "with the scroll viewport focused, scrolls the rows — the reason " +
       "the viewport is a tab stop at all",
   },
+  /* Drawer — the same popup contract as Dialog, and worth its own row
+     because a drawer is the one that is sometimes not modal: Escape has to
+     close it either way. */
+  {
+    component: "Drawer",
+    story: "components-drawer--non-modal-filter-panel",
+    owner: "component",
+    key: "Escape",
+    /* Just the close. Focus restoration needs a trigger to return to and
+       this fixture opens by default, so that half is asserted in
+       `Drawer.stories.tsx` where a trigger exists. A row must not promise
+       more than the test under it checks. */
+    expectation: "closes the panel",
+  },
 ];

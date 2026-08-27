@@ -354,6 +354,52 @@ test("only the selected tab panel is in the DOM", async ({ page }) => {
   ).toHaveCount(1);
 });
 
+/* ---------------------------------------------------------------- Drawer */
+
+const DRAWER_ESCAPE = row("Drawer", "Escape");
+
+/**
+ * Escape closes a drawer, modal or not.
+ *
+ * Its own row rather than an assumption that Dialog's covers it, because a
+ * drawer is the one popup here that is sometimes not modal — and a
+ * non-modal panel is exactly where "Escape closes it" is easiest to lose,
+ * since nothing about the page behind is different while it is open.
+ *
+ * The fixture holds exactly one panel, and that was a measurement rather
+ * than a preference. This test first opened the matrix, which has three
+ * siblings, and asserted that one press closes the one on top — measured,
+ * a single Escape closes **all three**. Each Base UI root handles the key
+ * for itself and these are siblings rather than nested, so there is no
+ * "top" for them to agree on. That may be worth changing; what it is not
+ * is a keyboard contract this row can state, so the row states the one
+ * that holds.
+ *
+ * And it is the non-modal panel deliberately: nothing about the page
+ * behind a non-modal drawer changes while it is open, so "Escape closes
+ * it" is the claim most easily lost there without anybody noticing.
+ *
+ * Break-verified on the third attempt, and the two that failed are worth
+ * recording because both looked convincing. Passing `onOpenChange={() => {}}`
+ * changed nothing: this fixture is uncontrolled, so Base UI holds the open
+ * state itself and that prop is a notification rather than a veto. Nor did
+ * `onKeyDown` with `stopPropagation` on the popup, because Base UI listens
+ * above it. What does break it is making the panel controlled and stuck
+ * open — which is also the shape of the real regression, a caller wiring
+ * `open` and forgetting to handle the close.
+ */
+test(`Drawer: Escape ${DRAWER_ESCAPE.expectation}`, async ({ page }) => {
+  await openStory(page, DRAWER_ESCAPE.story);
+  const panel = page.locator(".uix-drawer");
+  await expect(panel).toHaveCount(1);
+
+  await page.keyboard.press("Escape");
+
+  /* Retried by toHaveCount, which matters: closing runs a 200ms exit
+     transition and the panel stays in the DOM for the whole of it. */
+  await expect(panel, "Escape did not close the panel").toHaveCount(0);
+});
+
 /* ------------------------------------------------------------- DataTable */
 
 const DATATABLE_SORT = row("DataTable", "Enter");

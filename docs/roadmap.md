@@ -33,6 +33,13 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**Drawer** — done. The one prop worth naming is `modal`, because a drawer is
+the component where the answer is genuinely sometimes no: a filter panel
+beside a list is meant to be used _with_ the list. Measured while building
+it, with `useInertBackground` switched off: Base UI still leaves nothing
+behind the popup inert in `1.0.0-rc.0`, so the claim recorded on `Dialog`
+holds for this version and is not inherited.
+
 **EmptyState, SplitButton, AvatarGroup** — done. Small, and each carries one
 accessibility decision that is the reason it is a component rather than
 markup: a polite live region for the empty state, two named buttons instead
@@ -81,6 +88,27 @@ emitted `import("./Menu").MenuItemProps` with no extension, two lines below
 an explicit import that was rewritten correctly. `attw` caught it; nothing
 else would have, because a bundler resolves both. Same class as the two
 cases the comment there already records.
+
+**Four gates were testing a Storybook nobody had built.**
+`build-storybook` used the `production` input set, which excludes
+`*.stories.tsx`. The exclusion is right for `build` and recorded in ADR 0009;
+on a build made of stories it inverts. Measured with a warm cache and one
+word changed in a story: `Cache: 1/1 hit (100%)` and the word never reached
+`dist`. `browser-test`, `visual-test`, `visual-sweep` and `visual-axes` all
+depend on that build, so each was exercising the previous set of stories.
+
+Found because Markus asked why a break test needed `--skip-nx-cache` to see
+an edit. It is the right question: reaching for that flag is what working
+around a wrong cache looks like from the inside, and the flag had been
+hiding the defect it was compensating for.
+
+**The barrel had lost three components, and nothing could see it.**
+`Dialog` with `AlertDialog`, and `Field` with `useFieldMessages`, were
+finished and documented and not importable from the package root. The
+subpath export is a wildcard, so `@labs/ui/components/Dialog` always worked
+and every packaging gate passed — the barrel is the one hand-maintained list
+in the package and the one place with no check on it. There is one now, read
+from the directory rather than from a list.
 
 **Two more gates were describing a list rather than a mechanism.** The
 disabled-state rule named `_field.css` and `_choice.css` as the two

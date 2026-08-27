@@ -13,7 +13,15 @@ import { Checkbox, type CheckboxProps } from "./components/Checkbox";
 import { Chip, type ChipProps } from "./components/Chip";
 import { Form, type FormProps } from "./components/Form";
 import { Combobox, type ComboboxProps } from "./components/Combobox";
+import {
+  Dialog,
+  type DialogProps,
+  AlertDialog,
+  type AlertDialogProps,
+} from "./components/Dialog";
 import { Divider, type DividerProps } from "./components/Divider";
+import { Drawer, type DrawerProps } from "./components/Drawer";
+import { Field, type FieldProps, useFieldMessages } from "./components/Field";
 import { IconButton, type IconButtonProps } from "./components/IconButton";
 import { Menu, type MenuProps } from "./components/Menu";
 import { NumberField, type NumberFieldProps } from "./components/NumberField";
@@ -144,4 +152,13 @@ export {
   type TokenDescriptor,
   Form,
   type FormProps,
+  Dialog,
+  type DialogProps,
+  AlertDialog,
+  type AlertDialogProps,
+  Drawer,
+  type DrawerProps,
+  Field,
+  type FieldProps,
+  useFieldMessages,
 };

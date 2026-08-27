@@ -524,6 +524,40 @@ export declare function Divider({
 export {};
 ```
 
+## Drawer
+
+```ts
+interface DrawerOwnProps {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  side?: "inline-start" | "inline-end" | "block-end";
+  modal?: boolean | "trap-focus";
+  title: string;
+  description?: string;
+  children?: ReactNode;
+  footer?: ReactNode;
+  size?: string;
+}
+export type DrawerProps = DrawerOwnProps &
+  Omit<ComponentPropsWithRef<typeof BaseDialog.Popup>, keyof DrawerOwnProps>;
+export declare function Drawer({
+  open,
+  defaultOpen,
+  onOpenChange,
+  side,
+  modal,
+  title,
+  description,
+  children,
+  footer,
+  size,
+  className,
+  ...rest
+}: DrawerProps): import("react").JSX.Element;
+export {};
+```
+
 ## EmptyState
 
 ```ts

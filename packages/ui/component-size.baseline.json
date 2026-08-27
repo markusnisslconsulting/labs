@@ -1,5 +1,5 @@
 {
-  "note": "Gzipped bytes a consumer downloads per component, counted transitively: the component's chunk plus every shared chunk and stylesheet it imports. A ratchet, not a ceiling \u2014 the check fails when one rises past its tolerance and when one drops well below without this file being tightened. Run `node scripts/component-size.mjs write` after a deliberate change. Moved 2026-08-27 for the Form work: every field component rose about 0.45 KB, which is the form integration itself \u2014 the context, the error resolution and the registration effect. The first version of that change cost 2.44 KB each instead, because `Field` imported `useFormContext` from `Form.tsx` and so dragged `Form.Summary`, its string-table use and `Form.css` into every page with one TextField. This gate is what found it; `packages/ui/src/components/_form-context.ts` is the fix. Added 2026-08-27: EmptyState at 0.89 KB, AvatarGroup at 1.85 KB, and SplitButton at 5.60 KB \u2014 the last carries Menu, because its popup is a Menu and its parts are Menu's re-exported rather than a second copy of them.",
+  "note": "Gzipped bytes a consumer downloads per component, counted transitively: the component's chunk plus every shared chunk and stylesheet it imports. A ratchet, not a ceiling \u2014 the check fails when one rises past its tolerance and when one drops well below without this file being tightened. Run `node scripts/component-size.mjs write` after a deliberate change. Moved 2026-08-27 for the Form work: every field component rose about 0.45 KB, which is the form integration itself \u2014 the context, the error resolution and the registration effect. The first version of that change cost 2.44 KB each instead, because `Field` imported `useFormContext` from `Form.tsx` and so dragged `Form.Summary`, its string-table use and `Form.css` into every page with one TextField. This gate is what found it; `packages/ui/src/components/_form-context.ts` is the fix. Added 2026-08-27: EmptyState at 0.89 KB, AvatarGroup at 1.85 KB, and SplitButton at 5.60 KB \u2014 the last carries Menu, because its popup is a Menu and its parts are Menu's re-exported rather than a second copy of them. Added Drawer at 1.70 KB.",
   "tolerance": {
     "fraction": 0.12,
     "bytes": 150
@@ -18,8 +18,9 @@
     "Chip": 1394,
     "Combobox": 2905,
     "DataTable": 3247,
-    "Dialog": 1589,
+    "Dialog": 1733,
     "Divider": 666,
+    "Drawer": 1743,
     "EmptyState": 907,
     "Field": 2151,
     "Form": 2631,

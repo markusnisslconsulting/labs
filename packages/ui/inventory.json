@@ -595,6 +595,51 @@
       "accessibility": "renders `role=\"separator\"`; purely decorative by default — pass a `label` only when the divider means something (e.g. between two form sections a screen reader user navigates)"
     },
     {
+      "component": "Drawer",
+      "props": [
+        { "name": "open", "type": "boolean", "required": false },
+        { "name": "defaultOpen", "type": "boolean", "required": false },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "side",
+          "type": "\"inline-start\" | \"inline-end\" | \"block-end\"",
+          "required": false,
+          "doc": "Which edge it comes from."
+        },
+        {
+          "name": "modal",
+          "type": "boolean | \"trap-focus\"",
+          "required": false,
+          "doc": "Whether the page behind is inert while this is open."
+        },
+        { "name": "title", "type": "string", "required": true },
+        { "name": "description", "type": "string", "required": false },
+        { "name": "children", "type": "ReactNode", "required": false },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Footer slot, typically action buttons."
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "required": false,
+          "doc": "How wide, or how tall for `block-end`."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a panel of detail or controls beside the thing it belongs to — filters for a list, the record behind a row, a form that keeps its context visible",
+      "insteadWhen": "the task must be finished or abandoned before anything else: that is `Dialog`, and it should cover the page rather than sit beside it",
+      "accessibility": "the modal half is this library's rather than Base UI's, for the reason recorded on `Dialog` — measured against Base UI `1.0.0-rc.0` the popup had `role=\"dialog\"` and nothing else, so `aria-modal` and `inert` on every sibling branch are wired here and `browser/focus.spec.ts` holds them down. `modal` matters more here than on a dialog, because a drawer has a real non-modal use. A filter panel beside"
+    },
+    {
       "component": "EmptyState",
       "props": [
         {

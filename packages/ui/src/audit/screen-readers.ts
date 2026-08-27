@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "Drawer",
+    why: "modal and non-modal from the same component: whether a reader can reach the page behind each, and whether it says which",
+    cells: blank(),
+  },
+  {
     component: "EmptyState",
     why: "a polite live region: whether the answer to a filter arrives at all, and whether it interrupts something",
     cells: blank(),

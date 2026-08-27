@@ -103,6 +103,8 @@ const ACCESSIBLE_NAME: Record<string, string> = {
   "Slider.tsx": "label is the slider's aria-label",
   "Tabs.tsx": "label names the tablist",
   "Dialog.tsx": "title is announced as the dialog's name",
+  "Drawer.tsx":
+    "title is announced as the panel's name, for the same reason as Dialog",
   "Spinner.tsx": "label is the live region's text; a spinner has no other name",
   "Select.tsx":
     "SelectOption.label is an <option>'s text, and HTML forbids markup " +
@@ -194,6 +196,44 @@ describe("component API contract", () => {
           `a node`,
       ).toBe(true);
     }
+  });
+
+  /**
+   * The barrel exports every component the package ships.
+   *
+   * Added because three had quietly fallen out of it: `Dialog` — with
+   * `AlertDialog` — and `Field`, with its `useFieldMessages`. Each was a
+   * finished, documented component with stories and an inventory entry, and
+   * `import { Dialog } from "@labs/ui"` did not compile while every other
+   * component did.
+   *
+   * The subpath export saved it from being fatal: `@labs/ui/components/Dialog`
+   * always worked, because the exports map is a wildcard. That is exactly
+   * why nothing noticed. A wildcard cannot drift, so the gates aimed at
+   * packaging all passed, and the barrel — which is a hand-maintained list —
+   * was the one place with no check on it.
+   *
+   * Checked against the directory rather than a list, so a new component is
+   * covered on the day it is written and not at the next audit.
+   */
+  it("the barrel exports every component", () => {
+    const barrel = readFileSync("packages/ui/src/index.ts", "utf8");
+    const missing = readdirSync(DIR)
+      .filter(
+        (file) =>
+          file.endsWith(".tsx") &&
+          !file.endsWith(".stories.tsx") &&
+          !file.startsWith("_"),
+      )
+      .map((file) => file.replace(/\.tsx$/, ""))
+      .filter((name) => !barrel.includes(`"./components/${name}"`));
+
+    expect(
+      missing,
+      "these components are not importable from the package root. The " +
+        "subpath export still reaches them, which is why this drifts " +
+        "unnoticed — add them to src/index.ts",
+    ).toEqual([]);
   });
 
   it("a content prop is a node, not a string", () => {

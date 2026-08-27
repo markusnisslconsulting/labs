@@ -75,6 +75,18 @@ cut at the first release.
 
 ### added
 
+- **Drawer** — a panel of detail or controls beside the thing it belongs to.
+  Sides are logical (`inline-start`, `inline-end`, `block-end`), so a details
+  panel lands on the side the reading ends on rather than a fixed edge of the
+  screen. `modal` is the prop that matters: a filter panel is meant to be
+  used _with_ the list beside it, and making that list inert defeats the
+  panel. Non-modal draws no scrim, because a scrim over an operable page
+  tells the reader the opposite of the truth and swallows the clicks it looks
+  like it is inviting.
+- **Dialog, AlertDialog, Field, `useFieldMessages`** — exported from the
+  package root. They were reachable only as `@labs/ui/components/Dialog`;
+  `import { Dialog } from "@labs/ui"` did not compile while every other
+  component did. A gate now checks the barrel against the directory.
 - **EmptyState** — the place where a list or table would be, when there is
   nothing to show. A polite `role="status"`, because the text usually
   appears _because of something the reader did_ and a result that renders
@@ -138,6 +150,13 @@ window in which this section matters.
 
 ### internal
 
+- **Build cache** — `build-storybook` no longer uses the `production` input
+  set, which excludes `*.stories.tsx`. A Storybook build is made of stories,
+  so editing one left the cache warm: measured at `Cache: 1/1 hit (100%)`
+  with the change never reaching `dist`. Four gates depend on that build and
+  were therefore exercising the previous stories. `nx.json` has a `storybook`
+  named input now, and `packages/ui/test/build.spec.ts` asserts both it and
+  the deliberate exclusion on `build`.
 - **Packaging** — `scripts/prepare-dist.mjs` now gives inferred type imports
   their extension too. It rewrote `from "./X"` and not `import("./X")`, which
   is the shape TypeScript emits for an inferred type — so a consumer on
