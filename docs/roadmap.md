@@ -419,7 +419,7 @@ says "a list too long to scan" and "hold more than one answer".
 
 Two of the four sources are parsed rather than imported, and that is where
 the risk sits — a regex over a file whose shape changes returns fewer rows
-rather than an error. `test/data.spec.ts` counts what it parsed against the
+rather than an error. `packages/ui-mcp/test/data.spec.ts` counts what it parsed against the
 imported source, and both earlier token parsers needed it: one produced
 `--uix-semantic-accent` for a property called `--uix-accent`, the next
 stopped inside a font stack's escaped quote and returned 151 of 154. Neither

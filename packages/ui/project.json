@@ -93,7 +93,15 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "vitest run packages/ui/test/ --root ."
-      }
+      },
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/AGENTS.md",
+        "{workspaceRoot}/CONTRIBUTING.md",
+        "{workspaceRoot}/docs/roadmap.md",
+        "{workspaceRoot}/nx.json"
+      ]
     },
     "test-storybook": {
       "executor": "nx:run-commands",

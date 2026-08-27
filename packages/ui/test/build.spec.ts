@@ -25,7 +25,8 @@
  * Both halves are asserted, because the two targets have to *differ* and a
  * single-sided rule invites somebody to make them the same.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 interface NxConfig {
@@ -69,6 +70,69 @@ const excludesStories = (target: string) =>
   );
 
 describe("nx cache inputs", () => {
+  /**
+   * A cached test declares every workspace file it reads.
+   *
+   * The general form of the two defects this file already records, and it
+   * took a third instance to see it. `ui:test` reads `AGENTS.md`,
+   * `CONTRIBUTING.md` and `docs/roadmap.md` — the citation checker in
+   * `audit.spec.ts` is entirely about them — and declared none of them.
+   * `default` covers `{projectRoot}/**` and `sharedGlobals` covers three
+   * files at the root; a document two directories away is in neither.
+   *
+   * Measured: with those inputs undeclared, appending a citation of
+   * `nothing/at/all.ts` to the roadmap and running `nx run ui:test` reported
+   * "188 passed" from the cache. CI ran cold, caught it, and that is the
+   * only reason it was ever seen.
+   *
+   * And writing this rule found a fourth: `build.spec.ts` reads `nx.json`,
+   * so the gate about cache inputs was itself replayable when the cache
+   * configuration changed.
+   *
+   * The check reads every path-shaped string literal in the specs rather
+   * than only the arguments of `readFileSync`. That is deliberate: the
+   * documents that started this are passed to `it.each` as a list and read
+   * through a variable, so a scan of literal read calls finds `nx.json` and
+   * misses the three that mattered — a gate that would have passed while the
+   * bug was live.
+   */
+  it("every workspace file the tests read is an input", () => {
+    const dir = "packages/ui/test";
+    const named = new Map<string, string[]>();
+    for (const entry of readdirSync(dir)) {
+      if (!entry.endsWith(".spec.ts")) continue;
+      const source = readFileSync(join(dir, entry), "utf8");
+      for (const match of source.matchAll(
+        /"([A-Za-z0-9_./-]+\.(?:ts|tsx|json|md|mjs|css|yml))"/g,
+      )) {
+        const path = match[1]!;
+        /* Inside the project is covered by `default`; a relative specifier
+           is an import rather than a file being read. */
+        if (path.startsWith("packages/ui/") || path.startsWith(".")) continue;
+        if (!existsSync(path)) continue;
+        named.set(path, [...(named.get(path) ?? []), entry]);
+      }
+    }
+
+    const declared = new Set(
+      (
+        JSON.parse(readFileSync("packages/ui/project.json", "utf8")) as {
+          targets: Record<string, { inputs?: string[] }>;
+        }
+      ).targets["test"]?.inputs ?? [],
+    );
+
+    const undeclared = [...named.entries()]
+      .filter(([path]) => !declared.has(`{workspaceRoot}/${path}`))
+      .map(([path, where]) => `${path} (read by ${where.join(", ")})`);
+
+    expect(
+      undeclared,
+      "these files are read by a cached test and are not among its inputs, " +
+        "so editing one replays the previous result",
+    ).toEqual([]);
+  });
+
   it("the storybook build sees stories", () => {
     expect(
       excludesStories("build-storybook"),

@@ -84,6 +84,26 @@ design system that depends on a product is no longer one.
   now, because the two targets have to differ and a one-sided rule invites
   somebody to make them the same.
 
+- **A cached target declares every file its tests read.** The general form of
+  the above, and it took a third instance to see it. `ui:test` reads
+  `AGENTS.md`, `CONTRIBUTING.md` and `docs/roadmap.md` — its citation checker
+  is entirely about them — and declared none: `default` covers
+  `{projectRoot}/**` and `sharedGlobals` three files at the root, and a
+  document two directories away is in neither. Measured: with those
+  undeclared, adding a citation of a file that does not exist and running
+  `nx run ui:test` reported "188 passed" from the cache. CI ran cold and
+  caught it, which is the only reason it was seen.
+
+  Writing the rule found a fourth: `build.spec.ts` reads `nx.json`, so the
+  gate about cache inputs was itself replayable when the cache configuration
+  changed.
+
+  The check reads every path-shaped string literal in the specs rather than
+  the arguments of `readFileSync`. That is deliberate — the three documents
+  are passed to `it.each` as a list and read through a variable, so a scan of
+  literal read calls finds `nx.json` and misses exactly the three that
+  mattered.
+
 - **`targetDefaults.*.dependsOn: ["^build"]`** — typecheck and Storybook
   need the built dependencies, not their sources.
 - **`cache: true` everywhere except `serve` and `storybook`.** A gate
