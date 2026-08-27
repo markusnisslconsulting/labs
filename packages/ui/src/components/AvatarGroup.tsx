@@ -35,8 +35,11 @@ interface AvatarGroupOwnProps {
    * Returns a node per person and replaces the default `Avatar`. Keep the
    * result the same size, or the overlap arithmetic has nothing to work
    * from.
+   *
+   * Named `item` like every other render prop here, so learning it once
+   * is learning it everywhere. It was `person` while nothing used it.
    */
-  person?: (entry: { name: string; src?: string }) => ReactNode;
+  item?: (entry: { name: string; src?: string }) => ReactNode;
   /**
    * What the group is, for assistive technology. Required.
    *
@@ -79,7 +82,7 @@ export function AvatarGroup({
   people,
   max = 4,
   size = "md",
-  person,
+  item: renderPerson,
   label,
   className,
   ...rest
@@ -106,8 +109,8 @@ export function AvatarGroup({
           images is not the same thing as five named faces. */}
       {shown.map((entry) => (
         <div key={entry.name} className="uix-avatargroup-item">
-          {person ? (
-            person(entry)
+          {renderPerson ? (
+            renderPerson(entry)
           ) : (
             <Avatar
               name={entry.name}

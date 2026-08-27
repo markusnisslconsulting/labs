@@ -259,6 +259,29 @@ cut at the first release.
 
 ### breaking
 
+- **AvatarGroup, Combobox, DatePicker, TagInput, Tree** — the render prop is
+  called `item` in all of them. It was `person`, `option`, `day`, `tag` and
+  `node`, and `item` already on `CommandPalette` and `FileUpload`: seven
+  names for one idea, so a consumer learned it seven times and guessed wrong
+  six.
+
+  Rename the prop, nothing else. The signature each one had is unchanged —
+  `item` receives exactly what its old name did.
+
+  No codemod, because nothing outside this repository used any of them: the
+  labs site imports six components and none of these render props. A codemod
+  for a prop with no callers is a file that has to be maintained to do
+  nothing.
+
+  Two render props kept their own names and the difference is real, not
+  grandfathering. `Stepper`'s `marker` replaces the circle inside a step
+  rather than the step, and called `item` it would promise the label and the
+  connector too. `InlineEdit`'s `display` replaces the reading state, where
+  there is no collection and so no item. `Field`'s function-as-children is a
+  React idiom older than this library. `packages/ui/test/api.spec.ts` holds
+  the list, ties each exception to the one component it was granted for, and
+  fails on a name that is neither `item` nor listed.
+
 - **Combobox** — replaced. It was an `<input list>` over a `datalist`, which
   is to say the operating system's own picker: honest, very small, and unable
   to express async options, multiple selection or custom rows. Those three

@@ -728,3 +728,100 @@ describe("the keyboard map", () => {
     }
   });
 });
+
+/**
+ * A render prop is called `item`, unless it is not rendering an item.
+ *
+ * There were seven names for the same idea: `person` on AvatarGroup,
+ * `option` on Combobox, `day` on DatePicker, `tag` on TagInput, `node` on
+ * Tree, and `item` on CommandPalette and FileUpload. Each read well beside
+ * its own component, and together they meant a consumer learned the same
+ * concept seven times and guessed wrong six.
+ *
+ * Renamed while nothing outside this repository used any of them, so there
+ * is no codemod and no window. This list is what stops it happening again:
+ * a new render prop either uses the name everyone already knows, or it is
+ * added here with the reason it is a different kind of prop — and an
+ * exception is tied to the one component it was granted for, so a second
+ * component cannot adopt it by copying a signature.
+ *
+ * `only` is the component allowed to use the name; `null` means any.
+ *
+ * The rule is about what the prop replaces, not about whether the component
+ * has a collection. The first version of this test said "a component with a
+ * collection puts its render prop on `item`" and immediately flagged
+ * `Stepper.marker` — correctly by that wording, and wrongly in substance.
+ * Stepper does have a collection of steps, and `marker` replaces the circle
+ * inside one, not the step. Called `item` it would promise the label and the
+ * connector as well.
+ */
+const RENDER_PROPS: Record<string, { only: string | null; why: string }> = {
+  item: {
+    only: null,
+    why: "one member of the component's collection — the default answer",
+  },
+  marker: {
+    only: "Stepper",
+    why: "replaces the circle inside a step, not the step",
+  },
+  display: {
+    only: "InlineEdit",
+    why: "replaces the reading state; there is no collection, so no item",
+  },
+  children: {
+    only: "Field",
+    why:
+      "function-as-children, a React idiom older than this library. " +
+      "Renaming it would be renaming a convention consumers already have.",
+  },
+};
+
+describe("render props have one name", () => {
+  /** Props whose type is a function returning a node. */
+  const renderProps = (): Array<{ component: string; prop: string }> => {
+    const inventory = JSON.parse(
+      readFileSync("packages/ui/inventory.json", "utf8"),
+    ) as {
+      components: Array<{
+        component: string;
+        props: Array<{ name: string; type: string }>;
+      }>;
+    };
+    return inventory.components.flatMap((entry) =>
+      entry.props
+        .filter((prop) => /=>\s*ReactNode/.test(prop.type))
+        .map((prop) => ({ component: entry.component, prop: prop.name })),
+    );
+  };
+
+  it("uses a name that is in the list", () => {
+    const stray = renderProps().filter(({ prop }) => !RENDER_PROPS[prop]);
+    expect(
+      stray.map(({ component, prop }) => `${component}.${prop}`),
+      "a render prop with a name nobody else uses. Call it `item`, or add " +
+        "it to RENDER_PROPS in this file with the reason it is a different " +
+        "kind of prop.",
+    ).toEqual([]);
+  });
+
+  it("keeps each exception to the component it was granted for", () => {
+    const wrong = renderProps().filter(({ component, prop }) => {
+      const rule = RENDER_PROPS[prop];
+      return rule?.only != null && rule.only !== component;
+    });
+    expect(
+      wrong.map(({ component, prop }) => `${component}.${prop}`),
+      "this name is an exception granted to one component. Use `item`.",
+    ).toEqual([]);
+  });
+
+  it("has no reason left for a name nothing uses", () => {
+    /* A stale exemption is a note pretending to be a decision, the same
+       shape as the keyboard-map check above. */
+    const inUse = new Set(renderProps().map(({ prop }) => prop));
+    const dead = Object.keys(RENDER_PROPS).filter(
+      (name) => name !== "item" && !inUse.has(name),
+    );
+    expect(dead, "these names are explained here and used nowhere").toEqual([]);
+  });
+});

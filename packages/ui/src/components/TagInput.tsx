@@ -48,7 +48,7 @@ interface TagInputOwnProps {
    * Render a tag's contents yourself.
    *
    * The door out of `string[]`, and the third component here to need one —
-   * `AvatarGroup` has `person`, `Stepper` has `marker`. A tag is a string
+   * `AvatarGroup` and `Tree` have one too, all called `item`. A tag is a string
    * because that is what gets submitted; what it *looks* like is a different
    * question, and an avatar beside a recipient or a link to the label's
    * definition cannot be said in a string.
@@ -56,8 +56,11 @@ interface TagInputOwnProps {
    * The remove button is not the caller's to draw: its accessible name is
    * the reason this component exists rather than a row of chips, so it stays
    * here.
+   *
+   * Named `item` like every other render prop here, so learning it once
+   * is learning it everywhere. It was `tag` while nothing used it.
    */
-  tag?: (value: string) => ReactNode;
+  item?: (value: string) => ReactNode;
 }
 
 /**
@@ -107,7 +110,7 @@ export function TagInput({
   disabled,
   normalise,
   max,
-  tag: renderTag,
+  item: renderTag,
   className,
   ...rest
 }: TagInputProps) {

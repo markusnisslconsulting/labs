@@ -96,7 +96,7 @@
           "required": false
         },
         {
-          "name": "person",
+          "name": "item",
           "type": "(entry: { name: string; src?: string }) => ReactNode",
           "required": false,
           "doc": "Render one face yourself."
@@ -437,7 +437,7 @@
           "doc": "Which options match what has been typed."
         },
         {
-          "name": "option",
+          "name": "item",
           "type": "(entry: ComboboxOption, state: { selected: boolean }) => ReactNode",
           "required": false,
           "doc": "Render one option yourself."
@@ -671,7 +671,7 @@
           "required": false
         },
         {
-          "name": "day",
+          "name": "item",
           "type": "( date: IsoDate, state: { selected: boolean; outside: boolean; refused: boolean }, ) => ReactNode",
           "required": false,
           "doc": "Render one day's cell yourself."
@@ -1881,7 +1881,7 @@
           "doc": "How many tags are allowed."
         },
         {
-          "name": "tag",
+          "name": "item",
           "type": "(value: string) => ReactNode",
           "required": false,
           "doc": "Render a tag's contents yourself."
@@ -2113,7 +2113,7 @@
           "required": false
         },
         {
-          "name": "node",
+          "name": "item",
           "type": "(entry: TreeNode, depth: number) => ReactNode",
           "required": false,
           "doc": "Render a node's label yourself."

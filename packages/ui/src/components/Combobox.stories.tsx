@@ -260,7 +260,7 @@ export const RowsRenderedByTheCaller: Story = {
       label="Supplier"
       options={SUPPLIERS.slice(0, 3)}
       defaultValue="Adria Components"
-      option={(entry, { selected }) => (
+      item={(entry, { selected }) => (
         <span style={{ display: "flex", gap: "0.5rem", flex: 1 }}>
           <span style={{ color: "var(--uix-text-caption)" }}>
             {entry.section}

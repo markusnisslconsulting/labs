@@ -39,8 +39,13 @@ interface TreeOwnProps {
   selected?: string | null;
   defaultSelected?: string | null;
   onSelectedChange?: (next: string) => void;
-  /** Render a node's label yourself. */
-  node?: (entry: TreeNode, depth: number) => ReactNode;
+  /**
+   * Render a node's label yourself.
+   *
+   * Named `item` like every other render prop here, so learning it once
+   * is learning it everywhere. It was `node` while nothing used it.
+   */
+  item?: (entry: TreeNode, depth: number) => ReactNode;
 }
 
 /**
@@ -130,7 +135,7 @@ export function Tree({
   selected,
   defaultSelected = null,
   onSelectedChange,
-  node: renderNode,
+  item: renderNode,
   className,
   ...rest
 }: TreeProps) {

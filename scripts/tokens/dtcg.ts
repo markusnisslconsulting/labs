@@ -33,7 +33,18 @@ import { allTokens, type TokenDescriptor } from "@labs/ui/tokens.registry";
 const OUT = "packages/ui/tokens";
 const BRANDS = "packages/ui/src/styles/brands";
 
-/** DTCG `$type` for each of our registry types. */
+/**
+ * DTCG `$type` for each of our registry types.
+ *
+ * Exhaustive on purpose. This used to end in `default: return "string"`,
+ * and "string" is not one of DTCG's types — so a registry type nobody had
+ * mapped was exported as something no design tool understands, silently.
+ * Adding `"ratio"` to `TokenType` did exactly that, and the export was
+ * already committed before the check that noticed.
+ *
+ * The `never` assignment at the bottom makes the next one a compile error
+ * in the file that has to make the decision, which is this one.
+ */
 function dtcgType(token: TokenDescriptor): string {
   switch (token.type) {
     case "color":
@@ -55,9 +66,27 @@ function dtcgType(token: TokenDescriptor): string {
       if (/weight/.test(token.name)) return "fontWeight";
       if (/line-height/.test(token.name)) return "number";
       return "fontFamily";
-    default:
-      return "string";
+    case "ratio":
+      /* DTCG has no aspect-ratio type. `number` is the honest one, and it
+         costs the readable form: the registry says "16 / 9" and this emits
+         1.778, which is what `aspect-ratio` accepts either way. A design
+         tool can read a number; it cannot read "16 / 9". */
+      return "number";
+    default: {
+      const unmapped: never = token.type;
+      throw new Error(
+        `no DTCG type for registry type "${String(unmapped)}" ` +
+          `(token ${token.name}). Map it in scripts/tokens/dtcg.ts.`,
+      );
+    }
   }
+}
+
+/** `"16 / 9"` as the number DTCG wants. */
+function ratioValue(value: string): number {
+  const [a, b] = value.split("/").map((part) => Number(part.trim()));
+  if (b === undefined) return a!;
+  return a! / b;
 }
 
 /**
@@ -161,7 +190,12 @@ function build(theme: "light" | "dark"): Group {
     const type = dtcgType(token);
     const leaf: Record<string, unknown> = {
       $type: type,
-      $value: type === "shadow" ? shadowValue(resolved) : resolved,
+      $value:
+        type === "shadow"
+          ? shadowValue(resolved)
+          : token.type === "ratio"
+            ? ratioValue(resolved)
+            : resolved,
       $description: token.description,
       $extensions: {
         "com.markusnissl.labs": {
@@ -223,7 +257,12 @@ function buildBrand(brand: string, theme: "light" | "dark"): Group | null {
     }
     cursor[segments.at(-1)!] = {
       $type: type,
-      $value: type === "shadow" ? shadowValue(resolved) : resolved,
+      $value:
+        type === "shadow"
+          ? shadowValue(resolved)
+          : token.type === "ratio"
+            ? ratioValue(resolved)
+            : resolved,
       $description: token.description,
     };
   }

@@ -22,7 +22,11 @@ export default meta;
 type Story = StoryObj;
 
 export const WithSlots: Story = {
-  parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
+  /* Not the snapshotted frame any more: `Matrix` below is, the same as every
+     other component here. Card had `WithSlots` as its one frame from before
+     that convention settled, and adding a second frame for the media slot
+     would have made Card the only component with two. */
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Card>
       <Card.Header>Supplier · Nordwind Logistik</Card.Header>
@@ -110,7 +114,7 @@ const PORTRAIT =
  * portrait loses its top and bottom.
  */
 export const WithMedia: Story = {
-  parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <div
       style={{
@@ -171,5 +175,63 @@ export const MediaRatio: Story = {
       </Card.Media>
       <Card.Header>Pallet strap, 5 m</Card.Header>
     </Card>
+  ),
+};
+
+/**
+ * Every shape of card in one frame: slots alone, a banner above them, and a
+ * square ratio.
+ *
+ * The one snapshotted story, because a visual regression in the media slot
+ * is the kind nothing here asserts — `object-fit` dropping, the top corners
+ * losing their clip, the box collapsing when a source is portrait. The
+ * behaviour test next to it only compares two headers' offsets, which stays
+ * true while the picture is wrong.
+ */
+export const Matrix: Story = {
+  parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
+  render: () => (
+    <div
+      style={{
+        display: "grid",
+        gap: "1rem",
+        gridTemplateColumns: "repeat(auto-fit, minmax(13rem, 1fr))",
+        alignItems: "start",
+      }}
+    >
+      <Card>
+        <Card.Header>Supplier · Nordwind</Card.Header>
+        <Card.Body>
+          <p>Header, body and footer.</p>
+        </Card.Body>
+        <Card.Footer>
+          <Badge tone="success">Active</Badge>
+        </Card.Footer>
+      </Card>
+      <Card>
+        <Card.Media>
+          <img src={LANDSCAPE} alt="" />
+        </Card.Media>
+        <Card.Header>Warehouse 3 · Hamburg</Card.Header>
+        <Card.Body>
+          <p>Landscape source, 16:9 box.</p>
+        </Card.Body>
+      </Card>
+      <Card>
+        <Card.Media>
+          <img src={PORTRAIT} alt="" />
+        </Card.Media>
+        <Card.Header>Warehouse 7 · Rotterdam</Card.Header>
+        <Card.Body>
+          <p>Portrait source, cropped to the same box.</p>
+        </Card.Body>
+      </Card>
+      <Card>
+        <Card.Media ratio="1 / 1">
+          <img src={PORTRAIT} alt="" />
+        </Card.Media>
+        <Card.Header>Pallet strap, 5 m</Card.Header>
+      </Card>
+    </div>
   ),
 };

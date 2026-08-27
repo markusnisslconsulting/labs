@@ -87,7 +87,7 @@ export const TheOverflowStillNamesPeople: Story = {
 /**
  * A face rendered by the caller, which is the way out of a list of names.
  *
- * `people` describes who; `person` decides what each one looks like. A
+ * `people` describes who; `item` decides what each one looks like. A
  * presence dot, a link to the profile, a tooltip — none of those can be
  * expressed by a list of names, and a component whose only input is a list
  * can only draw what its author imagined.
@@ -103,7 +103,7 @@ export const FacesRenderedByTheCaller: Story = {
     <AvatarGroup
       label="Online now"
       people={PEOPLE.slice(0, 4)}
-      person={(entry) => (
+      item={(entry) => (
         <span style={{ position: "relative", display: "inline-flex" }}>
           <Avatar name={entry.name} src={entry.src} decorative />
           <span

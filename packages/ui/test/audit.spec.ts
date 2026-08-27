@@ -242,7 +242,7 @@ describe("the agent instructions", () => {
     {
       what: "screen-reader cells, in the roadmap",
       file: "docs/roadmap.md",
-      pattern: /real assistive technology\. (\d+) cells/,
+      pattern: /The (\d+) cells in `src\/audit\/screen-readers\.ts`/,
       actual: () => SCREEN_READER_MATRIX.length * PAIRINGS.length,
     },
     {

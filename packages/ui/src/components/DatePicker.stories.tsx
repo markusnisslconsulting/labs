@@ -449,7 +449,7 @@ export const DaysRenderedByTheCaller: Story = {
       locale="de-DE"
       defaultValue="2026-08-27"
       defaultOpen
-      day={(date, { selected }) => (
+      item={(date, { selected }) => (
         <span
           style={{
             display: "grid",

@@ -240,7 +240,7 @@ export const InAForm: Story = {
  * Tags rendered by the caller.
  *
  * The door out of `string[]`, and the third component here to need one —
- * `AvatarGroup` has `person`, `Stepper` has `marker`. A tag is a string
+ * `AvatarGroup` and `Tree` have one too, all called `item`. A tag is a string
  * because that is what gets submitted; what it looks like is a different
  * question, and a coloured dot or a link to the label's definition cannot
  * be said in a string.
@@ -256,7 +256,7 @@ export const TagsRenderedByTheCaller: Story = {
     <TagInput
       label="Labels"
       defaultValue={["urgent", "eu-only", "needs-review"]}
-      tag={(value) => (
+      item={(value) => (
         <span
           style={{ display: "inline-flex", alignItems: "center", gap: "0.3em" }}
         >

@@ -126,7 +126,7 @@ interface AvatarGroupOwnProps {
   }>;
   max?: number;
   size?: "sm" | "md" | "lg";
-  person?: (entry: { name: string; src?: string }) => ReactNode;
+  item?: (entry: { name: string; src?: string }) => ReactNode;
   label: string;
 }
 export type AvatarGroupProps = AvatarGroupOwnProps &
@@ -135,7 +135,7 @@ export declare function AvatarGroup({
   people,
   max,
   size,
-  person,
+  item: renderPerson,
   label,
   className,
   ...rest
@@ -383,7 +383,7 @@ interface ComboboxOwnProps {
   onQueryChange?: (query: string) => void;
   loading?: boolean;
   filter?: (option: ComboboxOption, query: string) => boolean;
-  option?: (
+  item?: (
     entry: ComboboxOption,
     state: {
       selected: boolean;
@@ -410,7 +410,7 @@ export declare function Combobox({
   onQueryChange,
   loading,
   filter,
-  option: renderOption,
+  item: renderOption,
   placeholder,
   disabled,
   empty,
@@ -546,7 +546,7 @@ interface DatePickerOwnProps {
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  day?: (
+  item?: (
     date: IsoDate,
     state: {
       selected: boolean;
@@ -577,7 +577,7 @@ export declare function DatePicker({
   open: openProp,
   defaultOpen,
   onOpenChange,
-  day: renderDay,
+  item: renderDay,
   className,
   ...rest
 }: DatePickerProps): import("react").JSX.Element;
@@ -1622,7 +1622,7 @@ interface TagInputOwnProps {
   disabled?: boolean;
   normalise?: (raw: string) => string | null;
   max?: number;
-  tag?: (value: string) => ReactNode;
+  item?: (value: string) => ReactNode;
 }
 export type TagInputProps = TagInputOwnProps &
   Omit<ComponentPropsWithRef<"div">, keyof TagInputOwnProps | "children">;
@@ -1640,7 +1640,7 @@ export declare function TagInput({
   disabled,
   normalise,
   max,
-  tag: renderTag,
+  item: renderTag,
   className,
   ...rest
 }: TagInputProps): import("react").JSX.Element;
@@ -1812,7 +1812,7 @@ interface TreeOwnProps {
   selected?: string | null;
   defaultSelected?: string | null;
   onSelectedChange?: (next: string) => void;
-  node?: (entry: TreeNode, depth: number) => ReactNode;
+  item?: (entry: TreeNode, depth: number) => ReactNode;
 }
 export type TreeProps = TreeOwnProps &
   Omit<ComponentPropsWithRef<"div">, keyof TreeOwnProps | "children">;
@@ -1825,7 +1825,7 @@ export declare function Tree({
   selected,
   defaultSelected,
   onSelectedChange,
-  node: renderNode,
+  item: renderNode,
   className,
   ...rest
 }: TreeProps): import("react").JSX.Element;

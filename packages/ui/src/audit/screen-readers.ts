@@ -40,6 +40,12 @@
  * from the way the docs say they do. Tooltip shipped with no role and no
  * aria-describedby for as long as it existed; a single VoiceOver pass
  * would have caught it in ten seconds.
+ *
+ * **Not scheduled, as of 2026-08-27.** Markus struck the manual pass from
+ * the roadmap, so no cell below has a date coming. The file stays because
+ * it is the only accurate statement of what this library has *not* verified,
+ * and deleting it would make the library read as better tested than it is.
+ * `checked: null` means nobody has listened, not that somebody will.
  */
 
 export type Pairing = "nvda-firefox" | "jaws-chrome" | "voiceover-safari";

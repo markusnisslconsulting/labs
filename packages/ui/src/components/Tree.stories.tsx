@@ -208,7 +208,7 @@ export const LabelsRenderedByTheCaller: Story = {
       label="Folders"
       nodes={FOLDERS}
       defaultExpanded={["eu"]}
-      node={(entry, depth) => (
+      item={(entry, depth) => (
         <span style={{ display: "inline-flex", gap: "0.4rem" }}>
           {entry.label}
           <span style={{ color: "var(--uix-text-caption)" }}>L{depth}</span>

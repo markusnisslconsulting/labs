@@ -81,8 +81,13 @@ interface ComboboxOwnProps {
    * and the section. Ignored entirely when `onQueryChange` is given.
    */
   filter?: (option: ComboboxOption, query: string) => boolean;
-  /** Render one option yourself. */
-  option?: (entry: ComboboxOption, state: { selected: boolean }) => ReactNode;
+  /**
+   * Render one option yourself.
+   *
+   * Named `item` like every other render prop here, so learning it once
+   * is learning it everywhere. It was `option` while nothing used it.
+   */
+  item?: (entry: ComboboxOption, state: { selected: boolean }) => ReactNode;
   placeholder?: string;
   disabled?: boolean;
   /** Shown when nothing matches. */
@@ -167,7 +172,7 @@ export function Combobox({
   onQueryChange,
   loading = false,
   filter = defaultFilter,
-  option: renderOption,
+  item: renderOption,
   placeholder,
   disabled,
   empty,

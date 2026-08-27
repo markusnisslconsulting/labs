@@ -1684,6 +1684,19 @@
         }
       }
     },
+    "card": {
+      "media-ratio": {
+        "$type": "number",
+        "$value": 1.7777777777777777,
+        "$description": "Box a card's banner image is cropped to",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-card-media-ratio",
+            "tier": "component"
+          }
+        }
+      }
+    },
     "pill": {
       "fg": {
         "$type": "color",

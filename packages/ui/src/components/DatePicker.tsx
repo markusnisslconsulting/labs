@@ -97,8 +97,11 @@ interface DatePickerOwnProps {
    * caller never has to build a `Date` to look something up — which is the
    * bug `IsoDate` exists to avoid, and handing back a `Date` here would put
    * it straight back.
+   *
+   * Named `item` like every other render prop here, so learning it once
+   * is learning it everywhere. It was `day` while nothing used it.
    */
-  day?: (
+  item?: (
     date: IsoDate,
     state: { selected: boolean; outside: boolean; refused: boolean },
   ) => ReactNode;
@@ -242,7 +245,7 @@ export function DatePicker({
   open: openProp,
   defaultOpen = false,
   onOpenChange,
-  day: renderDay,
+  item: renderDay,
   className,
   ...rest
 }: DatePickerProps) {

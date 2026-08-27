@@ -6,20 +6,31 @@ not, and how each of those can be measured.
 
 As of 2026-08-27. The order is impact, not effort.
 
-| #   | Stage                                 | Standing |
-| --- | ------------------------------------- | -------- |
-| 01  | The component API contract            | stands   |
-| 02  | Localisation                          | stands   |
-| 03  | The inventory an enterprise app needs | stands   |
-| 04  | Forms as a system                     | stands   |
-| 05  | States and scale, first class         | stands   |
-| 06  | Accessibility past the automated 40 % | half     |
-| 07  | Distribution and the version contract | half     |
-| 08  | ~~Design and code as one source~~     | struck   |
-| 09  | Performance as a contract             | stands   |
-| 10  | Governance and the human process      | half     |
-| 11  | Observability from real products      | open     |
-| 12  | Readable by an agent                  | stands   |
+Four stages were struck on 2026-08-27, and the reason is the same in each
+case: what was left of them needed something this project does not have —
+a person at a screen reader, a registry to publish to, teams to talk to,
+other repositories to measure. Struck rather than left open, for the reason
+stage 08 already gives: a stage that stands at "open" indefinitely stops
+being a roadmap and starts being a list of things somebody once wanted, and
+it makes the stages that did land read as partial.
+
+Nothing already built was removed. Each struck stage keeps the half that
+works and says which half is gone.
+
+| #   | Stage                                     | Standing |
+| --- | ----------------------------------------- | -------- |
+| 01  | The component API contract                | stands   |
+| 02  | Localisation                              | stands   |
+| 03  | The inventory an enterprise app needs     | stands   |
+| 04  | Forms as a system                         | stands   |
+| 05  | States and scale, first class             | stands   |
+| 06  | Accessibility past the automated 40 %     | stands   |
+| 07  | ~~Distribution and the version contract~~ | struck   |
+| 08  | ~~Design and code as one source~~         | struck   |
+| 09  | Performance as a contract                 | stands   |
+| 10  | ~~Governance and the human process~~      | struck   |
+| 11  | ~~Observability from real products~~      | struck   |
+| 12  | Readable by an agent                      | stands   |
 
 ## 03 — The inventory (stands)
 
@@ -68,10 +79,19 @@ rather than the resolved value, so an uncontrolled inline edit displayed
 nothing at all. Without the rule it would have shipped that way.
 
 **TagInput** — done. It is also the third component to need a per-item
-render prop as its composability door, after `AvatarGroup`'s `person` and
-`Stepper`'s `marker`. That is a pattern now rather than three decisions: the
-data shape is what gets submitted, and what an item _looks_ like is a
-separate question the caller answers.
+render prop as its composability door. That is a pattern now rather than
+three decisions: the data shape is what gets submitted, and what an item
+_looks_ like is a separate question the caller answers.
+
+The prop is called `item` in all seven components that have one. It was
+seven different names — `person`, `option`, `day`, `tag`, `node` and `item`
+twice — each read well beside its own component and meant a consumer learned
+the same idea seven times. Renamed while nothing outside this repository
+used any of them, so there is no codemod and no deprecation window. The two
+that kept their own names are `Stepper`'s `marker` and `InlineEdit`'s
+`display`, and the difference is real: they replace one named part, not a
+member of a collection. `Field`'s function-as-children is a React idiom and
+is left alone. `packages/ui/test/api.spec.ts` holds the list.
 
 **Toolbar** — done. One tab stop for the group and arrows within it, which
 is the whole reason it exists rather than a styled `div`. Building it cost a
@@ -281,7 +301,7 @@ Nothing named remains open. Per-field validation timing (on change, on
 blur) is deliberately absent: what counts as valid is the caller's rule,
 and a library that takes it over ends up owning business logic.
 
-## 06 — Accessibility (half)
+## 06 — Accessibility (stands, with the manual pass struck)
 
 Stands: the keyboard contract as data with one test per row; all 55 WCAG
 2.2 criteria at levels A and AA with the gate that checks each one (25 have
@@ -289,33 +309,54 @@ one, 11 are manual, 9 belong to the product, 10 do not apply here); and two
 automated screen-reader layers — name, description, role and state per
 node, plus the tree in reading order.
 
-Open: real assistive technology. 150 cells in `src/audit/screen-readers.ts`,
-all "not yet". NVDA and VoiceOver can be driven with Guidepup, but that
-needs a Windows or macOS runner and this CI runs on Linux. The rows are for
-what only real AT shows: verbosity, punctuation, what a reader says on
-entering a region.
+**Struck: the manual pass with real assistive technology.** NVDA and
+VoiceOver can be driven with Guidepup, but that needs a Windows or macOS
+runner and this CI runs on Linux, so the pass was always going to be a
+person with headphones. There is no such person, and a stage waiting on one
+indefinitely is the shape stage 08 warns about.
 
-The concrete way in is `docs/screen-reader-pass.md`: seven components, one
-pairing, about forty-five minutes. Not 150 cells, because nobody starts a
-list of 108 rows. The note also says what _not_ to look for: names,
-descriptions, roles and order are covered by `browser/announce.spec.ts`.
-What is listened for is whether what gets said is usable by a person — too
-much, too little, wrong order, or twice.
+Two consequences worth stating rather than leaving implied:
 
-Also open: walking the 11 manual WCAG criteria once and dating them. Each
-is in `packages/ui/src/audit/wcag.ts` with its own "what to look for".
+- The 150 cells in `src/audit/screen-readers.ts` stay, and stay empty. That
+  file is now the accurate record of what this library has **not** verified
+  rather than a plan to verify it, and its docstring says so. Deleting it
+  would have been the dishonest option: the library would read as better
+  tested than it is.
+- The 11 WCAG criteria marked manual in `packages/ui/src/audit/wcag.ts` are
+  in the same position. Each still carries its own "what to look for", so
+  the work is there for whoever can do it.
+- `docs/screen-reader-pass.md` stays too. It is the forty-five minute
+  version — seven components, one pairing — and it is the right first hour
+  if this is ever picked up. It also says what _not_ to listen for, which is
+  everything the automated layers already cover.
 
-## 07 — Distribution (half)
+What this costs, plainly: the two automated layers check that a reader is
+given the right name, description, role, state and order. Nothing here
+checks whether what a reader _says_ is usable — verbosity, punctuation, what
+is announced on entering a region, where two readers disagree. Those are
+judgments and no tree snapshot contains them. `Tooltip` shipped with no role
+and no `aria-describedby` for as long as it existed, and one VoiceOver pass
+would have caught it in ten seconds. That class of defect can still reach
+production here.
+
+## 07 — Distribution (struck, apart from what is built)
 
 Stands: the package shape is checked (publint, attw), every CSS import in
 the build resolves, a consumer bundle proves that one component costs one
 component, and the deprecation window has dates plus a gate that fails when
 one lapses.
 
-Open and not possible without credentials: publishing to a private
-registry, canary builds from `main`, and the version spread across
-consumers — the real version of a design system is the oldest one still in
-production.
+**Struck: publishing.** There is no registry to publish to and no plan for
+one, so a private registry, canary builds from `main`, and the version
+spread across consumers are all gone rather than pending. The last of those
+is the one worth naming as a loss: the real version of a design system is
+the oldest one still in production, and without consumers there is no such
+number to read.
+
+What that leaves is not small, and it is the half that was worth building
+first: the package shape is checked, per-component semver has its
+foundation, and the changelog is enforced. All of it works on a repository
+nobody publishes, which is the situation.
 
 Per-component semver has its foundation now: `packages/ui/api-surface.md`
 holds every exported signature with the prose stripped, and
@@ -348,53 +389,47 @@ If that changes, the way in is one-directional: generate Figma variables
 **from** the DTCG export, with code as the source. Two-way sync is where
 this goes wrong.
 
-## 10 — Governance (half)
+## 10 — Governance (struck, apart from what is built)
 
 Stands: `CODEOWNERS` per layer, an RFC form as the front door, the review
 bar in `CONTRIBUTING.md`, response times as a commitment, and this roadmap.
 
-Open and not solvable in code: office hours and conversations with the
-consuming teams. An adoption number says a team built around the system;
-only a conversation says why.
+**Struck: office hours and conversations with consuming teams.** There are
+no consuming teams. An adoption number says a team built around the system
+and only a conversation says why, but both halves need somebody on the other
+side of the table.
 
-The bottleneck is in `CONTRIBUTING.md` and belongs here too: one
-maintainer. The system does not grow past what one person can carry.
+The bottleneck stays written down in `CONTRIBUTING.md` because it is true
+whether or not this stage is tracked: one maintainer. The system does not
+grow past what one person can carry, and striking the governance stage does
+not change that — it only stops pretending a process document is the fix.
 
-## 11 — Observability (open, needs a list of repos)
+## 11 — Observability (struck)
 
-Adoption is measured today by this repository reading its own source. That
-holds for one consumer and not for a company.
+Struck whole, because nothing of it was built and everything it needed came
+from outside: a list of consuming repositories and read access to them.
+There are no consuming repositories.
 
-What would be built, in the order it pays off:
+Adoption is still measured, and the measurement is honest about its scope:
+this repository reads its own source. `ui:adoption` reports which components
+the labs site actually imports, and the number it produces is uncomfortable
+on purpose — most of the library has one consumer or none. That holds for one
+consumer and says nothing about a company, which is exactly what this stage
+was for.
 
-**1. A static scanner, as its own target.** It clones the consumers
-shallowly, reads their `package.json` for the `@labs/ui` version and greps
-their source against `packages/ui/inventory.json` — which exists now, and is
-the reason this step is small today. Output per repo: version, components
-used, props used per component, tokens used, and the number that says the
-most — **places that look like a re-implementation**: a `<button className=`
-without `uix-button`, a hex colour in a CSS file, a `border-radius` in px.
+What was designed and is not being built, kept here so it does not get
+re-invented from scratch: a static scanner as its own target, cloning
+consumers shallowly, reading each `package.json` for the `@labs/ui` version
+and grepping their source against `packages/ui/inventory.json`. The output
+that would have mattered most is not usage but **places that look like a
+re-implementation** — a `<button className=` without `uix-button`, a hex
+colour in a CSS file, a `border-radius` in px. `inventory.json` exists and is
+gated, so that scanner would be small work; it is the inputs that do not
+exist.
 
-**2. The version spread.** The real version of a design system is the
-oldest one still in production. A table of repo → version, with the
-distance to the newest, is the number that decides whether a deprecation
-window was realistic.
-
-**3. A report in this repo's CI**, so the number moves without anyone
-having to remember — exactly like `ui:adoption` today.
-
-What I need for it, and only this:
-
-- **The list of repos** that use `@labs/ui` or should. Including the ones
-  that do not yet — "should and does not" is the more interesting half.
-- **Read access** to them. A fine-grained token with `contents: read` on
-  those repos, as a secret; or, if they are all in the same organisation,
-  `GITHUB_TOKEN` with a widened scope.
-
-Runtime telemetry is explicitly last: "which props are used in production"
-is a different question from "which are imported", but it needs a flag, a
-consent and an endpoint — and the static scanner answers 80 % of it without
-any of those.
+Runtime telemetry was last in that order and stays there. "Which props are
+used in production" is a different question from "which are imported", and it
+needs a flag, a consent and an endpoint.
 
 ## 12 — Readable by an agent (stands)
 
