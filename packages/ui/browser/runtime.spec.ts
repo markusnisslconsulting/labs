@@ -590,3 +590,71 @@ test("out-of-month, in-month and selected days are told apart", async ({
   ).not.toBe(colours["inside"]);
   expect(colours["selected"]).not.toBe(colours["inside"]);
 });
+
+/**
+ * A split button's two halves meet, at every size.
+ *
+ * They did not at `sm` or `lg`. `Button.css` sets the `border-radius`
+ * *shorthand* under `.uix-button[data-size="sm"]` and `[data-size="lg"]` —
+ * specificity (0,2,0) against `.uix-splitbutton-action`'s (0,1,0) — and a
+ * shorthand resets all four corners, so the inner radius came back and the
+ * pair rendered as two lozenges with the page showing between them. `md` was
+ * correct, which is why nothing looked wrong until a screenshot of the size
+ * matrix.
+ *
+ * Asserted on the computed inner radius rather than on a screenshot, because
+ * the failure is a number: 8px at `sm`, 16px at `lg`, 0 where it worked.
+ * Every size in the matrix is checked, so a new size cannot arrive with the
+ * old bug.
+ */
+test("a split button's inner corners are square at every size", async ({
+  page,
+}) => {
+  await openStory(page, "components-splitbutton--matrix");
+
+  const pairs = await page.locator(".uix-splitbutton").evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const action = node.querySelector(".uix-splitbutton-action");
+      const more = node.querySelector(".uix-splitbutton-more");
+      if (!action || !more) return null;
+      const actionStyle = getComputedStyle(action);
+      const moreStyle = getComputedStyle(more);
+      const actionBox = action.getBoundingClientRect();
+      const moreBox = more.getBoundingClientRect();
+      return {
+        label: action.textContent?.trim().slice(0, 12) ?? "",
+        size: action.getAttribute("data-size") ?? "md",
+        actionInner: Number.parseFloat(actionStyle.borderStartEndRadius),
+        moreInner: Number.parseFloat(moreStyle.borderStartStartRadius),
+        gap: moreBox.left - actionBox.right,
+      };
+    }),
+  );
+
+  const found = pairs.filter((pair) => pair !== null);
+  expect(found.length, "no split buttons on the page").toBeGreaterThan(3);
+
+  for (const pair of found) {
+    expect(
+      pair!.actionInner,
+      `${pair!.size}: the action's inner corner is rounded, so the pair ` +
+        `reads as two buttons`,
+    ).toBe(0);
+    expect(pair!.moreInner, `${pair!.size}: the menu half's inner corner`).toBe(
+      0,
+    );
+    /* And they touch. A gap would undo the same effect from the other side. */
+    expect(
+      Math.abs(pair!.gap),
+      `${pair!.size}: the halves do not meet`,
+    ).toBeLessThan(0.5);
+  }
+
+  /* The matrix has to contain more than one size, or the loop above proves
+     nothing about the bug it was written for. */
+  const sizes = new Set(found.map((pair) => pair!.size));
+  expect(
+    sizes.size,
+    "the matrix shows one size, so this test cannot see the size-specific bug",
+  ).toBeGreaterThan(1);
+});

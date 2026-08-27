@@ -13,13 +13,26 @@
   }
 
   /* Square off the inner edges so the pair reads as one shape. Logical
-     properties, so it flips with direction rather than breaking in RTL. */
-  .uix-splitbutton-action {
+     properties, so it flips with direction rather than breaking in RTL.
+     
+     The selector carries `.uix-button` as well, and that is not decoration.
+     `Button.css` sets the `border-radius` *shorthand* under
+     `.uix-button[data-size="sm"]` and `[data-size="lg"]`, which is
+     specificity (0,2,0) against this rule's (0,1,0) — and a shorthand
+     resets all four corners, so it put the inner radius back whatever the
+     source order. At `sm` and `lg` the pair rendered as two lozenges with
+     the page showing through between them, while `md` was correct. Three
+     class selectors here, so it wins outright rather than on order, which
+     matters because either file can arrive in a lazily loaded chunk.
+     
+     `_field.css` records the same trap from the other side: a shorthand
+     that followed its own longhands and cancelled them. */
+  .uix-splitbutton .uix-splitbutton-action.uix-button {
     border-start-end-radius: 0;
     border-end-end-radius: 0;
   }
 
-  .uix-splitbutton-more {
+  .uix-splitbutton .uix-splitbutton-more.uix-button {
     border-start-start-radius: 0;
     border-end-start-radius: 0;
     /* Just the arrow, so the horizontal padding of a text button would

@@ -54,6 +54,16 @@ cut at the first release.
   the registry knows every token's type, so it is exact rather than a guess
   at names.
 
+- **SplitButton** — at `sm` and `lg` the two halves rendered as two
+  lozenges with the page showing between them. `Button.css` sets the
+  `border-radius` shorthand under `.uix-button[data-size="sm"]` and
+  `[data-size="lg"]`, specificity (0,2,0) against the squaring rule's
+  (0,1,0), and a shorthand resets all four corners — so the inner radius
+  came back whatever the source order. `md` was correct, which is why it
+  went unnoticed. The squaring rule now carries three classes so it wins
+  outright rather than on order, which matters when either file can arrive
+  in a lazily loaded chunk.
+
 - **Textarea** — it had no border and no background. `uix-field-input` is
   deliberately `border: none; background: transparent`, because every field
   here draws its frame on the `uix-field-row` wrapper, and this component put
