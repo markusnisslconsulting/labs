@@ -1,0 +1,65 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { WcagTable, ScreenReaderTable } from "./AuditTables";
+
+<Meta title="Guides/Conformance" />
+
+# Conformance
+
+Two records, both generated from the files `nx run ui:audit` reads. The
+numbers on this page are the numbers that gate prints.
+
+The reason they exist is the reason the roadmap gives for stage 06: axe
+finds a minority of real accessibility problems. A green pipeline says
+nothing about whether the focus order matches the reading order, whether
+an error message says what to do, or whether a live region announces at a
+useful moment. Treat green as the floor.
+
+## WCAG 2.2, Level A and AA
+
+Fifty-five success criteria, each with one of four statuses. The
+difference between them is what a reader may conclude.
+
+**a check fails** — something in this repository fails the build when the
+criterion breaks, and the evidence column names it. This is the only
+status that is a guarantee.
+
+**a person has to look** — nothing is claimed. The evidence column says
+what to look at.
+
+**the product's** — the criterion belongs to the page a component sits
+in. A library cannot satisfy "Bypass Blocks"; an application can, and the
+row says so rather than going quiet.
+
+**cannot apply** — nothing in the library can trigger it. No audio, no
+video, no authentication.
+
+What this table must never do is claim a check for something no check
+performs. A conformance table that overstates is worse than none: it is
+the document someone points at instead of testing. The gate helps a
+little here — it fails when a row claims a check and cites a file that is
+not on disk, which is how these tables usually rot.
+
+<WcagTable />
+
+## Screen readers
+
+Three pairings, per component, dated. Manual and scheduled — not a gate.
+
+Every cell reads **not yet**, and that is the point of writing it down.
+Nobody has run NVDA, JAWS or VoiceOver against this library. axe passing
+in two themes is different evidence, and a matrix filled in from what the
+markup _ought_ to announce would be worse than an empty one.
+
+The order is the order to work through rather than alphabetical: forms
+first, because a mislabelled field costs a user the task; then the things
+that take focus away from the page; then the ones that speak without
+being asked. A partial pass down this list is worth more than a complete
+pass in alphabetical order.
+
+When filling a cell, record what was **heard**, not what should have
+been. The useful output of this exercise is the list of things that
+announce differently from the way the documentation says they do —
+Tooltip shipped with no role and no `aria-describedby` for as long as it
+existed, and one VoiceOver pass would have caught it in ten seconds.
+
+<ScreenReaderTable />
