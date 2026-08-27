@@ -91,18 +91,15 @@ export function Combobox({
       className={className}
       {...rest}
     >
-      {({ id, describedBy, invalid, required: isRequired }) => (
+      {({ control, invalid, id }) => (
         <div className="uix-field-row" data-invalid={invalid}>
           <input
-            id={id}
+            {...control}
             className="uix-field-input"
             type="text"
             disabled={disabled}
             list={`${id}-options`}
             placeholder={placeholder}
-            aria-describedby={describedBy}
-            aria-invalid={invalid}
-            required={isRequired || undefined}
             value={value ?? query}
             onChange={(event) => {
               setQuery(event.target.value);

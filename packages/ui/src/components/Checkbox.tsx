@@ -5,7 +5,6 @@ import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
 
 import { cxState } from "../cx";
 import { useFieldMessages } from "./Field";
-import { useStrings } from "../i18n";
 import "./_field.css";
 import "./Checkbox.css";
 interface CheckboxOwnProps {
@@ -71,7 +70,6 @@ export function Checkbox({
   ...rest
 }: CheckboxProps) {
   const { describedBy, invalid, messages } = useFieldMessages(hint, error);
-  const strings = useStrings();
 
   const control = (
     <BaseCheckbox.Root
@@ -100,7 +98,6 @@ export function Checkbox({
             <span className="uix-field-required" aria-hidden>
               *
             </span>
-            <span className="uix-visually-hidden">{strings.required}</span>
           </>
         ) : null}
       </span>

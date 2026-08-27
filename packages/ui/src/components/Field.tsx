@@ -3,7 +3,6 @@
 import { useId, type ComponentPropsWithRef, type ReactNode } from "react";
 
 import { cx } from "../cx";
-import { useStrings } from "../i18n";
 import "./_field.css";
 
 /**
@@ -51,17 +50,52 @@ import "./_field.css";
  * the caller holds them, and the caller holding them is how they drift.
  */
 export interface FieldRenderProps {
+  /**
+   * Spread this onto the control. Everything the wiring needs, at once.
+   *
+   * It used to hand over `id`, `describedBy`, `invalid` and `required` as
+   * four separate values, and a caller had to remember to put each one
+   * somewhere. Field's own worked example forgot `required`: the asterisk
+   * rendered, the control was not programmatically required, and a screen
+   * reader was told nothing — which is the exact failure the required
+   * marker exists to prevent, in the file that documents it.
+   *
+   * Four values a caller assembles is four chances to miss one. One object
+   * to spread is none. The nine field components in this library all
+   * passed the four correctly; the point is that a tenth, written by
+   * somebody else, cannot get it wrong by omission.
+   */
+  control: {
+    id?: string;
+    "aria-labelledby"?: string;
+    "aria-describedby"?: string;
+    "aria-invalid"?: true;
+    required?: true;
+  };
+  /**
+   * Whether the field is invalid, for the wrapper that draws the border.
+   *
+   * Separate from `control` because it goes on the row, not on the input:
+   * `data-invalid` is how the row knows to turn red, and the row is not
+   * the thing a reader queries.
+   */
+  invalid: true | undefined;
+  /**
+   * The control's id, for relating *other* elements to it.
+   *
+   * Combobox needs it to point a `<datalist>` at its input; a component
+   * with its own `aria-controls` target needs it too. It is not a
+   * substitute for spreading `control` — that is where the id goes on the
+   * control itself, along with everything else.
+   */
   id: string;
   /**
-   * The label element's own id, for a control that must keep its own
-   * `id` and name itself with `aria-labelledby`.
+   * The label element's id, for a control whose library owns its own `id`
+   * — Base UI's NumberField points `aria-controls` at it. Under
+   * `nameBy="aria"` this is already in `control` as `aria-labelledby`;
+   * it is exposed here for a control that needs it somewhere else too.
    */
   labelId: string;
-  /** For `aria-describedby` on the control. Undefined when nothing describes it. */
-  describedBy: string | undefined;
-  /** For `aria-invalid`. Undefined rather than false, so it stays off the DOM. */
-  invalid: true | undefined;
-  required: boolean;
 }
 
 interface FieldOwnProps {
@@ -71,11 +105,22 @@ interface FieldOwnProps {
   /** Validation message. Its presence is what makes the field invalid. */
   error?: ReactNode;
   /**
-   * Marks the field required, visibly and for assistive technology.
+   * Marks the field required, visibly and programmatically.
    *
-   * Both, and that is the point: an asterisk alone is a convention a
-   * reader has to know, so the word comes from the strings table and sits
-   * in the label's accessible name.
+   * The asterisk is decoration — `aria-hidden` — and the state lives on
+   * the control as `required`, which every screen reader announces
+   * itself.
+   *
+   * This used to also append the word "required" to the label, on the
+   * reasoning that an asterisk alone is a convention a reader has to
+   * know. Half of that is right and the fix was wrong: the control was
+   * already programmatically required, so a reader announced the state
+   * twice. Measured with Playwright's accessible-name computation, the
+   * name came out "Required required" and a real field would read "Order
+   * number required, required, edit text".
+   *
+   * Which is a defect an aria snapshot shows in one line and axe does not
+   * report at all — there is nothing invalid about it.
    */
   required?: boolean;
   /** Render the label for assistive technology only. */
@@ -122,7 +167,6 @@ export function Field({
   children,
   ...rest
 }: FieldProps) {
-  const strings = useStrings();
   const id = useId();
   const labelId = `${id}-label`;
   const hintId = `${id}-hint`;
@@ -150,18 +194,21 @@ export function Field({
               <span className="uix-field-required" aria-hidden>
                 *
               </span>
-              <span className="uix-visually-hidden">{strings.required}</span>
             </>
           ) : null}
         </label>
         {aside ? <span className="uix-field-aside">{aside}</span> : null}
       </div>
       {children({
+        control: {
+          ...(nameBy === "for" ? { id } : { "aria-labelledby": labelId }),
+          ...(describedBy ? { "aria-describedby": describedBy } : {}),
+          ...(error ? { "aria-invalid": true as const } : {}),
+          ...(required ? { required: true as const } : {}),
+        },
+        invalid: error ? true : undefined,
         id,
         labelId,
-        describedBy,
-        invalid: error ? true : undefined,
-        required,
       })}
       {hint ? (
         <p className="uix-field-hint" id={hintId}>

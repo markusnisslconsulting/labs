@@ -45,10 +45,27 @@ not on disk, which is how these tables usually rot.
 
 Three pairings, per component, dated. Manual and scheduled — not a gate.
 
-Every cell reads **not yet**, and that is the point of writing it down.
-Nobody has run NVDA, JAWS or VoiceOver against this library. axe passing
-in two themes is different evidence, and a matrix filled in from what the
-markup _ought_ to announce would be worse than an empty one.
+Every cell reads **not yet**, and that is accurate: nobody has run NVDA,
+JAWS or VoiceOver against this library.
+
+What these rows are _for_ has changed. Two layers of screen-reader-shaped
+testing are automated in `browser/announce.spec.ts`: the accessible name,
+description, role and state per node, computed to the AccName spec by a
+real browser; and the accessibility tree in reading order, via Playwright's
+`ariaSnapshot()`. The first layer found a defect on its first run — every
+required field announced its state twice, because `required` was on the
+control _and_ the word was appended to the label. axe reports nothing
+about that; there is nothing invalid.
+
+Real assistive technology is the third layer. NVDA and VoiceOver can be
+driven from Node by Guidepup, which captures the spoken phrase log — it
+needs a Windows or macOS runner, and locally, permission to switch
+VoiceOver on. This CI runs on Linux, so it stays manual.
+
+So a row here is for what only real AT shows: verbosity, how punctuation
+is read, what a reader says on entering and leaving a region, and where
+two readers disagree. Those are judgments, and no snapshot of a tree
+contains them.
 
 The order is the order to work through rather than alphabetical: forms
 first, because a mislabelled field costs a user the task; then the things

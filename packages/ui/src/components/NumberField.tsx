@@ -86,7 +86,7 @@ export function NumberField({
       nameBy="aria"
       {...rest}
     >
-      {({ labelId, describedBy, invalid, required: isRequired }) => (
+      {({ control, invalid }) => (
         <BaseNumberField.Root
           value={value}
           defaultValue={defaultValue}
@@ -94,7 +94,6 @@ export function NumberField({
           max={max}
           step={step}
           disabled={disabled}
-          required={isRequired}
           onValueChange={(next) => onValueChange?.(next)}
         >
           <BaseNumberField.Group
@@ -116,12 +115,7 @@ export function NumberField({
                 UI points the steppers' aria-controls at this input's own
                 generated id. Overriding it left both steppers referring to
                 nothing, which axe reports and a screen reader acts on. */}
-            <BaseNumberField.Input
-              className="uix-field-input"
-              aria-labelledby={labelId}
-              aria-describedby={describedBy}
-              aria-invalid={invalid}
-            />
+            <BaseNumberField.Input className="uix-field-input" {...control} />
             <BaseNumberField.Increment
               className="uix-numberfield-step"
               aria-label={strings.increase}

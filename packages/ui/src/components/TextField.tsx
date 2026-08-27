@@ -67,21 +67,14 @@ export function TextField({
       hideLabel={hideLabel}
       className={className}
     >
-      {({ id, describedBy, invalid, required: isRequired }) => (
+      {({ control, invalid }) => (
         <div className="uix-field-row" data-invalid={invalid}>
           {prefix ? (
             <span className="uix-field-adornment" aria-hidden>
               {prefix}
             </span>
           ) : null}
-          <input
-            id={id}
-            className="uix-field-input"
-            aria-describedby={describedBy}
-            aria-invalid={invalid}
-            required={isRequired || undefined}
-            {...rest}
-          />
+          <input {...control} className="uix-field-input" {...rest} />
           {suffix ? (
             <span className="uix-field-adornment" aria-hidden>
               {suffix}

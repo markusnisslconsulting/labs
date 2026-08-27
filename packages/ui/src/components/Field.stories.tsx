@@ -40,15 +40,13 @@ export const AroundACustomControl: Story = {
   },
   render: (args) => (
     <Field {...args}>
-      {({ id, describedBy, invalid }) => (
+      {({ control, invalid }) => (
         <div className="uix-field-row" data-invalid={invalid}>
           <input
-            id={id}
+            {...control}
             type="time"
             className="uix-field-input"
             defaultValue="08:30"
-            aria-describedby={describedBy}
-            aria-invalid={invalid}
           />
         </div>
       )}
@@ -83,14 +81,9 @@ export const Matrix: StoryObj = {
         { label: "Label hidden from view", hideLabel: true },
       ].map((props) => (
         <Field key={String(props.label)} {...props}>
-          {({ id, describedBy, invalid }) => (
+          {({ control, invalid }) => (
             <div className="uix-field-row" data-invalid={invalid}>
-              <input
-                id={id}
-                className="uix-field-input"
-                aria-describedby={describedBy}
-                aria-invalid={invalid}
-              />
+              <input {...control} className="uix-field-input" />
             </div>
           )}
         </Field>
@@ -117,14 +110,12 @@ export const Wiring: StoryObj = {
       error="That warehouse is closed then."
       required
     >
-      {({ id, describedBy, invalid }) => (
-        <input
-          id={id}
-          className="uix-field-input"
-          aria-describedby={describedBy}
-          aria-invalid={invalid}
-        />
-      )}
+      {/* One spread. The version of this example that assembled the props
+          by hand forgot `required`, so the asterisk rendered over a
+          control that was not programmatically required — the exact
+          failure the marker exists to prevent, in the file that
+          documents it. That is why Field hands over one object. */}
+      {({ control }) => <input {...control} className="uix-field-input" />}
     </Field>
   ),
   play: async ({ canvas }) => {
@@ -144,9 +135,15 @@ export const Wiring: StoryObj = {
       /closed then/,
     );
 
-    // Required as a word, not only as an asterisk.
-    await expect(
-      canvas.getByRole("textbox", { name: /required/ }),
-    ).toBeInTheDocument();
+    // Required as a state, not as a word. The word used to be appended to
+    // the label and duplicated what the control already carries: measured,
+    // the accessible name came out "Required required" and a reader said it
+    // twice. The asterisk stays as aria-hidden decoration.
+    await expect(input).toBeRequired();
+    /* And the asterisk does not leak into the name: it is aria-hidden, so
+       a reader hears "Delivery window, required" rather than "Delivery
+       window star required". Asserting "Delivery window *" here was wrong
+       and the failure said so. */
+    await expect(input).toHaveAccessibleName("Delivery window");
   },
 };

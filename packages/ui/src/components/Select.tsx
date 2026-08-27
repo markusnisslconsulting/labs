@@ -69,16 +69,9 @@ export function Select({
       hideLabel={hideLabel}
       className={className}
     >
-      {({ id, describedBy, invalid, required: isRequired }) => (
+      {({ control, invalid }) => (
         <div className="uix-field-row" data-invalid={invalid}>
-          <select
-            id={id}
-            className="uix-field-input uix-select"
-            aria-describedby={describedBy}
-            aria-invalid={invalid}
-            required={isRequired || undefined}
-            {...rest}
-          >
+          <select {...control} className="uix-field-input uix-select" {...rest}>
             {children ??
               (options ?? []).map((option) => (
                 <option key={option.value} value={option.value}>

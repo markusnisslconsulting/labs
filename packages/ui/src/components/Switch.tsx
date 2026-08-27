@@ -6,7 +6,6 @@ import { Switch as BaseSwitch } from "@base-ui-components/react/switch";
 
 import { cx } from "../cx";
 import { useFieldMessages } from "./Field";
-import { useStrings } from "../i18n";
 import "./_field.css";
 import "./Switch.css";
 interface SwitchOwnProps {
@@ -101,7 +100,6 @@ export function Switch({
   const isChecked = isControlled ? checked : internalChecked;
   const labelId = useId();
   const { describedBy, invalid, messages } = useFieldMessages(hint, error);
-  const strings = useStrings();
 
   const row = (
     <label className={cx("uix-switch-row", className)} {...rest}>
@@ -128,7 +126,6 @@ export function Switch({
             <span className="uix-field-required" aria-hidden>
               *
             </span>
-            <span className="uix-visually-hidden">{strings.required}</span>
           </>
         ) : null}
       </span>

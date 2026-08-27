@@ -53,6 +53,26 @@ export interface TokenDescriptor {
    * three releases.
    */
   supersededBy?: string;
+  /**
+   * The day the deprecation started, ISO.
+   *
+   * A deprecation without a date is a deprecation without a deadline, and
+   * one of those is a note. The two tokens deprecated before this field
+   * existed had prose, a replacement and a ratchet — everything except
+   * the answer to "when does this go away", which is the only part a
+   * consuming team can plan around.
+   */
+  deprecatedOn?: string;
+  /**
+   * The day the token may be removed, ISO. The window, stated.
+   *
+   * `scripts/tokens/usage.ts` fails once this date has passed, with
+   * different instructions depending on what it finds: remove it if
+   * nothing references it any more, or say so loudly if the window ran
+   * out while call sites remain. Both are failures, because a window that
+   * quietly lapses is the same as no window.
+   */
+  removeAfter?: string;
 }
 
 const t = (
@@ -63,6 +83,7 @@ const t = (
   description: string,
   deprecated?: string,
   supersededBy?: string,
+  window?: { deprecatedOn: string; removeAfter: string },
 ): TokenDescriptor => ({
   name,
   value,
@@ -71,6 +92,7 @@ const t = (
   description,
   ...(deprecated ? { deprecated } : {}),
   ...(supersededBy ? { supersededBy } : {}),
+  ...(window ?? {}),
 });
 
 /* Primitive ---------------------------------------------------------------- */

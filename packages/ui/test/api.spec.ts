@@ -515,16 +515,49 @@ describe("the field family", () => {
   });
 
   /**
-   * A required field says the word, not only the asterisk. An asterisk is
-   * a convention the reader has to already know, and a screen reader
-   * reads it as "star" or skips it.
+   * A required field conveys the state programmatically, not as a word.
+   *
+   * This rule used to demand the opposite: that each field append the
+   * word "required" to its label, on the reasoning that an asterisk alone
+   * is a convention a reader has to know. Half of that is right and the
+   * conclusion was wrong. `required` on the control is a real programmatic
+   * state and every screen reader announces it, so the word made a reader
+   * say it twice — measured with Playwright's accessible-name
+   * computation, the name came out "Required required".
+   *
+   * axe reports nothing about that: there is nothing invalid. It took
+   * asking what the accessibility tree actually says, which is what
+   * `browser/announce.spec.ts` now does.
    */
-  it.each(FIELDS)("%s announces required as a word", (name) => {
-    const text = readFileSync(join(DIR, `${name}.tsx`), "utf8");
-    if (/<Field\b/.test(code(text))) return; // Field itself says it
-    expect(text, `${name} marks required visually only`).toContain(
-      "strings.required",
-    );
+  it.each(FIELDS)("%s conveys required as a state, not a word", (name) => {
+    const text = code(readFileSync(join(DIR, `${name}.tsx`), "utf8"));
+    expect(
+      text,
+      `${name} appends the word "required" to its label, duplicating a ` +
+        `state the control already carries`,
+    ).not.toMatch(/visually-hidden[^>]*>\s*\{?strings\.required/);
+    /* Two mechanisms, two shapes, and the rule has to know which.
+       A component wrapped in <Field> receives one object and spreads it,
+       so nothing can be missed by omission. A choice control — Checkbox,
+       Switch, RadioGroup — is its own label, so Field's layout does not
+       fit it; it takes the messages from useFieldMessages and puts the
+       state on its own root. Demanding a spread from those three failed
+       them for using the mechanism built for them. */
+    const usesField = /<Field\b/.test(text);
+    if (usesField) {
+      expect(
+        /\{\.\.\.control\}/.test(text),
+        `${name} is wrapped in Field and assembles the wiring by hand ` +
+          `instead of spreading its control props, so one of the four can ` +
+          `be missed`,
+      ).toBe(true);
+    } else {
+      expect(
+        /required=\{|aria-required=\{/.test(text),
+        `${name} marks required visually only; a reader needs the state on ` +
+          `the control`,
+      ).toBe(true);
+    }
   });
 });
 

@@ -5,17 +5,33 @@
  * Firefox, JAWS with Chrome, VoiceOver with Safari, per component,
  * recorded and dated. Manual, scheduled, and written down — not a gate."
  *
- * Every cell below reads `checked: null`. That is not an oversight and it
- * is the most important thing in this file: nobody has run a screen
- * reader against this library. axe passing in two themes is not the same
- * evidence, and a matrix filled in from what the markup *ought* to
- * announce would be worse than an empty one — it would be the document
- * someone points at instead of listening.
+ * Every cell below reads `checked: null`, and that is accurate: nobody has
+ * run NVDA, JAWS or VoiceOver against this library.
  *
- * What this file is for, empty: it makes the absence countable.
- * `nx run ui:audit` prints how many of the 105 cells have ever been
- * checked and how old the oldest is, so the gap appears in the same place
- * as every other measurement instead of living in a person's memory.
+ * What has changed since this file was written is what the rows are *for*.
+ * The first version of this comment said a screen reader could not be
+ * tested here at all. That was wrong. Three layers exist and two of them
+ * are automated now:
+ *
+ *   1. `browser/announce.spec.ts` asserts the accessible name, the
+ *      description, the role and the state per node, computed to the
+ *      AccName spec by a real browser. That is the string a reader speaks.
+ *      It found a defect on its first run: every required field announced
+ *      its state twice, because `required` was on the control *and* the
+ *      word was appended to the label.
+ *   2. The same file reads `ariaSnapshot()` — the accessibility tree in
+ *      reading order — so order, nesting and state are checked together,
+ *      which per-node assertions cannot do.
+ *   3. Real assistive technology. NVDA and VoiceOver can be driven from
+ *      Node by Guidepup, which captures the spoken phrase log. That needs
+ *      a Windows or macOS runner and, locally, permission to switch
+ *      VoiceOver on — this CI runs on Linux, so it stays manual.
+ *
+ * So these rows are no longer "has anyone checked the semantics". Layers 1
+ * and 2 check the semantics. A row here is for what only real AT shows:
+ * verbosity, how punctuation is read, what a reader says on entering and
+ * leaving a region, and where two readers disagree. Those are judgments,
+ * and no snapshot of a tree contains them.
  *
  * How to fill a cell: run the component's stories with that pairing, work
  * through the keyboard map for it, and record what was heard — not what

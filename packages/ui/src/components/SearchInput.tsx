@@ -92,7 +92,7 @@ export function SearchInput({
       hideLabel={hidden}
       className={cx("uix-search-field", className)}
     >
-      {({ id, describedBy, invalid, required: isRequired }) => (
+      {({ control, invalid }) => (
         /* The same row every other field uses, with a pill radius. It used
            to put its own border, background and min-height on the input
            itself, which is why its text sat a pixel or two high: an input
@@ -104,12 +104,9 @@ export function SearchInput({
             <Search size={16} />
           </span>
           <input
-            id={id}
+            {...control}
             type="search"
             className="uix-field-input"
-            aria-describedby={describedBy}
-            aria-invalid={invalid}
-            required={isRequired || undefined}
             {...rest}
           />
         </div>

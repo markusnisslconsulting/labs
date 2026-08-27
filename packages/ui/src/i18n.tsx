@@ -43,7 +43,19 @@ export interface Strings {
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
-  /** Announced when a field is required. */
+  /**
+   * @deprecated Nothing reads this any more, and nothing should.
+   *
+   * It existed so a field could append the word "required" to its label.
+   * That duplicated a state the control already carries: `required` on the
+   * control is programmatic and every screen reader announces it, so a
+   * reader said "required" twice. Measured, the accessible name came out
+   * "Required required".
+   *
+   * Kept for one release with this note rather than deleted, because a
+   * consumer may be passing it and a silently ignored key is worse than a
+   * documented dead one. Remove it after 2027-03-01.
+   */
   required: string;
   /**
    * The close control on a popover or a dialog.

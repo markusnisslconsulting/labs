@@ -5,7 +5,6 @@ import { useId, type ChangeEvent, type ReactNode } from "react";
 
 import { cx } from "../cx";
 import { useFieldMessages } from "./Field";
-import { useStrings } from "../i18n";
 import "./_choice.css";
 import "./_field.css";
 import "./RadioGroup.css";
@@ -85,7 +84,6 @@ export function RadioGroup({
   const isControlled = value !== undefined;
   const baseId = useId();
   const { describedBy, invalid, messages } = useFieldMessages(hint, error);
-  const strings = useStrings();
 
   return (
     <fieldset
@@ -110,7 +108,6 @@ export function RadioGroup({
             <span className="uix-field-required" aria-hidden>
               *
             </span>
-            <span className="uix-visually-hidden">{strings.required}</span>
           </>
         ) : null}
       </legend>

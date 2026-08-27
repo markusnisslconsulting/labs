@@ -104,18 +104,15 @@ export function Slider({
       data-disabled={disabled || undefined}
       {...rest}
     >
-      {({ id, describedBy, invalid, required: isRequired }) => (
+      {({ control }) => (
         <input
-          id={id}
+          {...control}
           type="range"
           className="uix-range"
           disabled={disabled}
-          required={isRequired || undefined}
           min={min}
           max={max}
           step={step}
-          aria-describedby={describedBy}
-          aria-invalid={invalid}
           value={current}
           onChange={(event) => {
             const next = Number(event.target.value);
