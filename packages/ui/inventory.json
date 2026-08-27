@@ -76,6 +76,48 @@
       "accessibility": "both branches announce the same thing. The image takes `alt={name}`, the initials take `role=\"img\"` with the same label, so whether someone uploaded a picture does not change what a screen reader says about them. Pass `decorative` where the name is already beside the avatar. The two branches used to disagree — the image silent, the initials announcing — which meant a row's accessibility depended o"
     },
     {
+      "component": "AvatarGroup",
+      "props": [
+        {
+          "name": "people",
+          "type": "Array<{ name: string",
+          "required": true,
+          "doc": "Who is in the group, in the order they should be shown."
+        },
+        { "name": "src", "type": "string }>", "required": false },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "doc": "How many faces to show before the counter."
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false
+        },
+        {
+          "name": "person",
+          "type": "(entry: { name: string",
+          "required": false,
+          "doc": "Render one face yourself."
+        },
+        { "name": "src", "type": "string }) => ReactNode", "required": false },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "doc": "What the group is, for assistive technology."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "the handful of people attached to one thing — assignees, reviewers, attendees",
+      "insteadWhen": "the reader needs to act on an individual: overlapping faces are not reliable click targets, so use a list",
+      "accessibility": "one `role=\"group\"` with `label` as its name, and every avatar inside it `decorative` — so a reader announces the group once and then the names, rather than the word \"avatar\" five times. The names of everyone past `max` are in the counter's own label, so nobody disappears because the layout ran out of room. The overlap is drawn with a ring in the page's own background colour, not a gap, because a g"
+    },
+    {
       "component": "Badge",
       "props": [
         {
@@ -551,6 +593,53 @@
       "useFor": "separating groups that already read as groups",
       "insteadWhen": "the separation needs a name (a heading)",
       "accessibility": "renders `role=\"separator\"`; purely decorative by default — pass a `label` only when the divider means something (e.g. between two form sections a screen reader user navigates)"
+    },
+    {
+      "component": "EmptyState",
+      "props": [
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "What is not here, as a heading."
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Why, or what to do about it."
+        },
+        {
+          "name": "action",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "The one thing to do next."
+        },
+        {
+          "name": "illustration",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "A picture, hidden from assistive technology."
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4",
+          "required": false,
+          "doc": "The heading level, when this sits inside a page that has headings."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Anything else, below the action."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "the place where a list, table or search result would be, when there is nothing to show",
+      "insteadWhen": "the emptiness is an error or a failure — `Alert` says something went wrong, this says nothing is here yet",
+      "accessibility": "a `role=\"status\"` region, polite. Status rather than plain markup because this text usually appears as the *result of something the reader did* — a search, a filter — and a result that renders silently leaves a screen reader user waiting. Deliberately **without** a name of its own. An `aria-labelledby` pointing at the title was the first attempt and it was wrong: a live region is announced by its "
     },
     {
       "component": "Field",
@@ -1211,6 +1300,63 @@
       "useFor": "a short wait with no known duration",
       "insteadWhen": "the layout is already known (Skeleton), or progress is measurable (ProgressBar)",
       "accessibility": "`role=\"status\"` with a visually hidden label, so screen readers announce the wait without seeing a shape"
+    },
+    {
+      "component": "SplitButton",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The default action's label."
+        },
+        {
+          "name": "onAction",
+          "type": "() => void",
+          "required": false,
+          "doc": "What the primary half does."
+        },
+        {
+          "name": "items",
+          "type": "MenuItemDescriptor[]",
+          "required": false,
+          "doc": "The alternatives, behind the arrow."
+        },
+        { "name": "children", "type": "ReactNode", "required": false },
+        {
+          "name": "menuLabel",
+          "type": "string",
+          "required": true,
+          "doc": "What the arrow half is called, for assistive technology."
+        },
+        {
+          "name": "variant",
+          "type": "\"solid\" | \"outline\"",
+          "required": false
+        },
+        {
+          "name": "tone",
+          "type": "\"accent\" | \"neutral\"",
+          "required": false
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false
+        },
+        { "name": "disabled", "type": "boolean", "required": false },
+        { "name": "loading", "type": "boolean", "required": false }
+      ],
+      "parts": [
+        "SplitButton.Item",
+        "SplitButton.Separator",
+        "SplitButton.Group"
+      ],
+      "slots": [],
+      "status": "beta",
+      "useFor": "one action people take most of the time, with variants behind it — Save, with Save and close, Save as draft",
+      "insteadWhen": "no option is the obvious default: that is a `Menu`, and pretending one of a set of equals is the default makes the others hard to find",
+      "accessibility": "two buttons, not one button with two click regions. The primary half is a plain `<button>`; the arrow is a menu trigger with `aria-haspopup=\"menu\"` and its own accessible name from `menuLabel`. A single button that opened a menu when clicked on the right would be one control announcing one name and doing two things, and a keyboard could only ever reach one of them. The arrow is `aria-hidden`, beca"
     },
     {
       "component": "StatusPill",

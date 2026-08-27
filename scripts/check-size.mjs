@@ -80,15 +80,29 @@ let failed = false;
  * No component pulls another component's CSS, except where it is reuse.
  *
  * The per-component split is only worth anything if importing one
- * component costs one component. Menu and Popover each pull Button.css
- * because their triggers *are* buttons, which is reuse and is documented;
- * anything else is a leak, and a leak here is invisible — the page simply
- * downloads more than it used.
+ * component costs one component. Reuse is the exception and it has to be
+ * declared: a composite component legitimately pulls the stylesheets of
+ * the components it renders, and the map below says which. Anything else
+ * is a leak, and a leak here is invisible — the page simply downloads more
+ * than it used.
  */
 function checkCssIsolation() {
   const dir = "dist/packages/ui/components";
   if (!existsSync(dir)) return false;
-  const allowed = { Menu: ["Button"], Popover: ["Button"] };
+  /* A component may pull the stylesheet of a component it actually
+     renders. Each entry says which and, by naming it here, makes the
+     dependency a decision in the repository rather than something the
+     bundle does quietly. Anything not listed is a leak. */
+  const allowed = {
+    // Their triggers *are* buttons.
+    Menu: ["Button"],
+    Popover: ["Button"],
+    // It renders Avatars; the ring and the overlap are all it adds.
+    AvatarGroup: ["Avatar"],
+    // One half is a Button, and the popup is a Menu — its parts are
+    // Menu's, re-exported rather than a second copy of them.
+    SplitButton: ["Button", "Menu"],
+  };
   let leaked = false;
   for (const entry of readdirSync(dir)) {
     if (!entry.endsWith(".js")) continue;

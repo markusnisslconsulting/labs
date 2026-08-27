@@ -1,0 +1,52 @@
+/* SplitButton styles, shipped with the component.
+   A page that never imports SplitButton never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-splitbutton {
+    display: inline-flex;
+    /* No gap: the two halves are one control to the eye. The seam is the
+       divider below, which is why it has to be drawn rather than left as
+       whitespace — whitespace between them would read as two buttons. */
+    align-items: stretch;
+  }
+
+  /* Square off the inner edges so the pair reads as one shape. Logical
+     properties, so it flips with direction rather than breaking in RTL. */
+  .uix-splitbutton-action {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .uix-splitbutton-more {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    /* Just the arrow, so the horizontal padding of a text button would
+       make it a lozenge. */
+    padding-inline: var(--uix-gap-sm);
+  }
+
+  /* The seam. `currentColor` at low alpha rather than a border token,
+     because this line sits *inside* one control and has to darken whatever
+     fill the variant chose — a fixed colour disappears on the solid
+     variant in one theme and shouts on the outline variant in the other. */
+  .uix-splitbutton-more {
+    border-inline-start: 1px solid
+      color-mix(in srgb, currentColor 25%, transparent);
+  }
+
+  /* The outline variant already has a border on both halves, so the seam
+     would be two lines side by side. */
+  .uix-splitbutton-more[data-variant="outline"] {
+    border-inline-start-color: transparent;
+  }
+
+  /* Raise whichever half has focus, so its ring is not clipped by the
+     other. Without this the ring on the primary half is cut off along the
+     seam, which reads as a rendering fault. */
+  .uix-splitbutton > *:focus-visible {
+    position: relative;
+    z-index: 1;
+  }
+}

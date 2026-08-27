@@ -1,6 +1,7 @@
 import { Accordion, type AccordionProps } from "./components/Accordion";
 import { Alert, type AlertProps } from "./components/Alert";
 import { Avatar, type AvatarProps } from "./components/Avatar";
+import { AvatarGroup, type AvatarGroupProps } from "./components/AvatarGroup";
 import { Badge, type BadgeProps } from "./components/Badge";
 import { Banner, type BannerProps } from "./components/Banner";
 import { Breadcrumb, type BreadcrumbItem } from "./components/Breadcrumb";
@@ -32,6 +33,8 @@ import { Slider, type SliderProps } from "./components/Slider";
 import { Spinner, type SpinnerProps } from "./components/Spinner";
 import { StatusPill, type StatusPillProps } from "./components/StatusPill";
 import { Switch, type SwitchProps } from "./components/Switch";
+import { EmptyState, type EmptyStateProps } from "./components/EmptyState";
+import { SplitButton, type SplitButtonProps } from "./components/SplitButton";
 import {
   DataTable,
   type DataTableProps,
@@ -60,6 +63,12 @@ export {
   allTokens,
   Avatar,
   type AvatarProps,
+  AvatarGroup,
+  type AvatarGroupProps,
+  EmptyState,
+  type EmptyStateProps,
+  SplitButton,
+  type SplitButtonProps,
   Badge,
   type BadgeProps,
   Banner,

@@ -116,6 +116,33 @@ export declare function Avatar({
 export {};
 ```
 
+## AvatarGroup
+
+```ts
+interface AvatarGroupOwnProps {
+  people: Array<{
+    name: string;
+    src?: string;
+  }>;
+  max?: number;
+  size?: "sm" | "md" | "lg";
+  person?: (entry: { name: string; src?: string }) => ReactNode;
+  label: string;
+}
+export type AvatarGroupProps = AvatarGroupOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof AvatarGroupOwnProps | "children">;
+export declare function AvatarGroup({
+  people,
+  max,
+  size,
+  person,
+  label,
+  className,
+  ...rest
+}: AvatarGroupProps): import("react").JSX.Element;
+export {};
+```
+
 ## Badge
 
 ```ts
@@ -494,6 +521,32 @@ export declare function Divider({
   className,
   ...rest
 }: DividerProps): import("react").JSX.Element;
+export {};
+```
+
+## EmptyState
+
+```ts
+interface EmptyStateOwnProps {
+  title: ReactNode;
+  description?: ReactNode;
+  action?: ReactNode;
+  illustration?: ReactNode;
+  headingLevel?: 2 | 3 | 4;
+  children?: ReactNode;
+}
+export type EmptyStateProps = EmptyStateOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof EmptyStateOwnProps>;
+export declare function EmptyState({
+  title,
+  description,
+  action,
+  illustration,
+  headingLevel,
+  children,
+  className,
+  ...rest
+}: EmptyStateProps): import("react").JSX.Element;
 export {};
 ```
 
@@ -1103,6 +1156,55 @@ export declare function Spinner({
   className,
   ...rest
 }: SpinnerProps): import("react").JSX.Element;
+export {};
+```
+
+## SplitButton
+
+```ts
+interface SplitButtonOwnProps {
+  label: ReactNode;
+  onAction?: () => void;
+  items?: MenuItemDescriptor[];
+  children?: ReactNode;
+  menuLabel: string;
+  variant?: "solid" | "outline";
+  tone?: "accent" | "neutral";
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  loading?: boolean;
+}
+export type SplitButtonProps = SplitButtonOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof SplitButtonOwnProps>;
+export declare function SplitButton({
+  label,
+  onAction,
+  items,
+  children,
+  menuLabel,
+  variant,
+  tone,
+  size,
+  disabled,
+  loading,
+  className,
+  ...rest
+}: SplitButtonProps): import("react").JSX.Element;
+export declare namespace SplitButton {
+  var Item: ({
+    className,
+    danger,
+    ...rest
+  }: import("./Menu.js").MenuItemProps) => import("react").JSX.Element;
+  var Separator: ({
+    className,
+    ...rest
+  }: import("./Menu.js").MenuSeparatorProps) => import("react").JSX.Element;
+  var Group: ({
+    className,
+    ...rest
+  }: import("./Menu.js").MenuGroupProps) => import("react").JSX.Element;
+}
 export {};
 ```
 

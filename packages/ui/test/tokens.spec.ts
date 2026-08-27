@@ -593,8 +593,16 @@ describe("the layering rules the architecture depends on", () => {
     for (const file of readdirSync(dir).filter(
       (f) => f.endsWith(".tsx") && !f.includes(".stories."),
     )) {
-      const source = readFileSync(join(dir, file), "utf8");
-      const marked = /^["']use client["'];/.test(source);
+      const raw = readFileSync(join(dir, file), "utf8");
+      const marked = /^["']use client["'];/.test(raw);
+
+      /* Comments stripped first, and this is the fourth time that has
+         mattered in this repository. `EmptyState` has no state, no handler
+         and no control — and its docstring shows `<Button onClick={clear}>`
+         in an example, which matched the handler pattern and demanded a
+         directive the component does not need. A rule that reads prose is
+         a rule that changes when somebody improves the documentation. */
+      const source = strip(raw).replace(/^\s*\/\/.*$/gm, "");
       const needed = NEEDS.some((pattern) => pattern.test(source));
 
       expect(
@@ -767,20 +775,29 @@ describe("disabled states", () => {
         "",
       );
       if (!/\bdisabled\??:/.test(tsx)) continue;
-      // Field-family components delegate the row's disabled look to
-      // _field.css, and the choice controls to _choice.css.
+
+      /* Every stylesheet the component actually imports, its own included.
+         Delegating the disabled look to a sheet you import is legitimate
+         and common: the field family gets it from `_field.css`, the choice
+         controls from `_choice.css`, and `SplitButton` from `Button.css`
+         because a split button that did not match the buttons beside it
+         would be the defect.
+
+         Those first two used to be named here as a hardcoded pair, which
+         made the rule true for the components that existed when it was
+         written and false for the next one to delegate — it failed
+         `SplitButton` for doing exactly what `TextField` does. Read from
+         the imports instead, so the rule describes the mechanism rather
+         than a list. */
       const own = file.replace(/\.tsx$/, ".css");
-      const sheets = [own, "_field.css", "_choice.css"]
+      const imports = [...tsx.matchAll(/import\s+"\.\/([^"]+\.css)"/g)].map(
+        (match) => match[1] as string,
+      );
+      const scope = [...new Set([own, ...imports])]
         .filter((name) => files.includes(name))
         .map((name) => readFileSync(join(CSS, name), "utf8"))
         .join("\n");
-      const imported =
-        tsx.includes("_field.css") || tsx.includes("_choice.css");
-      const scope = imported
-        ? sheets
-        : files.includes(own)
-          ? readFileSync(join(CSS, own), "utf8")
-          : "";
+
       if (!/:disabled|\[data-disabled\]|\[aria-disabled/.test(scope)) {
         missing.push(file);
       }

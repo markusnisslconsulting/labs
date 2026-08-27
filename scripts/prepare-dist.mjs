@@ -141,8 +141,16 @@ function stripCssImports(dir) {
       // and failed for anyone on node16 module resolution. The emitted
       // JavaScript already carries the extension; only the declarations
       // did not.
+      // Two shapes, and the second was missing. `from "./X"` covers what
+      // TypeScript writes for an import you wrote yourself. `import("./X")`
+      // is what it writes for an *inferred* type — and it inferred one the
+      // day `SplitButton.Item = Menu.Item` was added, emitting
+      // `import("./Menu").MenuItemProps` with no extension while the
+      // explicit import two lines above it was rewritten correctly. attw
+      // caught it; nothing else would have, because a bundler resolves
+      // both.
       .replace(
-        /(\bfrom\s*["'])(\.\.?\/[^"']+?)(["'])/g,
+        /(\bfrom\s*["']|\bimport\(\s*["'])(\.\.?\/[^"']+?)(["'])/g,
         (whole, head, spec, tail) =>
           // Only a real extension counts. Matching /\.[a-z]+$/ treated
           // "./tokens.registry" as already extended, because the file name

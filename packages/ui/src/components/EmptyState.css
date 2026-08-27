@@ -1,0 +1,45 @@
+/* EmptyState styles, shipped with the component.
+   A page that never imports EmptyState never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--uix-gap-sm);
+    /* Generous, because this is the whole area a list would have filled.
+       An empty state crammed into one line reads as a missing row rather
+       than as an answer. */
+    padding: var(--uix-gap-xl) var(--uix-gap-lg);
+    text-align: center;
+  }
+
+  .uix-empty-illustration {
+    color: var(--uix-text-caption);
+    margin-block-end: var(--uix-gap-xs);
+  }
+
+  .uix-empty-title {
+    margin: 0;
+    font-size: var(--uix-font-size-300);
+    font-weight: var(--uix-weight-display);
+    color: var(--uix-text-heading);
+    /* The title is one sentence and reads better unbroken at the comma. */
+    text-wrap: balance;
+  }
+
+  .uix-empty-description {
+    margin: 0;
+    /* A measure, so a long explanation does not run the width of a table.
+       Line length is the reason an empty state in a wide layout is hard to
+       read even when the words are right. */
+    max-width: 44ch;
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-empty-action {
+    margin-block-start: var(--uix-gap-sm);
+  }
+}

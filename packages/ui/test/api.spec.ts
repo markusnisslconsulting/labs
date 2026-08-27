@@ -89,6 +89,10 @@ const SELF_CONTAINED: Record<string, string> = {
  * — Alert was changed that way rather than exempted.
  */
 const ACCESSIBLE_NAME: Record<string, string> = {
+  "AvatarGroup.tsx":
+    "label names the group; a row of overlapping faces is one thing to a " +
+    "reader and not five, and without a name it is five names with nothing " +
+    "said about what they have in common",
   "Breadcrumb.tsx": "label names the nav",
   "Pagination.tsx": "label names the nav landmark, per instance",
   "Divider.tsx": "label names the separator",

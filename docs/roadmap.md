@@ -33,6 +33,12 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**EmptyState, SplitButton, AvatarGroup** — done. Small, and each carries one
+accessibility decision that is the reason it is a component rather than
+markup: a polite live region for the empty state, two named buttons instead
+of one for the split button, and an overflow counter whose label still names
+the people the layout dropped.
+
 **DatePicker** — calendar, range, localisation, keyboard. The single most
 expensive component in any design system.
 
@@ -41,7 +47,7 @@ to say the operating system's picker. That is honest, and it does not cover
 async options, multi-select or custom rendering.
 
 **Drawer, Stepper, Command palette, Tree, Toolbar, FileUpload, TagInput,
-InlineEdit, EmptyState, AvatarGroup, SplitButton.**
+InlineEdit.**
 
 **Charts: a decision, not components.** Hand-built charts are a second
 design system. The decision is which library, and which tokens it reads.
@@ -65,6 +71,27 @@ test raises the length and the unique-key count together, so the assertion
 moved with the thing it was meant to constrain. It now records every lookup
 `row()` performs and names the rows nothing exercised. On its first real run
 it found one, immediately: a test this session had deleted by accident.
+
+**The declaration rewriter did not know about inferred type imports.**
+`scripts/prepare-dist.mjs` gives relative specifiers in the emitted `.d.ts`
+their `.js`, because a bundler resolves `./Menu` and Node's ESM resolver does
+not. It matched `from "./X"` only — and TypeScript writes a different shape
+for an _inferred_ type. The day `SplitButton.Item = Menu.Item` was added it
+emitted `import("./Menu").MenuItemProps` with no extension, two lines below
+an explicit import that was rewritten correctly. `attw` caught it; nothing
+else would have, because a bundler resolves both. Same class as the two
+cases the comment there already records.
+
+**Two more gates were describing a list rather than a mechanism.** The
+disabled-state rule named `_field.css` and `_choice.css` as the two
+stylesheets a component may delegate its disabled look to — so it was true
+for the components that existed when it was written and failed `SplitButton`
+for doing exactly what `TextField` does. It reads the component's own CSS
+imports now. And the `"use client"` rule matched `onClick={` inside
+`EmptyState`'s docstring example, demanding a directive the component does
+not need: a rule that reads prose changes when somebody improves the
+documentation. Comments are stripped first, which is the fourth time that
+has mattered here.
 
 **The "no component is driven only by an array of items" rule had a hole.**
 Its regex knew `items|options|tabs|pages` and not `columns|rows`. Widening

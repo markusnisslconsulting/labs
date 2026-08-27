@@ -191,9 +191,23 @@ describe("the agent instructions", () => {
     "%s cites files that exist",
     (document) => {
       const text = readFileSync(document, "utf8");
+      /* A bare extension is not a citation. Writing about `.d.ts` files
+         put one through this check, which can never resolve and reported
+         the document as citing a missing file — a gate failing on prose
+         about file types rather than on a moved gate.
+
+         Filtered on the reference rather than by tightening the pattern.
+         Requiring a match to start with a word character was the first
+         attempt and it was worse: `\b[\w]` matches mid-token, so
+         `.github/workflows/ci.yml` came out as `github/workflows/ci.yml`
+         and two documents that cite it correctly began to fail. The
+         distinguishing property is "leading dot and no slash", which is
+         what an extension is and a path never is. */
       const cited = new Set(
         (text.match(/[\w./-]+\.(?:ts|tsx|css|mjs|json|yml)\b/g) ?? []).filter(
-          (reference) => reference.includes("/") || reference.includes("."),
+          (reference) =>
+            (reference.includes("/") || reference.includes(".")) &&
+            !(reference.startsWith(".") && !reference.includes("/")),
         ),
       );
       const dead: string[] = [];

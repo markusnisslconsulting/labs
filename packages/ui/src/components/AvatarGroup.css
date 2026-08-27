@@ -1,0 +1,65 @@
+/* AvatarGroup styles, shipped with the component.
+   A page that never imports AvatarGroup never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-avatargroup {
+    display: inline-flex;
+    align-items: center;
+    /* Logical, so the overlap runs the reading direction. A physical
+       margin-left here would stack the faces the wrong way round in RTL,
+       with the first person hidden behind the second. */
+    flex-direction: row;
+  }
+
+  .uix-avatargroup-item {
+    /* The ring is what makes overlapping circles read as separate faces.
+       Drawn in the page colour rather than left as a gap, because a gap
+       cannot exist between two shapes that overlap. */
+    box-shadow: 0 0 0 2px var(--uix-bg-page);
+    border-radius: var(--uix-radius-pill);
+  }
+
+  .uix-avatargroup-item + .uix-avatargroup-item {
+    margin-inline-start: calc(var(--uix-control-sm) / -3);
+  }
+
+  .uix-avatargroup-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--uix-control-sm);
+    block-size: var(--uix-control-sm);
+    background: var(--uix-bg-subtle);
+    color: var(--uix-text-secondary);
+    font-size: var(--uix-font-size-100);
+    font-weight: var(--uix-weight-ui);
+    /* Digits in a circle: they have to sit centred whatever the count. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .uix-avatargroup[data-size="md"] .uix-avatargroup-more {
+    inline-size: var(--uix-control-md);
+    block-size: var(--uix-control-md);
+    font-size: var(--uix-font-size-200);
+  }
+
+  .uix-avatargroup[data-size="lg"] .uix-avatargroup-more {
+    inline-size: var(--uix-control-lg);
+    block-size: var(--uix-control-lg);
+    font-size: var(--uix-font-size-200);
+  }
+
+  .uix-avatargroup[data-size="md"]
+    .uix-avatargroup-item
+    + .uix-avatargroup-item {
+    margin-inline-start: calc(var(--uix-control-md) / -3);
+  }
+
+  .uix-avatargroup[data-size="lg"]
+    .uix-avatargroup-item
+    + .uix-avatargroup-item {
+    margin-inline-start: calc(var(--uix-control-lg) / -3);
+  }
+}

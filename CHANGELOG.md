@@ -75,6 +75,21 @@ cut at the first release.
 
 ### added
 
+- **EmptyState** — the place where a list or table would be, when there is
+  nothing to show. A polite `role="status"`, because the text usually
+  appears _because of something the reader did_ and a result that renders
+  silently leaves a screen reader user waiting. The heading is opt-in: a
+  component that guessed `<h2>` would corrupt the heading outline of every
+  page that put an empty state inside a card.
+- **SplitButton** — one default action with variants behind an arrow. Two
+  real buttons, not one button with two click regions, so both halves are
+  reachable and each has its own name. `menuLabel` is required because the
+  arrow is icon-only and "More" is useless on a page with three of them.
+  `SplitButton.Item`/`.Separator`/`.Group` are `Menu`'s parts re-exported.
+- **AvatarGroup** — the handful of people attached to one thing. The names
+  of everyone past `max` are in the counter's own label, because "+3" tells
+  a sighted reader there is more to see and tells a screen reader nothing.
+  `person` renders a face yourself, for a presence dot or a link.
 - **DataTable** — columns and rows as data, with sorting (`aria-sort` on the
   header cell, a real `<button>` inside it), selection keyed by row rather
   than by index so it survives a sort, `table-layout: fixed` column widths,
@@ -122,6 +137,12 @@ Nothing yet; nothing is published. The first published version starts the
 window in which this section matters.
 
 ### internal
+
+- **Packaging** — `scripts/prepare-dist.mjs` now gives inferred type imports
+  their extension too. It rewrote `from "./X"` and not `import("./X")`, which
+  is the shape TypeScript emits for an inferred type — so a consumer on
+  node16 module resolution got a declaration pointing at a module Node
+  cannot resolve. Caught by `attw`.
 
 - One focus contract in `base.css` replacing thirteen per-component rings
   and fourteen components with none.

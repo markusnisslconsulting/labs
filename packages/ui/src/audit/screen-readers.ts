@@ -95,6 +95,21 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "EmptyState",
+    why: "a polite live region: whether the answer to a filter arrives at all, and whether it interrupts something",
+    cells: blank(),
+  },
+  {
+    component: "SplitButton",
+    why: "two buttons that look like one: whether the arrow is announced as its own control with its own name",
+    cells: blank(),
+  },
+  {
+    component: "AvatarGroup",
+    why: "the overflow counter, whose label carries the names the layout dropped",
+    cells: blank(),
+  },
+  {
     component: "DataTable",
     why: "a virtualised body: whether a reader says the true row number, and what it says when the window under it changes while wandering",
     cells: blank(),
