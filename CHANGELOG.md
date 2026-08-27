@@ -55,7 +55,7 @@ cut at the first release.
   at names.
 
 - **Select** — the value now sits on the middle of its own field. Under
-  `appearance: base-select` the select *is* the button and the button is a
+  `appearance: base-select` the select _is_ the button and the button is a
   flex container; with a fixed `block-size` and no `padding-block` its
   content sat at the start, so the value rendered 7px above centre while the
   chevron beside it was centred.
