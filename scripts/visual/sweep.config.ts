@@ -12,8 +12,12 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: ".",
-  testMatch: "sweep.spec.ts",
-  outputDir: "./.sweep-output",
+  /* Both of the sweep's own specs, and not the axes one, which has its
+     own config. Naming a single file here is what silently stopped
+     docs.spec.ts from running at all — the run count dropped by thirteen
+     and nothing said so. */
+  testMatch: /(sweep|docs)\.spec\.ts$/,
+  outputDir: "./.out",
   workers: 6,
   /* One retry, because this is a camera and not a gate. Twelve workers
      across two engines occasionally lose a navigation to a timeout, and a

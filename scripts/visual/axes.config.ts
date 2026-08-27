@@ -6,7 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: ".",
   testMatch: "axes.spec.ts",
-  outputDir: "./.axes-output",
+  outputDir: "./.out",
   workers: 6,
   retries: 1,
   reporter: [["line"]],

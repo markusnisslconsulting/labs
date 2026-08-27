@@ -17,5 +17,14 @@ test-results
 playwright-report
 
 # Screenshot sweeps are for looking at, not for keeping.
+#
+# One pattern, because the last two attempts at this added one line per
+# target and the next target invented a new directory name: .sweep-output
+# was ignored, .axes-output was not, and CI failed on a committed
+# .last-run.json. Every visual target writes to scripts/visual/.out now,
+# and the runs themselves go to a scratch directory outside the repo.
+scripts/visual/.out/
 .sweep-output/
+.axes-output/
 .visual-sweep/
+.visual-axes/
