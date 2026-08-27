@@ -7,6 +7,15 @@ import { ChevronDown } from "lucide-react";
 import { Field } from "./Field";
 import "./_field.css";
 interface ComboboxOwnProps {
+  /**
+   * The form field name.
+   *
+   * Declared because this component's rest props land on the Field
+   * wrapper rather than on the input, so a `name` arriving through them
+   * would sit on a div. Field also uses it to find this field's error
+   * inside a Form.
+   */
+  name?: string;
   /** A node: it goes into a real <label> element, which carries the
    * accessible name, so it does not have to be flat text. */
   label: ReactNode;
@@ -57,6 +66,7 @@ export type ComboboxProps = ComboboxOwnProps &
  * in test environments); adoption revisits at 1.0.
  */
 export function Combobox({
+  name,
   label,
   options,
   hint,
@@ -84,6 +94,7 @@ export function Combobox({
   return (
     <Field
       label={label}
+      name={name}
       hint={hint}
       error={error}
       required={required}

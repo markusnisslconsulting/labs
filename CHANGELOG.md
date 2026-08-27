@@ -29,6 +29,19 @@ cut at the first release.
 
 ### fixed
 
+- **Field** — compute `aria-describedby` from the error actually in force,
+  not from the `error` prop. A form-supplied error rendered its message and
+  set `aria-invalid` while `aria-describedby` pointed at nothing: visibly
+  correct, silent to a screen reader, and invisible to every visual test.
+  The same split, in `Checkbox`, `Switch` and `RadioGroup`, skipped the
+  message wrapper entirely.
+- **Form** — render the error summary once. Fields register in an effect,
+  so on the first pass no error had an owner and every one took the branch
+  meant for an error whose field the form does not render. The summary
+  therefore rendered the messages with no field names, then replaced them
+  with links. That subtree is `role="alert"`. Measured writes to it: **5
+  before, 1 after** — four of them announcements of the same errors.
+  `browser/announce.spec.ts` counts them now.
 - **Tooltip** — set `role="tooltip"` on the popup and point the trigger's
   `aria-describedby` at it. Measured against Base UI `1.0.0-rc.0` the
   trigger had neither, so the hint reached no screen reader at all while
@@ -62,6 +75,20 @@ cut at the first release.
 
 ### added
 
+- **Form** — the layer above the field. `Form` takes errors by field name,
+  the shape a server returns them in, and each field finds its own: a
+  caller cannot route an error to the wrong field or forget to route it.
+  With `Form.Summary` (a `role="alert"` region whose links move focus to
+  the control, not just the viewport), `Form.Actions`, `Form.Group` (a real
+  fieldset and legend), a `busy` state, and `summaryOn` to choose between
+  showing errors on submit and showing errors the form was handed.
+  Native submission is prevented unless an `action` is set, because a form
+  with nowhere to go reloads the page and loses what was typed.
+- **Checkbox, Switch** — `name`, so a form can route an error to them.
+  These three plus `RadioGroup` carry their own label and so do not go
+  through `Field`, which is why they were the only fields in the library
+  that could not receive a server error. "You must accept the terms" is
+  the canonical form error and it had no home.
 - **Field** — owns label, hint, error, required and the aria wiring, and
   hands back one object to spread. Before it, nine field components all
   took `label`, two took `hint`, one took `error` and none took

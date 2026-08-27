@@ -1,8 +1,14 @@
 "use client";
 
-import { useId, type ComponentPropsWithRef, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  type ComponentPropsWithRef,
+  type ReactNode,
+} from "react";
 
 import { cx } from "../cx";
+import { useFormContext } from "./Form";
 import "./_field.css";
 
 /**
@@ -67,6 +73,7 @@ export interface FieldRenderProps {
    */
   control: {
     id?: string;
+    name?: string;
     "aria-labelledby"?: string;
     "aria-describedby"?: string;
     "aria-invalid"?: true;
@@ -149,6 +156,17 @@ interface FieldOwnProps {
    * keep it.
    */
   nameBy?: "for" | "aria";
+  /**
+   * The control's form field name.
+   *
+   * Two jobs. It reaches the control, as it always did through the spread
+   * props. And inside a `Form` it is how the field finds its own error:
+   * the form holds errors by name, the field looks its own up, and neither
+   * the caller nor the form has to thread a message into the right place.
+   * A caller cannot route an error to the wrong field because a caller
+   * does not route it at all.
+   */
+  name?: string;
   children: (props: FieldRenderProps) => ReactNode;
 }
 
@@ -163,19 +181,50 @@ export function Field({
   hideLabel,
   aside,
   nameBy = "for",
+  name,
   className,
   children,
   ...rest
 }: FieldProps) {
+  const form = useFormContext();
   const id = useId();
   const labelId = `${id}-label`;
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
 
-  // Hint first: the instruction before the complaint.
+  /* An explicit `error` prop wins over the form's. A caller who passes one
+     directly has a reason — a client-side rule the server does not know
+     about — and a form silently overriding it would be the surprise. */
+  const resolvedError = error ?? (name && form ? form.errors[name] : undefined);
+
+  /* Registered from an effect, into the form's state.
+     The first version registered during render, into a ref, so the
+     summary could read it in the same pass. That reads a ref during
+     render, which is unsafe when React renders concurrently — the value
+     can belong to a different pass — and the compiler's lint refused it.
+     An effect costs one batched re-render of the form on mount, and the
+     summary only appears after a submit, by which time every field has
+     long registered. */
+  const register = form?.register;
+  const registeredLabel = typeof label === "string" ? label : name;
+  useEffect(() => {
+    if (name && register) {
+      register(name, { id, linkText: registeredLabel ?? name });
+    }
+  }, [name, register, id, registeredLabel]);
+
+  /* Hint first: the instruction before the complaint.
+
+     `resolvedError`, not `error`. This line read `error` until a Form test
+     caught it, and the failure it produced is the worst shape a field has:
+     a form-supplied error rendered its message and set `aria-invalid`, and
+     `aria-describedby` pointed at nothing. Visibly correct, silent to a
+     screen reader, and no visual test can see it. Two things derived from
+     two different spellings of the same truth is how that happens. */
   const describedBy =
-    [hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") ||
-    undefined;
+    [hint ? hintId : null, resolvedError ? errorId : null]
+      .filter(Boolean)
+      .join(" ") || undefined;
 
   return (
     <div className={cx("uix-field", className)} {...rest}>
@@ -203,10 +252,11 @@ export function Field({
         control: {
           ...(nameBy === "for" ? { id } : { "aria-labelledby": labelId }),
           ...(describedBy ? { "aria-describedby": describedBy } : {}),
-          ...(error ? { "aria-invalid": true as const } : {}),
+          ...(resolvedError ? { "aria-invalid": true as const } : {}),
+          ...(name ? { name } : {}),
           ...(required ? { required: true as const } : {}),
         },
-        invalid: error ? true : undefined,
+        invalid: resolvedError ? true : undefined,
         id,
         labelId,
       })}
@@ -215,9 +265,9 @@ export function Field({
           {hint}
         </p>
       ) : null}
-      {error ? (
+      {resolvedError ? (
         <p className="uix-field-error" id={errorId}>
-          {error}
+          {resolvedError}
         </p>
       ) : null}
     </div>
@@ -246,17 +296,88 @@ export function Field({
  * );
  * ```
  */
-export function useFieldMessages(hint?: ReactNode, error?: ReactNode) {
+export function useFieldMessages({
+  hint,
+  error,
+  /**
+   * The control's form field name, for the same reason Field takes one.
+   *
+   * A checkbox, a switch and a radio group are their own label, so they do
+   * not go through Field — but they are still fields in a form, and a
+   * consent checkbox that a server rejects has to show the message and
+   * appear in the summary like everything else. That is the canonical
+   * case: "You must accept the terms" is a form error attached to a
+   * checkbox, and until this was wired the three controls that carry
+   * their own label were the three that could not receive one.
+   */
+  name,
+  /**
+   * What the summary's link should say, which is the control's own label.
+   *
+   * Without it the summary reads the field's `name` — so a person would
+   * get "notify" where the form says "Send a confirmation email". Field
+   * derives this from its `label` prop; these three have to pass it,
+   * because their label lives inside the control.
+   */
+  linkText,
+  /**
+   * Where the summary's link should send focus, when that is not the
+   * control this hook made an id for.
+   *
+   * A radio group needs it. The group is a fieldset, and a fieldset is not
+   * focusable — so registering the element the hook named would produce a
+   * link that scrolls and drops focus nowhere, which is the exact failure
+   * `Form.Summary` moves focus to avoid. The group passes its first
+   * option's id instead, because "you did not choose" is answered by
+   * arriving at the first choice.
+   */
+  focusId,
+}: {
+  hint?: ReactNode;
+  error?: ReactNode;
+  name?: string;
+  linkText?: string;
+  focusId?: string;
+}) {
+  const form = useFormContext();
   const id = useId();
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
 
+  const resolved = error ?? (name && form ? form.errors[name] : undefined);
+
+  /* In an effect, not during render. The first version registered inline
+     with a comment claiming the summary reads the registry while it
+     renders, so an effect would be too late. That was true of the ref this
+     used to be and false of the state it became: calling it during render
+     is a parent setState from a child's render pass, which React refuses.
+     The summary shows on submit, a frame after mount, so an effect is in
+     time — and the registration is idempotent, so it settles in one pass. */
+  const register = form?.register;
+  const target = focusId ?? id;
+  useEffect(() => {
+    if (name && register) {
+      register(name, { id: target, linkText: linkText ?? name });
+    }
+  }, [name, register, target, linkText]);
+
   return {
     describedBy:
-      [hint ? hintId : null, error ? errorId : null]
+      [hint ? hintId : null, resolved ? errorId : null]
         .filter(Boolean)
         .join(" ") || undefined,
-    invalid: error ? (true as const) : undefined,
+    invalid: resolved ? (true as const) : undefined,
+    /**
+     * The error actually in force, own prop or form's.
+     *
+     * Returned because callers branch on it. All three wrapped their
+     * messages in `if (!hint && !error)` using their own prop, which meant
+     * a form-supplied error rendered no wrapper and no message at all —
+     * the same mistake as Field's `describedBy`, in three more places.
+     */
+    error: resolved,
+    /** The id to put on the control, so the summary's link can reach it. */
+    id,
     messages: (
       <>
         {hint ? (
@@ -264,9 +385,9 @@ export function useFieldMessages(hint?: ReactNode, error?: ReactNode) {
             {hint}
           </p>
         ) : null}
-        {error ? (
+        {resolved ? (
           <p className="uix-field-error" id={errorId}>
-            {error}
+            {resolved}
           </p>
         ) : null}
       </>

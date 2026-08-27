@@ -277,6 +277,7 @@ interface CheckboxOwnProps {
 export type CheckboxProps = CheckboxOwnProps &
   Omit<ComponentPropsWithRef<typeof BaseCheckbox.Root>, keyof CheckboxOwnProps>;
 export declare function Checkbox({
+  name,
   label,
   checked,
   defaultChecked,
@@ -324,6 +325,7 @@ export {};
 
 ```ts
 interface ComboboxOwnProps {
+  name?: string;
   label: ReactNode;
   hint?: ReactNode;
   error?: ReactNode;
@@ -340,6 +342,7 @@ interface ComboboxOwnProps {
 export type ComboboxProps = ComboboxOwnProps &
   Omit<ComponentPropsWithRef<"div">, keyof ComboboxOwnProps>;
 export declare function Combobox({
+  name,
   label,
   options,
   hint,
@@ -442,6 +445,7 @@ export {};
 export interface FieldRenderProps {
   control: {
     id?: string;
+    name?: string;
     "aria-labelledby"?: string;
     "aria-describedby"?: string;
     "aria-invalid"?: true;
@@ -459,6 +463,7 @@ interface FieldOwnProps {
   hideLabel?: boolean;
   aside?: ReactNode;
   nameBy?: "for" | "aria";
+  name?: string;
   children: (props: FieldRenderProps) => ReactNode;
 }
 export type FieldProps = FieldOwnProps &
@@ -471,18 +476,95 @@ export declare function Field({
   hideLabel,
   aside,
   nameBy,
+  name,
   className,
   children,
   ...rest
 }: FieldProps): import("react").JSX.Element;
-export declare function useFieldMessages(
-  hint?: ReactNode,
-  error?: ReactNode,
-): {
+export declare function useFieldMessages({
+  hint,
+  error,
+  name,
+  linkText,
+  focusId,
+}: {
+  hint?: ReactNode;
+  error?: ReactNode;
+  name?: string;
+  linkText?: string;
+  focusId?: string;
+}): {
   describedBy: string | undefined;
   invalid: true | undefined;
+  error: ReactNode;
+  id: string;
   messages: import("react").JSX.Element;
 };
+export {};
+```
+
+## Form
+
+```ts
+interface Registration {
+  id: string;
+  linkText: string;
+}
+interface FormContextValue {
+  errors: Record<string, ReactNode>;
+  busy: boolean;
+  register: (name: string, entry: Registration) => void;
+  fields: Array<
+    {
+      name: string;
+    } & Registration
+  >;
+}
+export declare function useFormContext(): FormContextValue | null;
+interface FormOwnProps {
+  errors?: Record<string, ReactNode>;
+  busy?: boolean;
+  summaryOn?: "submit" | "always";
+  onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
+  children: ReactNode;
+}
+export type FormProps = FormOwnProps &
+  Omit<ComponentPropsWithRef<"form">, keyof FormOwnProps>;
+export declare function Form({
+  errors,
+  busy,
+  summaryOn,
+  onSubmit,
+  className,
+  children,
+  ...rest
+}: FormProps): import("react").JSX.Element;
+export declare namespace Form {
+  var Summary: typeof FormSummary;
+  var Actions: typeof FormActions;
+  var Group: typeof FormGroup;
+}
+declare function FormSummary({
+  className,
+  ...rest
+}: Omit<ComponentPropsWithRef<"div">, "children">):
+  import("react").JSX.Element | null;
+declare function FormActions({
+  className,
+  children,
+  ...rest
+}: ComponentPropsWithRef<"div">): import("react").JSX.Element;
+declare function FormGroup({
+  legend,
+  className,
+  children,
+  ...rest
+}: {
+  legend: ReactNode;
+} & Omit<
+  ComponentPropsWithRef<"fieldset">,
+  "legend"
+>): import("react").JSX.Element;
 export {};
 ```
 
@@ -587,6 +669,7 @@ export {};
 
 ```ts
 interface NumberFieldOwnProps {
+  name?: string;
   label: ReactNode;
   hint?: ReactNode;
   error?: ReactNode;
@@ -603,6 +686,7 @@ interface NumberFieldOwnProps {
 export type NumberFieldProps = NumberFieldOwnProps &
   Omit<ComponentPropsWithRef<"div">, keyof NumberFieldOwnProps>;
 export declare function NumberField({
+  name,
   label,
   hint,
   error,
@@ -807,6 +891,7 @@ export interface SearchInputProps extends Omit<
   required?: boolean;
 }
 export declare function SearchInput({
+  name,
   label,
   hideLabel,
   showLabel,
@@ -881,6 +966,7 @@ export interface SelectProps extends Omit<
 export type SelectOptionProps = ComponentPropsWithRef<"option">;
 export type SelectGroupProps = ComponentPropsWithRef<"optgroup">;
 export declare function Select({
+  name,
   label,
   options,
   hint,
@@ -921,6 +1007,7 @@ export {};
 
 ```ts
 interface SliderOwnProps {
+  name?: string;
   label: ReactNode;
   hint?: ReactNode;
   error?: ReactNode;
@@ -938,6 +1025,7 @@ interface SliderOwnProps {
 export type SliderProps = SliderOwnProps &
   Omit<ComponentPropsWithRef<"div">, keyof SliderOwnProps>;
 export declare function Slider({
+  name,
   label,
   hint,
   error,
@@ -1000,6 +1088,7 @@ export {};
 
 ```ts
 interface SwitchOwnProps {
+  name?: string;
   label: ReactNode;
   checked?: boolean;
   defaultChecked?: boolean;
@@ -1012,6 +1101,7 @@ interface SwitchOwnProps {
 export type SwitchProps = SwitchOwnProps &
   Omit<ComponentPropsWithRef<"label">, keyof SwitchOwnProps>;
 export declare function Switch({
+  name,
   label,
   checked,
   defaultChecked,
@@ -1107,6 +1197,7 @@ export interface TextFieldProps extends Omit<
   suffix?: ReactNode;
 }
 export declare function TextField({
+  name,
   label,
   hint,
   error,

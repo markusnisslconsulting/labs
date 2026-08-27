@@ -211,4 +211,13 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
     key: "Escape",
     expectation: "closes the menu and returns focus to the trigger",
   },
+  {
+    component: "Form",
+    story: "components-form--grouped",
+    owner: "platform",
+    key: "Enter",
+    expectation:
+      "in a text field, submits the form — the browser's implicit " +
+      "submission, which needs a submit button to exist",
+  },
 ];

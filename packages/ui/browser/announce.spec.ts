@@ -193,3 +193,79 @@ test("the page behind a modal is out of the accessibility tree", async ({
       "reader can operate the page the dialog is covering",
   ).toBe("inert");
 });
+
+/* ------------------------------------------------- how often it is said */
+
+/**
+ * The error summary is written to once, not twice.
+ *
+ * A live region is announced when its content changes, so a region that
+ * renders wrong-then-right is a region announced twice. This library's own
+ * screen-reader checklist tells a tester to listen for exactly that on
+ * `Toaster`; `Form.Summary` had it, and no assertion here could see it,
+ * because both writes end at the same correct final state.
+ *
+ * The cause was structural rather than a slip. Fields register themselves
+ * in an effect, so on the first render no error has an owner yet — and the
+ * summary's fallback for an error whose field the form does not render
+ * could not tell "unclaimed yet" from "unclaimed for good". So a form
+ * handed server errors rendered the message as plain text, then replaced
+ * it with a link.
+ *
+ * Counted from before the page's own scripts run, because the writes happen
+ * during the first paint and nothing sampled afterwards can see them. The
+ * observer watches `document` rather than `document.documentElement`: an
+ * init script runs before the document element exists, so the first version
+ * of this test observed `null`, counted nothing, and passed against both the
+ * broken and the fixed component. It was measured before it was trusted.
+ *
+ * Measured on the story below, with and without the fix: **1 write against
+ * 5**, and the first of those five read "3 fields need attention" followed
+ * by three messages with no field names on them at all, because at that
+ * point no field had registered and every error took the orphan branch.
+ */
+test("the error summary is written to once", async ({ page }) => {
+  await page.addInitScript(() => {
+    const store = window as unknown as Record<string, unknown>;
+    store.__alertWrites = 0;
+    new MutationObserver((records) => {
+      for (const record of records) {
+        const target = record.target as Element;
+        const inside =
+          target.nodeType === 1
+            ? target.closest("[role=alert]")
+            : target.parentElement?.closest("[role=alert]");
+        const inserted = [...record.addedNodes].some(
+          (node) =>
+            node.nodeType === 1 &&
+            ((node as Element).getAttribute?.("role") === "alert" ||
+              (node as Element).querySelector?.("[role=alert]")),
+        );
+        if (inside || inserted)
+          store.__alertWrites = (store.__alertWrites as number) + 1;
+      }
+    }).observe(document, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+    });
+  });
+
+  /* The matrix, whose middle form is handed errors it already has under
+     `summaryOn="always"`. That is the only shape where this is visible:
+     the summary has to render during the first paint, and it has to hold
+     errors belonging to fields that do register — an error with no field
+     at all reads the same in both passes, so the first story tried here
+     could not tell the versions apart. */
+  await openStory(page, "components-form--matrix");
+  await expect(page.getByRole("alert")).toBeVisible();
+
+  const writes = await page.evaluate(
+    () => (window as unknown as Record<string, unknown>).__alertWrites,
+  );
+  expect(
+    writes,
+    "the summary was written to more than once, so a screen reader " +
+      "announces it more than once",
+  ).toBeLessThanOrEqual(1);
+});

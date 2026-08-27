@@ -70,6 +70,7 @@ import "./SearchInput.css";
  * `aria-label`.
  */
 export function SearchInput({
+  name,
   label,
   hideLabel,
   showLabel,
@@ -86,6 +87,7 @@ export function SearchInput({
   return (
     <Field
       label={label}
+      name={name}
       hint={hint}
       error={error}
       required={required}

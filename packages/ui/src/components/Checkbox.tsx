@@ -57,6 +57,7 @@ export type CheckboxProps = CheckboxOwnProps &
  * "mixed"), keeps the root focusable and handles Space.
  */
 export function Checkbox({
+  name,
   label,
   checked,
   defaultChecked,
@@ -69,10 +70,28 @@ export function Checkbox({
   className,
   ...rest
 }: CheckboxProps) {
-  const { describedBy, invalid, messages } = useFieldMessages(hint, error);
+  const {
+    describedBy,
+    invalid,
+    error: shown,
+    id,
+    messages,
+  } = useFieldMessages({
+    hint,
+    error,
+    name,
+    /* The label, when it is a plain string. A summary link has to be text,
+       and a checkbox label can be a node — a sentence with a link to the
+       terms is the usual one. Falls back to the name inside the hook. */
+    linkText: typeof label === "string" ? label : undefined,
+  });
 
   const control = (
     <BaseCheckbox.Root
+      /* Both, and not only because the summary links here: an id on the
+         control is what makes it reachable at all. */
+      id={id}
+      name={name}
       className={cxState("uix-checkbox", className)}
       checked={checked}
       defaultChecked={defaultChecked}
@@ -106,7 +125,7 @@ export function Checkbox({
 
   // No wrapper unless there is something to wrap: a bare checkbox in a
   // table cell should stay one element.
-  if (!hint && !error) return control;
+  if (!hint && !shown) return control;
 
   return (
     <div className="uix-field">

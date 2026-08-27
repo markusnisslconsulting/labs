@@ -10,6 +10,15 @@ import "./_field.css";
 import "./NumberField.css";
 interface NumberFieldOwnProps {
   /**
+   * The form field name.
+   *
+   * Declared rather than inherited: this component's rest props land on a
+   * wrapper, not on the control, so a `name` arriving through them would
+   * end up on a div. It also has to reach Field, which uses it to find
+   * this field's error inside a Form.
+   */
+  name?: string;
+  /**
    * A node, now that a real `<label>` carries the accessible name. It was
    * `string` because the name came from `aria-label`, and an aria-label
    * can only be a string — so the one field where a label might carry a
@@ -58,6 +67,7 @@ export type NumberFieldProps = NumberFieldOwnProps &
  * Performance: native input editing; steppers are two buttons.
  */
 export function NumberField({
+  name,
   label,
   hint,
   error,
@@ -78,6 +88,7 @@ export function NumberField({
   return (
     <Field
       label={label}
+      name={name}
       hint={hint}
       error={error}
       required={required}

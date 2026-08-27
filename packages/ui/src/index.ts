@@ -10,6 +10,7 @@ import { ToastProvider, useToast } from "./toast";
 import { Card } from "./components/Card";
 import { Checkbox, type CheckboxProps } from "./components/Checkbox";
 import { Chip, type ChipProps } from "./components/Chip";
+import { Form, type FormProps } from "./components/Form";
 import { Combobox, type ComboboxProps } from "./components/Combobox";
 import { Divider, type DividerProps } from "./components/Divider";
 import { IconButton, type IconButtonProps } from "./components/IconButton";
@@ -122,4 +123,6 @@ export {
   Tooltip,
   type TooltipProps,
   type TokenDescriptor,
+  Form,
+  type FormProps,
 };

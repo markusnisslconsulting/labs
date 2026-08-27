@@ -222,16 +222,27 @@ if (mode === "report") {
 }
 
 if (mode === "write-budget") {
+  /* The note is the audit trail — it carries why the ceiling last moved,
+     which is the only part of this file a reviewer can judge. The first
+     version of this writer replaced it with a default on every write, so
+     raising the ceiling silently erased the reason the previous one was
+     chosen. Kept when it exists; the reason for a move is then a
+     deliberate edit next to the number, which is the point. */
+  const previous = existsSync(BUDGET)
+    ? (JSON.parse(readFileSync(BUDGET, "utf8")).note as string | undefined)
+    : undefined;
+
   writeFileSync(
     BUDGET,
     `${JSON.stringify(
       {
         note:
+          previous ??
           "ESTIMATED snapshots per full build (snapshotted stories x modes). This model has " +
-          "under-counted twice against real builds (240 and 204 measured vs 114 and 100 " +
-          "estimated), so treat it as a regression guard, not a bill forecast. " +
-          "The check fails when this is exceeded, so a rise in the bill arrives as a " +
-          "reviewable diff. Run `nx run ui:snapshot-budget-write` after an intentional change.",
+            "under-counted twice against real builds (240 and 204 measured vs 114 and 100 " +
+            "estimated), so treat it as a regression guard, not a bill forecast. " +
+            "The check fails when this is exceeded, so a rise in the bill arrives as a " +
+            "reviewable diff. Run `nx run ui:snapshot-budget-write` after an intentional change.",
         ceiling: total,
       },
       null,

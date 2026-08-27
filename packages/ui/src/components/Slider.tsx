@@ -8,6 +8,15 @@ import { Field } from "./Field";
 import "./_field.css";
 import "./Slider.css";
 interface SliderOwnProps {
+  /**
+   * The form field name.
+   *
+   * Declared rather than inherited: this component's rest props land on a
+   * wrapper, not on the control, so a `name` arriving through them would
+   * end up on a div. It also has to reach Field, which uses it to find
+   * this field's error inside a Form.
+   */
+  name?: string;
   /** A node, now that the accessible name comes from a real `<label>`. */
   label: ReactNode;
   hint?: ReactNode;
@@ -54,6 +63,7 @@ export type SliderProps = SliderOwnProps &
  * test environments); adoption revisits at 1.0.
  */
 export function Slider({
+  name,
   label,
   hint,
   error,
@@ -91,6 +101,7 @@ export function Slider({
   return (
     <Field
       label={label}
+      name={name}
       hint={hint}
       error={error}
       required={required}

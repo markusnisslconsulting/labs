@@ -9,6 +9,15 @@ import { useFieldMessages } from "./Field";
 import "./_field.css";
 import "./Switch.css";
 interface SwitchOwnProps {
+  /**
+   * The form field name, so a `Form` can route an error here by name.
+   *
+   * Declared rather than left to the rest props, because this component
+   * reads it — the hook needs it to look the error up — and a prop a
+   * component consumes belongs in its signature.
+   */
+  name?: string;
+
   /** Visible label; rendered inside the control, so the whole row
       toggles natively. */
   /**
@@ -82,6 +91,7 @@ export type SwitchProps = SwitchOwnProps &
  * | `--uix-switch-travel` | `1.3rem` | How far the knob travels; negated under dir=rtl |
  */
 export function Switch({
+  name,
   label,
   checked,
   defaultChecked,
@@ -99,12 +109,25 @@ export function Switch({
   );
   const isChecked = isControlled ? checked : internalChecked;
   const labelId = useId();
-  const { describedBy, invalid, messages } = useFieldMessages(hint, error);
+  const {
+    describedBy,
+    invalid,
+    error: shown,
+    id,
+    messages,
+  } = useFieldMessages({
+    hint,
+    error,
+    name,
+    linkText: typeof label === "string" ? label : undefined,
+  });
 
   const row = (
     <label className={cx("uix-switch-row", className)} {...rest}>
       <BaseSwitch.Root
         className="uix-switch"
+        id={id}
+        name={name}
         aria-labelledby={labelId}
         aria-describedby={describedBy}
         aria-invalid={invalid}
@@ -132,7 +155,7 @@ export function Switch({
     </label>
   );
 
-  if (!hint && !error) return row;
+  if (!hint && !shown) return row;
 
   return (
     <div className="uix-field">

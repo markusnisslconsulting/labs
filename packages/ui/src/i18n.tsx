@@ -40,6 +40,16 @@ export interface Strings {
   dismiss: string;
   /** The status a spinner announces while it spins. */
   loading: string;
+  /**
+   * The heading of a form's error summary.
+   *
+   * A function because the count is in it and word order is not
+   * universal, and because "1 field needs attention" and "3 fields need
+   * attention" are different sentences in most languages — a template
+   * with a placeholder cannot express that and a translator would have to
+   * pick one.
+   */
+  errorSummary: (count: number) => string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -76,6 +86,8 @@ export const defaultStrings: Strings = {
   notifications: "Notifications",
   dismiss: "Dismiss",
   loading: "Loading",
+  errorSummary: (count) =>
+    count === 1 ? "1 field needs attention" : `${count} fields need attention`,
   increase: "Increase",
   decrease: "Decrease",
   required: "required",

@@ -349,3 +349,68 @@ test("every row of the map has a test", () => {
   expect(covered.size, "the map has duplicate rows").toBe(KEYBOARD_MAP.length);
   expect(KEYBOARD_MAP.length).toBeGreaterThanOrEqual(19);
 });
+
+/**
+ * Enter in a text field submits the form.
+ *
+ * The platform row that made this file's premise concrete. Implicit
+ * submission is the browser's behaviour, not ours, and it has conditions a
+ * component library can remove without noticing: a submit button has to
+ * exist inside the form, and nothing may swallow the key on the way.
+ *
+ * It cannot be asserted from a play function. `userEvent.keyboard`
+ * dispatches an untrusted event and a browser runs implicit submission
+ * only for a trusted one, so a story would report success while the
+ * behaviour was gone — which is what the `owner: "platform"` distinction
+ * exists for.
+ *
+ * The fixture is `Grouped`, and both halves of that choice were forced by
+ * a break test that failed to break. It has no `play` function: a story
+ * that has one autoplays in a built Storybook, and `openStory` waits for
+ * the render rather than for play to finish, so the first fixture tabbed
+ * the focus out from under this test. And it has **two** text fields.
+ * HTML's implicit submission needs either a submit button or at most one
+ * field that blocks it, so against a fixture with a single text input,
+ * deleting the submit button changes nothing and the break test passes
+ * while claiming to have broken something.
+ *
+ * Counted rather than read off the event. The first version of this test
+ * asked a listener on the form for `event.defaultPrevented` and got
+ * `false` against a working component: React 19 delegates to the root
+ * container, so its handler — the one that calls `preventDefault` — runs
+ * after any listener on the form itself. What the page does is the
+ * durable observation; what an intermediate listener sees about the
+ * event's state is an artefact of who registered where.
+ */
+test("Enter in a text field submits the form", async ({ page }) => {
+  await openStory(page, row("Form", "Enter").story);
+  const before = page.url();
+
+  await page.evaluate(() => {
+    const store = window as unknown as Record<string, unknown>;
+    store.__submits = 0;
+    document.querySelector("form.uix-form")!.addEventListener("submit", () => {
+      store.__submits = (store.__submits as number) + 1;
+    });
+  });
+
+  await page.getByRole("textbox", { name: "Warehouse" }).focus();
+  await page.keyboard.press("Enter");
+
+  expect(
+    await page.evaluate(
+      () => (window as unknown as Record<string, unknown>).__submits,
+    ),
+    "Enter in a text field did not submit; either no submit button is in " +
+      "the form or something swallowed the key",
+  ).toBe(1);
+
+  /* And the page is still here. `Form` prevents the native submission
+     because this story sets no `action`, and a trusted key is the only way
+     to find out whether that actually held — an untrusted one never starts
+     the navigation there was something to prevent. */
+  expect(page.url(), "the form navigated; preventDefault did not hold").toBe(
+    before,
+  );
+  await expect(page.getByRole("textbox", { name: "Warehouse" })).toBeFocused();
+});

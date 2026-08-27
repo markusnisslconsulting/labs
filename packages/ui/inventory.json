@@ -340,6 +340,12 @@
       "component": "Combobox",
       "props": [
         {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The form field name."
+        },
+        {
           "name": "label",
           "type": "ReactNode",
           "required": true,
@@ -504,6 +510,12 @@
           "doc": "How the control gets its accessible name."
         },
         {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The control's form field name."
+        },
+        {
           "name": "children",
           "type": "(props: FieldRenderProps) => ReactNode",
           "required": true
@@ -515,6 +527,41 @@
       "useFor": "building a control that needs a label, a hint, an error and the aria wiring between them — a date picker, a currency input, an uploader, anything not already in this library",
       "insteadWhen": "the control exists here already: TextField, Select, Combobox, NumberField and Slider are all Field underneath, and using them means the wiring is already right",
       "accessibility": "this owns the four things a hand-rolled field forgets — a label bound by `htmlFor` to a real `id`, `aria-describedby` covering whichever of hint and error exist, `aria-invalid` whenever there is an error, and the required state as a word rather than only an asterisk. What the caller still owes: putting the id on the control it renders, and writing an error message that says what to do rather than "
+    },
+    {
+      "component": "Form",
+      "props": [
+        {
+          "name": "errors",
+          "type": "Record<string, ReactNode>",
+          "required": false,
+          "doc": "Errors by field name — the shape a server returns them in."
+        },
+        {
+          "name": "busy",
+          "type": "boolean",
+          "required": false,
+          "doc": "Submitting."
+        },
+        {
+          "name": "summaryOn",
+          "type": "\"submit\" | \"always\"",
+          "required": false,
+          "doc": "When the summary appears and takes focus."
+        },
+        {
+          "name": "onSubmit",
+          "type": "(event: FormEvent<HTMLFormElement>) => void",
+          "required": false
+        },
+        { "name": "children", "type": "ReactNode", "required": true }
+      ],
+      "parts": ["Form.Summary", "Form.Actions", "Form.Group"],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a set of fields submitted together, where validation comes back per field",
+      "insteadWhen": "there is one control and nothing to summarise — a search box is not a form",
+      "accessibility": "the summary is a `role=\"alert\"` region with a heading and one link per failed field, each moving **focus** to the control rather than only scrolling to it — the difference a keyboard user feels. On a submit that produced errors, focus moves to the summary: WCAG 3.3.1 asks for identification and 3.3.3 for a suggestion, and a summary nobody is sent to satisfies neither. What the caller still owes is"
     },
     {
       "component": "IconButton",
@@ -598,6 +645,12 @@
     {
       "component": "NumberField",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The form field name."
+        },
         {
           "name": "label",
           "type": "ReactNode",
@@ -994,6 +1047,12 @@
       "component": "Slider",
       "props": [
         {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The form field name."
+        },
+        {
           "name": "label",
           "type": "ReactNode",
           "required": true,
@@ -1102,6 +1161,12 @@
     {
       "component": "Switch",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The form field name, so a `Form` can route an error here by name."
+        },
         {
           "name": "label",
           "type": "ReactNode",

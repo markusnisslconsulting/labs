@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "Form",
+    why: "the error summary is a live region that has to be reached, not only rendered",
+    cells: blank(),
+  },
+  {
     component: "Select",
     why: "a native picker inside our own row and adornments",
     cells: blank(),

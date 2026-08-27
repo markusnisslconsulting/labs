@@ -48,6 +48,7 @@ export interface TextFieldProps extends Omit<
  * | `--uix-field-radius` | `var(--uix-radius-control)` | Field corner radius |
  */
 export function TextField({
+  name,
   label,
   hint,
   error,
@@ -61,6 +62,7 @@ export function TextField({
   return (
     <Field
       label={label}
+      name={name}
       hint={hint}
       error={error}
       required={required}

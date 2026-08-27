@@ -1,0 +1,75 @@
+/* Form styles, shipped with the component.
+   A page that never imports Form never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-form {
+    display: grid;
+    gap: var(--uix-gap-xl);
+  }
+
+  /* The summary carries danger severity the way Banner does: a tinted
+     fill mixed toward the page, so one declaration lands correctly on
+     white and on near-black, plus an edge that survives forced colours. */
+  .uix-form-summary {
+    padding: var(--uix-gap-md) var(--uix-gap-lg);
+    border-inline-start: 4px solid var(--uix-status-danger);
+    border-radius: var(--uix-radius-surface);
+    background: color-mix(
+      in srgb,
+      var(--uix-status-danger) 10%,
+      var(--uix-bg-surface)
+    );
+    color: var(--uix-text-primary);
+  }
+
+  .uix-form-summary-title {
+    display: block;
+    margin-bottom: var(--uix-gap-sm);
+    font-family: var(--uix-font-ui);
+  }
+
+  .uix-form-summary-list {
+    margin: 0;
+    padding-inline-start: var(--uix-gap-xl);
+    display: grid;
+    gap: var(--uix-gap-xs);
+  }
+
+  /* The summary takes focus programmatically, so it needs a visible ring.
+     The one contract in base.css only covers what a user can tab to, and
+     a region with tabindex="-1" is deliberately excluded there — a popup
+     focused to scope the keyboard must not draw one. This one must: it is
+     where a failed submit sends the reader. */
+  .uix-form-summary:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+  }
+
+  .uix-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-sm);
+    align-items: center;
+  }
+
+  /* A fieldset's default border and padding are the one piece of native
+     form styling nobody wants; the group's structure comes from its
+     legend and its spacing. */
+  .uix-form-group {
+    display: grid;
+    gap: var(--uix-gap-lg);
+    margin: 0;
+    padding: 0;
+    border: none;
+    min-width: 0;
+  }
+
+  @media (forced-colors: active) {
+    .uix-form-summary {
+      border: 1px solid CanvasText;
+      border-inline-start-width: 4px;
+    }
+  }
+}

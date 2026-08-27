@@ -50,6 +50,7 @@ export type SelectGroupProps = ComponentPropsWithRef<"optgroup">;
  * rather than left floating near the field.
  */
 export function Select({
+  name,
   label,
   options,
   hint,
@@ -63,6 +64,7 @@ export function Select({
   return (
     <Field
       label={label}
+      name={name}
       hint={hint}
       error={error}
       required={required}

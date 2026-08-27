@@ -83,10 +83,23 @@ export function RadioGroup({
 }: RadioGroupProps) {
   const isControlled = value !== undefined;
   const baseId = useId();
-  const { describedBy, invalid, messages } = useFieldMessages(hint, error);
+  const { describedBy, invalid, messages } = useFieldMessages({
+    hint,
+    error,
+    name,
+    linkText: typeof legend === "string" ? legend : undefined,
+    /* The first option, when there is a list of them. With `children` the
+       group does not know its options' ids, so it falls back to the
+       fieldset and makes it programmatically focusable — a reader landing
+       there announces the legend and the error, which is a worse arrival
+       than the first radio and a much better one than nowhere. */
+    focusId: options?.[0] ? `${baseId}-${options[0].value}` : baseId,
+  });
 
   return (
     <fieldset
+      id={baseId}
+      tabIndex={options?.[0] ? undefined : -1}
       className={cx("uix-radiogroup", className)}
       /* A bare fieldset maps to `group`, which supports neither
          aria-required nor aria-invalid — axe rejected both. `radiogroup`
