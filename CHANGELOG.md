@@ -250,6 +250,22 @@ window in which this section matters.
   a `CHANGELOG.md` entry, enforced in CI against the same base `nx affected`
   uses. The surface file made "which component moved" a line in a diff; this
   is what makes somebody say what it meant.
+- **Documentation** — the numbers documents state about countable things are
+  checked. Four had gone stale in one session: `AGENTS.md` said 35 components
+  when there were 49, the screen-reader matrix was described as 108 cells in
+  two documents when it holds 147, and roadmap stage 12 still reported 37
+  components with no prop count. The check fails both on a wrong number and
+  on a sentence rewritten so the pattern stops matching — a check that has
+  quietly stopped looking is not a lesser failure. Declared rather than
+  inferred, because a rule over every number cannot tell a live claim from a
+  measurement of a moment: ADR 0006's "30.4 kB for 33 components" has to stay
+  exactly as written.
+- **Build cache** — `ui:test` declares the workspace documents its citation
+  and count checks read, and `nx.json`, which `build.spec.ts` reads. None
+  were inputs, so editing any of them replayed the previous result — measured
+  at "188 passed" from cache against a roadmap citing a file that does not
+  exist. A gate now checks the class: every path-shaped literal in a cached
+  test's specs has to be among that target's inputs.
 - **Build cache** — `build-storybook` no longer uses the `production` input
   set, which excludes `*.stories.tsx`. A Storybook build is made of stories,
   so editing one left the cache warm: measured at `Cache: 1/1 hit (100%)`
