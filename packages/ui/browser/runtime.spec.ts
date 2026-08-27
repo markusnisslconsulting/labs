@@ -429,3 +429,116 @@ test("the select popup takes the width of the field, whatever it is", async ({
     await page.keyboard.press("Escape");
   }
 });
+
+/**
+ * A textarea has the same frame every other field has.
+ *
+ * It shipped without one. `uix-field-input` is deliberately `border: none;
+ * background: transparent` — every field in this library draws its box on
+ * the `uix-field-row` wrapper — and Textarea put that class on the control
+ * with no row around it. The result was text on the page background with a
+ * resize handle floating at the corner, and `data-invalid` sat on an element
+ * no rule selects, so the error state never showed either.
+ *
+ * Neither failure was visible to any assertion: every accessibility test,
+ * every interaction test and the whole audit suite passed on a control with
+ * no border. It took a screenshot. So the test is on the computed border
+ * rather than on the class, because the class was there the whole time.
+ */
+test("a textarea is drawn as a field, invalid state included", async ({
+  page,
+}) => {
+  await openStory(page, "components-textarea--matrix");
+
+  const frames = await page.locator(".uix-textarea-row").evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const style = getComputedStyle(node);
+      return {
+        width: Number.parseFloat(style.borderBottomWidth),
+        colour: style.borderBottomColor,
+        background: style.backgroundColor,
+        invalid: node.hasAttribute("data-invalid"),
+      };
+    }),
+  );
+
+  expect(frames.length, "no textarea rows on the page").toBeGreaterThan(2);
+
+  for (const frame of frames) {
+    expect(frame.width, "a textarea with no border").toBeGreaterThan(0);
+    expect(
+      frame.background,
+      "a textarea with a transparent background sits on whatever is behind it",
+    ).not.toBe("rgba(0, 0, 0, 0)");
+  }
+
+  /* The invalid one differs from the rest. Asserted as a difference rather
+     than against a colour, so a change of palette does not fail it. */
+  const invalid = frames.filter((frame) => frame.invalid);
+  const valid = frames.filter((frame) => !frame.invalid);
+  expect(invalid.length, "the matrix has no invalid textarea").toBeGreaterThan(
+    0,
+  );
+  for (const frame of invalid) {
+    expect(
+      frame.colour,
+      "the invalid textarea's border is the same as a valid one's",
+    ).not.toBe(valid[0]!.colour);
+  }
+});
+
+/**
+ * An upload row keeps its remove button on the row.
+ *
+ * The row is a three-column grid and the progress bar spans `1 / -1`, so it
+ * opens a second row. The remove button was the last child with no placement
+ * of its own, so it was auto-flowed after the bar and landed alone in row
+ * three, column one: a filename, a full-width bar, and an × on a line by
+ * itself. Every cell is placed explicitly now.
+ *
+ * Asserted on geometry, because "which grid row did this land in" is not
+ * something a class name or an attribute records.
+ */
+test("an upload row keeps the name, the size and the remove button in line", async ({
+  page,
+}) => {
+  await openStory(page, "components-fileupload--matrix");
+
+  const rows = await page.locator(".uix-fileupload-item").evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const box = (selector: string) => {
+        const found = node.querySelector(selector);
+        if (!found) return null;
+        const rect = found.getBoundingClientRect();
+        return { top: rect.top, bottom: rect.bottom, left: rect.left };
+      };
+      return {
+        name: box(".uix-fileupload-name"),
+        remove: box(".uix-fileupload-remove"),
+        progress: box(".uix-fileupload-progress"),
+      };
+    }),
+  );
+
+  expect(rows.length, "no upload rows on the page").toBeGreaterThan(0);
+
+  for (const row of rows) {
+    if (!row.name || !row.remove) continue;
+    /* Overlapping vertical extents is the honest test of "same line": the
+       two are different heights, so their tops do not match. */
+    expect(
+      row.remove.top,
+      "the remove button starts below the file name, so it is on its own row",
+    ).toBeLessThan(row.name.bottom);
+    expect(
+      row.remove.left,
+      "the remove button is left of the name",
+    ).toBeGreaterThan(row.name.left);
+    if (row.progress) {
+      expect(
+        row.progress.top,
+        "the progress bar is not below the name it belongs to",
+      ).toBeGreaterThanOrEqual(row.name.bottom - 1);
+    }
+  }
+});

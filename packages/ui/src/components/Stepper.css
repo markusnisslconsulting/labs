@@ -20,16 +20,51 @@
   }
 
   .uix-stepper-step {
+    position: relative;
     display: flex;
     align-items: flex-start;
-    /* Equal shares across a row, so the connector lengths match and the
-       row does not reflow when one label is longer than the others. */
+    /* Equal shares across a row, so the row does not reflow when one
+       label is longer than the others. This used to say the shares kept
+       "the connector lengths" matching, which described a line the
+       horizontal layout cannot have — see the block below. */
     flex: 1;
     min-inline-size: 0;
   }
 
-  .uix-stepper[data-orientation="vertical"] .uix-stepper-step {
-    flex: none;
+  /* The connector, vertical only, and the reason is worth keeping.
+     
+     The comment above this block has claimed "connector lengths" since the
+     file was written and nothing drew one, so it was drawn — at the
+     circles' centre line, which is where a stepper's connector goes. In the
+     horizontal layout that line runs straight through the labels: they sit
+     beside their circles, on exactly that centre line, so every finished
+     step came out struck through. Visible immediately in a screenshot, and
+     worse than having no line at all. Sending it behind the text does not
+     help, because glyphs have no background for it to hide under.
+     
+     A horizontal stepper can have a connector or side labels, not both. The
+     labels are the more useful half, so horizontally there is no line —
+     which is what this component always did, for a reason nobody had
+     written down.
+     
+     Vertically the circles are stacked and the labels are off to the side,
+     so the line has a column to itself and there is nothing in its way. */
+  .uix-stepper[data-orientation="vertical"]
+    .uix-stepper-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-block-start: calc(var(--uix-control-sm) + var(--uix-gap-xs));
+    inset-block-end: calc(var(--uix-gap-xs) - var(--uix-gap-sm));
+    inset-inline-start: calc(var(--uix-control-sm) / 2);
+    inline-size: 1px;
+    background: var(--uix-border-subtle);
+  }
+
+  /* Coloured by the step it leaves, not the one it arrives at: the segment
+     after a finished step is the part of the road already travelled. */
+  .uix-stepper[data-orientation="vertical"]
+    .uix-stepper-step[data-state="completed"]:not(:last-child)::after {
+    background: var(--uix-status-ok);
   }
 
   .uix-stepper-control {

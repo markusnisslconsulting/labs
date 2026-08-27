@@ -169,24 +169,38 @@ export function Textarea({
       className={className}
     >
       {({ control, invalid }) => (
-        <div className="uix-textarea-wrap" data-invalid={invalid}>
-          <textarea
-            {...control}
-            ref={area}
-            className={cx("uix-field-input", "uix-textarea")}
-            name={name}
-            data-grow={autoGrow || undefined}
-            rows={rows}
-            maxLength={maxLength}
-            value={value}
-            defaultValue={defaultValue}
-            onChange={(event) => {
-              setLength(event.target.value.length);
-              resize();
-              onChange?.(event);
-            }}
-            {...rest}
-          />
+        <div className="uix-textarea-wrap">
+          {/* The bordered box is `uix-field-row`, not the control: every
+              field in this library draws its frame on the wrapper, and
+              `uix-field-input` is explicitly `border: none; background:
+              transparent`. This component put `uix-field-input` on the
+              textarea and no row around it, so it rendered with no border
+              and no background at all — text on the page — and `data-invalid`
+              sat on an element no rule selects, so the error state never
+              showed either. Both were visible in the first screenshot
+              anybody took of it. */}
+          <div
+            className="uix-field-row uix-textarea-row"
+            data-invalid={invalid}
+          >
+            <textarea
+              {...control}
+              ref={area}
+              className={cx("uix-field-input", "uix-textarea")}
+              name={name}
+              data-grow={autoGrow || undefined}
+              rows={rows}
+              maxLength={maxLength}
+              value={value}
+              defaultValue={defaultValue}
+              onChange={(event) => {
+                setLength(event.target.value.length);
+                resize();
+                onChange?.(event);
+              }}
+              {...rest}
+            />
+          </div>
           {showCount && maxLength !== undefined ? (
             <>
               <div className="uix-textarea-count" aria-hidden>

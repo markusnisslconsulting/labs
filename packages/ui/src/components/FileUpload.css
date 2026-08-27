@@ -87,7 +87,24 @@
     font-size: var(--uix-font-size-100);
   }
 
+  /* Every cell is placed rather than auto-flowed, and that is the whole
+     fix for a row that rendered wrong. The progress bar spans `1 / -1`, so
+     it opens a second row; the remove button, being the last child with no
+     placement of its own, was auto-flowed *after* it and landed alone in
+     row three, column one. Visible in the first screenshot of this
+     component: a filename, a full-width bar, and an × on a line by itself.
+     Auto-placement around a spanning child is a layout waiting to move the
+     next time a child is added.
+
+     The button's own `grid-row: 1; grid-column: 3` is redundant today —
+     with the bar and the error placed, the first free cell is already the
+     right one, measured by taking it out and watching the test still pass.
+     It stays because the rule here is that every cell says where it goes,
+     and a layout that is correct only because of the order its children
+     happen to be in is the thing that broke. */
   .uix-fileupload-name {
+    grid-row: 1;
+    grid-column: 1;
     /* A long file name truncates at the *start*, because the end is where
        the extension and the distinguishing part usually are. */
     direction: rtl;
@@ -101,22 +118,28 @@
   }
 
   .uix-fileupload-size {
+    grid-row: 1;
+    grid-column: 2;
     color: var(--uix-text-secondary);
     font-variant-numeric: tabular-nums;
   }
 
   .uix-fileupload-progress {
+    grid-row: 2;
     grid-column: 1 / -1;
     inline-size: 100%;
     block-size: 0.25rem;
   }
 
   .uix-fileupload-error {
+    grid-row: 3;
     grid-column: 1 / -1;
     color: var(--uix-status-danger);
   }
 
   .uix-fileupload-remove {
+    grid-row: 1;
+    grid-column: 3;
     display: inline-flex;
     align-items: center;
     justify-content: center;

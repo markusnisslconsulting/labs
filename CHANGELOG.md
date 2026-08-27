@@ -29,6 +29,31 @@ cut at the first release.
 
 ### fixed
 
+- **Textarea** — it had no border and no background. `uix-field-input` is
+  deliberately `border: none; background: transparent`, because every field
+  here draws its frame on the `uix-field-row` wrapper, and this component put
+  that class on the control with no row around it. It rendered as text on the
+  page with a resize handle floating at the corner. `data-invalid` sat on an
+  element no rule selects, so the error state never showed either.
+
+  Nothing caught it: the accessibility tests, the interaction tests and the
+  whole audit suite passed on a control with no border. A screenshot caught
+  it. `browser/runtime.spec.ts` now asserts the computed border and
+  background, and that an invalid textarea's border differs from a valid
+  one's.
+
+- **FileUpload** — the remove button rendered on a line of its own below the
+  progress bar. The row is a three-column grid and the bar spans `1 / -1`, so
+  it opens a second row; the button, being the last child with no placement,
+  was auto-flowed after it into row three. Every cell is placed explicitly
+  now, and a test asserts the name, the size and the button share a line.
+
+- **Stepper** — a comment claimed a connector line that nothing drew. It has
+  one vertically, where the circles are stacked and the line has a column to
+  itself. Horizontally there is still none, and now there is a reason
+  written down: the labels sit beside their circles on exactly the centre
+  line a connector would occupy, so drawing one struck every label through.
+
 - **AvatarGroup** — the overflow counter overlaps the faces again. The
   overlap was `.item + .item` and the component rendered every visually
   hidden name after every avatar, so a run of spans sat between the last face

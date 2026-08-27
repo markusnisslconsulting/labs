@@ -9,6 +9,23 @@
     gap: var(--uix-gap-xs);
   }
 
+  /* The field frame, adapted for a control whose height is its content.
+     `uix-field-row` centres a one-line control inside a fixed control
+     height; a textarea has to fill the row instead, and its own
+     padding-block below is the vertical space. */
+  .uix-textarea-row {
+    /* Stretch, not centre: `uix-field-row` centres a one-line control
+       inside a fixed control height, and a textarea has to fill the row. */
+    align-items: stretch;
+    /* The row keeps the control-height floor it inherits. Zeroing it was
+       the first attempt and `scale.spec.ts` rejected it: every field row
+       has to sit on the control scale so it answers to density and to the
+       reader's text size. A textarea is taller than the floor as soon as it
+       has rows, so the floor only decides how short an empty one gets — and
+       a field shorter than every other field is not what was wanted. */
+    padding-block: 0;
+  }
+
   .uix-textarea {
     /* Height comes from `rows`, not from the control height every other
        field uses — a textarea is the one field whose size is content. */
