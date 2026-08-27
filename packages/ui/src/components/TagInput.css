@@ -1,0 +1,108 @@
+/* TagInput styles, shipped with the component.
+   A page that never imports TagInput never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-taginput {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    border: 1px solid var(--uix-border-strong);
+    border-radius: var(--uix-radius-control);
+    background: var(--uix-bg-surface);
+    /* Grows down rather than scrolling sideways: a tag pushed out of view
+       is a value the reader believes they removed. */
+    min-block-size: var(--uix-control-md);
+  }
+
+  /* The whole box takes the focus ring, because focus is really in the
+     input inside it and a ring around a 4ch text field inside a wide box
+     reads as a rendering fault. `:focus-within` is the one selector that
+     expresses "the thing you are typing into is in here". */
+  .uix-taginput:has(.uix-taginput-input:focus-visible) {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+  }
+
+  .uix-taginput[data-invalid] {
+    border-color: var(--uix-status-danger);
+  }
+
+  .uix-taginput-tags {
+    display: contents;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .uix-taginput-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    padding-inline: var(--uix-gap-sm);
+    padding-block: 0.125rem;
+    border-radius: var(--uix-radius-pill);
+    background: var(--uix-bg-subtle);
+    color: var(--uix-text-body);
+    font-size: var(--uix-font-size-100);
+    /* A tag is one thing: a long value wraps inside the pill rather than
+       stretching the row, and a break mid-word beats a pill wider than
+       the field. */
+    overflow-wrap: anywhere;
+  }
+
+  .uix-taginput-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 1.25rem square is smaller than the 24px minimum for a standalone
+       target, and that is deliberate: WCAG 2.5.8 exempts a control whose
+       function is available another way, and Backspace removes the last
+       tag from the keyboard. Sized to the pill so the row stays readable
+       at eight tags. */
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    border: 0;
+    border-radius: var(--uix-radius-pill);
+    background: none;
+    color: var(--uix-text-secondary);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .uix-taginput-remove:hover:not(:disabled) {
+    background: var(--uix-bg-page);
+    color: var(--uix-text-body);
+  }
+
+  .uix-taginput-remove:disabled {
+    color: var(--uix-text-disabled);
+    cursor: default;
+  }
+
+  .uix-taginput-remove:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: 1px;
+  }
+
+  .uix-taginput-input {
+    /* Takes the rest of the row and no more, so the field does not jump
+       to a new line the moment a tag is added. */
+    flex: 1 1 6ch;
+    min-inline-size: 6ch;
+    border: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+  }
+
+  .uix-taginput-input:focus {
+    /* The box carries the ring, not the bare input inside it. */
+    outline: none;
+  }
+}

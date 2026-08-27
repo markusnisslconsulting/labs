@@ -1586,6 +1586,55 @@
       "accessibility": "Base UI renders the tablist/tab/tabpanel wiring — `aria-selected`, `aria-controls`/`aria-labelledby`, roving tabindex — and handles Arrow/Home/End. Name the list with `label` in the shorthand form, or with `aria-label` on `Tabs.List` when composing. **Manual activation**, which is the half this used to leave out. The ARIA tabs pattern has two variants and \"per the ARIA pattern\" names neither, so a"
     },
     {
+      "component": "TagInput",
+      "props": [
+        { "name": "label", "type": "ReactNode", "required": true },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        { "name": "error", "type": "ReactNode", "required": false },
+        { "name": "required", "type": "boolean", "required": false },
+        { "name": "hideLabel", "type": "boolean", "required": false },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The form field name, so a `Form` can route an error here."
+        },
+        { "name": "value", "type": "string[]", "required": false },
+        { "name": "defaultValue", "type": "string[]", "required": false },
+        {
+          "name": "onValueChange",
+          "type": "(next: string[]) => void",
+          "required": false
+        },
+        { "name": "placeholder", "type": "string", "required": false },
+        { "name": "disabled", "type": "boolean", "required": false },
+        {
+          "name": "normalise",
+          "type": "(raw: string) => string | null",
+          "required": false,
+          "doc": "Reject or rewrite a tag before it is added."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "doc": "How many tags are allowed."
+        },
+        {
+          "name": "tag",
+          "type": "(value: string) => ReactNode",
+          "required": false,
+          "doc": "Render a tag's contents yourself."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a set of short free-text values the reader builds up — recipients, labels, filter terms",
+      "insteadWhen": "the values come from a known list: that is a multi-select, and free text invites typos the list would have prevented",
+      "accessibility": "the tags are a list, the input is a field, and the two are separate things a reader can walk. Each remove button carries the tag it removes in its accessible name — a column of buttons all called \"Remove\" is a column a screen reader reads as identical controls, which is the usual failing of this pattern. Removing a tag announces the change through a `role=\"status\"`, because pressing Backspace dele"
+    },
+    {
       "component": "TextField",
       "props": [
         {

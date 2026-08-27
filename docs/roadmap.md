@@ -33,6 +33,12 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**TagInput** — done. It is also the third component to need a per-item
+render prop as its composability door, after `AvatarGroup`'s `person` and
+`Stepper`'s `marker`. That is a pattern now rather than three decisions: the
+data shape is what gets submitted, and what an item _looks_ like is a
+separate question the caller answers.
+
 **Toolbar** — done. One tab stop for the group and arrows within it, which
 is the whole reason it exists rather than a styled `div`. Building it cost a
 third loose-selector bug, and that produced a gate: see below.
@@ -63,7 +69,7 @@ expensive component in any design system.
 to say the operating system's picker. That is honest, and it does not cover
 async options, multi-select or custom rendering.
 
-**Command palette, Tree, FileUpload, TagInput, InlineEdit.**
+**Command palette, Tree, FileUpload, InlineEdit.**
 
 **Charts: a decision, not components** — made, in
 `docs/adr/0011-charts-a-library-and-a-token-contract.md`. Nothing is added to

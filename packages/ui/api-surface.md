@@ -1395,6 +1395,48 @@ declare function TabPanel({
 export {};
 ```
 
+## TagInput
+
+```ts
+interface TagInputOwnProps {
+  label: ReactNode;
+  hint?: ReactNode;
+  error?: ReactNode;
+  required?: boolean;
+  hideLabel?: boolean;
+  name?: string;
+  value?: string[];
+  defaultValue?: string[];
+  onValueChange?: (next: string[]) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  normalise?: (raw: string) => string | null;
+  max?: number;
+  tag?: (value: string) => ReactNode;
+}
+export type TagInputProps = TagInputOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof TagInputOwnProps | "children">;
+export declare function TagInput({
+  label,
+  hint,
+  error,
+  required,
+  hideLabel,
+  name,
+  value,
+  defaultValue,
+  onValueChange,
+  placeholder,
+  disabled,
+  normalise,
+  max,
+  tag: renderTag,
+  className,
+  ...rest
+}: TagInputProps): import("react").JSX.Element;
+export {};
+```
+
 ## TextField
 
 ```ts

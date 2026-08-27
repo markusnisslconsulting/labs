@@ -67,6 +67,23 @@ export interface Strings {
    * sentence, and one and many are different sentences in most languages.
    */
   rowsSelected: (count: number) => string;
+  /**
+   * The remove control on one tag of a `TagInput`.
+   *
+   * A function, because the name has to say *which* tag — a row of buttons
+   * all called "Remove" is a row a screen reader reads as identical
+   * controls, which is the usual failing of this pattern.
+   */
+  removeTag: (tag: string) => string;
+  /**
+   * What a live region says when a tag is added or removed.
+   *
+   * Both are needed because removing a tag changes something the reader is
+   * not focused on: their keyboard is in the input, and without an
+   * announcement the only feedback is visual.
+   */
+  tagAdded: (tag: string) => string;
+  tagRemoved: (tag: string) => string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -105,6 +122,9 @@ export const defaultStrings: Strings = {
   loading: "Loading",
   errorSummary: (count) =>
     count === 1 ? "1 field needs attention" : `${count} fields need attention`,
+  removeTag: (tag) => `Remove ${tag}`,
+  tagAdded: (tag) => `${tag} added`,
+  tagRemoved: (tag) => `${tag} removed`,
   selectAllRows: "Select all rows",
   selectRow: (row) => `Select ${row}`,
   rowsSelected: (count) =>

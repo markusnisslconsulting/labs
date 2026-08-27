@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "TagInput",
+    why: "removing a tag changes something the reader is not focused on: whether the live region arrives, and whether the remove buttons sound like distinct controls",
+    cells: blank(),
+  },
+  {
     component: "Toolbar",
     why: "one tab stop with a roving ring: whether a reader is told how many controls are in the group and where in it they are",
     cells: blank(),

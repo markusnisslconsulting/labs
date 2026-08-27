@@ -75,6 +75,14 @@ cut at the first release.
 
 ### added
 
+- **TagInput** — a set of short free-text values the reader builds up. The
+  tags are a list so a reader can count them, and each remove button carries
+  the tag it removes in its accessible name: a column of buttons all called
+  "Remove" is the usual failing of this pattern. Removing announces through a
+  `role="status"`, because Backspace deletes something _elsewhere_ on the
+  screen and a reader focused in the input would otherwise get nothing.
+  Enter with a draft adds a tag and does not submit the surrounding form;
+  Enter on an empty field is the form's again.
 - **Toolbar** — a row of controls that act on the same thing, with
   `role="toolbar"`, a name, and **one tab stop for the whole group**. That
   last part is the only reason to reach for this instead of a `div` with a
