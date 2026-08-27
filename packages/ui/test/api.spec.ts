@@ -108,6 +108,8 @@ const ACCESSIBLE_NAME: Record<string, string> = {
   "Stepper.tsx": "label names the nav that holds the sequence",
   "Toolbar.tsx":
     "label names the toolbar; two unnamed ones are two identical landmarks",
+  "InlineEdit.tsx":
+    "label is the control's aria-label in both states; the reading state has no visible label at all",
   "Spinner.tsx": "label is the live region's text; a spinner has no other name",
   "Select.tsx":
     "SelectOption.label is an <option>'s text, and HTML forbids markup " +
@@ -652,8 +654,17 @@ describe("the field family", () => {
  * measurement showed nothing announced it at all.
  */
 describe("the keyboard map", () => {
+  /* Enter, Space and Backspace were missing, and the omission had a
+     cost: `TagInput` documents "Enter and comma commit" and "Backspace in
+     an empty field removes the last tag" and this gate said nothing,
+     because it only looked for arrows, Home, End, Escape and typeahead.
+     The map itself has had Enter and Space rows since it was written —
+     Tabs, Accordion, Checkbox, Switch, Form — so the list of keys a
+     component may claim and the list this rule enforced had drifted apart.
+     Case-sensitive, which is what separates the key Space from the word
+     space. */
   const KEYS =
-    /\b(Arrow(Up|Down|Left|Right)?|Home|End|Escape|PageUp|PageDown|typeahead)\b/;
+    /\b(Arrow(Up|Down|Left|Right)?|Home|End|Escape|PageUp|PageDown|Enter|Space|Backspace|Delete|typeahead)\b/;
 
   /**
    * Components whose claim cannot be exercised from a page, with the

@@ -807,6 +807,59 @@
       "accessibility": "same native button as Button, but the accessible name is a required prop — TypeScript rejects an icon without one, so the failure mode never reaches production"
     },
     {
+      "component": "InlineEdit",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "doc": "What is being edited."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "doc": "Controlled."
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "doc": "The uncontrolled half of the triple."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(next: string) => void",
+          "required": false
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false,
+          "doc": "Shown in the reading state when the value is empty."
+        },
+        { "name": "disabled", "type": "boolean", "required": false },
+        {
+          "name": "display",
+          "type": "(value: string) => ReactNode",
+          "required": false,
+          "doc": "Render the reading state yourself."
+        },
+        {
+          "name": "validate",
+          "type": "(next: string) => string | undefined",
+          "required": false,
+          "doc": "Validate before leaving edit mode."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "one value in a dense layout that is usually read and occasionally changed — a name in a table row, a title above a page",
+      "insteadWhen": "several values change together: that is a `Form`, and a row of independent inline edits saves each one separately with no way to cancel the set",
+      "accessibility": "the reading state is a **button**, not a div with a click handler and not a text field styled to look flat. A button says \"this does something\" to a screen reader and is reachable with Tab; a flat input says \"type here\" and then swallows the arrow keys of anyone navigating past it. The switch to editing is announced through a `role=\"status\"`, because replacing a button with a text field is a chang"
+    },
+    {
       "component": "Menu",
       "props": [
         {

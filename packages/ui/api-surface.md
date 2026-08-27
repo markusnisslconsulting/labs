@@ -725,6 +725,36 @@ export declare function IconButton({
 export {};
 ```
 
+## InlineEdit
+
+```ts
+interface InlineEditOwnProps {
+  label: string;
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (next: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  display?: (value: string) => ReactNode;
+  validate?: (next: string) => string | undefined;
+}
+export type InlineEditProps = InlineEditOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof InlineEditOwnProps | "children">;
+export declare function InlineEdit({
+  label,
+  value,
+  defaultValue,
+  onValueChange,
+  placeholder,
+  disabled,
+  display,
+  validate,
+  className,
+  ...rest
+}: InlineEditProps): import("react").JSX.Element;
+export {};
+```
+
 ## Menu
 
 ```ts

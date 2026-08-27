@@ -280,4 +280,37 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
     key: "End",
     expectation: "moves to the last control",
   },
+  /* TagInput — "Enter and comma commit; Backspace in an empty field
+     removes the last tag". */
+  {
+    component: "TagInput",
+    story: "components-taginput--tags-rendered-by-the-caller",
+    owner: "component",
+    key: "Enter",
+    expectation: "commits the draft as a tag",
+  },
+  {
+    component: "TagInput",
+    story: "components-taginput--tags-rendered-by-the-caller",
+    owner: "component",
+    key: "Backspace",
+    expectation: "on an empty field, removes the last tag",
+  },
+
+  /* InlineEdit — "Escape cancels and restores the original value; Enter
+     commits". */
+  {
+    component: "InlineEdit",
+    story: "components-inlineedit--matrix",
+    owner: "component",
+    key: "Enter",
+    expectation: "commits the edit and returns focus to the trigger",
+  },
+  {
+    component: "InlineEdit",
+    story: "components-inlineedit--matrix",
+    owner: "component",
+    key: "Escape",
+    expectation: "abandons the edit and restores the original value",
+  },
 ];

@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "InlineEdit",
+    why: "the control changes from a button to a text field under the reader's focus: whether the switch is announced, and whether the new thing says what it is",
+    cells: blank(),
+  },
+  {
     component: "TagInput",
     why: "removing a tag changes something the reader is not focused on: whether the live region arrives, and whether the remove buttons sound like distinct controls",
     cells: blank(),

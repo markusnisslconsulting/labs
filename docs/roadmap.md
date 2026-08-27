@@ -33,6 +33,12 @@ are different jobs and both are worth having. Three findings from building
 it are in this file's stage 03 notes below, because each one says something
 about the gates rather than about the table.
 
+**InlineEdit** — done, and the gate asking for a complete value /
+defaultValue / onValueChange triple earned its place on it: implementing the
+uncontrolled half surfaced that the reading state rendered the `value` prop
+rather than the resolved value, so an uncontrolled inline edit displayed
+nothing at all. Without the rule it would have shipped that way.
+
 **TagInput** — done. It is also the third component to need a per-item
 render prop as its composability door, after `AvatarGroup`'s `person` and
 `Stepper`'s `marker`. That is a pattern now rather than three decisions: the
@@ -69,7 +75,7 @@ expensive component in any design system.
 to say the operating system's picker. That is honest, and it does not cover
 async options, multi-select or custom rendering.
 
-**Command palette, Tree, FileUpload, InlineEdit.**
+**Command palette, Tree, FileUpload.**
 
 **Charts: a decision, not components** — made, in
 `docs/adr/0011-charts-a-library-and-a-token-contract.md`. Nothing is added to
@@ -112,6 +118,14 @@ emitted `import("./Menu").MenuItemProps` with no extension, two lines below
 an explicit import that was rewritten correctly. `attw` caught it; nothing
 else would have, because a bundler resolves both. Same class as the two
 cases the comment there already records.
+
+**The rule about documented keys did not know about Enter, Space or
+Backspace.** Its regex covered arrows, Home, End, Escape and typeahead — so
+`TagInput`, which documents "Enter and comma commit" and "Backspace in an
+empty field removes the last tag", had no row in the keyboard map and nothing
+said so. The map itself has had Enter and Space rows since it was written, so
+the list of keys a component may claim and the list this rule enforced had
+drifted apart. Widened, it named exactly two components, both of them new.
 
 **Three assertions had been reading the wrong element, and now a gate says
 so.** `page.locator("thead th")` matched Storybook's own zero-height args

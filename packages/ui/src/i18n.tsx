@@ -84,6 +84,25 @@ export interface Strings {
    */
   tagAdded: (tag: string) => string;
   tagRemoved: (tag: string) => string;
+  /**
+   * The reading state of an `InlineEdit`, as a control.
+   *
+   * "Supplier name" alone announces as a value; "Edit supplier name" says
+   * it is a control and which one. A function because the field's name goes
+   * inside the sentence and word order is not universal.
+   */
+  editValue: (field: string) => string;
+  /**
+   * What a live region says when an inline edit opens, saves or is
+   * abandoned.
+   *
+   * Replacing a button with a text field changes what the control *is*:
+   * focus lands on a different role with a different name. Without a word
+   * for it a reader has to work out what happened.
+   */
+  editing: (field: string) => string;
+  editSaved: (field: string) => string;
+  editCancelled: (field: string) => string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -122,6 +141,10 @@ export const defaultStrings: Strings = {
   loading: "Loading",
   errorSummary: (count) =>
     count === 1 ? "1 field needs attention" : `${count} fields need attention`,
+  editValue: (field) => `Edit ${field}`,
+  editing: (field) => `Editing ${field}`,
+  editSaved: (field) => `${field} saved`,
+  editCancelled: (field) => `${field} unchanged`,
   removeTag: (tag) => `Remove ${tag}`,
   tagAdded: (tag) => `${tag} added`,
   tagRemoved: (tag) => `${tag} removed`,

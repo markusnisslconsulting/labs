@@ -699,3 +699,115 @@ test("Toolbar: ArrowRight wraps from the last control to the first", async ({
   await page.keyboard.press("ArrowRight");
   await expect(controls.first(), "the ring does not wrap").toBeFocused();
 });
+
+/* -------------------------------------------------------------- TagInput */
+
+const TAG_ENTER = row("TagInput", "Enter");
+const TAG_BACKSPACE = row("TagInput", "Backspace");
+
+/**
+ * Enter commits a tag; Backspace on an empty field takes the last one back.
+ *
+ * Component-owned: both are this component's keydown handler, and both are
+ * the behaviour every mail client already taught people. The reason they are
+ * here rather than only in a story is the gate that put them in the map —
+ * `TagInput` documented both keys and had no row, because the rule that
+ * demands one only looked for arrows, Home, End and Escape.
+ */
+test(`TagInput: Enter ${TAG_ENTER.expectation}`, async ({ page }) => {
+  await openStory(page, TAG_ENTER.story);
+  const field = page.getByRole("textbox", { name: "Labels", exact: true });
+  const tags = page.locator(".uix-taginput-tag");
+  const before = await tags.count();
+
+  await field.fill("shipping");
+  await page.keyboard.press("Enter");
+
+  await expect(tags, "Enter did not commit the draft").toHaveCount(before + 1);
+  await expect(field, "the draft survived its own commit").toHaveValue("");
+});
+
+test(`TagInput: Backspace ${TAG_BACKSPACE.expectation}`, async ({ page }) => {
+  await openStory(page, TAG_BACKSPACE.story);
+  const field = page.getByRole("textbox", { name: "Labels", exact: true });
+  const tags = page.locator(".uix-taginput-tag");
+  const before = await tags.count();
+  expect(before, "the fixture needs a tag to remove").toBeGreaterThan(0);
+
+  await field.focus();
+  await page.keyboard.press("Backspace");
+  await expect(tags).toHaveCount(before - 1);
+
+  /* And with a draft in the field it edits the draft instead. Both halves,
+     because a component that always eats a tag is as wrong as one that
+     never does. */
+  await field.fill("x");
+  await page.keyboard.press("Backspace");
+  await expect(field).toHaveValue("");
+  await expect(
+    tags,
+    "Backspace ate a tag while the draft was not empty",
+  ).toHaveCount(before - 1);
+});
+
+/* ------------------------------------------------------------ InlineEdit */
+
+const EDIT_ENTER = row("InlineEdit", "Enter");
+const EDIT_ESCAPE = row("InlineEdit", "Escape");
+
+/**
+ * Enter commits and hands the keyboard back; Escape restores.
+ *
+ * Both directions, because either alone looks correct: a component that
+ * commits on Escape has quietly made every accidental keystroke permanent,
+ * and one that discards on Enter loses the work of anyone who expects a
+ * field to behave like a field.
+ *
+ * The `Matrix` fixture holds three, and its labels were made distinct for
+ * this — two controls both named "Edit Supplier name" would be exactly the
+ * ambiguity `test/locators.spec.ts` now refuses.
+ */
+test(`InlineEdit: Enter ${EDIT_ENTER.expectation}`, async ({ page }) => {
+  await openStory(page, EDIT_ENTER.story);
+  const trigger = page.getByRole("button", {
+    name: "Edit Supplier name",
+    exact: true,
+  });
+  await trigger.click();
+
+  const field = page.getByRole("textbox", {
+    name: "Supplier name",
+    exact: true,
+  });
+  await field.fill("Adria Components");
+  await page.keyboard.press("Enter");
+
+  await expect(field, "Enter left the editor open").toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Edit Supplier name", exact: true }),
+    "committing left the keyboard nowhere",
+  ).toBeFocused();
+});
+
+test(`InlineEdit: Escape ${EDIT_ESCAPE.expectation}`, async ({ page }) => {
+  await openStory(page, EDIT_ESCAPE.story);
+  const trigger = page.getByRole("button", {
+    name: "Edit Supplier name",
+    exact: true,
+  });
+  const original = ((await trigger.textContent()) ?? "").trim();
+  await trigger.click();
+
+  const field = page.getByRole("textbox", {
+    name: "Supplier name",
+    exact: true,
+  });
+  await field.fill("Something else");
+  await page.keyboard.press("Escape");
+
+  await expect(field).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Edit Supplier name", exact: true }),
+    "Escape committed, so an abandoned edit is permanent",
+  ).toHaveText(original);
+});

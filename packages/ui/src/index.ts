@@ -23,6 +23,7 @@ import { Divider, type DividerProps } from "./components/Divider";
 import { Drawer, type DrawerProps } from "./components/Drawer";
 import { Field, type FieldProps, useFieldMessages } from "./components/Field";
 import { IconButton, type IconButtonProps } from "./components/IconButton";
+import { InlineEdit, type InlineEditProps } from "./components/InlineEdit";
 import { Menu, type MenuProps } from "./components/Menu";
 import { NumberField, type NumberFieldProps } from "./components/NumberField";
 import { Panel, type PanelProps } from "./components/Panel";
@@ -175,4 +176,6 @@ export {
   type ToolbarProps,
   TagInput,
   type TagInputProps,
+  InlineEdit,
+  type InlineEditProps,
 };

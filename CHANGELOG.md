@@ -75,6 +75,14 @@ cut at the first release.
 
 ### added
 
+- **InlineEdit** — one value in a dense layout, usually read and
+  occasionally changed. The reading state is a `<button>`, not a div with a
+  click handler and not a flat text field: a button says "this does
+  something" and is reachable with Tab, while a flat input says "type here"
+  and swallows the arrow keys of anyone navigating past it. The switch
+  between the two announces through a `role="status"`, because replacing a
+  button with a text field changes what the control _is_. Escape restores,
+  Enter commits, and a refused change keeps the reader in the editor.
 - **TagInput** — a set of short free-text values the reader builds up. The
   tags are a list so a reader can count them, and each remove button carries
   the tag it removes in its accessible name: a column of buttons all called

@@ -1,0 +1,114 @@
+/* InlineEdit styles, shipped with the component.
+   A page that never imports InlineEdit never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-inlineedit {
+    /* The two states have to occupy the same space, or the row jumps when
+       somebody starts editing and everything below it moves. Grid with one
+       cell is the cheapest way to say "whichever child is here, size to
+       it" without measuring anything. */
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  .uix-inlineedit-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    /* Padding and a border that match the input's, so the switch does not
+       move the text by a pixel. A transparent border rather than none: the
+       box has to be the same size in both states. */
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    border: 1px solid transparent;
+    border-radius: var(--uix-radius-control);
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .uix-inlineedit-trigger:hover:not(:disabled) {
+    /* The affordance. Without it the pattern is invisible: a value that
+       happens to be clickable is a value nobody clicks. */
+    background: var(--uix-bg-subtle);
+    border-color: var(--uix-border-subtle);
+  }
+
+  .uix-inlineedit-trigger:disabled {
+    cursor: default;
+    color: var(--uix-text-disabled);
+  }
+
+  .uix-inlineedit-trigger:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+  }
+
+  .uix-inlineedit-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .uix-inlineedit-value[data-empty] {
+    color: var(--uix-text-caption);
+    font-style: italic;
+  }
+
+  /* The pencil appears on hover and on focus, and is always in the layout.
+     Revealing it with `display` would shift the text sideways on hover,
+     which is the one thing a dense row cannot afford. */
+  .uix-inlineedit-pencil {
+    flex: none;
+    opacity: 0;
+    color: var(--uix-text-secondary);
+    transition: opacity 120ms ease;
+  }
+
+  .uix-inlineedit-trigger:hover .uix-inlineedit-pencil,
+  .uix-inlineedit-trigger:focus-visible .uix-inlineedit-pencil {
+    opacity: 1;
+  }
+
+  /* Always visible where a pointer cannot hover, because there the reveal
+     never happens and the value looks like plain text. */
+  @media (hover: none) {
+    .uix-inlineedit-pencil {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .uix-inlineedit-pencil {
+      transition: none;
+    }
+  }
+
+  .uix-inlineedit-input {
+    inline-size: 100%;
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
+    border: 1px solid var(--uix-border-strong);
+    border-radius: var(--uix-radius-control);
+    background: var(--uix-bg-surface);
+    color: var(--uix-text-body);
+    font: inherit;
+  }
+
+  .uix-inlineedit-input:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+  }
+
+  .uix-inlineedit-input[aria-invalid] {
+    border-color: var(--uix-status-danger);
+  }
+
+  .uix-inlineedit-error {
+    margin: var(--uix-gap-xs) 0 0;
+    color: var(--uix-status-danger);
+    font-size: var(--uix-font-size-100);
+  }
+}
