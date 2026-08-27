@@ -20,6 +20,35 @@
     min-width: 0;
   }
 
+  /* Caller text decides its own base direction.
+   *
+   * `plaintext` runs the bidi algorithm's first-strong rule over the
+   * content instead of inheriting the page's direction. Under `dir="rtl"`
+   * every one of these slots was being laid out as an RTL paragraph, so:
+   * a character counter of "0 / 40" rendered "40 / 0" — the two numbers
+   * are LTR runs and an RTL paragraph places them right to left, which
+   * reads as none of forty rather than none out of forty — and every
+   * English hint moved its full stop to the far left, ".One line of
+   * guidance".
+   *
+   * `isolate` alone does not fix it: isolation stops a run from
+   * reordering its neighbours, and the base direction inside stays
+   * inherited. `plaintext` is the rule that asks the content.
+   *
+   * Alignment still follows the interface: `text-align: start` is the
+   * page's direction, so an Arabic hint under an Arabic UI sits on the
+   * right and reads right to left, and an English one under the same UI
+   * sits on the right and reads left to right. That is the correct
+   * result for both, and it is what mixed-direction content does all
+   * day in a real product. */
+  .uix-field-hint,
+  .uix-field-error,
+  .uix-field-aside,
+  .uix-field-adornment {
+    unicode-bidi: plaintext;
+    text-align: start;
+  }
+
   .uix-field-aside {
     font-family: var(--uix-font-ui);
     font-size: 0.88rem;

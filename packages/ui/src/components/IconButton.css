@@ -33,7 +33,11 @@
 
   .uix-iconbutton--solid {
     background: var(--uix-accent);
-    color: var(--uix-paper);
+    /* --uix-text-on-accent, not --uix-paper. The two happen to hold the
+       same values, so this rendered correctly and was still wrong: paper
+       is a *surface* role, and a brand re-pointing the colour of text on
+       its accent would have left this behind. */
+    color: var(--uix-text-on-accent);
   }
 
   .uix-iconbutton--solid:hover {

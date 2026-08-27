@@ -19,6 +19,27 @@
     --uix-bg-page: light-dark(var(--uix-grey-25), var(--uix-grey-900));
     --uix-bg-surface: light-dark(var(--uix-white), var(--uix-grey-800));
     --uix-bg-subtle: light-dark(var(--uix-grey-100), var(--uix-grey-700));
+    /* A surface that sits above the one behind it.
+     *
+     * Not the same thing as --uix-bg-surface, and the difference is the
+     * whole point. The three surface roles are named by their place in a
+     * page — page, surface, subtle — and their *lightness* order is not
+     * the same in both themes: on light, surface is the lightest of the
+     * three; on dark, subtle is. So a chip filled with `surface` sitting
+     * on a `subtle` track pops out on light and sinks in on dark.
+     *
+     * Measured: the selected segment of a SegmentedControl and the thumb
+     * of a Switch both did exactly that. In the dark theme the switch's
+     * knob was darker than its own track and all but disappeared, while
+     * the *disabled* knob — a light grey — was more visible than the
+     * enabled one. The state language inverted with the theme.
+     *
+     * This role is defined by the relationship instead: lighter than
+     * --uix-bg-subtle in both themes. A gate in tokens.spec.ts measures
+     * that, because "raised" is a claim about two colours and not about
+     * one. */
+    --uix-bg-raised: light-dark(var(--uix-white), var(--uix-slate-600));
+
     /* The fill of a control that is there and cannot be used.
      *
      * A role rather than an opacity, because an opacity cannot be
@@ -67,6 +88,25 @@
        instead, because those can be measured and this cannot. A gate in
        packages/ui/test/tokens.spec.ts holds the line. */
     --uix-opacity-disabled: 0.55;
+
+    /* The wash behind a modal.
+     *
+     * A role because it is the one surface that must NOT follow the
+     * theme's ramp. Dialog mixed toward --uix-ink, which is the *text* end
+     * of the ramp and flips by design — so in the dark theme the scrim
+     * measured srgb(0.97 0.98 0.99 / 0.45): a 45% near-white wash that
+     * lightened the page instead of dimming it. Nobody had seen it,
+     * because until yesterday the backdrop had no box and painted
+     * nothing at all.
+     *
+     * Stronger in dark than in light. The page is already dark, so a
+     * scrim has less room to work; what separates the dialog is its
+     * surface sitting lighter than the page, and the scrim's job is to
+     * push everything else further down. */
+    --uix-scrim: light-dark(
+      color-mix(in srgb, var(--uix-navy-900) 45%, transparent),
+      color-mix(in srgb, var(--uix-black) 65%, transparent)
+    );
 
     /* The two ends of the neutral ramp for this theme. Components mix
      toward these to shade a fill, so a hover deepens on light and
@@ -279,6 +319,19 @@
 
      Placed last in the layer deliberately: every rule above has the same
      specificity, so this only wins by being later. */
+  /* A reader who asked for less transparency gets an opaque scrim.
+   *
+   * In the token layer, not in Dialog: a component names the role and the
+   * role answers for the reader's settings. Putting the override in
+   * Dialog.css meant naming two palette values from a component, which
+   * the primitive gate refuses — correctly, because that is exactly how a
+   * component ends up unable to follow a brand. */
+  @media (prefers-reduced-transparency: reduce) {
+    :root {
+      --uix-scrim: light-dark(var(--uix-navy-900), var(--uix-black));
+    }
+  }
+
   @media (prefers-contrast: more) {
     :root {
       --uix-border-subtle: var(--uix-border-strong);

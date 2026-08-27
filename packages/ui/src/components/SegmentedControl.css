@@ -28,7 +28,11 @@
   }
 
   .uix-segment[aria-pressed="true"] {
-    background: var(--uix-bg-surface);
+    /* --uix-bg-raised, not --uix-bg-surface. Surface is the lightest of
+       the three surface roles on light and not on dark, so the selected
+       segment stood out on one theme and sank into its track on the
+       other. */
+    background: var(--uix-segment-on-bg, var(--uix-bg-raised));
     color: var(--uix-text-primary);
     box-shadow: var(--uix-elevation-raised);
   }

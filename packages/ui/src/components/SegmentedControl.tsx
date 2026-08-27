@@ -47,6 +47,16 @@ export type SegmentedControlProps = SegmentedControlOwnProps &
  *
  * Exclusive single choice, visible at a glance.
  *
+ * ### Theming
+ *
+ * Override slots for this component. None is declared: each is
+ * referenced with its semantic default inline, so a slot costs
+ * nothing until something fills it. Set one on any ancestor.
+ *
+ * | Token | Default | Meaning |
+ * | --- | --- | --- |
+ * | `--uix-segment-on-bg` | `var(--uix-bg-raised)` | Fill of the selected segment |
+ *
  * Accessibility: `role="group"` with `aria-label`; each option is a
  * native button with `aria-pressed`, so state reaches assistive
  * technology without a hidden radio hack.

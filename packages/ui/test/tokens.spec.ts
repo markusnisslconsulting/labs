@@ -777,3 +777,69 @@ describe("disabled states", () => {
     expect(missing).toEqual([]);
   });
 });
+
+/**
+ * --uix-ink and --uix-paper are for shading, not for painting.
+ *
+ * Both flip with the theme by design: ink is the text end of the ramp,
+ * paper the surface end, and a component mixes *toward* one so a hover
+ * deepens on light and brightens on dark without either being written
+ * twice. Naming one directly as a colour takes that flip as a promise it
+ * never made.
+ *
+ * Three places did it, and one of them shipped a visible defect:
+ *
+ *   - Dialog's scrim was `color-mix(in srgb, var(--uix-ink) 45%,
+ *     transparent)`. Measured in the dark theme: srgb(0.97 0.98 0.99 /
+ *     0.45) — a near-white wash that lightened the page behind a modal
+ *     instead of dimming it. It had never been seen, because until the
+ *     backdrop got a box it painted nothing at all.
+ *   - Badge and IconButton coloured text on their accent fill with
+ *     --uix-paper. That renders correctly, because paper and
+ *     --uix-text-on-accent happen to hold the same two values — and it
+ *     would have stopped rendering correctly the moment a brand
+ *     re-pointed the colour of text on its accent.
+ */
+describe("the neutral ramp", () => {
+  const CSS = "packages/ui/src/components";
+
+  it.each(readdirSync(CSS).filter((f) => f.endsWith(".css")))(
+    "%s mixes toward ink and paper rather than naming them",
+    (file) => {
+      const source = strip(readFileSync(join(CSS, file), "utf8"));
+      for (const declaration of source.matchAll(
+        /(?:^|\n)\s*([\w-]+)\s*:\s*([^;]+);/g,
+      )) {
+        const [, property, value] = declaration;
+        if (!/var\(--uix-(ink|paper)\b/.test(value!)) continue;
+        expect(
+          value!,
+          `${file}: ${property} names --uix-ink or --uix-paper outside a ` +
+            `color-mix(). Both flip with the theme, so the value you get is ` +
+            `whichever end of the ramp the reader happens to be on. Use a ` +
+            `role that says what the thing is: --uix-scrim for a modal ` +
+            `wash, --uix-text-on-accent for text on an accent fill.`,
+        ).toMatch(/color-mix\(/);
+      }
+    },
+  );
+
+  /**
+   * And the scrim darkens in both themes, which is the property the role
+   * exists to hold. Checked as a value rather than as a spelling: the old
+   * declaration named a token and was wrong, so naming the right token is
+   * not what makes it correct.
+   */
+  it("keeps the scrim darker than both page backgrounds", () => {
+    const semantic = readFileSync(join(TOKENS, "semantic.css"), "utf8");
+    const scrim = semantic.match(/--uix-scrim:\s*([\s\S]*?);/)?.[1] ?? "";
+    expect(scrim, "no --uix-scrim role").not.toBe("");
+    // Both arms of the light-dark() mix toward a dark end of the palette.
+    for (const arm of scrim.split("),")) {
+      expect(
+        arm,
+        `a scrim arm mixes toward ${arm.trim()}, which is not a dark value`,
+      ).toMatch(/navy-900|grey-900|black/);
+    }
+  });
+});

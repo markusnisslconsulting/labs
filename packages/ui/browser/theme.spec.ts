@@ -132,3 +132,75 @@ test("a brand's accent flips with the theme without a theme selector", async ({
     "a nested coaching brand kept its light accent under a dark root",
   ).not.toBe(light);
 });
+
+/**
+ * A role named for a relationship has to hold that relationship.
+ *
+ * `--uix-bg-raised` claims to be lighter than the surface behind it in
+ * both themes. That is a claim about two colours, so a name cannot
+ * satisfy it and a stylesheet parser cannot check it — `light-dark()`
+ * reads the used `color-scheme`, which only a browser knows.
+ *
+ * The claim exists because its absence shipped twice. `--uix-bg-surface`
+ * is the lightest of the three surface roles on light and not on dark, so
+ * a chip filled with it on a `subtle` track rose on one theme and sank on
+ * the other: the selected segment of a SegmentedControl, and the thumb of
+ * a Switch. In the dark theme the switch's knob was darker than its own
+ * track and all but vanished, while the disabled knob — a light grey —
+ * was more visible than the enabled one.
+ */
+test("a raised surface is lighter than the one behind it, in both themes", async ({
+  page,
+}) => {
+  await story(page);
+
+  const measured = await page.evaluate(async () => {
+    const luminance = (colour: string) => {
+      const [r, g, b] = (colour.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+      const linear = [r!, g!, b!].map((v) => {
+        const s = v / 255;
+        return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * linear[0]! + 0.7152 * linear[1]! + 0.0722 * linear[2]!;
+    };
+
+    const read = async (theme: string) => {
+      document.documentElement.setAttribute("data-theme", theme);
+      await new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      );
+      const probe = document.createElement("div");
+      document.body.appendChild(probe);
+      const of = (token: string) => {
+        probe.style.background = `var(${token})`;
+        return luminance(getComputedStyle(probe).backgroundColor);
+      };
+      const out = {
+        raised: of("--uix-bg-raised"),
+        subtle: of("--uix-bg-subtle"),
+        surface: of("--uix-bg-surface"),
+      };
+      probe.remove();
+      return out;
+    };
+
+    return { light: await read("light"), dark: await read("dark") };
+  });
+
+  for (const theme of ["light", "dark"] as const) {
+    const { raised, subtle } = measured[theme];
+    expect(
+      raised,
+      `in ${theme}, --uix-bg-raised (luminance ${raised.toFixed(3)}) is not ` +
+        `lighter than --uix-bg-subtle (${subtle.toFixed(3)}), so anything ` +
+        `filled with it sinks into its own track`,
+    ).toBeGreaterThan(subtle);
+  }
+
+  /* And the inversion this role was added to fix, recorded as the reason:
+     --uix-bg-surface satisfies the same comparison on light and fails it
+     on dark. If that ever stops being true the role may be redundant, and
+     this assertion is what would say so. */
+  expect(measured.light.surface).toBeGreaterThan(measured.light.subtle);
+  expect(measured.dark.surface).toBeLessThan(measured.dark.subtle);
+});

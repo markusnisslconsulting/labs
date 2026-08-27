@@ -12,6 +12,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: ".",
+  testMatch: "sweep.spec.ts",
   outputDir: "./.sweep-output",
   workers: 6,
   /* One retry, because this is a camera and not a gate. Twelve workers

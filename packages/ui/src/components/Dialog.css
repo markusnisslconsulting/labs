@@ -19,19 +19,16 @@
   .uix-dialog-backdrop {
     position: fixed;
     inset: 0;
-    background: color-mix(in srgb, var(--uix-ink) 45%, transparent);
+    background: var(--uix-scrim);
     z-index: var(--uix-z-modal);
   }
 
-  /* Forced colours drops the fill, so the scrim disappears and the dialog
-     floats on a page that still looks reachable. A backdrop cannot be
-     drawn in that mode; the dialog's own border is what separates it, and
-     it is declared at the end of this file. */
-  @media (prefers-reduced-transparency: reduce) {
-    .uix-dialog-backdrop {
-      background: var(--uix-ink);
-    }
-  }
+  /* No reduced-transparency rule here. A reader who asked for less
+     transparency gets an opaque scrim, and that decision belongs to the
+     --uix-scrim role in the token layer rather than to this component —
+     the same place prefers-contrast: more already lives. The first draft
+     put it here and named two primitives, which the primitive gate
+     caught. */
 
   .uix-dialog {
     position: fixed;

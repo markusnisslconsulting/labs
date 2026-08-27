@@ -198,6 +198,17 @@
         }
       }
     },
+    "black": {
+      "$type": "color",
+      "$value": "#000000",
+      "$description": "Pure black; the scrim needs a value darker than the darkest surface",
+      "$extensions": {
+        "com.markusnissl.labs": {
+          "cssVariable": "--uix-black",
+          "tier": "primitive"
+        }
+      }
+    },
     "green": {
       "400": {
         "$type": "color",
@@ -716,6 +727,17 @@
           }
         }
       },
+      "raised": {
+        "$type": "color",
+        "$value": "{primitive.white}",
+        "$description": "A surface above the one behind it; lighter than bg-subtle in both themes",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-bg-raised",
+            "tier": "semantic"
+          }
+        }
+      },
       "disabled": {
         "$type": "color",
         "$value": "{primitive.grey.100}",
@@ -967,6 +989,17 @@
             "cssVariable": "--uix-gap-2xl",
             "tier": "semantic"
           }
+        }
+      }
+    },
+    "scrim": {
+      "$type": "color",
+      "$value": "color-mix(in srgb, {primitive.navy.900} 45%, transparent)",
+      "$description": "The wash behind a modal; always darkens, in both themes",
+      "$extensions": {
+        "com.markusnissl.labs": {
+          "cssVariable": "--uix-scrim",
+          "tier": "semantic"
         }
       }
     },
@@ -1717,7 +1750,7 @@
       },
       "thumb-bg": {
         "$type": "color",
-        "$value": "{semantic.bg.surface}",
+        "$value": "{semantic.bg.raised}",
         "$description": "Switch knob",
         "$extensions": {
           "com.markusnissl.labs": {
@@ -1733,6 +1766,19 @@
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-switch-travel",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "segment": {
+      "on-bg": {
+        "$type": "color",
+        "$value": "{semantic.bg.raised}",
+        "$description": "Fill of the selected segment",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-segment-on-bg",
             "tier": "component"
           }
         }

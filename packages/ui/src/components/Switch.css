@@ -74,7 +74,10 @@
     width: 1rem;
     height: 1rem;
     border-radius: var(--uix-radius-pill);
-    background: var(--uix-switch-thumb-bg, var(--uix-bg-surface));
+    /* Raised, not surface: on dark, surface is darker than the track, so
+       the knob went missing — and the disabled knob, a light grey, was
+       more visible than the enabled one. */
+    background: var(--uix-switch-thumb-bg, var(--uix-bg-raised));
     box-shadow: var(--uix-elevation-raised);
     transition: transform var(--uix-duration-fast) var(--uix-ease-out);
   }
