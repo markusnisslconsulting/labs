@@ -54,6 +54,27 @@ cut at the first release.
   the registry knows every token's type, so it is exact rather than a guess
   at names.
 
+- **AvatarGroup** — faces overlap by a fifth instead of a third, so an
+  avatar no longer covers the initials underneath it, and the "+2" counter is
+  a circle the same size as the faces beside it.
+
+  Both came from the same mistake: every geometric value in the stylesheet
+  was a fraction of `--uix-control-sm`, `-md` or `-lg`. Those are control
+  heights — what a button is tall — while an avatar's diameter is set in
+  `Avatar.css` as a plain width. They agree at `md` by coincidence, both
+  2.5rem, and disagree at the other two: 2rem against 1.6rem at `sm`, 3rem
+  against 3.5rem at `lg`. So the overlap was a fifth of the wrong number, and
+  the counter was 32px beside 25.6px faces at `sm` and 48px beside 56px at
+  `lg`.
+
+  The counter's size at `sm` and `lg` was never in a story, which is why
+  nothing had drawn it. Both are in the matrix now.
+
+  A fifth rather than a quarter because `sm` sets the limit: measured at 3x,
+  a pair of initials ends 19.0px into a 25.6px circle and coverage begins at
+  `face - overlap - 2`, so the overlap can be at most 5.3px there — 20%. At
+  `md` and `lg` the limits are 24% and 26%.
+
 - **Select** — the value now sits on the middle of its own field. Under
   `appearance: base-select` the select _is_ the button and the button is a
   flex container; with a fixed `block-size` and no `padding-block` its

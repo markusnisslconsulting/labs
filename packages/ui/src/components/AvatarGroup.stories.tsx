@@ -41,6 +41,12 @@ export const Matrix: StoryObj = {
       <AvatarGroup label="Reviewers" people={PEOPLE.slice(0, 3)} size="lg" />
       <AvatarGroup label="Attendees" people={PEOPLE} />
       <AvatarGroup label="Attendees" people={PEOPLE} max={2} />
+      {/* The counter at every size, not only the default. It took a control
+          height rather than the face's diameter, so it was a 32px circle
+          beside 25.6px faces at `sm` and a 48px one beside 56px faces at
+          `lg` — and neither was in a story, so nothing had ever drawn it. */}
+      <AvatarGroup label="Attendees" people={PEOPLE} max={2} size="sm" />
+      <AvatarGroup label="Attendees" people={PEOPLE} max={2} size="lg" />
       <AvatarGroup label="Assigned to" people={PEOPLE.slice(0, 1)} />
     </div>
   ),

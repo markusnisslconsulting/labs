@@ -329,6 +329,86 @@ test("a virtualised table is bounded in the DOM and honest in the tree", async (
  * overlapping means and is true at every size without hardcoding the
  * offset.
  */
+/**
+ * An overlapping avatar may not cover the initials underneath it.
+ *
+ * The overlap was a third of the face. Measured at 3x, a pair of initials
+ * ends 28.3px into a 40px circle, and a later sibling — plus its 2px ring —
+ * begins covering the earlier one at `face - overlap - 2`. At a third that
+ * is 24.7px, so the second letter lost its right stem: "AL" rendered as
+ * "Al", "GH" as "G|". A fifth puts coverage at 30px and nothing legible is
+ * lost. The tightest case is `sm`, where the type scale has not shrunk as
+ * fast as the diameter, so it sets the fraction for every size.
+ *
+ * Asserted as the geometry rather than the glyphs. Where a letter ends is a
+ * pixel question and lives in `visual/` and Chromatic; that the next face
+ * starts at four fifths of this one is arithmetic a page can answer, and it
+ * is the condition the pixel measurement produced.
+ */
+test("an avatar starts no earlier than four fifths of the one before it", async ({
+  page,
+}) => {
+  await openStory(page, "components-avatargroup--matrix");
+
+  const groups = await page.locator(".uix-avatargroup").evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const items = [...node.querySelectorAll(".uix-avatargroup-item")];
+      const more = node.querySelector(".uix-avatargroup-more");
+      const first = items[0]!.getBoundingClientRect();
+      return {
+        size: node.getAttribute("data-size") ?? "md",
+        face: first.width,
+        step:
+          items.length > 1
+            ? items[1]!.getBoundingClientRect().left - first.left
+            : null,
+        counter: more ? more.getBoundingClientRect().width : null,
+      };
+    }),
+  );
+
+  expect(groups.length, "no avatar groups on the page").toBeGreaterThan(3);
+
+  for (const group of groups) {
+    if (group.step !== null) {
+      expect(
+        group.step / group.face,
+        `${group.size}: a face starts ${(group.step / group.face) * 100}% ` +
+          `into the one before it, so it covers the initials`,
+      ).toBeGreaterThanOrEqual(0.79);
+      /* And they still overlap: this is a stack of faces, not a row. */
+      expect(
+        group.step / group.face,
+        `${group.size}: no overlap left`,
+      ).toBeLessThan(1);
+    }
+
+    if (group.counter !== null) {
+      /* The counter is one of the circles. It took a control height rather
+         than the face's diameter, which matched at `md` and nowhere else. */
+      expect(
+        group.counter,
+        `${group.size}: the counter is ${group.counter}px beside ` +
+          `${group.face}px faces`,
+      ).toBeCloseTo(group.face, 1);
+    }
+  }
+
+  /* The loop proves nothing about the size-specific bug unless the matrix
+     shows more than one size, and nothing about the counter unless one has
+     a counter at a size other than the default. */
+  const sizes = new Set(groups.map((group) => group.size));
+  expect(sizes.size, "the matrix shows one size").toBeGreaterThan(1);
+  const counterSizes = new Set(
+    groups.filter((group) => group.counter !== null).map((group) => group.size),
+  );
+  expect(
+    counterSizes.size,
+    "every group with a counter is the same size, so a counter sized from " +
+      "the wrong token would pass",
+  ).toBeGreaterThan(1);
+});
+
 test("every avatar overlaps the one before it, counter included", async ({
   page,
 }) => {

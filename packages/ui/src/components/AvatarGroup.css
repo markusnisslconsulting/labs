@@ -4,13 +4,36 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
+  /* The face's diameter, per size, and the numbers are `Avatar.css`'s own
+     `width`/`height` for the same `data-size`.
+     
+     Everything geometric here used to be a fraction of `--uix-control-sm`,
+     `-md` or `-lg` — control *heights*, which are what a button is tall, not
+     what an avatar is wide. They agree at `md` by coincidence (both 2.5rem)
+     and disagree at the other two: 2rem against 1.6rem at `sm`, 3rem against
+     3.5rem at `lg`. So the overlap was a fifth of the wrong quantity, 25%
+     too much at `sm` and 14% too little at `lg`.
+     
+     Duplicated from `Avatar.css` rather than shared, because a component
+     stylesheet here may not import another's. `packages/ui/test/tokens.spec.ts`
+     fails when the two sets of numbers stop agreeing, which is the part that
+     would otherwise rot. */
   .uix-avatargroup {
+    --uix-avatargroup-face: 1.6rem;
     display: inline-flex;
     align-items: center;
     /* Logical, so the overlap runs the reading direction. A physical
        margin-left here would stack the faces the wrong way round in RTL,
        with the first person hidden behind the second. */
     flex-direction: row;
+  }
+
+  .uix-avatargroup[data-size="md"] {
+    --uix-avatargroup-face: 2.5rem;
+  }
+
+  .uix-avatargroup[data-size="lg"] {
+    --uix-avatargroup-face: 3.5rem;
   }
 
   .uix-avatargroup-item {
@@ -32,16 +55,44 @@
      and invisible to every assertion here. A rule whose correctness depends
      on no other element being between is a rule waiting for the next
      element. */
+  /* A fifth of the face, and the fifth is measured rather than chosen.
+     
+     A later sibling paints over an earlier one, and its 2px ring paints too,
+     so the next avatar starts covering this one at `size - overlap - 2`. The
+     initials must end before that. Measured at 3x, where they sit inside the
+     circle and what the limit on the overlap therefore is:
+     
+       size   initials span   may overlap
+       26px   6.0 - 18.7      5.3px   (20%)
+       40px   11.3 - 28.3     9.7px   (24%)
+       56px   16.3 - 39.7     14.3px  (26%)
+     
+     A third of the face was the original, and at 40px that covers from
+     24.7px into a pair of initials ending at 28.3px: enough to take the
+     right stem off the second letter, so "AL" rendered as "Al" and "GH" as
+     "G|". One number for every size, and the smallest sets it, because a
+     small circle holds proportionally the largest text — the type scale does
+     not shrink as fast as the diameter.
+     
+     Faces are the usual content and a photograph does not mind losing its
+     right edge. Initials are the fallback, they are what a group shows
+     before anyone has uploaded anything, and they are the case that has to
+     survive. */
   .uix-avatargroup-item:not(:first-child) {
-    margin-inline-start: calc(var(--uix-control-sm) / -3);
+    margin-inline-start: calc(var(--uix-avatargroup-face) / -5);
   }
 
   .uix-avatargroup-more {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: var(--uix-control-sm);
-    block-size: var(--uix-control-sm);
+    /* The face's diameter, so the counter is a circle the same size as the
+       people beside it. It used to take a control height, which matched at
+       `md` and nowhere else: at `sm` the "+2" was 32px against 25.6px faces
+       and at `lg` it was 48px against 56px. Neither case is in a story, so
+       nothing had ever drawn it. */
+    inline-size: var(--uix-avatargroup-face);
+    block-size: var(--uix-avatargroup-face);
     background: var(--uix-bg-subtle);
     color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-100);
@@ -50,23 +101,8 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .uix-avatargroup[data-size="md"] .uix-avatargroup-more {
-    inline-size: var(--uix-control-md);
-    block-size: var(--uix-control-md);
-    font-size: var(--uix-font-size-200);
-  }
-
+  .uix-avatargroup[data-size="md"] .uix-avatargroup-more,
   .uix-avatargroup[data-size="lg"] .uix-avatargroup-more {
-    inline-size: var(--uix-control-lg);
-    block-size: var(--uix-control-lg);
     font-size: var(--uix-font-size-200);
-  }
-
-  .uix-avatargroup[data-size="md"] .uix-avatargroup-item:not(:first-child) {
-    margin-inline-start: calc(var(--uix-control-md) / -3);
-  }
-
-  .uix-avatargroup[data-size="lg"] .uix-avatargroup-item:not(:first-child) {
-    margin-inline-start: calc(var(--uix-control-lg) / -3);
   }
 }

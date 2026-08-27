@@ -953,3 +953,92 @@ describe("colour properties name colour tokens", () => {
     expect(wrong).toEqual([]);
   });
 });
+
+/**
+ * `AvatarGroup`'s idea of how big a face is matches `Avatar`'s.
+ *
+ * Everything geometric in `AvatarGroup.css` used to be a fraction of
+ * `--uix-control-sm`, `-md` or `-lg`. Those are control *heights* — what a
+ * button is tall — and an avatar's diameter is set in `Avatar.css` as a plain
+ * `width`. They agree at `md` by coincidence, both 2.5rem, and disagree at
+ * the other two: 2rem against 1.6rem at `sm`, 3rem against 3.5rem at `lg`.
+ *
+ * So the overlap was a fifth of the wrong quantity, and the "+2" counter was
+ * a circle of the wrong size — 32px beside 25.6px faces at `sm`, 48px beside
+ * 56px at `lg`. Neither was in a story, so nothing had ever drawn it.
+ *
+ * The numbers are duplicated because a component stylesheet here may not
+ * import another's. This is the check that keeps the duplicate honest; it is
+ * the whole reason duplicating was acceptable.
+ */
+describe("avatar sizes agree across the two components", () => {
+  const read = (file: string) =>
+    componentCss.find((entry) => entry.file === file)?.source ?? "";
+
+  it("has a face diameter per size, matching Avatar's own", () => {
+    const avatar = strip(read("Avatar.css"));
+    const group = strip(read("AvatarGroup.css"));
+    expect(avatar, "Avatar.css not found").not.toBe("");
+    expect(group, "AvatarGroup.css not found").not.toBe("");
+
+    /* Avatar's diameters, from the rule that sets them. */
+    const diameters = new Map<string, string>();
+    for (const [, size, width] of avatar.matchAll(
+      /\.uix-avatar\[data-size="(\w+)"\][^{]*\{[^}]*?width:\s*([^;]+);/g,
+    )) {
+      diameters.set(size!, width!.trim());
+    }
+    expect(
+      [...diameters.keys()].sort(),
+      "Avatar.css no longer sets a width per size, so this check has stopped " +
+        "checking",
+    ).toEqual(["lg", "md", "sm"]);
+
+    /* The group's map. `sm` is the unqualified value, the same way the
+       component's own rules are ordered. */
+    const faces = new Map<string, string>();
+    const base =
+      /\.uix-avatargroup\s*\{[^}]*?--uix-avatargroup-face:\s*([^;]+);/.exec(
+        group,
+      );
+    if (base) faces.set("sm", base[1]!.trim());
+    for (const [, size, value] of group.matchAll(
+      /\.uix-avatargroup\[data-size="(\w+)"\]\s*\{[^}]*?--uix-avatargroup-face:\s*([^;]+);/g,
+    )) {
+      faces.set(size!, value!.trim());
+    }
+
+    const wrong: string[] = [];
+    for (const [size, width] of diameters) {
+      const face = faces.get(size);
+      if (face !== width) {
+        wrong.push(
+          `${size}: Avatar is ${width}, AvatarGroup thinks ${face ?? "nothing"}`,
+        );
+      }
+    }
+    expect(
+      wrong,
+      "the two components disagree about how wide an avatar is, so the " +
+        "overlap is a fraction of the wrong number and the counter is the " +
+        "wrong size",
+    ).toEqual([]);
+  });
+
+  it("no longer takes its geometry from a control height", () => {
+    /* The other direction: the fix is only in force while nothing here goes
+       back to the token that caused it. A control height is a legitimate
+       thing for this file to mention — it just cannot be what a face is
+       measured by. */
+    const group = strip(read("AvatarGroup.css"));
+    const offenders = [
+      ...group.matchAll(
+        /(margin-inline-start|inline-size|block-size):\s*[^;]*--uix-control-(sm|md|lg)/g,
+      ),
+    ].map((hit) => hit[0]);
+    expect(
+      offenders,
+      "an avatar's geometry is being taken from a control height again",
+    ).toEqual([]);
+  });
+});
