@@ -71,6 +71,67 @@ const excludesStories = (target: string) =>
 
 describe("nx cache inputs", () => {
   /**
+   * Every project declares the targets the gate list runs.
+   *
+   * `nx run-many -t lint` runs lint for the projects that *have* a lint
+   * target and says nothing about the ones that do not. So a new package
+   * arrives unlinted and the run stays green — which is what happened to
+   * `ui-mcp`: added without a lint target, it carried two
+   * `@nx/enforce-module-boundaries` errors through three green CI runs. One
+   * was real. Its tests reached into `../../ui/src`, which is a dependency on
+   * another package's file layout rather than on its published surface, and
+   * the rule that exists to catch exactly that had never been pointed at the
+   * file.
+   *
+   * `test` is exemptible with a reason and the other two are not: a project
+   * can legitimately have nothing to unit-test, and cannot legitimately be
+   * unchecked.
+   */
+  const NO_UNIT_TESTS: Record<string, string> = {
+    site:
+      "the site's checks are end-to-end: `site:a11y` drives the built pages " +
+      "with Playwright and axe. A unit test over a page that is mostly " +
+      "composition would assert the composition.",
+  };
+
+  it("every project declares lint and typecheck, and test or a reason", () => {
+    const roots = ["packages", "apps"];
+    const missing: string[] = [];
+
+    for (const root of roots) {
+      if (!existsSync(root)) continue;
+      for (const entry of readdirSync(root)) {
+        const config = join(root, entry, "project.json");
+        if (!existsSync(config)) continue;
+        const project = JSON.parse(readFileSync(config, "utf8")) as {
+          name?: string;
+          targets: Record<string, unknown>;
+        };
+        const targets = new Set(Object.keys(project.targets));
+        const name = project.name ?? entry;
+
+        for (const required of ["lint", "typecheck"]) {
+          if (!targets.has(required)) {
+            missing.push(`${name} has no ${required} target`);
+          }
+        }
+        if (!targets.has("test") && !NO_UNIT_TESTS[name]) {
+          missing.push(
+            `${name} has no test target and no entry in NO_UNIT_TESTS`,
+          );
+        }
+      }
+    }
+
+    expect(
+      missing,
+      "nx run-many runs a target for the projects that have it and reports " +
+        "nothing about the projects that do not, so this is the only place " +
+        "an unchecked project shows up",
+    ).toEqual([]);
+  });
+
+  /**
    * A cached test declares every workspace file it reads.
    *
    * The general form of the two defects this file already records, and it

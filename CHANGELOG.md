@@ -241,6 +241,14 @@ window in which this section matters.
 
 ### internal
 
+- **Workspace configuration** — every project declares `lint` and
+  `typecheck`, checked by a gate. `nx run-many` runs a target for the projects
+  that have it and reports nothing about the ones that do not, so `ui-mcp`
+  arrived unlinted and carried a real boundary violation through three green
+  CI runs.
+- **KEYBOARD_MAP** — exported from the package root, beside `allTokens`. Both
+  are machine-readable contract data and a consumer had no way to reach the
+  keyboard map except by importing another package's source file.
 - **`@labs/ui-mcp`** — an MCP server over the inventory, the keyboard map, the
   token registry and the API surface. Four tools and one resource over stdio;
   it answers only from files that already have a gate behind them, which is

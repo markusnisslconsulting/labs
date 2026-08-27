@@ -6,6 +6,7 @@ import { Badge, type BadgeProps } from "./components/Badge";
 import { Banner, type BannerProps } from "./components/Banner";
 import { Breadcrumb, type BreadcrumbItem } from "./components/Breadcrumb";
 import { Button, type ButtonProps } from "./components/Button";
+import { KEYBOARD_MAP, type KeyboardRow } from "./keyboard.map";
 import { LabsStrings, defaultStrings, useStrings } from "./i18n";
 import { ToastProvider, useToast } from "./toast";
 import {
@@ -97,6 +98,8 @@ export {
   Alert,
   type AlertProps,
   allTokens,
+  KEYBOARD_MAP,
+  type KeyboardRow,
   Avatar,
   type AvatarProps,
   AvatarGroup,

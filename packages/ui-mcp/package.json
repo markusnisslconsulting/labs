@@ -5,5 +5,8 @@
   "type": "module",
   "bin": {
     "labs-ui-mcp": "./src/server.ts"
+  },
+  "dependencies": {
+    "@labs/ui": "workspace:*"
   }
 }

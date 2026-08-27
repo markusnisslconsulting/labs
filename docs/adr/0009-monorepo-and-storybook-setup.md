@@ -104,6 +104,21 @@ design system that depends on a product is no longer one.
   literal read calls finds `nx.json` and misses exactly the three that
   mattered.
 
+- **Every project declares lint and typecheck.** `nx run-many -t lint` runs
+  the target for the projects that have it and says nothing about the ones
+  that do not, so a package can arrive unlinted and the run stays green.
+  `ui-mcp` did: added without a lint target, it carried two
+  `@nx/enforce-module-boundaries` errors through three green CI runs, and one
+  was real — its tests reached into `../../ui/src`, a dependency on another
+  package's file layout rather than on its published surface. The rule that
+  exists to catch exactly that had never been pointed at the file.
+
+  Fixing it moved `KEYBOARD_MAP` into the barrel, where it belongs beside
+  `allTokens` for the same reason, and made the dependency explicit in
+  `package.json`. `test` stays exemptible with a stated reason, because a
+  project can legitimately have nothing to unit-test and cannot legitimately
+  be unchecked.
+
 - **`targetDefaults.*.dependsOn: ["^build"]`** — typecheck and Storybook
   need the built dependencies, not their sources.
 - **`cache: true` everywhere except `serve` and `storybook`.** A gate

@@ -15,8 +15,16 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { KEYBOARD_MAP } from "../../ui/src/keyboard.map.ts";
-import { allTokens } from "../../ui/src/tokens.registry.ts";
+/* Through the package's entry point, not by reaching into its source.
+   `@nx/enforce-module-boundaries` refuses a relative path across projects,
+   and it was right to: an import that walks into `../../ui/src` depends on
+   a file layout rather than on a published surface, so moving a file inside
+   `@labs/ui` would break a test in a different package.
+
+   It went unnoticed because this package had no `lint` target when it was
+   added — every other package declares one, so `nx run-many -t lint` simply
+   skipped it and the two errors sat there through three green CI runs. */
+import { KEYBOARD_MAP, allTokens } from "@labs/ui";
 import {
   loadApiSurface,
   loadInventory,

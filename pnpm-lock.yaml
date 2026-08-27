@@ -176,7 +176,11 @@ importers:
         specifier: '>=19'
         version: 19.2.8(react@19.2.8)
 
-  packages/ui-mcp: {}
+  packages/ui-mcp:
+    dependencies:
+      '@labs/ui':
+        specifier: workspace:*
+        version: link:../ui
 
   packages/undo-machine: {}
 
