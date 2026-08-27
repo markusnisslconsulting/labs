@@ -95,30 +95,33 @@ export function AvatarGroup({
       aria-label={label}
       {...rest}
     >
-      {shown.map((entry) =>
-        person ? (
-          <div key={entry.name} className="uix-avatargroup-item">
-            {person(entry)}
-          </div>
-        ) : (
-          <Avatar
-            key={entry.name}
-            className="uix-avatargroup-item"
-            name={entry.name}
-            src={entry.src}
-            size={size}
-            /* Decorative, and the group carries the name. Otherwise a
-               reader says "Ada Lovelace, image" for each one, and the word
-               "image" five times is the noise that makes people turn a
-               page off. */
-            decorative
-          />
-        ),
-      )}
+      {/* One element per person, holding the face and that person's name.
+          Two separate maps put every hidden name *after* every avatar, which
+          broke the overlap: the rule below is a sibling selector, and with
+          five name spans sitting between the last avatar and the counter the
+          counter matched nothing and sat a full gap away. Visible in a
+          screenshot and invisible to every assertion in this repository.
+
+          It also reads better. A block of five names after five silent
+          images is not the same thing as five named faces. */}
       {shown.map((entry) => (
-        <span key={`${entry.name}-name`} className="uix-visually-hidden">
-          {entry.name}
-        </span>
+        <div key={entry.name} className="uix-avatargroup-item">
+          {person ? (
+            person(entry)
+          ) : (
+            <Avatar
+              name={entry.name}
+              src={entry.src}
+              size={size}
+              /* Decorative, because the name is beside it. Otherwise a
+                 reader says "Ada Lovelace, image" for each one, and the
+                 word "image" five times is the noise that makes people turn
+                 a page off. */
+              decorative
+            />
+          )}
+          <span className="uix-visually-hidden">{entry.name}</span>
+        </div>
       ))}
       {hidden.length ? (
         <span

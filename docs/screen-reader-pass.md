@@ -2,10 +2,10 @@
 
 What to check, in order, and how to tell a problem when you hear one.
 
-The matrix in `packages/ui/src/audit/screen-readers.ts` has 147 cells.
+The matrix in `packages/ui/src/audit/screen-readers.ts` has 150 cells.
 Those are not the task. The task is this note: **seven components, one
 pairing, about forty-five minutes.** After it you will know more about this
-library than any automated run can tell you, and the remaining 126 cells
+library than any automated run can tell you, and the remaining 129 cells
 are legwork that can be shared out.
 
 ## Setup

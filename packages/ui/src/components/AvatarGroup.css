@@ -14,6 +14,10 @@
   }
 
   .uix-avatargroup-item {
+    /* A wrapper around the face now rather than the face itself, so it has
+       to take the face's shape — a block wrapper would square off the ring
+       below. */
+    display: inline-flex;
     /* The ring is what makes overlapping circles read as separate faces.
        Drawn in the page colour rather than left as a gap, because a gap
        cannot exist between two shapes that overlap. */
@@ -21,7 +25,14 @@
     border-radius: var(--uix-radius-pill);
   }
 
-  .uix-avatargroup-item + .uix-avatargroup-item {
+  /* `:not(:first-child)`, not a sibling selector. The `+` form was correct
+     only while nothing sat between two items, and something did: the
+     counter followed a run of visually hidden names, matched nothing, lost
+     its overlap and sat a full gap from the faces. Visible in a screenshot
+     and invisible to every assertion here. A rule whose correctness depends
+     on no other element being between is a rule waiting for the next
+     element. */
+  .uix-avatargroup-item:not(:first-child) {
     margin-inline-start: calc(var(--uix-control-sm) / -3);
   }
 
@@ -51,15 +62,11 @@
     font-size: var(--uix-font-size-200);
   }
 
-  .uix-avatargroup[data-size="md"]
-    .uix-avatargroup-item
-    + .uix-avatargroup-item {
+  .uix-avatargroup[data-size="md"] .uix-avatargroup-item:not(:first-child) {
     margin-inline-start: calc(var(--uix-control-md) / -3);
   }
 
-  .uix-avatargroup[data-size="lg"]
-    .uix-avatargroup-item
-    + .uix-avatargroup-item {
+  .uix-avatargroup[data-size="lg"] .uix-avatargroup-item:not(:first-child) {
     margin-inline-start: calc(var(--uix-control-lg) / -3);
   }
 }

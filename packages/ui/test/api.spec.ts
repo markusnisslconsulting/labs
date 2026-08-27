@@ -76,6 +76,9 @@ const SELF_CONTAINED: Record<string, string> = {
   "Slider.tsx": "a track and its label",
   "SearchInput.tsx": "a single input",
   "TextField.tsx": "one field; prefix and suffix are its slots",
+  "Textarea.tsx":
+    "one field; the counter is derived from maxLength and the box's own " +
+    "height is the content",
   "NumberField.tsx": "one field and its two steppers",
   "Pagination.tsx": "derived entirely from pageCount and page",
   "Toaster.tsx": "renders the toasts it is given",

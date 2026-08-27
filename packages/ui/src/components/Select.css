@@ -14,4 +14,105 @@
     padding-inline-end: var(--uix-gap-sm);
     cursor: pointer;
   }
+
+  /* ------------------------------------------------ the popup, where we may
+   *
+   * Markus: "menu is not using full width of select box and uses browser
+   * native options, not sure if we want it like that". Both halves were true
+   * and, until recently, unfixable: the popup of a native `<select>` is the
+   * operating system's, macOS sizes it to its content, and no CSS reaches
+   * inside it.
+   *
+   * `appearance: base-select` changes that. It keeps the element a real
+   * `<select>` — form participation, typeahead, the mobile picker where the
+   * feature is unsupported — and moves the popup into the page, where it
+   * takes the field's width and this system's tokens. Measured in the
+   * Chromium Playwright ships (151): `CSS.supports("appearance",
+   * "base-select")` is true and `::picker(select)` parses.
+   *
+   * Behind `@supports`, so a browser without it renders exactly what it
+   * renders today rather than something half-styled. Nothing is traded away
+   * for this: it is the same element either way. */
+  @supports (appearance: base-select) {
+    .uix-select,
+    .uix-select::picker(select) {
+      appearance: base-select;
+    }
+
+    /* `base-select` restyles the button too, and its own box is taller than
+       a field in this system. The height comes from the control scale, the
+       same as every other field. */
+    .uix-select {
+      block-size: var(--uix-control-md);
+      min-block-size: 0;
+      padding-block: 0;
+    }
+
+    .uix-select::picker(select) {
+      /* Themed, not sized — and the second half is a limit rather than an
+         omission. Markus asked for two things: stop using the browser's
+         option list, and make the menu the width of the field. The first is
+         what everything in this block does. The second is not possible
+         today: measured against Chromium 151, `inline-size`,
+         `min-inline-size`, `anchor-size(width)`, `anchor-size(self-inline)`
+         and a named `anchor-size(--name width)` all produce byte-identical
+         layout, so author sizing on this pseudo-element is not honoured yet
+         while background, border, radius and padding are.
+
+         A per-instance `anchor-name` was written to make the named form
+         work and then removed, because it did nothing. Dead CSS that looks
+         load-bearing is worse than none.
+
+         `Combobox` renders its own listbox and takes the width of its
+         field. That is the answer when the popup's geometry matters. */
+      box-sizing: border-box;
+      margin-block-start: var(--uix-gap-xs);
+      padding: var(--uix-gap-xs);
+      border: 1px solid var(--uix-border-subtle);
+      border-radius: var(--uix-radius-container);
+      background: var(--uix-bg-surface);
+      box-shadow: var(--uix-elevation-overlay);
+    }
+
+    .uix-select option {
+      display: flex;
+      align-items: center;
+      gap: var(--uix-gap-sm);
+      padding: var(--uix-gap-xs) var(--uix-gap-sm);
+      border-radius: var(--uix-radius-inset);
+      color: var(--uix-text-body);
+      font: inherit;
+    }
+
+    /* `:checked` and the highlight are separate states here, the same as in
+       Combobox: one is what is chosen, the other is where the keyboard is. */
+    .uix-select option:checked {
+      color: var(--uix-text-heading);
+    }
+
+    .uix-select option:hover,
+    .uix-select option:focus {
+      background: var(--uix-accent-soft);
+      color: var(--uix-text-heading);
+    }
+
+    .uix-select option:disabled {
+      color: var(--uix-text-disabled);
+    }
+
+    /* Our chevron is a sibling span and stays the one on screen, so the
+       popup's own icon would be a second arrow beside it — which is the
+       defect Markus reported on Combobox earlier in this session. */
+    .uix-select::picker-icon {
+      display: none;
+    }
+
+    /* The UA draws a checkmark column in front of every option once the
+       popup is ours. Left in place: it is the only thing that says which
+       option is current, since colour alone would be 1.4.1. */
+    .uix-select option::checkmark {
+      order: -1;
+      color: var(--uix-accent);
+    }
+  }
 }

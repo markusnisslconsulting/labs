@@ -1500,7 +1500,7 @@
       "slots": [],
       "status": "stable",
       "useFor": "one value from a short fixed list",
-      "insteadWhen": "the list is long enough that someone would rather type (Combobox)",
+      "insteadWhen": "someone would rather type than scan (`Combobox`), or when the popup itself has to be yours — grouped rows, a second line per option, a checkmark, anything drawn",
       "accessibility": "a native `select`, so the picker, the typeahead, the keyboard and the form participation are the platform's. The chevron is `aria-hidden` decoration over the real control rather than a replacement for it, and the hint is linked with `aria-describedby` rather than left floating near the field"
     },
     {
@@ -1954,6 +1954,51 @@
       "useFor": "any single-line text entry",
       "insteadWhen": "the field queries a collection (SearchInput)",
       "accessibility": "`label` is bound with `for`; hint and error are linked through `aria-describedby`; an error also sets `aria-invalid`, so the state reaches assistive technology without relying on the red border"
+    },
+    {
+      "component": "Textarea",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "A node, so a label can carry a required marker or a hint link."
+        },
+        { "name": "hint", "type": "ReactNode", "required": false },
+        { "name": "error", "type": "ReactNode", "required": false },
+        { "name": "required", "type": "boolean", "required": false },
+        { "name": "hideLabel", "type": "boolean", "required": false },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "doc": "The form field name, so a `Form` can route an error here."
+        },
+        {
+          "name": "autoGrow",
+          "type": "boolean",
+          "required": false,
+          "doc": "Grow with the text instead of scrolling inside a fixed box."
+        },
+        {
+          "name": "maxRows",
+          "type": "number",
+          "required": false,
+          "doc": "How tall it may grow before it scrolls."
+        },
+        {
+          "name": "showCount",
+          "type": "boolean",
+          "required": false,
+          "doc": "Show how much is left, and announce it as it runs out."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "text longer than a line — a note, a message, a description",
+      "insteadWhen": "it is one line (`TextField`), or the content has structure the reader expects to see rendered, which is an editor and not a form field",
+      "accessibility": "the same wiring as every other field, through `Field` — the label with `for`, hint and error through `aria-describedby`, `aria-invalid` on an error. The three things a textarea adds on top: `resize` is left to the browser. A `resize: none` is the most common line in a textarea's stylesheet and it takes away the one control the platform gives someone whose text does not fit — which is a WCAG 1.4.4 "
     },
     {
       "component": "Toaster",

@@ -148,6 +148,14 @@ export interface Strings {
   /** The month paging controls. */
   previousMonth: string;
   nextMonth: string;
+  /**
+   * How much room is left in a textarea.
+   *
+   * A function because the number is in the sentence, and because "1
+   * character left" and "40 characters left" are different sentences in most
+   * languages — the same reason as `errorSummary`.
+   */
+  charactersLeft: (remaining: number) => string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -186,6 +194,8 @@ export const defaultStrings: Strings = {
   loading: "Loading",
   errorSummary: (count) =>
     count === 1 ? "1 field needs attention" : `${count} fields need attention`,
+  charactersLeft: (remaining) =>
+    remaining === 1 ? "1 character left" : `${remaining} characters left`,
   openCalendar: "Open calendar",
   previousMonth: "Previous month",
   nextMonth: "Next month",

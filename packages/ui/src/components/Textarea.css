@@ -1,0 +1,47 @@
+/* Textarea styles, shipped with the component.
+   A page that never imports Textarea never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-textarea-wrap {
+    display: grid;
+    gap: var(--uix-gap-xs);
+  }
+
+  .uix-textarea {
+    /* Height comes from `rows`, not from the control height every other
+       field uses — a textarea is the one field whose size is content. */
+    block-size: auto;
+    min-block-size: 0;
+    padding-block: var(--uix-gap-sm);
+    /* Inherited rather than set. The line-height tokens are primitives, and
+       a component naming one is what `tokens.spec.ts` forbids — measured by
+       that gate the moment this file was written. `base.css` already sets it
+       for running text, which is what a textarea holds. */
+    line-height: inherit;
+    /* Deliberately not `resize: none`. That line is the most common one in a
+       textarea's stylesheet and it removes the only control the platform
+       gives somebody whose text does not fit the box — a WCAG 1.4.4 problem
+       dressed as a design decision. Vertical only, because horizontal
+       resizing breaks the form's column. */
+    resize: vertical;
+  }
+
+  /* Growing takes over the height, so the handle would fight the
+     measurement. This is the one case where removing it is honest: the box
+     is already doing what dragging it would do. */
+  .uix-textarea[data-grow] {
+    resize: none;
+    overflow-y: hidden;
+  }
+
+  .uix-textarea-count {
+    /* Aligned to the end and tabular, so the number does not shuffle the
+       text beside it as it counts down. */
+    justify-self: end;
+    color: var(--uix-text-caption);
+    font-size: var(--uix-font-size-100);
+    font-variant-numeric: tabular-nums;
+  }
+}

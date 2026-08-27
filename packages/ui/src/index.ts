@@ -78,6 +78,7 @@ import {
 import { Table, type TableProps } from "./components/Table";
 import { Tree, type TreeProps, type TreeNode } from "./components/Tree";
 import { TagInput, type TagInputProps } from "./components/TagInput";
+import { Textarea, type TextareaProps } from "./components/Textarea";
 import { Toolbar, type ToolbarProps } from "./components/Toolbar";
 import { Tabs, type TabsProps } from "./components/Tabs";
 import { TextField, type TextFieldProps } from "./components/TextField";
@@ -203,6 +204,8 @@ export {
   type ToolbarProps,
   TagInput,
   type TagInputProps,
+  Textarea,
+  type TextareaProps,
   InlineEdit,
   type InlineEditProps,
   FileUpload,

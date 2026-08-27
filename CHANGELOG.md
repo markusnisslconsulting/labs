@@ -29,6 +29,20 @@ cut at the first release.
 
 ### fixed
 
+- **AvatarGroup** — the overflow counter overlaps the faces again. The
+  overlap was `.item + .item` and the component rendered every visually
+  hidden name after every avatar, so a run of spans sat between the last face
+  and the counter, the adjacent-sibling selector matched nothing, and the
+  counter lost its negative margin. Each person is one element now, holding
+  the face and that person's name, and the rule is `:not(:first-child)`.
+  Found in a screenshot; `browser/runtime.spec.ts` measures the geometry now.
+- **Select** — the popup is drawn by this system where
+  `appearance: base-select` is supported: our surface, our radius, our accent
+  on the highlighted row, one chevron rather than two. Behind `@supports`, so
+  everywhere else is unchanged and the element stays a real `<select>`. Its
+  width still cannot be set — measured against Chromium 151, author sizing on
+  `::picker(select)` is ignored while background and border apply — so
+  `Combobox` remains the answer when the popup's geometry matters.
 - **Field** — compute `aria-describedby` from the error actually in force,
   not from the `error` prop. A form-supplied error rendered its message and
   set `aria-invalid` while `aria-describedby` pointed at nothing: visibly
@@ -75,6 +89,13 @@ cut at the first release.
 
 ### added
 
+- **Textarea** — text longer than a line. `resize` is left to the browser:
+  `resize: none` is the most common line in a textarea's stylesheet and it
+  removes the one control the platform gives somebody whose text does not fit
+  the box, which is WCAG 1.4.4 dressed as a design decision. `autoGrow` is
+  opt-in and capped, and the character counter is announced only in the last
+  fifth — a live region beside a field being typed into reads the number over
+  the letters otherwise.
 - **DatePicker** — a text input with a calendar beside it, not a calendar
   alone: typing is faster for anyone who knows the date, and a month grid is
   thirty-five stops to reach one day. Dates are `YYYY-MM-DD` strings, never

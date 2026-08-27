@@ -1663,6 +1663,43 @@ export declare function TextField({
 }: TextFieldProps): import("react").JSX.Element;
 ```
 
+## Textarea
+
+```ts
+export interface TextareaProps extends Omit<
+  ComponentPropsWithRef<"textarea">,
+  "id"
+> {
+  label: ReactNode;
+  hint?: ReactNode;
+  error?: ReactNode;
+  required?: boolean;
+  hideLabel?: boolean;
+  name?: string;
+  autoGrow?: boolean;
+  maxRows?: number;
+  showCount?: boolean;
+}
+export declare function Textarea({
+  label,
+  name,
+  hint,
+  error,
+  required,
+  hideLabel,
+  autoGrow,
+  maxRows,
+  showCount,
+  maxLength,
+  rows,
+  className,
+  value,
+  defaultValue,
+  onChange,
+  ...rest
+}: TextareaProps): import("react").JSX.Element;
+```
+
 ## Toaster
 
 ```ts

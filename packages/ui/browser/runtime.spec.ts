@@ -308,3 +308,60 @@ test("a virtualised table is bounded in the DOM and honest in the tree", async (
     "the sticky header moved when the body scrolled",
   ).toBeLessThan(1);
 });
+
+/**
+ * Every face in an avatar group overlaps the one before it, counter
+ * included.
+ *
+ * A geometry assertion, because the defect was geometry and nothing else
+ * here measures it. The overlap was written as `.item + .item`, and the
+ * component rendered every visually hidden name *after* every avatar — so
+ * between the last face and the "+2" counter sat a run of spans, the
+ * adjacent-sibling selector matched nothing, and the counter lost its
+ * negative margin and sat a full gap from the group.
+ *
+ * Markus found it in a screenshot. Every assertion in this repository passed
+ * over it: the names were right, the roles were right, the accessible name
+ * of the counter listed the hidden people, axe was clean. None of them knows
+ * where anything is.
+ *
+ * Measured as "each item starts before the previous one ends", which is what
+ * overlapping means and is true at every size without hardcoding the
+ * offset.
+ */
+test("every avatar overlaps the one before it, counter included", async ({
+  page,
+}) => {
+  await openStory(page, "components-avatargroup--matrix");
+
+  const groups = page.locator(".uix-avatargroup");
+  const count = await groups.count();
+  expect(count, "the matrix needs several groups").toBeGreaterThan(3);
+
+  for (let index = 0; index < count; index += 1) {
+    const boxes = await groups
+      .nth(index)
+      .locator(".uix-avatargroup-item")
+      .evaluateAll((nodes) =>
+        nodes.map((node) => {
+          const box = node.getBoundingClientRect();
+          return {
+            left: box.left,
+            right: box.right,
+            counter: node.classList.contains("uix-avatargroup-more"),
+          };
+        }),
+      );
+
+    for (let at = 1; at < boxes.length; at += 1) {
+      const previous = boxes[at - 1]!;
+      const current = boxes[at]!;
+      expect(
+        current.left,
+        `item ${at}${current.counter ? " (the counter)" : ""} in group ` +
+          `${index} starts at ${current.left.toFixed(0)} and the one before ` +
+          `it ends at ${previous.right.toFixed(0)}; they do not overlap`,
+      ).toBeLessThan(previous.right);
+    }
+  }
+});

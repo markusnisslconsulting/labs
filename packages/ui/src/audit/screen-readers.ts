@@ -120,6 +120,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "Textarea",
+    why: "a character counter is a live region next to a field being typed into: whether it stays quiet until it matters, and whether it interrupts the letters",
+    cells: blank(),
+  },
+  {
     component: "TagInput",
     why: "removing a tag changes something the reader is not focused on: whether the live region arrives, and whether the remove buttons sound like distinct controls",
     cells: blank(),

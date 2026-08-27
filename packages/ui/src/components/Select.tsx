@@ -37,11 +37,31 @@ export type SelectOptionProps = ComponentPropsWithRef<"option">;
 export type SelectGroupProps = ComponentPropsWithRef<"optgroup">;
 
 /**
- * **Use it for** one value from a short fixed list. **Reach for something else when** the list is long enough that someone would rather type (Combobox).
+ * **Use it for** one value from a short fixed list. **Reach for something
+ * else when** someone would rather type than scan (`Combobox`), or when the
+ * popup itself has to be yours — grouped rows, a second line per option, a
+ * checkmark, anything drawn.
  *
- * Native `<select>` with a bound label and optional hint. The chevron
- * is a styled span (aria-hidden) — the element stays a real select,
- * so pickers, keyboards and forms behave like the platform.
+ * Native `<select>` with a bound label and optional hint. The chevron is a
+ * styled span (aria-hidden); the element stays a real select, so pickers,
+ * keyboards and forms behave like the platform.
+ *
+ * **About the popup.** Where `appearance: base-select` is supported — Chrome
+ * today — it is drawn by this system: our surface, our radius, our accent on
+ * the highlighted row, one chevron rather than two. Everywhere else it is
+ * the operating system's, exactly as before, because the whole block is
+ * behind `@supports`. The element is a real `<select>` either way, which is
+ * what keeps typeahead, form participation and the iOS wheel.
+ *
+ * **What is still not possible: making it the width of the field.** Measured
+ * against Chromium 151, author sizing on `::picker(select)` is ignored —
+ * `inline-size`, `min-inline-size` and every form of `anchor-size()` produce
+ * byte-identical layout, while background and border apply. So a wide select
+ * can still show a narrower menu, and no CSS here changes that.
+ *
+ * When the popup's geometry matters, `Combobox` renders its own listbox and
+ * takes the field's width. It costs 6.04 KB against this component's 2.79 KB
+ * and gives up the platform picker on mobile, which is the trade.
  *
  * Accessibility: a native `select`, so the picker, the typeahead, the
  * keyboard and the form participation are the platform's. The chevron is
