@@ -1,0 +1,137 @@
+/* DataTable styles, shipped with the component.
+   A page that never imports DataTable never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-datatable-viewport {
+    overflow-x: auto;
+  }
+
+  .uix-datatable-table {
+    width: 100%;
+    /* `fixed`, not `auto`, and this is what the `width` prop buys. The
+       browser lays the table out from the declared column widths instead
+       of measuring every cell — so a column does not change width when
+       the rows change, and a virtualised body cannot resize the header by
+       scrolling a longer value into view. */
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: var(--uix-font-size-200);
+  }
+
+  .uix-datatable-table th {
+    text-align: start;
+    font-weight: var(--uix-weight-ui);
+    color: var(--uix-text-secondary);
+    border-bottom: 1px solid var(--uix-border-subtle);
+    padding: var(--uix-gap-sm) var(--uix-gap-md);
+  }
+
+  .uix-datatable-table td {
+    padding: var(--uix-gap-sm) var(--uix-gap-md);
+    border-bottom: 1px solid var(--uix-border-subtle);
+    overflow-wrap: break-word;
+  }
+
+  /* A column of numbers is compared down the column, not read across the
+     row, so it aligns to the inline end and uses figures of one width.
+     Without this, 800 and 1200 do not line up and the eye cannot compare
+     them at all. */
+  .uix-datatable-table [data-numeric] {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Sticky needs an opaque background of its own. A transparent sticky
+     header shows the rows sliding underneath it, which reads as a
+     rendering fault rather than as a fixed header.
+
+     `bg-surface`, which is what the rows already sit on. The first version
+     used `bg-raised` — a header does read as raised — and axe rejected it:
+     on dark, `text-secondary` on `bg-raised` measures 3.41:1 against the
+     4.5:1 a 14px bold label needs. The occlusion is the whole job here, so
+     the colour that does it without changing the contrast pairing is the
+     one already behind the text. */
+  .uix-datatable-viewport[data-sticky] thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--uix-bg-surface);
+  }
+
+  .uix-datatable-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-xs);
+    /* A button that looks like the header text it replaces. The control
+       is real for the keyboard and the reader; only its chrome is gone. */
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* The arrow, dimmed until the column is the one being sorted. Both
+     states are drawn, so the header does not change width when the sort
+     moves to it — a column that jumps sideways on click is the same
+     defect as one that jumps when the rows change. */
+  .uix-datatable-arrow {
+    color: var(--uix-text-caption);
+    font-size: 0.85em;
+  }
+
+  .uix-datatable-table th[aria-sort]:not([aria-sort="none"]) {
+    color: var(--uix-text-primary);
+  }
+
+  .uix-datatable-table tbody tr:hover td {
+    background: var(--uix-bg-subtle);
+  }
+
+  /* The accent at low alpha, which composites over whatever the row
+     already sits on rather than replacing it — so a selected row that is
+     also hovered still reads as both. Invented tokens with a CSS fallback
+     were the first attempt here, and `ui:tokens-check` rejected them: a
+     fallback makes a missing token look fine on screen, which is the
+     reason that gate does not accept one as an excuse. */
+  .uix-datatable-table tbody tr[data-selected] td {
+    background: var(--uix-accent-soft);
+  }
+
+  /* Spacer rows carry the scroll height and nothing else. Anything drawn
+     on them would appear as a gap in the striping. */
+  .uix-datatable-table tbody tr[aria-hidden] td {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .uix-datatable-select {
+    width: 3rem;
+    text-align: center;
+  }
+
+  .uix-datatable-empty {
+    padding: var(--uix-gap-lg) var(--uix-gap-md);
+    color: var(--uix-text-secondary);
+    text-align: center;
+  }
+
+  .uix-datatable-viewport:focus-visible {
+    outline: var(--uix-focus-width) solid var(--uix-focus-ring);
+    outline-offset: var(--uix-focus-offset);
+  }
+
+  /* The selection count is for a screen reader, not for the layout. It is
+     in the DOM rather than off it because a live region has to be present
+     before it changes to be announced when it does. */
+  .uix-datatable-status {
+    font-size: var(--uix-font-size-100);
+    color: var(--uix-text-secondary);
+    padding-block-start: var(--uix-gap-sm);
+    min-height: 1lh;
+  }
+}

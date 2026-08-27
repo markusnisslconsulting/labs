@@ -50,6 +50,23 @@ export interface Strings {
    * pick one.
    */
   errorSummary: (count: number) => string;
+  /** The header checkbox that selects every row of a data table. */
+  selectAllRows: string;
+  /**
+   * The checkbox on one row of a data table.
+   *
+   * A function, because the name has to say *which* row — a column of
+   * checkboxes all called "Select row" is a column a screen reader reads
+   * as identical controls.
+   */
+  selectRow: (row: string) => string;
+  /**
+   * How many rows are selected, as a live status.
+   *
+   * A function for the same reason as `errorSummary`: the count is in the
+   * sentence, and one and many are different sentences in most languages.
+   */
+  rowsSelected: (count: number) => string;
   /** The steppers on a number field. */
   increase: string;
   decrease: string;
@@ -88,6 +105,10 @@ export const defaultStrings: Strings = {
   loading: "Loading",
   errorSummary: (count) =>
     count === 1 ? "1 field needs attention" : `${count} fields need attention`,
+  selectAllRows: "Select all rows",
+  selectRow: (row) => `Select ${row}`,
+  rowsSelected: (count) =>
+    count === 1 ? "1 row selected" : `${count} rows selected`,
   increase: "Increase",
   decrease: "Decrease",
   required: "required",

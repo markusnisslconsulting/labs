@@ -29,11 +29,27 @@ async function tabTo(page: Page, target: Locator, limit = 12) {
   );
 }
 
+/**
+ * Which rows this file asked for, filled as the module loads.
+ *
+ * The coverage test at the bottom reads it. It has to be filled at load
+ * time rather than while the tests run, because `fullyParallel` spreads
+ * this file's tests over workers and each worker holds its own module —
+ * a set filled during the run would be missing whatever another worker
+ * did, in a way that depends on how many cores are free.
+ *
+ * That is why every test looks its row up at module scope, in a `const`
+ * or in the test's own title. A lookup that happens only inside a test
+ * body is invisible here and the coverage test will say so.
+ */
+const requested = new Set<string>();
+
 const row = (component: string, key: string) => {
   const found = KEYBOARD_MAP.find(
     (entry) => entry.component === component && entry.key === key,
   );
   if (!found) throw new Error(`no map row for ${component} ${key}`);
+  requested.add(`${component} ${key}`);
   return found;
 };
 
@@ -338,17 +354,105 @@ test("only the selected tab panel is in the DOM", async ({ page }) => {
   ).toHaveCount(1);
 });
 
-test("every row of the map has a test", () => {
-  /* The map is documentation, and documentation with an untested row is
-     the thing this file exists to stop. Counted rather than trusted: the
-     tests above are hand-written per component, so a row added to the map
-     without a test here would otherwise be silently unverified. */
-  const covered = new Set(
-    KEYBOARD_MAP.map((entry) => `${entry.component} ${entry.key}`),
-  );
-  expect(covered.size, "the map has duplicate rows").toBe(KEYBOARD_MAP.length);
-  expect(KEYBOARD_MAP.length).toBeGreaterThanOrEqual(19);
+/* ------------------------------------------------------------- DataTable */
+
+const DATATABLE_SORT = row("DataTable", "Enter");
+const DATATABLE_SELECT = row("DataTable", "Space");
+const DATATABLE_SCROLL = row("DataTable", "ArrowDown");
+
+/**
+ * Enter on a column header sorts by that column.
+ *
+ * A platform row, and the reason the header is a real `<button>` rather
+ * than a `<th>` with a click handler. A click handler on a table cell
+ * cannot be reached by a keyboard at all, and the usual repair — adding
+ * `tabindex` and a keydown listener — reimplements what a button already
+ * does, minus whatever the listener forgets. Here the only claim is that
+ * nothing took the platform's behaviour away.
+ *
+ * Scoped to one table by its caption. This story renders four, and the
+ * lesson that made that explicit is in `runtime.spec.ts`: a bare `thead
+ * th` in this Storybook matches its own zero-height args table.
+ */
+test("Enter on a column header sorts by that column", async ({ page }) => {
+  await openStory(page, DATATABLE_SORT.story);
+  const table = page.getByRole("region", { name: "Suppliers", exact: true });
+
+  const header = table.getByRole("columnheader", { name: /Supplier/ });
+  await expect(header).toHaveAttribute("aria-sort", "none");
+
+  await table.getByRole("button", { name: /Supplier/ }).focus();
+  await page.keyboard.press("Enter");
+
+  await expect(header).toHaveAttribute("aria-sort", "ascending");
+  await expect(table.getByRole("cell").first()).toHaveText("Adria Components");
 });
+
+/**
+ * Space on a row's checkbox selects the row.
+ *
+ * The platform's, and the reason the selection column holds a native
+ * `<input type="checkbox">` and not a styled `<div>`. Space on a checkbox
+ * is behaviour a browser gives for free and only for a trusted event —
+ * `userEvent.keyboard` would report success here whatever the markup was.
+ */
+test("Space on a row checkbox selects the row", async ({ page }) => {
+  await openStory(page, DATATABLE_SELECT.story);
+  const table = page.getByRole("region", {
+    name: "Suppliers, two selected",
+    exact: true,
+  });
+
+  const box = table.getByRole("checkbox", { name: "Select Vale Packaging" });
+  await expect(box).not.toBeChecked();
+
+  await box.focus();
+  await page.keyboard.press(" ");
+
+  await expect(box).toBeChecked();
+  await expect(
+    page.getByRole("status").filter({ hasText: "selected" }).first(),
+  ).toHaveText("3 rows selected");
+});
+
+/**
+ * ArrowDown scrolls the viewport, which is why it is a tab stop.
+ *
+ * The whole justification for `tabindex="0"` on a scroll container, and
+ * the rule this library changed its eslint config for. `overflow` makes a
+ * region a pointer can scroll and a keyboard cannot reach; the repair is a
+ * tab stop, and a tab stop that does not then respond to arrow keys would
+ * be a stop that leads nowhere — exactly what the lint rule is right to
+ * object to in every other case.
+ */
+test("ArrowDown scrolls a focused table viewport", async ({ page }) => {
+  await openStory(page, DATATABLE_SCROLL.story);
+  const viewport = page.locator(".uix-datatable-viewport");
+
+  await viewport.focus();
+  expect(await viewport.evaluate((node) => node.scrollTop)).toBe(0);
+
+  for (let press = 0; press < 5; press += 1) {
+    await page.keyboard.press("ArrowDown");
+  }
+
+  /* Polled, because Chromium animates keyboard scrolling. Measured: one
+     ArrowDown moves this viewport 40px, and a read taken immediately after
+     the last press returns 0 — so the first version of this test reported
+     that arrow keys do not scroll a focused container, which is the
+     opposite of the truth and would have argued for removing the tab stop
+     that makes the region reachable at all. */
+  await expect
+    .poll(() => viewport.evaluate((node) => node.scrollTop), {
+      message:
+        "the focused viewport did not scroll, so its tab stop leads nowhere",
+    })
+    .toBeGreaterThan(0);
+});
+
+/* ------------------------------------------------------------------ Form */
+
+const FORM_ENTER = row("Form", "Enter");
 
 /**
  * Enter in a text field submits the form.
@@ -374,23 +478,22 @@ test("every row of the map has a test", () => {
  * deleting the submit button changes nothing and the break test passes
  * while claiming to have broken something.
  *
- * Counted rather than read off the event. The first version of this test
- * asked a listener on the form for `event.defaultPrevented` and got
- * `false` against a working component: React 19 delegates to the root
- * container, so its handler — the one that calls `preventDefault` — runs
- * after any listener on the form itself. What the page does is the
- * durable observation; what an intermediate listener sees about the
- * event's state is an artefact of who registered where.
+ * Counted rather than read off the event. The first version asked a
+ * listener on the form for `event.defaultPrevented` and got `false`
+ * against a working component: React 19 delegates to the root container,
+ * so its handler — the one that calls `preventDefault` — runs after any
+ * listener on the form itself. What the page does is the durable
+ * observation.
  */
 test("Enter in a text field submits the form", async ({ page }) => {
-  await openStory(page, row("Form", "Enter").story);
+  await openStory(page, FORM_ENTER.story);
   const before = page.url();
 
   await page.evaluate(() => {
     const store = window as unknown as Record<string, unknown>;
-    store.__submits = 0;
+    store["__submits"] = 0;
     document.querySelector("form.uix-form")!.addEventListener("submit", () => {
-      store.__submits = (store.__submits as number) + 1;
+      store["__submits"] = (store["__submits"] as number) + 1;
     });
   });
 
@@ -399,7 +502,7 @@ test("Enter in a text field submits the form", async ({ page }) => {
 
   expect(
     await page.evaluate(
-      () => (window as unknown as Record<string, unknown>).__submits,
+      () => (window as unknown as Record<string, unknown>)["__submits"],
     ),
     "Enter in a text field did not submit; either no submit button is in " +
       "the form or something swallowed the key",
@@ -413,4 +516,37 @@ test("Enter in a text field submits the form", async ({ page }) => {
     before,
   );
   await expect(page.getByRole("textbox", { name: "Warehouse" })).toBeFocused();
+});
+
+/**
+ * Every row of the map is exercised by a test in this file.
+ *
+ * Static, over this file's own source, and that is the second version.
+ * The first counted rows and asserted the count had not shrunk, under a
+ * comment claiming it caught a row added without a test. It could not: a
+ * new row raises both the map's length and the unique-key count together,
+ * so the assertion moved with the thing it was meant to constrain.
+ *
+ * Read from the source rather than accumulated while the tests run,
+ * because `fullyParallel` is on: tests in this file are spread over
+ * workers, each with its own module instance, so a set filled at runtime
+ * would be missing whatever another worker did.
+ */
+test("every row of the map is exercised by a test in this file", () => {
+  const keys = KEYBOARD_MAP.map((entry) => `${entry.component} ${entry.key}`);
+
+  /* The informative assertion first. Checking the counts before naming
+     the rows reports "expected 23, received 22", which says a row is
+     missing and not which one — and the whole value of this gate is the
+     name it gives you. */
+  const missing = keys.filter((key) => !requested.has(key));
+  expect(
+    missing,
+    "these rows of the keyboard map are documentation with nothing " +
+      "exercising them. If a test does cover one, move its `row(...)` " +
+      "lookup to module scope — a lookup inside a test body cannot be " +
+      "counted here",
+  ).toEqual([]);
+
+  expect(new Set(keys).size, "the map has duplicate rows").toBe(keys.length);
 });

@@ -68,9 +68,14 @@ test("a card keeps an edge once the fill is gone", async ({ page }) => {
 
 test("a table repeats its header across pages", async ({ page }) => {
   await story(page, "components-table--wide-columns");
+  /* Scoped to the component's table. A bare `thead` matched Storybook's
+     own args table, which sits earlier in the story's DOM — measured, the
+     first `tbody tr` on this page reads "propertyName", so both table
+     tests in this file were reporting on Storybook rather than on
+     `Table`. */
   const display = await screenThenPrint(
     page,
-    "thead",
+    ".uix-table thead",
     (el) => getComputedStyle(el).display,
   );
   expect(
@@ -83,7 +88,7 @@ test("a row is not split across a page break", async ({ page }) => {
   await story(page, "components-table--wide-columns");
   await page.emulateMedia({ media: "print" });
   const value = await page
-    .locator("tbody tr")
+    .locator(".uix-table tbody tr")
     .first()
     .evaluate((el) => getComputedStyle(el).breakInside);
   await page.emulateMedia({ media: "screen" });

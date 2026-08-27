@@ -129,6 +129,25 @@ const SLOTS = [
   "body",
 ];
 
+/**
+ * Whether a component lets the caller decide what is *inside* each item.
+ *
+ * A per-item render function returning a node — `cell?: (row: Row) =>
+ * ReactNode` — is composition in the sense both rules below care about.
+ * What they protect against is a fixed arrangement: a prop that can only
+ * describe the shape its author imagined, so that a tab with a count in it
+ * means not using Tabs. Compound parts plus children is one cure and the
+ * common one; handing the caller a function that returns a node is
+ * another, and for a table it is the better fit, because a table's items
+ * are rows and a row is not something a caller writes markup for.
+ *
+ * Measured before it was added: of the nine components with a list-shaped
+ * prop, eight have parts and children and none has a render prop, and
+ * `DataTable` is the only one the other way round. So this widens the rule
+ * for exactly one component and lets nothing else through.
+ */
+const RENDERS_ITS_ITEMS = /\w+\??:\s*\((\w+)[^)]*\)\s*=>\s*ReactNode/;
+
 describe("component API contract", () => {
   it("every component is composable, or says why it cannot be", () => {
     for (const [file, text] of source) {
@@ -138,7 +157,8 @@ describe("component API contract", () => {
         // A render prop is composition too, and the stricter kind: Field
         // hands the caller the ids it minted, which is the only way the
         // control can be wired without the caller holding them.
-        /children:\s*\(/.test(text);
+        /children:\s*\(/.test(text) ||
+        RENDERS_ITS_ITEMS.test(text);
       const hasParts = new RegExp(`${name}\\.\\w+\\s*=`).test(text);
       if (takesChildren || hasParts) continue;
       expect(
@@ -157,14 +177,17 @@ describe("component API contract", () => {
     // not fine as the only door.
     for (const [file, text] of source) {
       const name = file.replace(/\.tsx$/, "");
-      const arrayProp = /^\s+(items|options|tabs|pages)\??:/m.test(text);
+      const arrayProp = /^\s+(items|options|tabs|pages|columns|rows)\??:/m.test(
+        text,
+      );
       if (!arrayProp) continue;
       const hasParts = new RegExp(`${name}\\.\\w+\\s*=`).test(text);
       const takesChildren = /children\??:\s*(React\.)?ReactNode/.test(text);
       expect(
-        hasParts && takesChildren,
-        `${file} has a list-shaped prop but no compound parts and children ` +
-          `to compose instead`,
+        (hasParts && takesChildren) || RENDERS_ITS_ITEMS.test(text),
+        `${file} has a list-shaped prop but neither compound parts and ` +
+          `children to compose instead, nor a per-item render prop returning ` +
+          `a node`,
       ).toBe(true);
     }
   });

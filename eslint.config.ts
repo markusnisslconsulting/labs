@@ -28,6 +28,39 @@ export default tseslint.config(
   },
   ...tseslint.configs.recommended,
   jsxA11y.flatConfigs.recommended,
+  {
+    /**
+     * A scrollable region is allowed to be a tab stop.
+     *
+     * `no-noninteractive-tabindex` is right that `tabindex="0"` on
+     * something inert puts a stop in the tab order that leads nowhere. A
+     * scroll container is the exception the rule does not model:
+     * `overflow` creates an area a pointer can scroll and a keyboard
+     * cannot reach at all, which is WCAG 2.1.1 in its plainest form, and
+     * the fix is exactly the tab stop the rule forbids.
+     *
+     * Allowed by role rather than per line because it is a pattern here,
+     * not an incident: `Table` and `DataTable` both do it, and `Table`
+     * escaped the rule only because it computes its role from a prop —
+     * the rule cannot read a dynamic value, so the same code passed in
+     * one file and failed in the other. A rule that depends on how the
+     * attribute was spelled is not enforcing anything.
+     *
+     * `region` demands a name to be a region at all, so this does not
+     * license an anonymous tab stop: both components pass the caption as
+     * `aria-label`.
+     */
+    rules: {
+      "jsx-a11y/no-noninteractive-tabindex": [
+        "error",
+        {
+          tags: [],
+          roles: ["tabpanel", "region"],
+          allowExpressionValues: true,
+        },
+      ],
+    },
+  },
   ...hooksEntries,
   {
     // The module-boundary rule lives in the Nx plugin; registering it

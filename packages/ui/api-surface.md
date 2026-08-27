@@ -366,6 +366,64 @@ export declare namespace Combobox {
 export {};
 ```
 
+## DataTable
+
+```ts
+export interface DataTableSort {
+  key: string;
+  direction: "ascending" | "descending";
+}
+export interface DataColumn<Row> {
+  key: string;
+  header: ReactNode;
+  cell?: (row: Row) => ReactNode;
+  compare?: (a: Row, b: Row) => number;
+  width?: string;
+  numeric?: boolean;
+}
+interface DataTableOwnProps<Row> {
+  caption: ReactNode;
+  columns: Array<DataColumn<Row>>;
+  rows: Row[];
+  rowKey: (row: Row) => string;
+  rowLabel?: (row: Row) => string;
+  sort?: DataTableSort | null;
+  defaultSort?: DataTableSort | null;
+  onSortChange?: (next: DataTableSort | null) => void;
+  selectable?: boolean;
+  selected?: string[];
+  defaultSelected?: string[];
+  onSelectedChange?: (next: string[]) => void;
+  stickyHeader?: boolean;
+  rowHeight?: number;
+  height?: number;
+  empty?: ReactNode;
+}
+export type DataTableProps<Row> = DataTableOwnProps<Row> &
+  Omit<ComponentPropsWithRef<"div">, keyof DataTableOwnProps<Row> | "children">;
+export declare function DataTable<Row>({
+  caption,
+  columns,
+  rows,
+  rowKey,
+  rowLabel,
+  sort,
+  defaultSort,
+  onSortChange,
+  selectable,
+  selected,
+  defaultSelected,
+  onSelectedChange,
+  stickyHeader,
+  rowHeight,
+  height,
+  empty,
+  className,
+  ...rest
+}: DataTableProps<Row>): import("react").JSX.Element;
+export {};
+```
+
 ## Dialog
 
 ```ts

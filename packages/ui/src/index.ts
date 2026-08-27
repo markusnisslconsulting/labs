@@ -32,6 +32,12 @@ import { Slider, type SliderProps } from "./components/Slider";
 import { Spinner, type SpinnerProps } from "./components/Spinner";
 import { StatusPill, type StatusPillProps } from "./components/StatusPill";
 import { Switch, type SwitchProps } from "./components/Switch";
+import {
+  DataTable,
+  type DataTableProps,
+  type DataColumn,
+  type DataTableSort,
+} from "./components/DataTable";
 import { Table, type TableProps } from "./components/Table";
 import { Tabs, type TabsProps } from "./components/Tabs";
 import { TextField, type TextFieldProps } from "./components/TextField";
@@ -113,6 +119,10 @@ export {
   type SwitchProps,
   Table,
   type TableProps,
+  DataTable,
+  type DataTableProps,
+  type DataColumn,
+  type DataTableSort,
   Tabs,
   type TabsProps,
   TextField,

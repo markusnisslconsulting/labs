@@ -220,4 +220,27 @@ export const KEYBOARD_MAP: KeyboardRow[] = [
       "in a text field, submits the form — the browser's implicit " +
       "submission, which needs a submit button to exist",
   },
+  {
+    component: "DataTable",
+    story: "components-datatable--matrix",
+    owner: "platform",
+    key: "Enter",
+    expectation: "on a column header, sorts by that column",
+  },
+  {
+    component: "DataTable",
+    story: "components-datatable--matrix",
+    owner: "platform",
+    key: "Space",
+    expectation: "on a row's checkbox, selects the row",
+  },
+  {
+    component: "DataTable",
+    story: "components-datatable--ten-thousand-rows",
+    owner: "platform",
+    key: "ArrowDown",
+    expectation:
+      "with the scroll viewport focused, scrolls the rows — the reason " +
+      "the viewport is a tab stop at all",
+  },
 ];

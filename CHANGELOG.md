@@ -75,6 +75,19 @@ cut at the first release.
 
 ### added
 
+- **DataTable** — columns and rows as data, with sorting (`aria-sort` on the
+  header cell, a real `<button>` inside it), selection keyed by row rather
+  than by index so it survives a sort, `table-layout: fixed` column widths,
+  a sticky header, and virtualisation. `Table` stays what it is: markup with
+  styling, for a table you wrote yourself.
+
+  Virtualising reports `aria-rowcount` for the whole set and each rendered
+  row its true `aria-rowindex`. Without those, a windowed table announces
+  the length of its window — "row 12 of 24" in a table of ten thousand,
+  which is worse than not virtualising because it is confidently wrong.
+  `browser/runtime.spec.ts` measures all of it, including that the sticky
+  header does not move while the body scrolls.
+
 - **Form** — the layer above the field. `Form` takes errors by field name,
   the shape a server returns them in, and each field finds its own: a
   caller cannot route an error to the wrong field or forget to route it.

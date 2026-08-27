@@ -95,6 +95,11 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "DataTable",
+    why: "a virtualised body: whether a reader says the true row number, and what it says when the window under it changes while wandering",
+    cells: blank(),
+  },
+  {
     component: "Form",
     why: "the error summary is a live region that has to be reached, not only rendered",
     cells: blank(),

@@ -405,6 +405,89 @@
       "accessibility": "the platform combobox — typeahead, arrow selection and screen reader announcements come from the browser. Note: a Base UI combobox was evaluated and deferred (rc error #62 in test environments); adoption revisits at 1.0"
     },
     {
+      "component": "DataTable",
+      "props": [
+        {
+          "name": "caption",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The table's accessible name."
+        },
+        {
+          "name": "columns",
+          "type": "Array<DataColumn<Row>>",
+          "required": true
+        },
+        { "name": "rows", "type": "Row[]", "required": true },
+        {
+          "name": "rowKey",
+          "type": "(row: Row) => string",
+          "required": true,
+          "doc": "A stable identity per row."
+        },
+        {
+          "name": "rowLabel",
+          "type": "(row: Row) => string",
+          "required": false,
+          "doc": "What a row is called, for the accessible name of its selection checkbox."
+        },
+        { "name": "sort", "type": "DataTableSort | null", "required": false },
+        {
+          "name": "defaultSort",
+          "type": "DataTableSort | null",
+          "required": false
+        },
+        {
+          "name": "onSortChange",
+          "type": "(next: DataTableSort | null) => void",
+          "required": false
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "required": false,
+          "doc": "Turn on the selection column."
+        },
+        { "name": "selected", "type": "string[]", "required": false },
+        { "name": "defaultSelected", "type": "string[]", "required": false },
+        {
+          "name": "onSelectedChange",
+          "type": "(next: string[]) => void",
+          "required": false
+        },
+        {
+          "name": "stickyHeader",
+          "type": "boolean",
+          "required": false,
+          "doc": "Keep the header visible while the body scrolls."
+        },
+        {
+          "name": "rowHeight",
+          "type": "number",
+          "required": false,
+          "doc": "Row height in pixels."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "required": false,
+          "doc": "The scroll viewport's height."
+        },
+        {
+          "name": "empty",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Shown instead of the body when there are no rows."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "beta",
+      "useFor": "a set of records compared across the same columns, where the reader sorts, selects or scrolls through more of them than fit",
+      "insteadWhen": "the markup is the point and there is nothing to sort — `Table` styles a table you wrote and stays out of the way",
+      "accessibility": "the header cells carry `aria-sort`, which is how a screen reader says a column is ordered and in which direction — the arrow is for the eye and announces nothing. Each sortable header is a real `<button>` inside its `<th>`, so it is reachable and operable with the keys the platform already gives a button. The scroll viewport is focusable with a name, because `overflow` makes a region only a pointe"
+    },
+    {
       "component": "Dialog",
       "props": [
         {

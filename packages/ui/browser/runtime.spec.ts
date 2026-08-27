@@ -216,3 +216,95 @@ test("a toast arriving touches the stack, not the page", async ({ page }) => {
       `arrived; the provider is re-rendering more than the notifications`,
   ).toBeLessThan(20);
 });
+
+/**
+ * Ten thousand rows, and the table still tells the truth about its size.
+ *
+ * The test that decides whether virtualisation is a feature or a lie. A
+ * windowed table renders a fraction of its rows, which is the point — and
+ * a screen reader counts what is in the accessibility tree, so unless the
+ * component says otherwise it announces the length of the window. "Row 12
+ * of 24" in a table of ten thousand is worse than no virtualisation,
+ * because it is confidently wrong.
+ *
+ * Four things are measured together, because each one alone can pass while
+ * the feature is broken: the DOM stays bounded, `aria-rowcount` reports
+ * the whole set, a row's `aria-rowindex` is its place in that set rather
+ * than in the window, and the sticky header does not move while the body
+ * scrolls under it. The last is here rather than in a visual test because
+ * spacer rows were chosen over a transform for exactly this reason — a
+ * header inside a transformed body stops sticking, and a screenshot of the
+ * top of the table looks identical either way.
+ */
+test("a virtualised table is bounded in the DOM and honest in the tree", async ({
+  page,
+}) => {
+  await openStory(page, "components-datatable--ten-thousand-rows");
+
+  const table = page.locator(".uix-datatable-table");
+  const viewport = page.locator(".uix-datatable-viewport");
+
+  /* 10,000 rows plus the header. The count is on the table, and it is
+     what a reader reads instead of counting rows. */
+  await expect(table).toHaveAttribute("aria-rowcount", "10001");
+
+  const rendered = () =>
+    page.locator(".uix-datatable-table tbody tr:not([aria-hidden])").count();
+
+  const atTop = await rendered();
+  expect(
+    atTop,
+    `${atTop} rows in the DOM at rest; a window over a 360px viewport of ` +
+      `40px rows should be a few dozen at most`,
+  ).toBeLessThan(40);
+  expect(atTop, "no rows rendered at all").toBeGreaterThan(4);
+
+  /* Scoped to this table. A bare `thead th` matched Storybook's own
+     args table, which is in the story's DOM with a height of zero — so
+     the sticky assertion below compared 0 to 0 and was true whatever the
+     real header did. Measured: `position: static` on the header passed
+     that version of this test. */
+  const header = page.locator(".uix-datatable-table thead th").first();
+  const headerTop = await header.evaluate(
+    (node) => node.getBoundingClientRect().top,
+  );
+
+  await viewport.evaluate((node) => {
+    node.scrollTop = 40 * 5000;
+  });
+  /* Wait on the row's *text*, not on its `aria-rowindex`. Waiting on the
+     attribute under test means a wrong index reports as a thirty-second
+     timeout instead of as the assertion that follows, and a test whose
+     failure message is "timeout" tells a reader nothing about what
+     broke. */
+  await expect(
+    page.locator(".uix-datatable-table tbody tr:not([aria-hidden]) td").first(),
+  ).not.toHaveText("Supplier 1");
+
+  const afterScroll = await rendered();
+  expect(
+    afterScroll,
+    `${afterScroll} rows after scrolling to the middle; the window must ` +
+      `not accumulate`,
+  ).toBeLessThan(40);
+
+  /* Halfway down, the first rendered row is row ~5000 of the whole set —
+     not row 1 of the window. Two off the exact figure is the overscan. */
+  const index = Number(
+    await page
+      .locator(".uix-datatable-table tbody tr:not([aria-hidden])")
+      .first()
+      .getAttribute("aria-rowindex"),
+  );
+  expect(index).toBeGreaterThan(4980);
+  expect(index).toBeLessThan(5010);
+
+  /* And the header has not moved. */
+  const headerTopAfter = await header.evaluate(
+    (node) => node.getBoundingClientRect().top,
+  );
+  expect(
+    Math.abs(headerTopAfter - headerTop),
+    "the sticky header moved when the body scrolled",
+  ).toBeLessThan(1);
+});
