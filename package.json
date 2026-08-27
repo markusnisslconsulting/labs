@@ -11,8 +11,9 @@
     "format:check": "prettier --check .",
     "storybook": "nx run ui:storybook",
     "chromatic": "nx run ui:build-storybook && chromatic",
-    "size-check": "node scripts/check-size.mjs",
-    "gates": "prettier --check . && nx run-many --targets=lint,typecheck,test,build,build-storybook,test-storybook,browser-test,package-check,tokens-check,tokens-dtcg,contrast-check,story-coverage,snapshot-budget,adoption,a11y"
+    "size-check": "node scripts/check-size.mjs && node scripts/consumer/check.mjs",
+    "gates": "prettier --check . && nx run-many --targets=lint,typecheck,test,build,build-storybook,test-storybook,browser-test,package-check,tokens-check,tokens-dtcg,contrast-check,story-coverage,snapshot-budget,adoption,a11y",
+    "consumer-check": "node scripts/consumer/check.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",

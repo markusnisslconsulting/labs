@@ -120,6 +120,49 @@ function checkCssIsolation() {
   return leaked;
 }
 
+/**
+ * Every stylesheet a built component imports has to exist.
+ *
+ * Measured before this existed: 11 of 47 imports in `dist` pointed at
+ * files the build never wrote. `_field.css` was imported by ten
+ * components and shipped under a different name; TextField had no
+ * stylesheet at all. Neither publint, nor attw, nor the isolation check
+ * below noticed, because none of them resolves an import — they check
+ * shape, types and *unexpected* sheets, and a missing one is none of
+ * those three.
+ *
+ * A consumer would have found it immediately, which is the point: the
+ * cheapest gate is the one that does what a consumer does.
+ */
+function checkCssResolves() {
+  const dir = "dist/packages/ui/components";
+  if (!existsSync(dir)) return false;
+  const dead = [];
+  let total = 0;
+  for (const entry of readdirSync(dir)) {
+    if (!entry.endsWith(".js")) continue;
+    const code = readFileSync(path.join(dir, entry), "utf8");
+    for (const hit of code.matchAll(
+      /import\s*["'](\.\.?\/[\w./-]+\.css)["']/g,
+    )) {
+      total += 1;
+      const target = path.resolve(dir, hit[1]);
+      if (!existsSync(target)) {
+        dead.push(`${entry.replace(/\.js$/, "")} -> ${hit[1]}`);
+      }
+    }
+  }
+  if (dead.length) {
+    console.log(
+      `✗ css imports: ${dead.length} of ${total} point at nothing:\n  ` +
+        dead.join("\n  "),
+    );
+    return true;
+  }
+  console.log(`✓ css imports: all ${total} resolve`);
+  return false;
+}
+
 let worst = { label: "", total: 0 };
 for (const budget of [...budgets, ...componentBudgets()]) {
   if (budget.files) {
@@ -153,6 +196,7 @@ for (const budget of [...budgets, ...componentBudgets()]) {
 }
 
 if (checkCssIsolation()) failed = true;
+if (checkCssResolves()) failed = true;
 
 if (worst.label) {
   console.log(

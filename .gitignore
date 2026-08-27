@@ -24,6 +24,7 @@ playwright-report
 # .last-run.json. Every visual target writes to scripts/visual/.out now,
 # and the runs themselves go to a scratch directory outside the repo.
 scripts/visual/.out/
+scripts/consumer/.out/
 .sweep-output/
 .axes-output/
 .visual-sweep/
