@@ -3,6 +3,7 @@ import { Link, Route, Routes, useParams } from "react-router";
 import { Chip } from "@labs/ui/components/Chip";
 import { Panel } from "@labs/ui/components/Panel";
 import { SearchInput } from "@labs/ui/components/SearchInput";
+import { Stack } from "@labs/ui/components/Stack";
 import { LabCard } from "./components/LabCard";
 import { allTags, labBySlug, labDemos, labs } from "./labs";
 
@@ -168,7 +169,7 @@ const LabPage = () => {
       ) : null}
 
       {!Demo && lab.storybookPath ? (
-        <>
+        <Stack gap="lg">
           <Panel label="The workbench, embedded">
             <iframe
               title={`${lab.title} in Storybook`}
@@ -184,7 +185,7 @@ const LabPage = () => {
             </a>{" "}
             to drive states yourself.
           </p>
-        </>
+        </Stack>
       ) : null}
     </article>
   );

@@ -283,7 +283,6 @@ if (mode === "baseline") {
  */
 const INTENTIONALLY_UNREFERENCED: Record<string, string> = {
   "--uix-duration-base": "middle step of the motion scale",
-  "--uix-font-size-600": "largest step of the type scale",
   "--uix-z-popover": "layer between dropdown and modal, reserved",
 };
 

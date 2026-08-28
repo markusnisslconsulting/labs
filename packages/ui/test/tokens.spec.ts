@@ -1042,3 +1042,173 @@ describe("avatar sizes agree across the two components", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * The composition rules, as checks rather than as documentation.
+ *
+ * A design system's components carry the rules that make assembly safe.
+ * Written down they hold until somebody is in a hurry; written as a check
+ * they hold. These three are the ones that decide whether a page built out
+ * of these parts by somebody — or something — with no view of the whole
+ * still holds together.
+ *
+ * Each was written after the rule it encodes had already been broken in this
+ * repository, which is the only reason to believe it is worth having.
+ */
+describe("the composition rules", () => {
+  /** A component's root rule: `.uix-<name>` with nothing else in the selector. */
+  const rootRules = () =>
+    componentCss.flatMap(({ file, source }) => {
+      const name = file.replace(/\.css$/, "").toLowerCase();
+      const css = strip(source);
+      const pattern = new RegExp(
+        `(?:^|\\}|\\{)\\s*\\.uix-${name}\\s*\\{([^}]*)\\}`,
+        "gmi",
+      );
+      return [...css.matchAll(pattern)].map((hit) => ({
+        file,
+        body: hit[1]!,
+      }));
+    });
+
+  const declarations = (body: string, property: RegExp) =>
+    [...body.matchAll(property)].map((hit) => ({
+      property: hit[1]!,
+      value: hit[2]!.trim(),
+    }));
+
+  it("no component claims space outside itself", () => {
+    /**
+     * `Panel` had `margin: 0 0 var(--uix-gap-xl)`. It looked right on the
+     * page it was designed for, and it is a decision that depends on what
+     * the component sits next to — which the component cannot know. Two of
+     * them side by side collapse, or do not, depending on which properties
+     * each chose, and a conditional sibling breaks it outright.
+     *
+     * Found by `Stack`'s first test on its first run. Space is the
+     * container's, so it belongs to `Stack`, `Cluster` and `Columns`.
+     *
+     * Zero is allowed, because resetting an inherited margin is not
+     * claiming space. `auto` is allowed, because that is centring, which is
+     * what `Container` does and the one legitimate outer margin here.
+     */
+    /* The lookbehind is not decoration. Without it the width rule below
+       matched the tail of `border-inline-start-width`, and reported Banner's
+       4px severity bar as a component fixing its own width. A property name
+       is only that property when nothing word-like precedes it. */
+    const MARGIN =
+      /(?<![-\w])(margin(?:-block|-inline)?(?:-start|-end|-top|-bottom|-left|-right)?)\s*:\s*([^;]+);/g;
+    const offenders: string[] = [];
+    for (const { file, body } of rootRules()) {
+      for (const { property, value } of declarations(body, MARGIN)) {
+        const parts = value.split(/\s+/).filter(Boolean);
+        const inert = parts.every((part) =>
+          ["0", "0px", "0rem", "0em", "auto"].includes(part),
+        );
+        if (!inert) offenders.push(`${file}: ${property}: ${value}`);
+      }
+    }
+    expect(
+      offenders,
+      "a component's root is setting an outer margin. Space between things " +
+        "belongs to the container that holds them — wrap the callers in a " +
+        "Stack and take it off here.",
+    ).toEqual([]);
+  });
+
+  /**
+   * Components whose width is not a layout claim, with the reason.
+   *
+   * The rule is that a component composed into a column may not decide how
+   * wide that column is. Two kinds of component are not in a column at all:
+   * an overlay in the top layer, whose width is its own and which already
+   * clamps itself to the viewport, and a control whose size is intrinsic to
+   * the thing being drawn.
+   */
+  const FIXED_WIDTH_OK: Record<string, string> = {
+    "Dialog.css":
+      "an overlay in the top layer, not in any column. Already clamped to " +
+      "the viewport, which is the responsive behaviour a caller wants and " +
+      "cannot supply from outside.",
+    "Popover.css": "an overlay, same as Dialog",
+    "Toaster.css": "an overlay, same as Dialog",
+    "Switch.css":
+      "the track is the control, and its width is a drawing dimension in " +
+      "the same sense as a checkbox's. It scales with the control tokens " +
+      "rather than with the column it sits in.",
+  };
+
+  it("has no width exemption for a component that no longer needs one", () => {
+    /* The other direction, so the list above cannot outlive its reasons —
+       the same shape as the keyboard map's stale-exemption check. */
+    const WIDTH = /(?<![-\w])(inline-size|width)\s*:\s*([^;]+);/g;
+    const fixes = new Set<string>();
+    for (const { file, body } of rootRules()) {
+      for (const { value } of declarations(body, WIDTH)) {
+        const ok =
+          /^(100%|auto|inherit|fit-content|max-content|min-content|stretch)$/.test(
+            value,
+          ) || value.startsWith("var(");
+        if (!ok) fixes.add(file);
+      }
+    }
+    const stale = Object.keys(FIXED_WIDTH_OK).filter(
+      (file) => !fixes.has(file),
+    );
+    expect(stale, "these are exempted and no longer fix a width").toEqual([]);
+  });
+
+  it("no component fixes its own width", () => {
+    /**
+     * A component with a fixed `inline-size` cannot be put in a narrower
+     * column, and the failure is silent: it overflows, or it forces its
+     * parent wider, and either way the page it was assembled into is wrong
+     * rather than the component. `max-inline-size` is fine — that is a
+     * ceiling, not a demand — and so is `100%`.
+     */
+    const WIDTH = /(?<![-\w])(inline-size|width)\s*:\s*([^;]+);/g;
+    const offenders: string[] = [];
+    for (const { file, body } of rootRules()) {
+      for (const { property, value } of declarations(body, WIDTH)) {
+        const ok =
+          /^(100%|auto|inherit|fit-content|max-content|min-content|stretch)$/.test(
+            value,
+          ) || value.startsWith("var(");
+        if (!ok && !FIXED_WIDTH_OK[file]) {
+          offenders.push(`${file}: ${property}: ${value}`);
+        }
+      }
+    }
+    expect(
+      offenders,
+      "a component's root is fixing its own width, so it cannot be composed " +
+        "into a narrower column. Use a maximum, let the container decide, or " +
+        "add it to FIXED_WIDTH_OK with the reason it is not in a column.",
+    ).toEqual([]);
+  });
+
+  it("no component hard-codes a heading level", () => {
+    /**
+     * A heading's level is a property of where the component sits, which is
+     * the one thing it cannot see. `src/heading.tsx` supplies it from
+     * position instead. A literal `<h2>` in a component is a page outline
+     * decided by whoever wrote the component rather than by the page.
+     *
+     * Story files are exempt: a story is a page, and a page may write its
+     * own headings.
+     */
+    const offenders: string[] = [];
+    for (const file of readdirSync(COMPONENTS)) {
+      if (!file.endsWith(".tsx") || file.includes(".stories.")) continue;
+      const source = strip(readFileSync(join(COMPONENTS, file), "utf8"));
+      for (const hit of source.matchAll(/<(h[1-6])[\s>]/g)) {
+        offenders.push(`${file}: <${hit[1]}>`);
+      }
+    }
+    expect(
+      offenders,
+      "a component contains a literal heading element. Use `Heading` from " +
+        "src/heading.tsx, which takes its level from position.",
+    ).toEqual([]);
+  });
+});

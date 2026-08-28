@@ -317,7 +317,7 @@ indefinitely is the shape stage 08 warns about.
 
 Two consequences worth stating rather than leaving implied:
 
-- The 150 cells in `src/audit/screen-readers.ts` stay, and stay empty. That
+- The 174 cells in `src/audit/screen-readers.ts` stay, and stay empty. That
   file is now the accurate record of what this library has **not** verified
   rather than a plan to verify it, and its docstring says so. Deleting it
   would have been the dishonest option: the library would read as better
@@ -433,8 +433,8 @@ needs a flag, a consent and an endpoint.
 
 ## 12 — Readable by an agent (stands)
 
-Stands: `packages/ui/inventory.json`, generated from source — 50
-components, 358 own props with type and documentation, 29 compound parts,
+Stands: `packages/ui/inventory.json`, generated from source — 58
+components, 399 own props with type and documentation, 29 compound parts,
 the override slots, the status, and the sentences saying when to reach for
 something else. A gate fails when the file has drifted. Plus
 `AGENTS.md`: the rules as instructions, each with the gate that enforces

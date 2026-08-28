@@ -1,0 +1,71 @@
+/* AppShell styles, shipped with the component.
+   A page that never imports AppShell never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-appshell {
+    /* Declared, or the query below never matches. A container query asks
+       how wide *this* is; without `container-type` there is no this to
+       ask about, and the rule is dead CSS that looks load-bearing. */
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    /* The frame fills the viewport so a short page still puts its footer at
+       the bottom, and `min-block-size` rather than `block-size` so a long
+       one is not clipped. */
+    min-block-size: 100dvh;
+  }
+
+  .uix-appshell-body {
+    display: flex;
+    flex: 1;
+    min-block-size: 0;
+    min-inline-size: 0;
+  }
+
+  /* Wraps to the top on a narrow viewport by dropping out of the row, with
+     no query: the navigation states a width it will not shrink past and the
+     main states a minimum, exactly as in Split. */
+  .uix-appshell-nav {
+    flex: 0 0 var(--uix-appshell-nav, 15rem);
+    min-inline-size: 0;
+    border-inline-end: 1px solid var(--uix-border-subtle);
+  }
+
+  .uix-appshell-main {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+
+  .uix-appshell[data-nav-width="sm"] {
+    --uix-appshell-nav: 12rem;
+  }
+  .uix-appshell[data-nav-width="md"] {
+    --uix-appshell-nav: 15rem;
+  }
+  .uix-appshell[data-nav-width="lg"] {
+    --uix-appshell-nav: 19rem;
+  }
+
+  .uix-appshell-header {
+    border-block-end: 1px solid var(--uix-border-subtle);
+  }
+
+  .uix-appshell-footer {
+    border-block-start: 1px solid var(--uix-border-subtle);
+    color: var(--uix-text-secondary);
+  }
+
+  @container (max-width: 48rem) {
+    .uix-appshell-body {
+      flex-wrap: wrap;
+    }
+
+    .uix-appshell-nav {
+      flex-basis: 100%;
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--uix-border-subtle);
+    }
+  }
+}

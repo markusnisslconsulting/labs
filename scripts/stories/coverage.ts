@@ -68,6 +68,17 @@ const EXCEPTIONS: Record<
   string,
   { props?: string[]; keyboard?: string; reason: string }
 > = {
+  AppShell: {
+    props: ["navWidth"],
+    reason:
+      "A page has one shell. Photographing the three nav widths side by " +
+      "side means three banner landmarks, three mains and three footers in " +
+      "one document, which axe refuses under landmark-no-duplicate-banner " +
+      "and which is right to refuse: duplicated landmarks are exactly the " +
+      "defect this component exists to prevent, so a story demonstrating " +
+      "the component would have to commit it. The widths are three values " +
+      "of one custom property, asserted in the browser suite instead.",
+  },
   Menu: {
     props: ["side", "align"],
     reason:

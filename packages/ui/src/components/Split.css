@@ -1,0 +1,59 @@
+/* Split styles, shipped with the component.
+   A page that never imports Split never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-split {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  /* The narrow half states a preferred width and is allowed to shrink no
+     further; the wide half states a minimum it needs to stay useful. When
+     the two no longer fit, `flex-wrap` stacks them. That is the whole
+     mechanism: no query, so no viewport assumption, so it behaves the same
+     inside a drawer as it does on a page. */
+  .uix-split-side {
+    flex: 0 1 var(--uix-split-side, 18rem);
+    min-inline-size: 0;
+  }
+
+  .uix-split-main {
+    flex: 1 1 var(--uix-split-main-min, 24rem);
+    min-inline-size: 0;
+  }
+
+  .uix-split[data-side-width="sm"] {
+    --uix-split-side: 14rem;
+  }
+  .uix-split[data-side-width="md"] {
+    --uix-split-side: 18rem;
+  }
+  .uix-split[data-side-width="lg"] {
+    --uix-split-side: 24rem;
+  }
+
+  .uix-split[data-gap="none"] {
+    gap: 0;
+  }
+  .uix-split[data-gap="xs"] {
+    gap: var(--uix-gap-xs);
+  }
+  .uix-split[data-gap="sm"] {
+    gap: var(--uix-gap-sm);
+  }
+  .uix-split[data-gap="md"] {
+    gap: var(--uix-gap-md);
+  }
+  .uix-split[data-gap="lg"] {
+    gap: var(--uix-gap-lg);
+  }
+  .uix-split[data-gap="xl"] {
+    gap: var(--uix-gap-xl);
+  }
+  .uix-split[data-gap="2xl"] {
+    gap: var(--uix-gap-2xl);
+  }
+}

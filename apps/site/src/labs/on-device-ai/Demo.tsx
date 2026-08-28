@@ -1,5 +1,6 @@
 import { Button } from "@labs/ui/components/Button";
 import { Panel } from "@labs/ui/components/Panel";
+import { Stack } from "@labs/ui/components/Stack";
 import { StatusPill } from "@labs/ui/components/StatusPill";
 import { useEffect, useState } from "react";
 
@@ -226,171 +227,181 @@ const OnDeviceDemo = () => {
 
   return (
     <Panel label="Live · the seven built-in APIs, checked on this machine">
-      <ul className="demo-status">
-        <li>
-          Language Detector ·{" "}
-          <StatusPill tone={toneOf(detector)}>
-            {stateLabel[detector]}
-          </StatusPill>
-        </li>
-        <li>
-          Translator (de → en) ·{" "}
-          <StatusPill tone={toneOf(translator)}>
-            {stateLabel[translator]}
-          </StatusPill>
-        </li>
-        <li>
-          Summarizer ·{" "}
-          <StatusPill tone={toneOf(summarizer)}>
-            {stateLabel[summarizer]}
-          </StatusPill>
-        </li>
-        <li>
-          Prompt ·{" "}
-          <StatusPill tone={toneOf(prompt)}>{stateLabel[prompt]}</StatusPill>
-        </li>
-        <li>
-          Writer ·{" "}
-          <StatusPill tone={toneOf(writer)}>{stateLabel[writer]}</StatusPill>
-        </li>
-        <li>
-          Rewriter ·{" "}
-          <StatusPill tone={toneOf(rewriter)}>
-            {stateLabel[rewriter]}
-          </StatusPill>
-        </li>
-        <li>
-          Proofreader ·{" "}
-          <StatusPill tone={toneOf(proofreader)}>
-            {stateLabel[proofreader]}
-          </StatusPill>
-        </li>
-      </ul>
+      {/* The space between these used to come from each Panel's own bottom
+          margin, which is gone. Several of them are conditional, and a
+          margin on a conditional sibling is the case that breaks first. */}
+      <Stack gap="lg">
+        <ul className="demo-status">
+          <li>
+            Language Detector ·{" "}
+            <StatusPill tone={toneOf(detector)}>
+              {stateLabel[detector]}
+            </StatusPill>
+          </li>
+          <li>
+            Translator (de → en) ·{" "}
+            <StatusPill tone={toneOf(translator)}>
+              {stateLabel[translator]}
+            </StatusPill>
+          </li>
+          <li>
+            Summarizer ·{" "}
+            <StatusPill tone={toneOf(summarizer)}>
+              {stateLabel[summarizer]}
+            </StatusPill>
+          </li>
+          <li>
+            Prompt ·{" "}
+            <StatusPill tone={toneOf(prompt)}>{stateLabel[prompt]}</StatusPill>
+          </li>
+          <li>
+            Writer ·{" "}
+            <StatusPill tone={toneOf(writer)}>{stateLabel[writer]}</StatusPill>
+          </li>
+          <li>
+            Rewriter ·{" "}
+            <StatusPill tone={toneOf(rewriter)}>
+              {stateLabel[rewriter]}
+            </StatusPill>
+          </li>
+          <li>
+            Proofreader ·{" "}
+            <StatusPill tone={toneOf(proofreader)}>
+              {stateLabel[proofreader]}
+            </StatusPill>
+          </li>
+        </ul>
 
-      <textarea
-        className="demo-textarea"
-        value={text}
-        onChange={(event) => setText(event.target.value)}
-        aria-label="Text to translate on this machine"
-      />
-      <div className="demo-actions">
-        <button
-          type="button"
-          className="demo-button"
-          disabled={!supported || phase === "working"}
-          onClick={() => run(false)}
-        >
-          {phase === "working"
-            ? "Working…"
-            : "Detect and translate on this machine"}
-        </button>
-        {phase === "needs-download" ? (
+        <textarea
+          className="demo-textarea"
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          aria-label="Text to translate on this machine"
+        />
+        <div className="demo-actions">
           <button
             type="button"
-            className="demo-button ghost"
-            onClick={() => run(true)}
+            className="demo-button"
+            disabled={!supported || phase === "working"}
+            onClick={() => run(false)}
           >
-            Download the language pack (small) and translate
+            {phase === "working"
+              ? "Working…"
+              : "Detect and translate on this machine"}
           </button>
-        ) : null}
-        {summarizer === "available" || summarizer === "downloadable" ? (
-          <Button variant="outline" disabled={summarising} onClick={runSummary}>
-            {summarising
-              ? "Summarising…"
-              : summarizer === "available"
-                ? "Summarise a sample ticket thread (three bullets)"
-                : "Download the shared model (several GB) and summarise"}
-          </Button>
-        ) : null}
-        {prompt === "available" || prompt === "downloadable" ? (
-          <Button variant="outline" disabled={asking} onClick={runAsk}>
-            {asking
-              ? "Asking…"
-              : prompt === "available"
-                ? "Ask: extract order number and issue (JSON)"
-                : "Download the shared model (several GB) and ask"}
-          </Button>
-        ) : null}
-      </div>
-
-      {progress !== null ? (
-        <div
-          className="demo-progress"
-          role="progressbar"
-          aria-label="Model download"
-        >
-          <span style={{ width: `${Math.round(progress * 100)}%` }} />
+          {phase === "needs-download" ? (
+            <button
+              type="button"
+              className="demo-button ghost"
+              onClick={() => run(true)}
+            >
+              Download the language pack (small) and translate
+            </button>
+          ) : null}
+          {summarizer === "available" || summarizer === "downloadable" ? (
+            <Button
+              variant="outline"
+              disabled={summarising}
+              onClick={runSummary}
+            >
+              {summarising
+                ? "Summarising…"
+                : summarizer === "available"
+                  ? "Summarise a sample ticket thread (three bullets)"
+                  : "Download the shared model (several GB) and summarise"}
+            </Button>
+          ) : null}
+          {prompt === "available" || prompt === "downloadable" ? (
+            <Button variant="outline" disabled={asking} onClick={runAsk}>
+              {asking
+                ? "Asking…"
+                : prompt === "available"
+                  ? "Ask: extract order number and issue (JSON)"
+                  : "Download the shared model (several GB) and ask"}
+            </Button>
+          ) : null}
         </div>
-      ) : null}
 
-      {phase === "needs-download" && result ? (
-        <p className="demo-note">
-          Detected {result.lang}. The {result.lang} → en pack is not on this
-          machine yet. Downloading it is your call, which is exactly how{" "}
-          <code>create()</code> should be treated in a product.
-        </p>
-      ) : null}
+        {progress !== null ? (
+          <div
+            className="demo-progress"
+            role="progressbar"
+            aria-label="Model download"
+          >
+            <span style={{ width: `${Math.round(progress * 100)}%` }} />
+          </div>
+        ) : null}
 
-      {phase === "done" && result ? (
-        <Panel>
-          Detected <strong>{result.lang}</strong> → &ldquo;{result.english}
-          &rdquo;
+        {phase === "needs-download" && result ? (
           <p className="demo-note">
-            That sentence was translated on your machine. Nothing was sent to a
-            server; the network tab can confirm it.
+            Detected {result.lang}. The {result.lang} → en pack is not on this
+            machine yet. Downloading it is your call, which is exactly how{" "}
+            <code>create()</code> should be treated in a product.
           </p>
-        </Panel>
-      ) : null}
+        ) : null}
 
-      {summary ? (
-        <Panel>
-          <strong>Key points</strong>
-          <p style={{ whiteSpace: "pre-line", margin: "0.5rem 0 0" }}>
-            {summary}
-          </p>
+        {phase === "done" && result ? (
+          <Panel>
+            Detected <strong>{result.lang}</strong> → &ldquo;{result.english}
+            &rdquo;
+            <p className="demo-note">
+              That sentence was translated on your machine. Nothing was sent to
+              a server; the network tab can confirm it.
+            </p>
+          </Panel>
+        ) : null}
+
+        {summary ? (
+          <Panel>
+            <strong>Key points</strong>
+            <p style={{ whiteSpace: "pre-line", margin: "0.5rem 0 0" }}>
+              {summary}
+            </p>
+            <p className="demo-note">
+              Short key points, plain text: the documented shape from the budget
+              section, produced on your machine from a four-message sample
+              thread.
+            </p>
+          </Panel>
+        ) : null}
+
+        {extracted ? (
+          <Panel>
+            <strong>Extracted</strong>
+            <p style={{ whiteSpace: "pre-line", margin: "0.5rem 0 0" }}>
+              <code>{extracted}</code>
+            </p>
+            <p className="demo-note">
+              The escape hatch with a schema: the Prompt API had to answer in
+              the declared JSON shape, on your machine.
+            </p>
+          </Panel>
+        ) : null}
+
+        {error ? <p className="demo-note">{error}</p> : null}
+
+        {!supported && detector !== "checking" ? (
           <p className="demo-note">
-            Short key points, plain text: the documented shape from the budget
-            section, produced on your machine from a four-message sample thread.
+            Your browser does not expose these APIs. You are looking at the{" "}
+            <code>unavailable</code> state the article says to design for. In a
+            current desktop Chrome, the buttons above run entirely on the local
+            machine.
           </p>
-        </Panel>
-      ) : null}
-
-      {extracted ? (
-        <Panel>
-          <strong>Extracted</strong>
-          <p style={{ whiteSpace: "pre-line", margin: "0.5rem 0 0" }}>
-            <code>{extracted}</code>
-          </p>
+        ) : (
           <p className="demo-note">
-            The escape hatch with a schema: the Prompt API had to answer in the
-            declared JSON shape, on your machine.
+            The chips are live <code>availability()</code> answers from your
+            browser, for this origin, on this machine, for everything Chrome
+            offers today. Nothing downloads without your click, and every
+            download button says what it fetches: the language pack is small,
+            the shared model behind Summarise and Ask is a multi-gigabyte
+            download. Write, rewrite and proofread are in trials; they appear as
+            states here until their API shape settles.
+            {modelPresent
+              ? " The shared model is on this machine, so Summarise and Ask run immediately."
+              : ""}
           </p>
-        </Panel>
-      ) : null}
-
-      {error ? <p className="demo-note">{error}</p> : null}
-
-      {!supported && detector !== "checking" ? (
-        <p className="demo-note">
-          Your browser does not expose these APIs. You are looking at the{" "}
-          <code>unavailable</code> state the article says to design for. In a
-          current desktop Chrome, the buttons above run entirely on the local
-          machine.
-        </p>
-      ) : (
-        <p className="demo-note">
-          The chips are live <code>availability()</code> answers from your
-          browser, for this origin, on this machine, for everything Chrome
-          offers today. Nothing downloads without your click, and every download
-          button says what it fetches: the language pack is small, the shared
-          model behind Summarise and Ask is a multi-gigabyte download. Write,
-          rewrite and proofread are in trials; they appear as states here until
-          their API shape settles.
-          {modelPresent
-            ? " The shared model is on this machine, so Summarise and Ask run immediately."
-            : ""}
-        </p>
-      )}
+        )}
+      </Stack>
     </Panel>
   );
 };

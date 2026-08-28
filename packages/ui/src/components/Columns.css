@@ -1,0 +1,49 @@
+/* Columns styles, shipped with the component.
+   A page that never imports Columns never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-columns {
+    display: grid;
+    /* `min()` against 100% so a single column still fits a container
+       narrower than the minimum. Without it the grid overflows its parent
+       on a phone, which is the classic auto-fit defect. */
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, var(--uix-columns-min, 17rem)), 1fr)
+    );
+  }
+
+  .uix-columns[data-min="sm"] {
+    --uix-columns-min: 12rem;
+  }
+  .uix-columns[data-min="md"] {
+    --uix-columns-min: 17rem;
+  }
+  .uix-columns[data-min="lg"] {
+    --uix-columns-min: 24rem;
+  }
+
+  .uix-columns[data-gap="none"] {
+    gap: 0;
+  }
+  .uix-columns[data-gap="xs"] {
+    gap: var(--uix-gap-xs);
+  }
+  .uix-columns[data-gap="sm"] {
+    gap: var(--uix-gap-sm);
+  }
+  .uix-columns[data-gap="md"] {
+    gap: var(--uix-gap-md);
+  }
+  .uix-columns[data-gap="lg"] {
+    gap: var(--uix-gap-lg);
+  }
+  .uix-columns[data-gap="xl"] {
+    gap: var(--uix-gap-xl);
+  }
+  .uix-columns[data-gap="2xl"] {
+    gap: var(--uix-gap-2xl);
+  }
+}

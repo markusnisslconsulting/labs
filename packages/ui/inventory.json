@@ -47,6 +47,53 @@
       "accessibility": "`warning` and `danger` render `role=\"alert\"` (assertive — something needs attention now); `info` and `success` render `role=\"status\"` (polite). Severity is always repeated in the title/text, never carried by colour alone"
     },
     {
+      "component": "AppShell",
+      "props": [
+        {
+          "name": "header",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "The banner: product name, global search, account."
+        },
+        {
+          "name": "nav",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Primary navigation, beside the content on a wide screen."
+        },
+        {
+          "name": "navLabel",
+          "type": "string",
+          "required": false,
+          "doc": "What the navigation is called."
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Site-wide footer: legal, version, support."
+        },
+        {
+          "name": "navWidth",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false,
+          "doc": "How wide the navigation wants to be."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The page."
+        }
+      ],
+      "parts": [],
+      "slots": [{ "token": "--uix-appshell-nav", "default": "15rem" }],
+      "status": "stable",
+      "useFor": "the frame every page in an application sits in",
+      "insteadWhen": "the two regions are content rather than chrome (`Split`), or the page has no frame at all",
+      "accessibility": "`header`, `nav`, `main` and `footer` as real elements, so the landmarks come from the markup rather than from `role` attributes on `div`s. Content inside `main` starts at heading level 1"
+    },
+    {
       "component": "Avatar",
       "props": [
         {
@@ -377,6 +424,60 @@
       "accessibility": "a static chip is a `span` and says nothing on its own; a filter chip is a native `button` with `aria-pressed`, so its state reaches assistive technology without a hidden checkbox. It is a toggle rather than a link because activating it changes this page"
     },
     {
+      "component": "Cluster",
+      "props": [
+        {
+          "name": "gap",
+          "type": "StackGap",
+          "required": false,
+          "doc": "Between items, and between lines once they wrap."
+        },
+        {
+          "name": "align",
+          "type": "\"start\" | \"center\" | \"end\" | \"baseline\"",
+          "required": false
+        },
+        {
+          "name": "justify",
+          "type": "\"start\" | \"center\" | \"end\" | \"between\"",
+          "required": false
+        },
+        { "name": "renderAs", "type": "Renderable", "required": false },
+        { "name": "children", "type": "ReactNode", "required": true }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "a row of small things that may wrap: filter chips, a set of actions, tags, breadcrumb-like runs",
+      "insteadWhen": "the children are equal columns of content (`Columns`) or a single axis that must not wrap (`Stack`)",
+      "accessibility": "a `div` with no role. `renderAs={<ul />}` when the set is a list rather than a row of controls"
+    },
+    {
+      "component": "Columns",
+      "props": [
+        {
+          "name": "min",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false,
+          "doc": "How narrow a column may get before the row drops one."
+        },
+        {
+          "name": "gap",
+          "type": "StackGap",
+          "required": false,
+          "doc": "Between columns and between rows."
+        },
+        { "name": "renderAs", "type": "Renderable", "required": false },
+        { "name": "children", "type": "ReactNode", "required": true }
+      ],
+      "parts": [],
+      "slots": [{ "token": "--uix-columns-min", "default": "17rem" }],
+      "status": "stable",
+      "useFor": "equal columns that reflow: card grids, tile lists, a row of summary panels",
+      "insteadWhen": "the two sides are not equal and one of them is a sidebar (`Split`), or the children are a single run that may wrap (`Cluster`)",
+      "accessibility": "a `div` with no role. `renderAs={<ul />}` when it is a list"
+    },
+    {
       "component": "Combobox",
       "props": [
         {
@@ -512,6 +613,35 @@
       "useFor": "reaching any action or place in an application by typing",
       "insteadWhen": "the set is small and stable: that is a `Menu`, and a palette over six commands is a search box in front of a list nobody needed to search",
       "accessibility": "a `combobox` with `aria-expanded` and `aria-controls`, over a `listbox` of `option`s, inside a modal dialog. Focus **stays in the text field** the whole time and the highlighted row is reported with `aria-activedescendant` — which is the whole reason this is not the tree or toolbar pattern. Moving DOM focus onto each row as the arrows walk it would take focus out of the input, and then typing anot"
+    },
+    {
+      "component": "Container",
+      "props": [
+        {
+          "name": "width",
+          "type": "\"prose\" | \"app\" | \"full\"",
+          "required": false,
+          "doc": "How wide the content may grow."
+        },
+        {
+          "name": "flush",
+          "type": "boolean",
+          "required": false,
+          "doc": "Drop the page gutter, for a container nested inside another."
+        },
+        { "name": "renderAs", "type": "Renderable", "required": false },
+        { "name": "children", "type": "ReactNode", "required": true }
+      ],
+      "parts": [],
+      "slots": [
+        { "token": "--uix-measure-app", "default": "80rem" },
+        { "token": "--uix-measure-prose", "default": "68ch" },
+        { "token": "--uix-page-gutter", "default": "var(--uix-gap-lg)" }
+      ],
+      "status": "stable",
+      "useFor": "the one decision every page shares: how wide the content gets and how far it stays from the edge",
+      "insteadWhen": "the element is inside a page that already has a container — nest `Stack` and `Columns` instead, or pass `flush`",
+      "accessibility": "a `div` with no role. `renderAs={<main />}` when this is the page's main landmark and no `AppShell` is providing one"
     },
     {
       "component": "DataTable",
@@ -1178,6 +1308,47 @@
       "accessibility": "Base UI renders a labelled-capable input with `aria-valuenow`-style announcements, and the steppers are real buttons with names (\"Decrease\"/\"Increase\" from the locale)"
     },
     {
+      "component": "PageHeader",
+      "props": [
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The page's name."
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "One line saying what the page is for."
+        },
+        {
+          "name": "breadcrumb",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Where a `Breadcrumb` goes, above the title."
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "The page's primary controls, beside the title on a wide screen."
+        },
+        {
+          "name": "meta",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Status beside the title: a `StatusPill`, a `Badge`, a count."
+        }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "the top of a page: name, one line of context, the controls that act on the whole page",
+      "insteadWhen": "the region is inside the page rather than the top of it (`Section`)",
+      "accessibility": "a `div`, and the heading carries the meaning. The first version used a `header` element, on the reasoning that `header` is a `banner` landmark only outside `main`, `section`, `article`, `aside` and `nav` — which is true, and which makes the element's meaning a property of where somebody put it. axe caught it immediately: four of these in one frame are four banner landmarks, and a page with an `App"
+    },
+    {
       "component": "Pagination",
       "props": [
         { "name": "pageCount", "type": "number", "required": true },
@@ -1421,6 +1592,42 @@
       "accessibility": "an accessible name is required, not optional. `label` renders a real `label` element, visually hidden by default because a search field beside a magnifier rarely wants a visible one — hidden is not absent. Before this the component took no label at all, so an unnamed search box was the default and every caller had to remember `aria-label`"
     },
     {
+      "component": "Section",
+      "props": [
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "The section's heading."
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "A line under the heading, for what the section is."
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "required": false,
+          "doc": "Controls that belong to this section, shown beside the heading."
+        },
+        {
+          "name": "gap",
+          "type": "StackGap",
+          "required": false,
+          "doc": "Between the header and the content."
+        },
+        { "name": "children", "type": "ReactNode", "required": true }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "a titled region of a page",
+      "insteadWhen": "the region is a surface with a border (`Panel`), a summary that links away (`Card`), or has no heading at all, where a `Stack` is the whole answer",
+      "accessibility": "a `section`, which is a `region` landmark once it has an accessible name and a generic container until then. The name comes from the heading through `aria-labelledby`, so the two cannot drift apart — which needs an `id` on the section, and without one the landmark is skipped rather than left unnamed. What the caller still owes: an `id` when the region is worth jumping to, and a `title` that reads "
+    },
+    {
       "component": "SegmentedControl",
       "props": [
         {
@@ -1607,6 +1814,45 @@
       "accessibility": "`role=\"status\"` with a visually hidden label, so screen readers announce the wait without seeing a shape"
     },
     {
+      "component": "Split",
+      "props": [
+        {
+          "name": "side",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The narrow half: a filter panel, a detail rail, a table of contents."
+        },
+        {
+          "name": "sidePosition",
+          "type": "\"start\" | \"end\"",
+          "required": false,
+          "doc": "Which edge the narrow half sits on, logically."
+        },
+        {
+          "name": "sideWidth",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "required": false,
+          "doc": "How wide the narrow half wants to be."
+        },
+        { "name": "gap", "type": "StackGap", "required": false },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "doc": "The wide half."
+        }
+      ],
+      "parts": [],
+      "slots": [
+        { "token": "--uix-split-side", "default": "18rem" },
+        { "token": "--uix-split-main-min", "default": "24rem" }
+      ],
+      "status": "stable",
+      "useFor": "two halves that are not equal: a list beside a detail, a filter rail beside results, content beside a table of contents",
+      "insteadWhen": "the halves are equal and reflow (`Columns`), or the whole page's regions are the question (`AppShell`)",
+      "accessibility": "two `div`s and no roles. Give the side its own landmark where it deserves one — `<Split side={<nav aria-label=\"Filters\">…</nav>}>`"
+    },
+    {
       "component": "SplitButton",
       "props": [
         {
@@ -1662,6 +1908,52 @@
       "useFor": "one action people take most of the time, with variants behind it — Save, with Save and close, Save as draft",
       "insteadWhen": "no option is the obvious default: that is a `Menu`, and pretending one of a set of equals is the default makes the others hard to find",
       "accessibility": "two buttons, not one button with two click regions. The primary half is a plain `<button>`; the arrow is a menu trigger with `aria-haspopup=\"menu\"` and its own accessible name from `menuLabel`. A single button that opened a menu when clicked on the right would be one control announcing one name and doing two things, and a keyboard could only ever reach one of them. The arrow is `aria-hidden`, beca"
+    },
+    {
+      "component": "Stack",
+      "props": [
+        {
+          "name": "direction",
+          "type": "\"block\" | \"inline\"",
+          "required": false,
+          "doc": "Which axis the children run along, named logically."
+        },
+        {
+          "name": "gap",
+          "type": "StackGap",
+          "required": false,
+          "doc": "The space between children, from the density-scaled scale."
+        },
+        {
+          "name": "align",
+          "type": "\"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\"",
+          "required": false
+        },
+        {
+          "name": "justify",
+          "type": "\"start\" | \"center\" | \"end\" | \"between\"",
+          "required": false
+        },
+        {
+          "name": "wrap",
+          "type": "boolean",
+          "required": false,
+          "doc": "Wrap onto more lines when the children do not fit."
+        },
+        {
+          "name": "renderAs",
+          "type": "Renderable",
+          "required": false,
+          "doc": "Render as a different element, keeping every style."
+        },
+        { "name": "children", "type": "ReactNode", "required": true }
+      ],
+      "parts": [],
+      "slots": [],
+      "status": "stable",
+      "useFor": "the space between things",
+      "insteadWhen": "the children need to wrap into a grid of equal columns (`Columns`) or to form a wrapping row of small items (`Cluster`)",
+      "accessibility": "a `div` with no role, so it adds nothing to the tree. Use `renderAs` when the grouping is meaningful — `renderAs={<ul />}` for a list, and then the children are `<li>`"
     },
     {
       "component": "StatusPill",

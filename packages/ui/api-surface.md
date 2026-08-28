@@ -94,6 +94,32 @@ export declare function Alert({
 export {};
 ```
 
+## AppShell
+
+```ts
+interface AppShellOwnProps {
+  header?: ReactNode;
+  nav?: ReactNode;
+  navLabel?: string;
+  footer?: ReactNode;
+  navWidth?: "sm" | "md" | "lg";
+  children: ReactNode;
+}
+export type AppShellProps = AppShellOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof AppShellOwnProps>;
+export declare function AppShell({
+  header,
+  nav,
+  navLabel,
+  footer,
+  navWidth,
+  children,
+  className,
+  ...rest
+}: AppShellProps): import("react").JSX.Element;
+export {};
+```
+
 ## Avatar
 
 ```ts
@@ -359,6 +385,54 @@ export declare function Chip({
 export {};
 ```
 
+## Cluster
+
+```ts
+interface ClusterOwnProps {
+  gap?: StackGap;
+  align?: "start" | "center" | "end" | "baseline";
+  justify?: "start" | "center" | "end" | "between";
+  renderAs?: Renderable;
+  children: ReactNode;
+}
+export type ClusterProps = ClusterOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof ClusterOwnProps>;
+export declare function Cluster({
+  gap,
+  align,
+  justify,
+  renderAs,
+  children,
+  className,
+  style,
+  ...rest
+}: ClusterProps): import("react").JSX.Element;
+export {};
+```
+
+## Columns
+
+```ts
+interface ColumnsOwnProps {
+  min?: "sm" | "md" | "lg";
+  gap?: StackGap;
+  renderAs?: Renderable;
+  children: ReactNode;
+}
+export type ColumnsProps = ColumnsOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof ColumnsOwnProps>;
+export declare function Columns({
+  min,
+  gap,
+  renderAs,
+  children,
+  className,
+  style,
+  ...rest
+}: ColumnsProps): import("react").JSX.Element;
+export {};
+```
+
 ## Combobox
 
 ```ts
@@ -461,6 +535,29 @@ export declare function CommandPalette({
   className,
   ...rest
 }: CommandPaletteProps): import("react").JSX.Element;
+export {};
+```
+
+## Container
+
+```ts
+interface ContainerOwnProps {
+  width?: "prose" | "app" | "full";
+  flush?: boolean;
+  renderAs?: Renderable;
+  children: ReactNode;
+}
+export type ContainerProps = ContainerOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof ContainerOwnProps>;
+export declare function Container({
+  width,
+  flush,
+  renderAs,
+  children,
+  className,
+  style,
+  ...rest
+}: ContainerProps): import("react").JSX.Element;
 export {};
 ```
 
@@ -1045,6 +1142,30 @@ export declare function NumberField({
 export {};
 ```
 
+## PageHeader
+
+```ts
+interface PageHeaderOwnProps {
+  title: ReactNode;
+  description?: ReactNode;
+  breadcrumb?: ReactNode;
+  actions?: ReactNode;
+  meta?: ReactNode;
+}
+export type PageHeaderProps = PageHeaderOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof PageHeaderOwnProps>;
+export declare function PageHeader({
+  title,
+  description,
+  breadcrumb,
+  actions,
+  meta,
+  className,
+  ...rest
+}: PageHeaderProps): import("react").JSX.Element;
+export {};
+```
+
 ## Pagination
 
 ```ts
@@ -1243,6 +1364,31 @@ export declare function SearchInput({
 }: SearchInputProps): import("react").JSX.Element;
 ```
 
+## Section
+
+```ts
+interface SectionOwnProps {
+  title?: ReactNode;
+  description?: ReactNode;
+  actions?: ReactNode;
+  gap?: StackGap;
+  children: ReactNode;
+}
+export type SectionProps = SectionOwnProps &
+  Omit<ComponentPropsWithRef<"section">, keyof SectionOwnProps>;
+export declare function Section({
+  title,
+  description,
+  actions,
+  gap,
+  children,
+  className,
+  id,
+  ...rest
+}: SectionProps): import("react").JSX.Element;
+export {};
+```
+
 ## SegmentedControl
 
 ```ts
@@ -1403,6 +1549,31 @@ export declare function Spinner({
 export {};
 ```
 
+## Split
+
+```ts
+interface SplitOwnProps {
+  side: ReactNode;
+  sidePosition?: "start" | "end";
+  sideWidth?: "sm" | "md" | "lg";
+  gap?: StackGap;
+  children: ReactNode;
+}
+export type SplitProps = SplitOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof SplitOwnProps>;
+export declare function Split({
+  side,
+  sidePosition,
+  sideWidth,
+  gap,
+  children,
+  className,
+  style,
+  ...rest
+}: SplitProps): import("react").JSX.Element;
+export {};
+```
+
 ## SplitButton
 
 ```ts
@@ -1449,6 +1620,36 @@ export declare namespace SplitButton {
     ...rest
   }: import("./Menu.js").MenuGroupProps) => import("react").JSX.Element;
 }
+export {};
+```
+
+## Stack
+
+```ts
+export type StackGap = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+interface StackOwnProps {
+  direction?: "block" | "inline";
+  gap?: StackGap;
+  align?: "start" | "center" | "end" | "stretch" | "baseline";
+  justify?: "start" | "center" | "end" | "between";
+  wrap?: boolean;
+  renderAs?: Renderable;
+  children: ReactNode;
+}
+export type StackProps = StackOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof StackOwnProps>;
+export declare function Stack({
+  direction,
+  gap,
+  align,
+  justify,
+  wrap,
+  renderAs,
+  children,
+  className,
+  style,
+  ...rest
+}: StackProps): import("react").JSX.Element;
 export {};
 ```
 

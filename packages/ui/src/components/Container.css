@@ -1,0 +1,41 @@
+/* Container styles, shipped with the component.
+   A page that never imports Container never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-container {
+    /* `margin-inline: auto` is centring, not spacing, which is why it is
+       the one margin a layout primitive is allowed. The gate in
+       tokens.spec.ts permits `auto` and refuses a length. */
+    margin-inline: auto;
+    /* Every one of these carries its default inline. A component token here
+       is an override slot, declared nowhere and referenced with the value it
+       falls back to — the same pattern as `--uix-card-media-ratio`. The
+       first version left the fallbacks out, and `var()` with nothing behind
+       it makes the whole declaration invalid: the browser dropped it in
+       silence and the measure was simply absent. Caught by the story that
+       reads the computed value back, which returned NaN. */
+    padding-inline: var(--uix-page-gutter, var(--uix-gap-lg));
+    inline-size: 100%;
+  }
+
+  .uix-container[data-width="app"] {
+    max-inline-size: var(--uix-measure-app, 80rem);
+  }
+
+  /* `ch` on purpose: a measure in `rem` grows with the root font size and
+     so keeps the same number of characters per line at every zoom level,
+     which is the opposite of what someone enlarging text wants. */
+  .uix-container[data-width="prose"] {
+    max-inline-size: var(--uix-measure-prose, 68ch);
+  }
+
+  .uix-container[data-width="full"] {
+    max-inline-size: none;
+  }
+
+  .uix-container[data-flush] {
+    padding-inline: 0;
+  }
+}

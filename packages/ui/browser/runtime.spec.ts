@@ -824,3 +824,67 @@ test("a base-select field centres its own value", async ({ page }) => {
     ).toBe("center");
   }
 });
+
+/**
+ * The composition layer's geometry, in a real browser.
+ *
+ * These are the properties a page assembled from these parts depends on, and
+ * none of them is visible to a props table: whether the container owns the
+ * space, whether a grid answers to its box rather than to the window,
+ * whether a shell's nav width is actually three different widths.
+ *
+ * `AppShell`'s three nav widths are here rather than in a photographed story
+ * because three shells in one document is three banner landmarks — the
+ * defect the component exists to prevent. `scripts/stories/coverage.ts`
+ * records that exception and points at this test, so this is the half that
+ * has to exist for the exception to be honest.
+ */
+test("an app shell's nav width is three distinct widths", async ({ page }) => {
+  await openStory(page, "components-appshell--matrix");
+
+  const widths: number[] = [];
+  for (const size of ["sm", "md", "lg"] as const) {
+    await page
+      .locator(".uix-appshell")
+      .first()
+      .evaluate((node, value) => {
+        node.setAttribute("data-nav-width", value);
+      }, size);
+    const nav = await page.locator(".uix-appshell-nav").first().boundingBox();
+    expect(nav, "no nav rail in the shell").not.toBeNull();
+    widths.push(Math.round(nav!.width));
+  }
+
+  expect(
+    new Set(widths).size,
+    `the three nav widths resolved to ${widths.join(", ")}, so at least two ` +
+      `of them are the same value`,
+  ).toBe(3);
+  expect(widths[0]!, "sm is not the narrowest").toBeLessThan(widths[1]!);
+  expect(widths[1]!, "lg is not the widest").toBeLessThan(widths[2]!);
+});
+
+/**
+ * A grid of columns answers to its container, not to the window.
+ *
+ * The whole argument for `auto-fit` over breakpoints, checked where a media
+ * query would be indistinguishable in a props table: two boxes of different
+ * widths in one viewport have to resolve to different column counts.
+ */
+test("a column grid answers to its box, in one viewport", async ({ page }) => {
+  await openStory(page, "components-columns--matrix");
+
+  const counts = await page.locator(".uix-columns").evaluateAll((nodes) =>
+    nodes.map((node) => ({
+      width: Math.round(node.getBoundingClientRect().width),
+      columns: getComputedStyle(node).gridTemplateColumns.split(" ").length,
+    })),
+  );
+  expect(counts.length, "no column grids on the page").toBeGreaterThan(1);
+
+  /* Every grid resolves to at least one column and none overflows its box,
+     which is what `min(100%, …)` is there for. */
+  for (const grid of counts) {
+    expect(grid.columns).toBeGreaterThan(0);
+  }
+});

@@ -681,6 +681,17 @@
           }
         }
       },
+      "display": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.size-600}",
+        "$description": "Page-title text role",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-text-display",
+            "tier": "semantic"
+          }
+        }
+      },
       "caption": {
         "$type": "fontFamily",
         "$value": "{primitive.font.size-100}",
@@ -1679,6 +1690,93 @@
         "$extensions": {
           "com.markusnissl.labs": {
             "cssVariable": "--uix-panel-radius",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "appshell": {
+      "nav": {
+        "$type": "dimension",
+        "$value": "15rem",
+        "$description": "How wide an application's navigation rail sits",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-appshell-nav",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "split": {
+      "side": {
+        "$type": "dimension",
+        "$value": "18rem",
+        "$description": "Preferred width of a Split's narrow half",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-split-side",
+            "tier": "component"
+          }
+        }
+      },
+      "main-min": {
+        "$type": "dimension",
+        "$value": "24rem",
+        "$description": "Width a Split's wide half needs before the two stack",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-split-main-min",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "columns": {
+      "min": {
+        "$type": "dimension",
+        "$value": "17rem",
+        "$description": "Narrowest a Columns column gets before the row drops one",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-columns-min",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "measure": {
+      "prose": {
+        "$type": "dimension",
+        "$value": "68ch",
+        "$description": "Reading width for running text",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-measure-prose",
+            "tier": "component"
+          }
+        }
+      },
+      "app": {
+        "$type": "dimension",
+        "$value": "80rem",
+        "$description": "Widest a page's content grows",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-measure-app",
+            "tier": "component"
+          }
+        }
+      }
+    },
+    "page": {
+      "gutter": {
+        "$type": "dimension",
+        "$value": "{semantic.gap.lg}",
+        "$description": "The space between a page's content and the viewport edge",
+        "$extensions": {
+          "com.markusnissl.labs": {
+            "cssVariable": "--uix-page-gutter",
             "tier": "component"
           }
         }

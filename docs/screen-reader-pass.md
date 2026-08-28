@@ -5,9 +5,9 @@ What to check, in order, and how to tell a problem when you hear one.
 **Not scheduled.** Markus struck the manual pass from the roadmap on
 2026-08-27: it needs a person at a screen reader and there is not one. This
 note stays because it is the cheapest way in if that changes — forty-five
-minutes, not 150 cells — and because roadmap stage 06 now points at it.
+minutes, not 174 cells — and because roadmap stage 06 now points at it.
 
-The matrix in `packages/ui/src/audit/screen-readers.ts` has 150 cells.
+The matrix in `packages/ui/src/audit/screen-readers.ts` has 174 cells.
 Those are not the task. The task is this note: **seven components, one
 pairing, about forty-five minutes.** After it you will know more about this
 library than any automated run can tell you, and the remaining 129 cells

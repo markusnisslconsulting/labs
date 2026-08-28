@@ -66,6 +66,11 @@ function ownProps(text: string): string {
  * a fixed picture whose whole content is derived from its props.
  */
 const SELF_CONTAINED: Record<string, string> = {
+  "PageHeader.tsx":
+    "five named slots and no children, on purpose. The slots are the list " +
+    "of things a page top may contain, and a `children` escape hatch would " +
+    "make that list a suggestion — which is exactly what a generated page " +
+    "needs it not to be. Anything else on the page is a sibling in a Stack.",
   "Avatar.tsx": "an image or initials derived from name",
   "Divider.tsx": "a rule",
   "ProgressBar.tsx": "a bar; the value is the content",

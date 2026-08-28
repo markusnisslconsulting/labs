@@ -1,0 +1,60 @@
+/* PageHeader styles, shipped with the component.
+   A page that never imports PageHeader never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-pageheader {
+    display: flex;
+    flex-direction: column;
+    gap: var(--uix-gap-sm);
+    min-inline-size: 0;
+  }
+
+  /* Wraps rather than shrinking. Actions pushed onto their own line are
+     readable; actions squeezed beside a long title are not, and a title is
+     the one string on a page nobody wants truncated. */
+  .uix-pageheader-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-md);
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .uix-pageheader-headings {
+    display: flex;
+    flex-direction: column;
+    gap: var(--uix-gap-xs);
+    min-inline-size: 0;
+  }
+
+  .uix-pageheader-titleline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-sm);
+    align-items: center;
+    min-inline-size: 0;
+  }
+
+  .uix-pageheader-title {
+    margin: 0;
+    color: var(--uix-text-primary);
+    font-size: var(--uix-text-display);
+    font-weight: var(--uix-weight-display);
+    line-height: 1.2;
+  }
+
+  .uix-pageheader-description {
+    margin: 0;
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-pageheader-actions,
+  .uix-pageheader-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-sm);
+    align-items: center;
+  }
+}

@@ -1,0 +1,48 @@
+/* Stack styles, shipped with the component.
+   A page that never imports Stack never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-stack {
+    display: flex;
+    /* Logical, both of them. `column` runs down the block axis and `row`
+       runs along the inline axis, which is what flexbox already means by
+       them, so a stack of controls reverses in RTL with no second rule. */
+    min-inline-size: 0;
+  }
+
+  .uix-stack[data-direction="block"] {
+    flex-direction: column;
+  }
+
+  .uix-stack[data-direction="inline"] {
+    flex-direction: row;
+  }
+
+  /* `gap`, not margins on the children. A margin would have to be removed
+     from the first or last child depending on direction, which is where the
+     `:first-child` rules in every hand-rolled layout come from, and those
+     rules break the moment something is conditionally rendered. */
+  .uix-stack[data-gap="none"] {
+    gap: 0;
+  }
+  .uix-stack[data-gap="xs"] {
+    gap: var(--uix-gap-xs);
+  }
+  .uix-stack[data-gap="sm"] {
+    gap: var(--uix-gap-sm);
+  }
+  .uix-stack[data-gap="md"] {
+    gap: var(--uix-gap-md);
+  }
+  .uix-stack[data-gap="lg"] {
+    gap: var(--uix-gap-lg);
+  }
+  .uix-stack[data-gap="xl"] {
+    gap: var(--uix-gap-xl);
+  }
+  .uix-stack[data-gap="2xl"] {
+    gap: var(--uix-gap-2xl);
+  }
+}

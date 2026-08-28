@@ -303,6 +303,46 @@ export const SCREEN_READER_MATRIX: Array<{
     cells: blank(),
   },
   {
+    component: "AppShell",
+    why: "four landmarks in one frame: whether a reader can move through a page without seeing it depends entirely on this component being right",
+    cells: blank(),
+  },
+  {
+    component: "Section",
+    why: "a named region plus a heading whose level comes from nesting, which is the pair an outline is built from",
+    cells: blank(),
+  },
+  {
+    component: "PageHeader",
+    why: "carries the page's h1, so it is the first thing said and the anchor for every heading below it",
+    cells: blank(),
+  },
+  {
+    component: "Stack",
+    why: "silent by design, and worth one pass to confirm that: it adds no node a reader has to hear, except as the element renderAs asks for",
+    cells: blank(),
+  },
+  {
+    component: "Cluster",
+    why: "silent by design, same as Stack",
+    cells: blank(),
+  },
+  {
+    component: "Columns",
+    why: "silent by design; the reading order is DOM order and auto-fit does not reorder",
+    cells: blank(),
+  },
+  {
+    component: "Container",
+    why: "silent by design; a measure has no announcement",
+    cells: blank(),
+  },
+  {
+    component: "Split",
+    why: "the case worth hearing is that visual order and reading order agree when the side is last",
+    cells: blank(),
+  },
+  {
     component: "Badge",
     why: "decorative or meaningful, depending on the caller",
     cells: blank(),

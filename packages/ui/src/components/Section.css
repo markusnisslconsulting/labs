@@ -1,0 +1,74 @@
+/* Section styles, shipped with the component.
+   A page that never imports Section never downloads these bytes.
+   The @layer fixes precedence via the order declared in styles.css,
+   so a lazily loaded chunk cannot win on load order alone. */
+
+@layer components {
+  .uix-section {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+
+  .uix-section[data-gap="none"] {
+    gap: 0;
+  }
+  .uix-section[data-gap="xs"] {
+    gap: var(--uix-gap-xs);
+  }
+  .uix-section[data-gap="sm"] {
+    gap: var(--uix-gap-sm);
+  }
+  .uix-section[data-gap="md"] {
+    gap: var(--uix-gap-md);
+  }
+  .uix-section[data-gap="lg"] {
+    gap: var(--uix-gap-lg);
+  }
+  .uix-section[data-gap="xl"] {
+    gap: var(--uix-gap-xl);
+  }
+  .uix-section[data-gap="2xl"] {
+    gap: var(--uix-gap-2xl);
+  }
+
+  .uix-section-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-md);
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .uix-section-headings {
+    display: flex;
+    flex-direction: column;
+    gap: var(--uix-gap-xs);
+    min-inline-size: 0;
+  }
+
+  /* The size is the section's, not the tag's. A heading whose size came
+     from `h2` versus `h3` would change appearance when the section was
+     nested one level deeper, which is exactly the coupling the level
+     context exists to remove: the outline is semantic, the size is
+     visual, and they are allowed to disagree. */
+  .uix-section-title {
+    margin: 0;
+    color: var(--uix-text-primary);
+    font-size: var(--uix-text-heading);
+    font-weight: var(--uix-weight-display);
+    line-height: 1.25;
+  }
+
+  .uix-section-description {
+    margin: 0;
+    color: var(--uix-text-secondary);
+  }
+
+  .uix-section-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--uix-gap-sm);
+    align-items: center;
+  }
+}

@@ -56,6 +56,22 @@ import {
   SegmentedControl,
   type SegmentedControlProps,
 } from "./components/SegmentedControl";
+import { AppShell, type AppShellProps } from "./components/AppShell";
+import { Cluster, type ClusterProps } from "./components/Cluster";
+import { Columns, type ColumnsProps } from "./components/Columns";
+import { Container, type ContainerProps } from "./components/Container";
+import { PageHeader, type PageHeaderProps } from "./components/PageHeader";
+import { Section, type SectionProps } from "./components/Section";
+import { Split, type SplitProps } from "./components/Split";
+import {
+  Heading,
+  HeadingLevelProvider,
+  useHeadingLevel,
+  nextHeadingLevel,
+  type HeadingLevel,
+  type HeadingProps,
+} from "./heading";
+import { Stack, type StackProps, type StackGap } from "./components/Stack";
 import { Select, type SelectProps } from "./components/Select";
 import {
   Stepper,
@@ -166,6 +182,29 @@ export {
   type SliderProps,
   Spinner,
   type SpinnerProps,
+  Stack,
+  type StackProps,
+  type StackGap,
+  AppShell,
+  type AppShellProps,
+  Cluster,
+  type ClusterProps,
+  Columns,
+  type ColumnsProps,
+  Container,
+  type ContainerProps,
+  PageHeader,
+  type PageHeaderProps,
+  Section,
+  type SectionProps,
+  Split,
+  type SplitProps,
+  Heading,
+  type HeadingProps,
+  type HeadingLevel,
+  HeadingLevelProvider,
+  useHeadingLevel,
+  nextHeadingLevel,
   StatusPill,
   type StatusPillProps,
   Switch,

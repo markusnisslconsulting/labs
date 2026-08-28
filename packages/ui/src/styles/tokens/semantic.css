@@ -167,6 +167,7 @@
 
     --uix-text-body: var(--uix-font-size-300);
     --uix-text-heading: var(--uix-font-size-500);
+    --uix-text-display: var(--uix-font-size-600);
     --uix-text-caption: var(--uix-font-size-100);
     --uix-text-ui: var(--uix-font-size-200);
 

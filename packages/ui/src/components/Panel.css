@@ -10,7 +10,13 @@
     background: var(--uix-panel-bg, var(--uix-bg-surface));
     padding: var(--uix-panel-pad-y, calc(var(--uix-gap-lg) + var(--uix-gap-xs)))
       var(--uix-panel-pad-x, var(--uix-gap-xl));
-    margin: 0 0 var(--uix-gap-xl);
+    /* No outer margin. It had `margin: 0 0 var(--uix-gap-xl)`, which is
+       the component claiming space outside itself — a decision that
+       depends on what it sits next to, which the component cannot know.
+       Found by `Stack`'s first test on its first run, and by the gate in
+       tokens.spec.ts. Callers that relied on it are wrapped in a `Stack`,
+       which is where the space now comes from. */
+    margin: 0;
   }
 
   .uix-panel > :first-child {

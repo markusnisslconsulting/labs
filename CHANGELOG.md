@@ -29,6 +29,23 @@ cut at the first release.
 
 ### fixed
 
+- **Panel** — no longer sets an outer margin. It had
+  `margin: 0 0 var(--uix-gap-xl)`, which is a component claiming space
+  outside itself: a decision that depends on what it sits next to, which the
+  component cannot know, and which breaks outright when a sibling is
+  conditional. Found by `Stack`'s first test on its first run.
+
+  **Breaking for callers that relied on that margin.** Wrap them in a
+  `Stack`, which is where the space comes from now. The two places in this
+  repository that needed it are migrated.
+
+- **PageHeader** — renders a `div`, not a `header`. `header` is a `banner`
+  landmark unless it is inside `main`, `section`, `article`, `aside` or
+  `nav`, which makes the element's meaning a property of where the caller
+  put it. axe caught it on the story's first run: four of them in one frame
+  are four banners, and a page with an `AppShell` header plus one of these
+  has two. `AppShell` owns the banner.
+
 - **Combobox, CommandPalette, DataTable, DatePicker, Drawer, EmptyState,
   FileUpload, InlineEdit, Select, Stepper, TagInput, Textarea, Tree** — 28
   `color` declarations were being dropped by the browser, so those elements
@@ -195,6 +212,38 @@ cut at the first release.
   no stylesheet at all.
 
 ### added
+
+- **AppShell, Section, PageHeader, Stack, Cluster, Columns, Container,
+  Split** — the composition layer. Eight primitives for the level above the
+  component, where the rules that make assembly safe used to live in a
+  designer's head.
+
+  The library had fifty components and nothing at all for putting them on a
+  page: no layout primitive, no page shell, no way to state that spacing
+  belongs to a container. That level was carried by whoever was building the
+  screen, and it is the level a generator works at.
+
+  - `Stack` and `Cluster` own the space between children, so no component
+    has to. `Columns` is a reflowing grid with a named minimum instead of a
+    breakpoint. `Split` is a main beside a side that collapses on its own
+    container rather than on the viewport, so it behaves the same inside a
+    drawer. `Container` holds the two numbers every page shares — the
+    measure and the page gutter.
+  - `AppShell` puts `header`, `nav`, `main` and `footer` on the page once,
+    as real elements. Written per page these come out as four `div`s and
+    nothing reports it.
+  - `Section` and `PageHeader` take their heading level from position, via
+    `src/heading.tsx`. A component cannot know how deeply it was nested, and
+    passing the level as a prop moves that problem to a caller who no longer
+    has a view of the whole page.
+
+- **Heading, HeadingLevelProvider, useHeadingLevel, nextHeadingLevel** — the
+  heading-level context, exported for components that render their own.
+
+- **Tokens** — `--uix-measure-prose`, `--uix-measure-app`,
+  `--uix-page-gutter`, `--uix-appshell-nav`, `--uix-split-side`,
+  `--uix-split-main-min`, `--uix-columns-min`, and the `--uix-text-display`
+  role for a page title.
 
 - **Card** — `Card.Media`, a banner image slot, and
   `--uix-card-media-ratio` to theme it. The slot sizes the box rather than
