@@ -65,3 +65,24 @@ describe("reorderPointToolDescriptor", () => {
     expect(desk.rows()[0]).toMatchObject({ units: 800, proposed: 1240 });
   });
 });
+
+describe("registered tool and visible state", () => {
+  it("notifies the view on native calls, resolution, and reset without replacing the desk", () => {
+    let visible = rows.map((row) => ({
+      ...row,
+      proposed: null as number | null,
+    }));
+    const desk = createDesk(rows, (next) => {
+      visible = next;
+    });
+    const descriptor = reorderPointToolDescriptor(desk);
+    descriptor.execute({ sku: "4711", units: 1240 });
+    expect(visible[0]).toMatchObject({ units: 800, proposed: 1240 });
+    desk.resolve("4711", true);
+    expect(visible[0]).toMatchObject({ units: 1240, proposed: null });
+    desk.reset();
+    expect(visible[0]).toMatchObject({ units: 800, proposed: null });
+    descriptor.execute({ sku: "4711", units: 900 });
+    expect(visible[0]).toMatchObject({ units: 800, proposed: 900 });
+  });
+});

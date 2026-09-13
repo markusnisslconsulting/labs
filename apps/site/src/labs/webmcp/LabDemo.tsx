@@ -1,14 +1,11 @@
 import Demo from "./Demo";
-
-/**
- * The lab's live demo, split into its own chunk.
- * Loaded by lab.tsx's demo() only when this lab is opened.
- */
-const WebMcpLabDemo = () => (
-  <section className="lab-demo">
-    <h2>The declared verb, running</h2>
-    <Demo />
-  </section>
-);
-
-export default WebMcpLabDemo;
+import { useStrings } from "./strings";
+export default function WebMcpLabDemo() {
+  const s = useStrings();
+  return (
+    <section className="lab-demo">
+      <h2>{s.heading}</h2>
+      <Demo />
+    </section>
+  );
+}

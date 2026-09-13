@@ -1,12 +1,4 @@
-/**
- * The ordering desk from "Declare Your Product's Verbs", as data and
- * functions instead of a component. The desk owns its rows; the tool
- * descriptor is what a page hands to
- * `document.modelContext.registerTool` so an agent can call the same
- * verb the Save button calls.
- *
- * One function with two callers: that is the whole drift defence.
- */
+/** Local proposal state shared by the manual and WebMCP entry points. */
 export interface DeskRow {
   sku: string;
   name: string;
@@ -20,10 +12,15 @@ export interface Desk {
   rows(): DeskRow[];
   propose(sku: string, units: number): string;
   resolve(sku: string, accept: boolean): void;
+  reset(): void;
 }
 
-export function createDesk(initialRows: readonly DeskRow[]): Desk {
-  const rows: DeskRow[] = initialRows.map((row) => ({ ...row }));
+export function createDesk(
+  initialRows: readonly DeskRow[],
+  onChange?: (rows: DeskRow[]) => void,
+): Desk {
+  let rows: DeskRow[] = initialRows.map((row) => ({ ...row }));
+  const changed = () => onChange?.(rows.map((row) => ({ ...row })));
 
   return {
     rows: () => rows.map((row) => ({ ...row })),
@@ -33,10 +30,11 @@ export function createDesk(initialRows: readonly DeskRow[]): Desk {
       if (!row) {
         return `Unknown SKU ${sku}.`;
       }
-      if (!Number.isInteger(units) || units < 0) {
+      if (!Number.isSafeInteger(units) || units < 0) {
         return `Reorder point for ${sku} must be a non-negative integer.`;
       }
       row.proposed = units;
+      changed();
       return `Proposed ${units} units for SKU ${sku}. A person confirms on the row.`;
     },
 
@@ -49,6 +47,11 @@ export function createDesk(initialRows: readonly DeskRow[]): Desk {
         row.units = row.proposed;
       }
       row.proposed = null;
+      changed();
+    },
+    reset() {
+      rows = initialRows.map((row) => ({ ...row }));
+      changed();
     },
   };
 }
@@ -73,9 +76,9 @@ export interface ToolDescriptor {
 export function reorderPointToolDescriptor(desk: Desk): ToolDescriptor {
   const skus = desk.rows().map((row) => row.sku);
   return {
-    name: "set_reorder_point",
+    name: "propose_reorder_point",
     description:
-      "Set the reorder point for one SKU on this demo ordering desk. The person can review and undo.",
+      "Propose a reorder point for one SKU. A person accepts or discards the proposal on the page.",
     inputSchema: {
       type: "object",
       properties: {
@@ -85,7 +88,10 @@ export function reorderPointToolDescriptor(desk: Desk): ToolDescriptor {
       required: ["sku", "units"],
     },
     execute(input: Record<string, unknown>) {
-      const { sku, units } = input as unknown as ToolDescriptorInput;
+      const { sku, units } = input;
+      if (typeof sku !== "string" || typeof units !== "number") {
+        return "Provide a string SKU and a numeric reorder point.";
+      }
       return desk.propose(sku, units);
     },
   };

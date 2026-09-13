@@ -1,3 +1,5 @@
+import { Stack } from "@labs/ui/components/Stack";
+import { useStrings } from "./strings";
 import { Table } from "@labs/ui/components/Table";
 import { Button } from "@labs/ui/components/Button";
 import { Panel } from "@labs/ui/components/Panel";
@@ -20,21 +22,19 @@ const START_ROWS: DeskRow[] = [
 const SAMPLE_CALL = { sku: "4711", units: 1240 };
 
 const WebMcpDemo = () => {
-  const desk = useRef(createDesk(START_ROWS));
+  const s = useStrings();
   const [rows, setRows] = useState<DeskRow[]>([...START_ROWS]);
-  const syncFromDesk = () => setRows(desk.current.rows());
+  const desk = useRef(createDesk(START_ROWS, setRows));
   const [registration, setRegistration] = useState<Registration>("checking");
   const [lastCall, setLastCall] = useState<string | null>(null);
 
   const propose = (sku: string, units: number): string => {
     const answer = desk.current.propose(sku, units);
-    syncFromDesk();
     return answer;
   };
 
   const resolve = (sku: string, accept: boolean) => {
     desk.current.resolve(sku, accept);
-    syncFromDesk();
   };
 
   useEffect(() => {
@@ -49,8 +49,17 @@ const WebMcpDemo = () => {
     }
     const controller = new AbortController();
     try {
+      const descriptor = reorderPointToolDescriptor(desk.current);
       void document.modelContext.registerTool(
-        reorderPointToolDescriptor(desk.current),
+        {
+          ...descriptor,
+          execute(input) {
+            setLastCall(
+              JSON.stringify({ tool: descriptor.name, input }, null, 2),
+            );
+            return descriptor.execute(input);
+          },
+        },
         { signal: controller.signal },
       );
       setRegistration("registered");
@@ -63,7 +72,7 @@ const WebMcpDemo = () => {
   const simulate = () => {
     setLastCall(
       JSON.stringify(
-        { tool: "set_reorder_point", input: SAMPLE_CALL },
+        { tool: "propose_reorder_point", input: SAMPLE_CALL },
         null,
         2,
       ),
@@ -72,35 +81,32 @@ const WebMcpDemo = () => {
   };
 
   const reset = () => {
-    desk.current = createDesk(START_ROWS);
-    syncFromDesk();
+    desk.current.reset();
     setLastCall(null);
   };
 
   return (
-    <Panel label="Live · a page-registered tool">
+    <Panel label={s.panel}>
       <ul className="demo-status">
         <li>
-          <code>set_reorder_point</code> ·{" "}
+          <code>propose_reorder_point</code> ·{" "}
           {registration === "registered" ? (
-            <StatusPill tone="ok">registered on this page</StatusPill>
+            <StatusPill tone="ok">{s.registered}</StatusPill>
           ) : registration === "absent" ? (
-            <StatusPill tone="off">
-              document.modelContext not exposed here
-            </StatusPill>
+            <StatusPill tone="off">{s.absent}</StatusPill>
           ) : (
-            <span className="state-off">checking…</span>
+            <span className="state-off">{s.checking}</span>
           )}
         </li>
       </ul>
 
-      <Table caption="SKUs and the reorder points the agent proposed">
+      <Table caption={s.table}>
         <thead>
           <tr>
-            <th scope="col">SKU</th>
-            <th scope="col">Article</th>
+            <th scope="col">{s.sku}</th>
+            <th scope="col">{s.product}</th>
             <th scope="col" data-numeric>
-              Reorder point
+              {s.reorderPoint}
             </th>
           </tr>
         </thead>
@@ -116,26 +122,26 @@ const WebMcpDemo = () => {
                 {row.proposed !== null ? (
                   <>
                     <span className="demo-old">{row.units}</span>
-                    <strong>{row.proposed} units</strong>
+                    <strong>{s.units(row.proposed)}</strong>
                     <span className="demo-inline-actions">
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => resolve(row.sku, true)}
                       >
-                        Accept
+                        {s.accept}
                       </Button>
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => resolve(row.sku, false)}
                       >
-                        Undo
+                        {s.discard}
                       </Button>
                     </span>
                   </>
                 ) : (
-                  `${row.units} units`
+                  s.units(row.units)
                 )}
               </td>
             </tr>
@@ -143,12 +149,12 @@ const WebMcpDemo = () => {
         </tbody>
       </Table>
 
-      <div className="uix-actions">
-        <Button onClick={simulate}>Simulate an agent call</Button>
+      <Stack direction="inline" gap="md" align="center" wrap>
+        <Button onClick={simulate}>{s.manualCall}</Button>
         <Button variant="outline" onClick={reset}>
-          Reset
+          {s.reset}
         </Button>
-      </div>
+      </Stack>
 
       {lastCall ? (
         <pre className="demo-call">
@@ -157,9 +163,8 @@ const WebMcpDemo = () => {
       ) : null}
 
       <p className="demo-note">
-        {registration === "registered"
-          ? "The tool is genuinely registered: open the Model Context Tool Inspector extension and you will find set_reorder_point on this page, callable by hand. The simulated call and a real agent call run the identical function."
-          : "With the WebMCP origin trial or the chrome://flags/#enable-webmcp-testing flag active, this page registers the tool for real. The simulated call runs the identical function an agent would: no clicking, no guessing, and the person still owns the yes."}
+        {registration === "registered" ? s.registeredNote : s.absentNote}{" "}
+        {s.localNote}
       </p>
     </Panel>
   );
