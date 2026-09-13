@@ -1,73 +1,133 @@
-/**
- * The row's write lifecycle as a pure state machine.
- *
- * Companion to the article "The Chat Box Is a Log"
- * (https://www.markusnissl.com/blog/the-chat-box-is-a-log), which
- * prints excerpts of this file; the live demo at
- * https://labs.markusnissl.com/chat-box runs it, so the printed code
- * is the running code.
- *
- * Two transitions carry the design:
- * - commit-failed falls back to the visible proposal instead of lying
- *   about what the database holds;
- * - person-undid is not a rewind. It is a new write with the old
- *   value, and it walks through the same committing gate as the
- *   original write, so the record shows both writes.
- */
-export type RowState =
-  | { kind: "settled"; units: number }
-  | { kind: "proposed"; units: number; proposedUnits: number }
-  | { kind: "committing"; units: number; proposedUnits: number }
-  | { kind: "committed"; units: number; previousUnits: number };
+/** In-memory teaching model. No network, database, authentication or durable log. */
+export type Snapshot = { units: number; version: number };
+export type Write = {
+  units: number;
+  expectedVersion: number;
+  action: "change" | "restore";
+};
+export type Receipt = {
+  id: number;
+  before: Snapshot;
+  after: Snapshot;
+  action: Write["action"];
+  actor: "buyer" | "colleague";
+};
+export type WriteResult =
+  | { kind: "saved"; receipt: Receipt }
+  | { kind: "conflict"; current: Snapshot }
+  | { kind: "refused"; reason: "unavailable" | "invalid-units" };
 
+/** The version check and update happen together in this synchronous store. */
+export function createReorderStore(units = 800) {
+  let current: Snapshot = { units, version: 1 };
+  const history: Receipt[] = [];
+  return {
+    read: (): Snapshot => ({ ...current }),
+    history: (): Receipt[] => structuredClone(history),
+    write(request: Write, actor: Receipt["actor"] = "buyer"): WriteResult {
+      if (!Number.isSafeInteger(request.units) || request.units < 0) {
+        return { kind: "refused", reason: "invalid-units" };
+      }
+      if (request.expectedVersion !== current.version) {
+        return { kind: "conflict", current: { ...current } };
+      }
+      const receipt: Receipt = {
+        id: history.length + 1,
+        before: { ...current },
+        after: { units: request.units, version: current.version + 1 },
+        actor,
+        action: request.action,
+      };
+      current = { ...receipt.after };
+      history.push(structuredClone(receipt));
+      return { kind: "saved", receipt };
+    },
+  };
+}
+
+export type RowState =
+  | { kind: "settled"; current: Snapshot }
+  | { kind: "proposed"; current: Snapshot; proposal: Write; error?: string }
+  | { kind: "saving"; current: Snapshot; proposal: Write }
+  | { kind: "saved"; current: Snapshot; receipt: Receipt }
+  | { kind: "conflict"; current: Snapshot; proposal: Write };
 export type RowEvent =
   | { type: "agent-proposed"; units: number }
   | { type: "person-accepted" }
   | { type: "person-rejected" }
-  | { type: "commit-succeeded" }
-  | { type: "commit-failed" }
-  | { type: "person-undid" };
+  | { type: "write-returned"; result: WriteResult }
+  | { type: "person-undid" }
+  | { type: "person-reviewed-conflict" };
 
 export function reduceRow(state: RowState, event: RowEvent): RowState {
   switch (event.type) {
     case "agent-proposed":
-      return state.kind === "settled"
-        ? { kind: "proposed", units: state.units, proposedUnits: event.units }
+      return state.kind === "settled" &&
+        Number.isSafeInteger(event.units) &&
+        event.units >= 0
+        ? {
+            kind: "proposed",
+            current: state.current,
+            proposal: {
+              units: event.units,
+              expectedVersion: state.current.version,
+              action: "change",
+            },
+          }
         : state;
     case "person-accepted":
       return state.kind === "proposed"
-        ? {
-            kind: "committing",
-            units: state.units,
-            proposedUnits: state.proposedUnits,
-          }
+        ? { kind: "saving", current: state.current, proposal: state.proposal }
         : state;
     case "person-rejected":
-      return state.kind === "proposed"
-        ? { kind: "settled", units: state.units }
+      return state.kind === "proposed" || state.kind === "conflict"
+        ? { kind: "settled", current: state.current }
         : state;
-    case "commit-succeeded":
-      return state.kind === "committing"
-        ? {
-            kind: "committed",
-            units: state.proposedUnits,
-            previousUnits: state.units,
-          }
-        : state;
-    case "commit-failed":
-      return state.kind === "committing"
+    case "write-returned": {
+      if (state.kind !== "saving") return state;
+      const result = event.result;
+      if (result.kind === "saved") {
+        return {
+          kind: "saved",
+          current: result.receipt.after,
+          receipt: result.receipt,
+        };
+      }
+      if (result.kind === "conflict") {
+        return {
+          kind: "conflict",
+          current: result.current,
+          proposal: state.proposal,
+        };
+      }
+      return {
+        kind: "proposed",
+        current: state.current,
+        proposal: state.proposal,
+        error: result.reason,
+      };
+    }
+    case "person-undid":
+      return state.kind === "saved"
         ? {
             kind: "proposed",
-            units: state.units,
-            proposedUnits: state.proposedUnits,
+            current: state.current,
+            proposal: {
+              units: state.receipt.before.units,
+              expectedVersion: state.receipt.after.version,
+              action: "restore",
+            },
           }
         : state;
-    case "person-undid":
-      return state.kind === "committed"
+    case "person-reviewed-conflict":
+      return state.kind === "conflict"
         ? {
-            kind: "committing",
-            units: state.units,
-            proposedUnits: state.previousUnits,
+            kind: "proposed",
+            current: state.current,
+            proposal: {
+              ...state.proposal,
+              expectedVersion: state.current.version,
+            },
           }
         : state;
   }

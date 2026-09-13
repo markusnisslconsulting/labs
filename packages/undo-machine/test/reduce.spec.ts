@@ -1,91 +1,154 @@
 import { describe, expect, it } from "vitest";
-import { reduceRow, type RowState } from "../src/index";
-
-const settled: RowState = { kind: "settled", units: 800 };
-
-describe("reduceRow", () => {
-  it("paints the proposal on the row without touching the settled value", () => {
-    const next = reduceRow(settled, { type: "agent-proposed", units: 1240 });
-    expect(next).toEqual({
-      kind: "proposed",
-      units: 800,
-      proposedUnits: 1240,
-    });
-  });
-
-  it("walks accept through committing and commits the proposed value", () => {
-    const proposed = reduceRow(settled, {
-      type: "agent-proposed",
-      units: 1240,
-    });
-    const committing = reduceRow(proposed, { type: "person-accepted" });
-    expect(committing.kind).toBe("committing");
-    const committed = reduceRow(committing, { type: "commit-succeeded" });
-    expect(committed).toEqual({
-      kind: "committed",
-      units: 1240,
-      previousUnits: 800,
-    });
-  });
-
-  it("undo is a new write through the same gate, not a rewind", () => {
-    const committed: RowState = reduceRow(
-      reduceRow(settled, { type: "agent-proposed", units: 1240 }),
-      { type: "person-accepted" },
-    );
-    const committed2 = reduceRow(committed, { type: "commit-succeeded" });
-
-    // The undo ends in committing at the old value. It does not
-    // rewind to a settled row in which neither write ever happened.
-    const undoing = reduceRow(committed2, { type: "person-undid" });
-    expect(undoing).toEqual({
-      kind: "committing",
-      units: 1240,
-      proposedUnits: 800,
-    });
-    const undone = reduceRow(undoing, { type: "commit-succeeded" });
-    expect(undone).toEqual({
-      kind: "committed",
-      units: 800,
-      previousUnits: 1240,
-    });
-  });
-
-  it("a failed commit falls back to the visible proposal", () => {
-    const committing: RowState = {
-      kind: "committing",
-      units: 800,
-      proposedUnits: 1240,
-    };
-    const next = reduceRow(committing, { type: "commit-failed" });
-    expect(next).toEqual({
-      kind: "proposed",
-      units: 800,
-      proposedUnits: 1240,
-    });
-  });
-
-  it("rejects the proposal back to settled", () => {
-    const proposed = reduceRow(settled, {
-      type: "agent-proposed",
-      units: 1240,
-    });
-    expect(reduceRow(proposed, { type: "person-rejected" })).toEqual({
+import {
+  createReorderStore,
+  reduceRow,
+  type RowState,
+  type Write,
+} from "../src/index";
+const request: Write = { units: 1240, expectedVersion: 1, action: "change" };
+function setup() {
+  const store = createReorderStore();
+  let row: RowState = { kind: "settled", current: store.read() };
+  return {
+    store,
+    get row() {
+      return row;
+    },
+    dispatch(event: Parameters<typeof reduceRow>[1]) {
+      row = reduceRow(row, event);
+    },
+    save() {
+      row = reduceRow(row, { type: "person-accepted" });
+      if (row.kind !== "saving")
+        throw new Error("A reviewed proposal is required");
+      row = reduceRow(row, {
+        type: "write-returned",
+        result: store.write(row.proposal),
+      });
+    },
+  };
+}
+describe("proposal and save", () => {
+  it("proposal and rejection leave the stored value unchanged", () => {
+    const demo = setup();
+    demo.dispatch({ type: "agent-proposed", units: 1240 });
+    expect(demo.store.read()).toEqual({ units: 800, version: 1 });
+    demo.dispatch({ type: "person-rejected" });
+    expect(demo.row).toEqual({
       kind: "settled",
-      units: 800,
+      current: { units: 800, version: 1 },
     });
+    expect(demo.store.history()).toEqual([]);
   });
-
-  it("ignores events a state cannot take", () => {
-    // A second proposal while one is pending changes nothing.
-    const proposed = reduceRow(settled, {
-      type: "agent-proposed",
-      units: 1240,
+  it("does not report saved until the store returns a receipt", () => {
+    const demo = setup();
+    demo.dispatch({ type: "agent-proposed", units: 1240 });
+    demo.dispatch({ type: "person-accepted" });
+    expect(demo.row.kind).toBe("saving");
+    expect(demo.store.read().units).toBe(800);
+    demo.dispatch({
+      type: "write-returned",
+      result: demo.store.write(request),
     });
-    expect(reduceRow(proposed, { type: "agent-proposed", units: 999 })).toBe(
-      proposed,
+    expect(demo.row.kind).toBe("saved");
+    expect(demo.row.current).toEqual(demo.store.read());
+  });
+  it("a definite refusal keeps the proposal available to retry", () => {
+    const demo = setup();
+    demo.dispatch({ type: "agent-proposed", units: 1240 });
+    demo.dispatch({ type: "person-accepted" });
+    demo.dispatch({
+      type: "write-returned",
+      result: { kind: "refused", reason: "unavailable" },
+    });
+    expect(demo.row).toMatchObject({
+      kind: "proposed",
+      error: "unavailable",
+      proposal: request,
+    });
+    expect(demo.store.history()).toEqual([]);
+    demo.save();
+    expect(demo.store.read().units).toBe(1240);
+  });
+  it("requires another review when a colleague edits before save", () => {
+    const demo = setup();
+    demo.dispatch({ type: "agent-proposed", units: 1240 });
+    demo.store.write({ ...request, units: 900 }, "colleague");
+    demo.save();
+    expect(demo.row).toMatchObject({
+      kind: "conflict",
+      current: { units: 900, version: 2 },
+    });
+    demo.dispatch({ type: "person-accepted" });
+    expect(demo.row.kind).toBe("conflict");
+    expect(demo.store.read().units).toBe(900);
+    demo.dispatch({ type: "person-reviewed-conflict" });
+    expect(demo.store.read().units).toBe(900);
+    demo.save();
+    expect(demo.store.read()).toEqual({ units: 1240, version: 3 });
+  });
+});
+describe("restoring a saved value", () => {
+  it("requires a new save and records both writes", () => {
+    const demo = setup();
+    demo.dispatch({ type: "agent-proposed", units: 1240 });
+    demo.save();
+    demo.dispatch({ type: "person-undid" });
+    expect(demo.row).toMatchObject({
+      kind: "proposed",
+      proposal: { units: 800, expectedVersion: 2, action: "restore" },
+    });
+    expect(demo.store.read().units).toBe(1240);
+    demo.save();
+    expect(demo.store.read()).toEqual({ units: 800, version: 3 });
+    expect(
+      demo.store
+        .history()
+        .map(({ before, after, action }) => [
+          before.units,
+          after.units,
+          action,
+        ]),
+    ).toEqual([
+      [800, 1240, "change"],
+      [1240, 800, "restore"],
+    ]);
+  });
+  it("does not silently undo a colleague's later edit", () => {
+    const demo = setup();
+    demo.dispatch({ type: "agent-proposed", units: 1240 });
+    demo.save();
+    demo.store.write(
+      { units: 1000, expectedVersion: 2, action: "change" },
+      "colleague",
     );
-    // Undo without a commit changes nothing.
-    expect(reduceRow(proposed, { type: "person-undid" })).toBe(proposed);
+    demo.dispatch({ type: "person-undid" });
+    demo.save();
+    expect(demo.row).toMatchObject({
+      kind: "conflict",
+      current: { units: 1000, version: 3 },
+    });
+    expect(demo.store.read().units).toBe(1000);
+    expect(demo.store.history()).toHaveLength(2);
+  });
+});
+describe("store validation", () => {
+  it.each([-1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1])(
+    "refuses invalid units %s without a write",
+    (units) => {
+      const store = createReorderStore();
+      expect(store.write({ ...request, units })).toEqual({
+        kind: "refused",
+        reason: "invalid-units",
+      });
+      expect(store.read()).toEqual({ units: 800, version: 1 });
+      expect(store.history()).toEqual([]);
+    },
+  );
+  it("returns a conflict on a repeated stale request", () => {
+    const store = createReorderStore();
+    store.write(request);
+    expect(store.write(request).kind).toBe("conflict");
+    expect(store.history()).toHaveLength(1);
   });
 });

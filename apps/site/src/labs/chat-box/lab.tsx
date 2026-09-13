@@ -2,19 +2,19 @@ import type { LabMeta } from "../types";
 
 export default {
   slug: "chat-box",
-  title: "The chat box is a log",
+  title: "When an AI assistant changes a record",
   summary:
-    "The same scripted agent run twice: once as a transcript nobody can act on, once as events landing on the row. Plus the undo state machine that keeps the record honest.",
+    "Follow a scripted proposal into a review card and a product row. Save it, simulate a colleague's edit, and try restoring the previous value.",
   explanation: [
-    "A transcript can only describe what an agent changed. When software acts, the write itself has to appear where the person already looks — on the row it touches, marked as proposed, reversible while it still counts.",
-    "Both demos run the exact code the article prints. The event stream comes from @labs/agent-stream, the write lifecycle from @labs/undo-machine; each package carries its own tests, so what you read there is pinned.",
+    "A buyer asks an assistant to prepare product 4711 for a promotion. The sample proposes raising its reorder point from 800 to 1,240 units. The conversation and table show the same proposal and offer the same review controls.",
+    "A second example separates the buyer's view from an in-memory store. Each saved version has a receipt; a stale save returns a conflict. Everything runs locally with fixed inputs, so the lab demonstrates interface behavior without a model or server.",
   ],
   tags: ["agents", "agentic-ui"],
   article: {
-    title: "The Chat Box Is a Log",
+    title: "When an AI Assistant Changes a Record",
     href: "https://www.markusnissl.com/blog/the-chat-box-is-a-log",
   },
   source:
-    "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/chat-box/Demo.tsx",
+    "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/chat-box",
   demo: () => import("./LabDemo"),
 } satisfies LabMeta;

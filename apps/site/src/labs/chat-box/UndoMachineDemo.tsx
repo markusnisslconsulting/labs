@@ -1,189 +1,180 @@
+import { Stack } from "@labs/ui/components/Stack";
 import { Table } from "@labs/ui/components/Table";
 import { Button } from "@labs/ui/components/Button";
+import { Checkbox } from "@labs/ui/components/Checkbox";
 import { Panel } from "@labs/ui/components/Panel";
 import { useEffect, useReducer, useRef, useState } from "react";
-import { reduceRow, type RowEvent, type RowState } from "@labs/undo-machine";
-const START_UNITS = 800;
-const PROPOSED_UNITS = 1240;
+import {
+  createReorderStore,
+  reduceRow,
+  type RowEvent,
+  type Receipt,
+  type RowState,
+} from "@labs/undo-machine";
+import { useStrings } from "./strings";
 
-const eventLabel: Record<RowEvent["type"], string> = {
-  "agent-proposed": "agent-proposed (StateDelta paints the row)",
-  "person-accepted": "person-accepted (respond() fires)",
-  "person-rejected": "person-rejected (respond() fires)",
-  "commit-succeeded": "commit-succeeded (your backend answered)",
-  "commit-failed": "commit-failed (your backend refused)",
-  "person-undid": "person-undid (a new write, same gate)",
-};
-
-type DemoState = { row: RowState; log: string[] };
 type DemoEvent = RowEvent | { type: "reset" };
-
-const initialDemoState: DemoState = {
-  row: { kind: "settled", units: START_UNITS },
-  log: [],
+const initial: RowState = {
+  kind: "settled",
+  current: { units: 800, version: 1 },
 };
-
-function demoReducer(state: DemoState, event: DemoEvent): DemoState {
-  if (event.type === "reset") {
-    return initialDemoState;
-  }
-  const next = reduceRow(state.row, event);
-  if (next === state.row) {
-    return state;
-  }
-  return {
-    row: next,
-    log: [
-      ...state.log,
-      `${eventLabel[event.type]}: ${state.row.kind} → ${next.kind}`,
-    ],
-  };
+function reducer(state: RowState, event: DemoEvent): RowState {
+  return event.type === "reset" ? initial : reduceRow(state, event);
 }
 
-const UndoMachineDemo = () => {
-  const [{ row: state, log }, dispatch] = useReducer(
-    demoReducer,
-    initialDemoState,
-  );
+export default function UndoMachineDemo() {
+  const s = useStrings();
+  const [row, dispatch] = useReducer(reducer, initial);
+  const store = useRef(createReorderStore());
+  const [stored, setStored] = useState(initial.current);
+  const [history, setHistory] = useState<Receipt[]>([]);
   const [failNext, setFailNext] = useState(false);
-  const timeouts = useRef<number[]>([]);
-
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
     () => () => {
-      timeouts.current.forEach((id) => window.clearTimeout(id));
+      if (timer.current) clearTimeout(timer.current);
     },
     [],
   );
 
-  const commitLater = (shouldFail: boolean) => {
-    timeouts.current.push(
-      window.setTimeout(() => {
-        dispatch({ type: shouldFail ? "commit-failed" : "commit-succeeded" });
-      }, 700),
-    );
+  const syncStore = () => {
+    setStored(store.current.read());
+    setHistory(store.current.history());
   };
-
   const accept = () => {
-    const shouldFail = failNext;
+    if (row.kind !== "proposed") return;
+    const proposal = row.proposal;
+    const refuse = failNext;
     setFailNext(false);
     dispatch({ type: "person-accepted" });
-    commitLater(shouldFail);
+    timer.current = setTimeout(() => {
+      const result = refuse
+        ? { kind: "refused" as const, reason: "unavailable" as const }
+        : store.current.write(proposal);
+      dispatch({ type: "write-returned", result });
+      syncStore();
+      timer.current = null;
+    }, 700);
   };
-
-  const undo = () => {
-    dispatch({ type: "person-undid" });
-    commitLater(false);
-  };
-
   const reset = () => {
-    timeouts.current.forEach((id) => window.clearTimeout(id));
-    timeouts.current = [];
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+    store.current = createReorderStore();
     setFailNext(false);
+    syncStore();
     dispatch({ type: "reset" });
   };
+  const colleagueEdit = () => {
+    const current = store.current.read();
+    store.current.write(
+      {
+        units: current.units + 100,
+        expectedVersion: current.version,
+        action: "change",
+      },
+      "colleague",
+    );
+    syncStore();
+  };
+  const proposed = "proposal" in row ? row.proposal.units : null;
 
   return (
-    <Panel label="Live · the write lifecycle as a state machine">
-      <div className="uix-actions">
+    <Panel label={s.lifecyclePanel}>
+      <Stack direction="inline" gap="md" align="center" wrap>
         <Button
-          onClick={() =>
-            dispatch({ type: "agent-proposed", units: PROPOSED_UNITS })
-          }
-          disabled={state.kind !== "settled"}
+          onClick={() => dispatch({ type: "agent-proposed", units: 1240 })}
+          disabled={row.kind !== "settled"}
         >
-          Agent proposes
+          {s.propose}
+        </Button>
+        <Button variant="outline" onClick={colleagueEdit}>
+          {s.colleague}
         </Button>
         <Button variant="outline" onClick={reset}>
-          Reset
+          {s.reset}
         </Button>
-        <label className="demo-chat-line">
-          <input
-            type="checkbox"
-            checked={failNext}
-            onChange={(e) => setFailNext(e.target.checked)}
-            disabled={state.kind !== "settled" && state.kind !== "proposed"}
-          />{" "}
-          fail the next commit
-        </label>
-      </div>
-
-      <Table caption="Rows the undo machine can roll back">
+        <Checkbox
+          label={s.failNext}
+          checked={failNext}
+          onCheckedChange={setFailNext}
+          disabled={row.kind === "saving"}
+        />
+      </Stack>
+      <Table caption={s.buyerView}>
         <thead>
           <tr>
-            <th scope="col">SKU</th>
-            <th scope="col">Reorder point</th>
-            <th scope="col">State</th>
+            <th scope="col">{s.product}</th>
+            <th scope="col">{s.storedValue}</th>
+            <th scope="col">{s.proposal}</th>
           </tr>
         </thead>
         <tbody>
-          <tr className={state.kind === "proposed" ? "proposed" : ""}>
+          <tr>
             <td>4711</td>
-            <td aria-live="polite">
-              {state.kind === "settled" ? `${state.units} units` : null}
-              {state.kind === "proposed" ? (
-                <>
-                  <span className="demo-old">{state.units}</span>
-                  <strong>{state.proposedUnits} units</strong>
-                  <span className="demo-inline-actions">
-                    <Button
-                      variant="solid"
-                      tone="neutral"
-                      size="sm"
-                      onClick={accept}
-                    >
-                      Accept
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => dispatch({ type: "person-rejected" })}
-                    >
-                      Reject
-                    </Button>
-                  </span>
-                </>
-              ) : null}
-              {state.kind === "committing" ? (
-                <em>
-                  {state.units} → {state.proposedUnits} units, saving…
-                </em>
-              ) : null}
-              {state.kind === "committed" ? (
-                <>
-                  <strong>{state.units} units</strong>
-                  <span className="demo-inline-actions">
-                    <Button variant="outline" size="sm" onClick={undo}>
-                      Undo
-                    </Button>
-                  </span>
-                </>
-              ) : null}
-            </td>
+            <td>{s.value(row.current.units, row.current.version)}</td>
             <td>
-              <span className="demo-event">{state.kind}</span>
+              {proposed === null ? s.none : proposed.toLocaleString("en-US")}
             </td>
           </tr>
         </tbody>
       </Table>
-
-      {log.length > 0 ? (
-        <div className="demo-events" aria-label="Transitions">
-          {log.map((line, index) => (
-            <span key={`${line}-${index}`} className="demo-event">
-              {line}
-            </span>
+      <p role="status">
+        {s.status[row.kind]}
+        {row.kind === "proposed" && row.error ? ` · ${s.unavailable}` : ""}
+      </p>
+      {row.kind === "conflict" ? <p>{s.conflict}</p> : null}
+      <Stack direction="inline" gap="md" align="center" wrap>
+        {row.kind === "proposed" ? (
+          <Button onClick={accept}>{s.save}</Button>
+        ) : null}
+        {row.kind === "conflict" ? (
+          <Button
+            onClick={() => dispatch({ type: "person-reviewed-conflict" })}
+          >
+            {s.review}
+          </Button>
+        ) : null}
+        {row.kind === "proposed" || row.kind === "conflict" ? (
+          <Button
+            variant="outline"
+            onClick={() => dispatch({ type: "person-rejected" })}
+          >
+            {s.reject}
+          </Button>
+        ) : null}
+        {row.kind === "saved" ? (
+          <Button
+            variant="outline"
+            onClick={() => dispatch({ type: "person-undid" })}
+          >
+            {s.restore}
+          </Button>
+        ) : null}
+      </Stack>
+      <h3>{s.storeTitle}</h3>
+      <p data-testid="stored-record">{s.value(stored.units, stored.version)}</p>
+      <Table caption={s.storeCaption}>
+        <thead>
+          <tr>
+            <th scope="col">{s.id}</th>
+            <th scope="col">{s.actor}</th>
+            <th scope="col">{s.change}</th>
+            <th scope="col">{s.version}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {history.map((write) => (
+            <tr key={write.id}>
+              <td>{write.id}</td>
+              <td>{write.actor === "buyer" ? s.buyer : s.colleagueActor}</td>
+              <td>{s.transition(write.before.units, write.after.units)}</td>
+              <td>{write.after.version}</td>
+            </tr>
           ))}
-        </div>
-      ) : (
-        <p className="demo-note">
-          The machine from the code above, running. Let the agent propose,
-          accept, then undo, and watch the undo walk through the same committing
-          state as the original write. Tick the failure box to see the commit
-          refuse and the row fall back to the proposal.
-        </p>
-      )}
+        </tbody>
+      </Table>
+      {history.length === 0 ? <p>{s.historyEmpty}</p> : null}
+      <p className="demo-note">{s.simulation}</p>
     </Panel>
   );
-};
-
-export default UndoMachineDemo;
+}

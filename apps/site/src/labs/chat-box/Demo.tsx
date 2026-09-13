@@ -1,3 +1,4 @@
+import { Stack } from "@labs/ui/components/Stack";
 import { Button } from "@labs/ui/components/Button";
 import { Panel } from "@labs/ui/components/Panel";
 import { Table } from "@labs/ui/components/Table";
@@ -7,201 +8,136 @@ import {
   type AgentEvent,
   type ScriptedRun,
 } from "@labs/agent-stream";
+import { useStrings } from "./strings";
 
-type RunState = "idle" | "running" | "awaiting" | "finished";
-
-const START_UNITS = 800;
-const PROPOSED_UNITS = 1240;
-
-const eventChip: Record<AgentEvent["type"], string> = {
-  "run-started": "RunStarted",
-  "text-message": "TextMessageContent",
-  "tool-call-started": "ToolCallStart",
-  "state-delta": "StateDelta",
-  "run-finished": "RunFinished",
-};
-
-const AgentStreamDemo = () => {
-  const [runState, setRunState] = useState<RunState>("idle");
+export default function AgentStreamDemo() {
+  const s = useStrings();
+  const [running, setRunning] = useState(false);
   const [transcript, setTranscript] = useState<string[]>([]);
   const [events, setEvents] = useState<string[]>([]);
-  const [units, setUnits] = useState(START_UNITS);
+  const [units, setUnits] = useState(800);
   const [proposed, setProposed] = useState<number | null>(null);
-  const [working, setWorking] = useState(false);
-  const [outcome, setOutcome] = useState<string | null>(null);
+  const [outcome, setOutcome] = useState<boolean | null>(null);
   const runRef = useRef<ScriptedRun | null>(null);
-
-  const stopRun = () => {
+  useEffect(() => () => runRef.current?.cancel(), []);
+  const reset = () => {
     runRef.current?.cancel();
-    runRef.current = null;
-  };
-
-  useEffect(() => stopRun, []);
-
-  const onEvent = (event: AgentEvent) => {
-    setEvents((e) => [...e, eventChip[event.type]]);
-    switch (event.type) {
-      case "text-message":
-        setTranscript((t) => [...t, event.text]);
-        break;
-      case "tool-call-started":
-        setWorking(true);
-        break;
-      case "state-delta":
-        setWorking(false);
-        setProposed(event.proposedUnits);
-        setTranscript((t) => [
-          ...t,
-          `I have proposed raising SKU 4711 from ${START_UNITS} to ${event.proposedUnits} units.`,
-        ]);
-        setRunState("awaiting");
-        break;
-    }
-  };
-
-  const run = () => {
-    stopRun();
-    setRunState("running");
+    setRunning(false);
     setTranscript([]);
     setEvents([]);
-    setUnits(START_UNITS);
+    setUnits(800);
     setProposed(null);
     setOutcome(null);
-
+  };
+  const onEvent = (event: AgentEvent) => {
+    setEvents((all) => [...all, event.type]);
+    if (event.type === "text-message")
+      setTranscript((all) => [...all, event.text]);
+    if (event.type === "state-delta") {
+      setProposed(event.proposedUnits);
+      setRunning(false);
+    }
+  };
+  const run = () => {
+    reset();
+    setRunning(true);
     runRef.current = createScriptedRun({
-      fromUnits: START_UNITS,
-      toUnits: PROPOSED_UNITS,
+      fromUnits: 800,
+      narration: s.narration,
+      toUnits: 1240,
       callbacks: { onEvent },
     });
     runRef.current.start();
   };
-
-  const resolve = (accept: boolean) => {
-    stopRun();
-    setEvents((e) => [...e, eventChip["run-finished"]]);
-    if (accept && proposed !== null) {
-      setUnits(proposed);
-      setOutcome(
-        "Same information on both sides. Only one side let you act on it.",
-      );
-    } else {
-      setOutcome(
-        "Rejected in one click, on the object. Try finding that move in the transcript.",
-      );
-    }
+  const resolve = (accepted: boolean) => {
+    if (proposed === null) return;
+    runRef.current?.cancel();
+    if (accepted) setUnits(proposed);
+    setOutcome(accepted);
     setProposed(null);
-    setRunState("finished");
+    setEvents((all) => [
+      ...all,
+      accepted ? "proposal-accepted" : "proposal-discarded",
+    ]);
   };
-
-  const reset = () => {
-    stopRun();
-    setRunState("idle");
-    setTranscript([]);
-    setEvents([]);
-    setUnits(START_UNITS);
-    setProposed(null);
-    setWorking(false);
-    setOutcome(null);
-  };
-
+  const controls = () => (
+    <Stack direction="inline" gap="md" align="center" wrap>
+      <Button size="sm" onClick={() => resolve(true)}>
+        {s.accept}
+      </Button>
+      <Button size="sm" variant="outline" onClick={() => resolve(false)}>
+        {s.discard}
+      </Button>
+    </Stack>
+  );
   return (
-    <Panel label="Live · transcript versus control surface">
-      <div className="uix-actions">
-        <Button
-          onClick={run}
-          disabled={runState === "running" || runState === "awaiting"}
-        >
-          {runState === "idle" ? "Run the agent" : "Run it again"}
+    <Panel label={s.streamPanel}>
+      <Stack direction="inline" gap="md" align="center" wrap>
+        <Button onClick={run} disabled={running || proposed !== null}>
+          {s.run}
         </Button>
         <Button variant="outline" onClick={reset}>
-          Reset
+          {s.reset}
         </Button>
-      </div>
-
+      </Stack>
       <div className="demo-panes">
         <Panel>
-          <h3>The transcript: a log</h3>
+          <h3>{s.conversation}</h3>
+          <p>{s.request}</p>
           {transcript.length === 0 ? (
-            <p className="demo-chat-line">
-              <em>Nothing yet. Start the run.</em>
-            </p>
+            <p>{running ? s.working : s.start}</p>
           ) : (
-            transcript.map((line) => (
-              <p key={line} className="demo-chat-line">
-                {line}
-              </p>
-            ))
+            transcript.map((line) => <p key={line}>{line}</p>)
           )}
+          {proposed !== null ? (
+            <>
+              <p>{s.reviewSummary(units, proposed)}</p>
+              {controls()}
+            </>
+          ) : null}
+          {outcome !== null ? (
+            <p>{outcome ? s.accepted : s.discarded}</p>
+          ) : null}
         </Panel>
         <Panel>
-          <h3>The product: the ordering desk</h3>
-          <Table caption="Reorder points the agent proposed">
+          <h3>{s.desk}</h3>
+          <Table caption={s.desk}>
             <thead>
               <tr>
-                <th scope="col">SKU</th>
-                <th scope="col" data-numeric>
-                  Reorder point
-                </th>
+                <th scope="col">{s.product}</th>
+                <th scope="col">{s.storedValue}</th>
               </tr>
             </thead>
             <tbody>
-              <tr className={proposed !== null ? "proposed" : ""}>
+              <tr>
                 <td>4711</td>
-                <td>
-                  {working ? (
-                    <em>agent working…</em>
-                  ) : proposed !== null ? (
-                    <>
-                      <span className="demo-old">{units}</span>
-                      <strong>{proposed} units</strong>
-                      <span className="demo-inline-actions">
-                        <Button
-                          variant="solid"
-                          tone="neutral"
-                          size="sm"
-                          onClick={() => resolve(true)}
-                        >
-                          Accept
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => resolve(false)}
-                        >
-                          Undo
-                        </Button>
-                      </span>
-                    </>
-                  ) : (
-                    `${units} units`
-                  )}
-                </td>
+                <td>{units.toLocaleString("en-US")}</td>
               </tr>
             </tbody>
           </Table>
+          {proposed !== null ? (
+            <>
+              <p>{s.reviewSummary(units, proposed)}</p>
+              {controls()}
+            </>
+          ) : null}
         </Panel>
       </div>
-
-      {events.length > 0 ? (
-        <div className="demo-events" aria-label="Events on the wire">
-          {events.map((event, index) => (
-            <span key={`${event}-${index}`} className="demo-event">
-              {event}
-            </span>
-          ))}
-        </div>
-      ) : null}
-
-      {outcome ? <p className="demo-note">{outcome}</p> : null}
-      {runState === "idle" && !outcome ? (
-        <p className="demo-note">
-          A scripted run of the same agent, shown twice: as a transcript, and as
-          events landing on the product. The event chips are the AG-UI
-          vocabulary from this section.
-        </p>
-      ) : null}
+      <p role="status">
+        {running
+          ? s.working
+          : proposed !== null
+            ? s.reviewSummary(units, proposed)
+            : ""}
+      </p>
+      <div className="demo-events" role="group" aria-label={s.events}>
+        {events.map((event, index) => (
+          <span className="demo-event" key={`${event}-${index}`}>
+            {event}
+          </span>
+        ))}
+      </div>
+      <p className="demo-note">{s.streamNote}</p>
     </Panel>
   );
-};
-
-export default AgentStreamDemo;
+}

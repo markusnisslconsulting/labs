@@ -1,8 +1,7 @@
 /**
- * The event vocabulary and scripted run behind "The Chat Box Is a
- * Log". The article's demo shows a run twice: as a transcript and as
- * typed events landing on the product row. The event names mirror the
- * AG-UI families the article walks through.
+ * Application events for the scripted replenishment example.
+ * These illustrate AG-UI event families; they are not wire-compatible
+ * AG-UI messages. Rendering and approval are application choices.
  *
  * The run is pure scheduling. It emits events; what a screen does
  * with them is somebody else's decision.
@@ -36,6 +35,7 @@ export interface ScriptedRunConfig {
   toUnits: number;
   callbacks: RunCallbacks;
   scheduler?: Scheduler;
+  narration?: string;
 }
 
 export interface ScriptedRun {
@@ -60,7 +60,9 @@ export function createScriptedRun(config: ScriptedRunConfig): ScriptedRun {
       at(200, { type: "run-started" });
       at(700, {
         type: "text-message",
-        text: "Preparing the promotion week. SKU 4711 needs a higher reorder point.",
+        text:
+          config.narration ??
+          "Preparing the promotion week. SKU 4711 needs a higher reorder point.",
       });
       at(1400, { type: "tool-call-started" });
       at(2100, { type: "state-delta", proposedUnits: config.toUnits });
