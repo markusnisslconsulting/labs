@@ -1,17 +1,13 @@
-/** Local proposal state shared by the manual and WebMCP entry points. */
+/** In-memory inventory record used by both the form and the page tool. */
 export interface DeskRow {
   sku: string;
   name: string;
   units: number;
-  proposed: number | null;
 }
-
-export type DeskSnapshot = readonly DeskRow[];
 
 export interface Desk {
   rows(): DeskRow[];
-  propose(sku: string, units: number): string;
-  resolve(sku: string, accept: boolean): void;
+  setReorderPoint(input: Record<string, unknown>): string;
   reset(): void;
 }
 
@@ -19,80 +15,48 @@ export function createDesk(
   initialRows: readonly DeskRow[],
   onChange?: (rows: DeskRow[]) => void,
 ): Desk {
-  let rows: DeskRow[] = initialRows.map((row) => ({ ...row }));
-  const changed = () => onChange?.(rows.map((row) => ({ ...row })));
-
+  let rows = initialRows.map((row) => ({ ...row }));
+  const snapshot = () => rows.map((row) => ({ ...row }));
   return {
-    rows: () => rows.map((row) => ({ ...row })),
-
-    propose(sku, units) {
+    rows: snapshot,
+    setReorderPoint({ sku, units }) {
       const row = rows.find((candidate) => candidate.sku === sku);
-      if (!row) {
-        return `Unknown SKU ${sku}.`;
+      if (!row) return JSON.stringify({ ok: false, error: "Unknown SKU." });
+      if (
+        typeof units !== "number" ||
+        !Number.isSafeInteger(units) ||
+        units < 0
+      ) {
+        return JSON.stringify({
+          ok: false,
+          error: "Units must be a non-negative safe integer.",
+        });
       }
-      if (!Number.isSafeInteger(units) || units < 0) {
-        return `Reorder point for ${sku} must be a non-negative integer.`;
-      }
-      row.proposed = units;
-      changed();
-      return `Proposed ${units} units for SKU ${sku}. A person confirms on the row.`;
-    },
-
-    resolve(sku, accept) {
-      const row = rows.find((candidate) => candidate.sku === sku);
-      if (!row || row.proposed === null) {
-        return;
-      }
-      if (accept) {
-        row.units = row.proposed;
-      }
-      row.proposed = null;
-      changed();
+      const previousUnits = row.units;
+      row.units = units;
+      onChange?.(snapshot());
+      return JSON.stringify({ ok: true, sku, previousUnits, units });
     },
     reset() {
       rows = initialRows.map((row) => ({ ...row }));
-      changed();
+      onChange?.(snapshot());
     },
   };
 }
 
-export interface ToolDescriptorInput {
-  sku: string;
-  units: number;
-}
-
-export interface ToolDescriptor {
-  name: string;
-  description: string;
-  inputSchema: Record<string, unknown>;
-  execute(input: Record<string, unknown>): string;
-}
-
-/**
- * The declared verb. The schema enumerates the SKUs the desk actually
- * has, so the description cannot promise an action for a product the
- * page never shows.
- */
-export function reorderPointToolDescriptor(desk: Desk): ToolDescriptor {
-  const skus = desk.rows().map((row) => row.sku);
+export function reorderPointToolDescriptor(desk: Desk) {
   return {
-    name: "propose_reorder_point",
-    description:
-      "Propose a reorder point for one SKU. A person accepts or discards the proposal on the page.",
+    name: "set_reorder_point",
+    description: "Set the reorder point for product 4711 in this demo.",
     inputSchema: {
       type: "object",
       properties: {
-        sku: { type: "string", enum: skus },
+        sku: { type: "string", enum: desk.rows().map((row) => row.sku) },
         units: { type: "integer", minimum: 0 },
       },
       required: ["sku", "units"],
+      additionalProperties: false,
     },
-    execute(input: Record<string, unknown>) {
-      const { sku, units } = input;
-      if (typeof sku !== "string" || typeof units !== "number") {
-        return "Provide a string SKU and a numeric reorder point.";
-      }
-      return desk.propose(sku, units);
-    },
+    execute: (input: Record<string, unknown>) => desk.setReorderPoint(input),
   };
 }

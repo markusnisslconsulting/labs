@@ -1,409 +1,431 @@
 import { Button } from "@labs/ui/components/Button";
 import { Panel } from "@labs/ui/components/Panel";
 import { Stack } from "@labs/ui/components/Stack";
-import { StatusPill } from "@labs/ui/components/StatusPill";
-import { useEffect, useState } from "react";
+import { TextField } from "@labs/ui/components/TextField";
+import { Textarea } from "@labs/ui/components/Textarea";
+import { Select } from "@labs/ui/components/Select";
+import { Checkbox } from "@labs/ui/components/Checkbox";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useStrings } from "./strings";
 
 type Availability =
   "unavailable" | "downloadable" | "downloading" | "available";
-type ApiState = Availability | "absent" | "checking";
-type Phase = "idle" | "working" | "needs-download" | "done" | "failed";
-
-const DEFAULT_TEXT = "Der Kunde Meier fragt, wo Bestellung 4711 bleibt.";
-
-const SAMPLE_THREAD = [
-  "Customer (Mon): Order 4711 arrived damaged, the box was crushed and the lamp inside is broken. I need a replacement before Friday.",
-  "Support (Mon): We are sorry about that. Could you send a photo of the damage? A replacement usually ships within two days.",
-  "Customer (Tue): Photo attached. Please confirm the replacement arrives before Friday, it is a gift.",
-  "Support (Tue): Replacement approved and shipped with express delivery, tracking 88231. The damaged lamp does not need to be returned.",
-].join("\n");
-
-const stateLabel: Record<ApiState, string> = {
-  checking: "checking…",
-  absent: "not exposed by this browser",
-  unavailable: "unavailable on this machine",
-  downloadable: "needs a download",
-  downloading: "downloading",
-  available: "ready on this machine",
-};
-
-function toneOf(state: ApiState): "ok" | "warn" | "off" {
-  if (state === "available") return "ok";
-  if (state === "downloadable" || state === "downloading") return "warn";
-  return "off";
-}
-
-function hasApi(name: string): boolean {
-  return typeof self !== "undefined" && name in self;
-}
-
-function errorText(caught: unknown): string {
-  if (caught instanceof Error && caught.message) return caught.message;
-  if (typeof caught === "string" && caught) return caught;
-  return "The browser rejected the call without giving a reason. In our tests this happens when the on-device service is briefly stuck: reload the page and try again, and if it persists, chrome://on-device-internals shows the model's state.";
-}
-
-const OnDeviceDemo = () => {
-  const [detector, setDetector] = useState<ApiState>("checking");
-  const [translator, setTranslator] = useState<ApiState>("checking");
-  const [summarizer, setSummarizer] = useState<ApiState>("checking");
-  const [prompt, setPrompt] = useState<ApiState>("checking");
-  const [writer, setWriter] = useState<ApiState>("checking");
-  const [rewriter, setRewriter] = useState<ApiState>("checking");
-  const [proofreader, setProofreader] = useState<ApiState>("checking");
-  const [text, setText] = useState(DEFAULT_TEXT);
-  const [phase, setPhase] = useState<Phase>("idle");
-  const [progress, setProgress] = useState<number | null>(null);
-  const [result, setResult] = useState<{
-    lang: string;
-    english: string;
-  } | null>(null);
-  const [summary, setSummary] = useState<string | null>(null);
-  const [summarising, setSummarising] = useState(false);
-  const [extracted, setExtracted] = useState<string | null>(null);
-  const [asking, setAsking] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
+type ApiState = Availability | "absent" | "checking" | "failed";
+function useAvailability(name: string, check: () => Promise<Availability>) {
+  const [state, setState] = useState<ApiState>("checking");
   useEffect(() => {
-    let cancelled = false;
-
-    function probe(
-      name: string,
-      check: () => Promise<Availability>,
-      set: (state: ApiState) => void,
-    ) {
-      if (!hasApi(name)) {
-        set("absent");
+    let active = true;
+    async function probe() {
+      setState("checking");
+      if (!(name in self)) {
+        setState("absent");
         return;
       }
-      check()
-        .then((state) => {
-          if (!cancelled) set(state);
-        })
-        .catch(() => {
-          if (!cancelled) set("unavailable");
-        });
+      try {
+        const result = await check();
+        if (active) setState(result);
+      } catch {
+        if (active) setState("failed");
+      }
     }
-
-    probe(
-      "LanguageDetector",
-      () => LanguageDetector.availability(),
-      setDetector,
-    );
-    probe(
-      "Translator",
-      () =>
-        Translator.availability({ sourceLanguage: "de", targetLanguage: "en" }),
-      setTranslator,
-    );
-    probe("Summarizer", () => Summarizer.availability(), setSummarizer);
-    probe("LanguageModel", () => LanguageModel.availability(), setPrompt);
-    probe("Writer", () => Writer.availability(), setWriter);
-    probe("Rewriter", () => Rewriter.availability(), setRewriter);
-    probe("Proofreader", () => Proofreader.availability(), setProofreader);
-
+    void probe();
     return () => {
-      cancelled = true;
+      active = false;
+    };
+  }, [name, check]);
+  return state;
+}
+const usable = (state: ApiState) =>
+  ["available", "downloadable", "downloading"].includes(state);
+const detectorAvailability = () => LanguageDetector.availability();
+const writerAvailability = () => Writer.availability();
+const rewriterAvailability = () => Rewriter.availability();
+const proofreaderAvailability = () => Proofreader.availability();
+
+/** Each operation owns its progress/error and destroys its instance on every exit. */
+function useOperation() {
+  const s = useStrings();
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [error, setError] = useState("");
+  const resources = useRef(new Set<{ destroy(): void }>());
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    const active = resources.current;
+    return () => {
+      mounted.current = false;
+      for (const item of active) item.destroy();
+      active.clear();
     };
   }, []);
-
-  const supported = detector !== "absent" && translator !== "absent";
-  const modelPresent = summarizer === "available" || prompt === "available";
-
-  const run = async (allowDownload: boolean) => {
-    setError(null);
-    setResult(null);
+  const track = <T extends { destroy(): void }>(resource: T): T => {
+    if (!mounted.current) {
+      resource.destroy();
+      throw new Error("Operation ended with the page.");
+    }
+    resources.current.add(resource);
+    return resource;
+  };
+  const monitor = (target: EventTarget) =>
+    target.addEventListener("downloadprogress", (event) => {
+      setProgress(Math.round((event as ProgressEvent).loaded * 100));
+    });
+  async function run(task: () => Promise<void>) {
+    setBusy(true);
+    setError("");
     setProgress(null);
-    setPhase("working");
     try {
-      const languageDetector = await LanguageDetector.create();
-      const [top] = await languageDetector.detect(text);
-      const source = top?.detectedLanguage ?? "de";
-
-      if (source === "en") {
-        setResult({ lang: "en", english: text });
-        setPhase("done");
-        return;
-      }
-
-      const pair = await Translator.availability({
-        sourceLanguage: source,
-        targetLanguage: "en",
-      });
-      if (pair === "unavailable") {
-        setError(`This machine has no on-device pair for ${source} → en.`);
-        setPhase("failed");
-        return;
-      }
-      if (pair !== "available" && !allowDownload) {
-        setResult({ lang: source, english: "" });
-        setPhase("needs-download");
-        return;
-      }
-
-      const activeTranslator = await Translator.create({
-        sourceLanguage: source,
-        targetLanguage: "en",
-        monitor(monitor) {
-          monitor.addEventListener("downloadprogress", (event) => {
-            setProgress((event as ProgressEvent).loaded);
-          });
-        },
-      });
-      setProgress(null);
-      const english = await activeTranslator.translate(text);
-      setResult({ lang: source, english });
-      setPhase("done");
+      await task();
     } catch (caught) {
-      setError(errorText(caught));
-      setPhase("failed");
-    }
-  };
-
-  const runSummary = async () => {
-    setError(null);
-    setSummary(null);
-    setSummarising(true);
-    try {
-      const activeSummarizer = await Summarizer.create({
-        type: "key-points",
-        format: "plain-text",
-        length: "short",
-        monitor(monitor) {
-          monitor.addEventListener("downloadprogress", (event) => {
-            setProgress((event as ProgressEvent).loaded);
-          });
-        },
-      });
-      setProgress(null);
-      const keyPoints = await activeSummarizer.summarize(SAMPLE_THREAD);
-      setSummary(keyPoints);
-      setSummarizer("available");
-      activeSummarizer.destroy();
-    } catch (caught) {
-      setError(errorText(caught));
+      if (mounted.current)
+        setError(caught instanceof Error ? caught.message : s.error);
     } finally {
-      setProgress(null);
-      setSummarising(false);
+      for (const resource of resources.current) resource.destroy();
+      resources.current.clear();
+      if (mounted.current) {
+        setBusy(false);
+        setProgress(null);
+      }
     }
-  };
+  }
+  return { busy, progress, error, run, track, monitor };
+}
+function OperationStatus({
+  operation,
+}: {
+  operation: ReturnType<typeof useOperation>;
+}) {
+  const s = useStrings();
+  return (
+    <>
+      {operation.progress !== null && (
+        <p role="status">{s.progress(operation.progress)}</p>
+      )}
+      {operation.error && <p role="alert">{operation.error}</p>}
+    </>
+  );
+}
+function Result({ label, value }: { label: string; value: string }) {
+  return (
+    <Panel label={label}>
+      <pre className="demo-call" aria-live="polite">
+        {value}
+      </pre>
+    </Panel>
+  );
+}
 
-  const runAsk = async () => {
-    setError(null);
-    setExtracted(null);
-    setAsking(true);
-    try {
-      const session = await LanguageModel.create({
-        monitor(monitor) {
-          monitor.addEventListener("downloadprogress", (event) => {
-            setProgress((event as ProgressEvent).loaded);
-          });
-        },
-      });
-      setProgress(null);
-      const raw = await session.prompt(
-        `Extract the order number and the issue from this support message: "${text}"`,
-        {
-          responseConstraint: {
-            type: "object",
-            properties: {
-              orderNumber: { type: "string" },
-              issue: { type: "string" },
-            },
-            required: ["orderNumber", "issue"],
-          },
-        },
-      );
-      setExtracted(raw);
-      setPrompt("available");
-      session.destroy();
-    } catch (caught) {
-      setError(errorText(caught));
-    } finally {
-      setProgress(null);
-      setAsking(false);
-    }
-  };
+export default function OnDeviceDemo() {
+  const s = useStrings();
+  const [message, setMessage] = useState(s.defaultMessage);
+  const [source, setSource] = useState("de");
+  const [translation, setTranslation] = useState("");
+  const [detected, setDetected] = useState("");
+  const pair = useMemo(
+    () => ({ sourceLanguage: source, targetLanguage: "en" }),
+    [source],
+  );
+  const checkPair = useCallback(() => Translator.availability(pair), [pair]);
+  const translationState = useAvailability("Translator", checkPair);
+  const detectionState = useAvailability(
+    "LanguageDetector",
+    detectorAvailability,
+  );
+  const translationOp = useOperation();
+  const detectionOp = useOperation();
 
   return (
-    <Panel label="Live · the seven built-in APIs, checked on this machine">
-      {/* The space between these used to come from each Panel's own bottom
-          margin, which is gone. Several of them are conditional, and a
-          margin on a conditional sibling is the case that breaks first. */}
-      <Stack gap="lg">
-        <ul className="demo-status">
-          <li>
-            Language Detector ·{" "}
-            <StatusPill tone={toneOf(detector)}>
-              {stateLabel[detector]}
-            </StatusPill>
-          </li>
-          <li>
-            Translator (de → en) ·{" "}
-            <StatusPill tone={toneOf(translator)}>
-              {stateLabel[translator]}
-            </StatusPill>
-          </li>
-          <li>
-            Summarizer ·{" "}
-            <StatusPill tone={toneOf(summarizer)}>
-              {stateLabel[summarizer]}
-            </StatusPill>
-          </li>
-          <li>
-            Prompt ·{" "}
-            <StatusPill tone={toneOf(prompt)}>{stateLabel[prompt]}</StatusPill>
-          </li>
-          <li>
-            Writer ·{" "}
-            <StatusPill tone={toneOf(writer)}>{stateLabel[writer]}</StatusPill>
-          </li>
-          <li>
-            Rewriter ·{" "}
-            <StatusPill tone={toneOf(rewriter)}>
-              {stateLabel[rewriter]}
-            </StatusPill>
-          </li>
-          <li>
-            Proofreader ·{" "}
-            <StatusPill tone={toneOf(proofreader)}>
-              {stateLabel[proofreader]}
-            </StatusPill>
-          </li>
-        </ul>
+    <Stack gap="lg">
+      <Panel label={s.translation}>
+        <Stack gap="md">
+          <Textarea
+            label={s.message}
+            value={message}
+            disabled={translationOp.busy || detectionOp.busy}
+            onChange={(event) => {
+              setMessage(event.target.value);
+              setTranslation("");
+              setDetected("");
+            }}
+          />
+          <TextField
+            label={s.source}
+            hint={s.sourceHint}
+            value={source}
+            disabled={translationOp.busy || detectionOp.busy}
+            onChange={(event) => {
+              setSource(event.target.value);
+              setTranslation("");
+            }}
+          />
+          <p>
+            {s.names.translator}: {s.state[translationState]}
+          </p>
+          <Button
+            disabled={
+              translationOp.busy ||
+              detectionOp.busy ||
+              !message.trim() ||
+              (source !== "en" && !usable(translationState))
+            }
+            onClick={() =>
+              translationOp.run(async () => {
+                setTranslation("");
+                if (source === "en") {
+                  setTranslation(message);
+                  return;
+                }
+                const translator = translationOp.track(
+                  await Translator.create({
+                    ...pair,
+                    monitor: translationOp.monitor,
+                  }),
+                );
+                setTranslation(await translator.translate(message));
+              })
+            }
+          >
+            {translationOp.busy ? s.working : s.translate}
+          </Button>
+          <OperationStatus operation={translationOp} />
+          {translation && (
+            <Result label={s.translationResult} value={translation} />
+          )}
+          {source === "en" && translation && <p>{s.alreadyEnglish}</p>}
+          <p className="demo-note">{s.translationCheck}</p>
+        </Stack>
+      </Panel>
+      <Panel label={s.detection}>
+        <Stack gap="md">
+          <p>{s.detectionIntro}</p>
+          <p>
+            {s.names.detector}: {s.state[detectionState]}
+          </p>
+          <Button
+            disabled={
+              !usable(detectionState) ||
+              detectionOp.busy ||
+              translationOp.busy ||
+              !message.trim()
+            }
+            onClick={() =>
+              detectionOp.run(async () => {
+                setDetected("");
+                setTranslation("");
+                const detector = detectionOp.track(
+                  await LanguageDetector.create({
+                    monitor: detectionOp.monitor,
+                  }),
+                );
+                const [best] = await detector.detect(message);
+                if (!best?.detectedLanguage || best.detectedLanguage === "und")
+                  throw new Error(s.undetermined);
+                setDetected(s.detected(best.detectedLanguage, best.confidence));
+                setSource(best.detectedLanguage);
+              })
+            }
+          >
+            {detectionOp.busy ? s.working : s.detect}
+          </Button>
+          <OperationStatus operation={detectionOp} />
+          {detected && <Result label={s.detectionResult} value={detected} />}
+        </Stack>
+      </Panel>
+      <SummaryExample />
+      <ExtractionExample />
+      <ExtraAvailability />
+    </Stack>
+  );
+}
 
-        <textarea
-          className="demo-textarea"
-          value={text}
-          onChange={(event) => setText(event.target.value)}
-          aria-label="Text to translate on this machine"
+function SummaryExample() {
+  const s = useStrings();
+  const [thread, setThread] = useState(s.thread);
+  const [type, setType] =
+    useState<NonNullable<SummarizerCreateOptions["type"]>>("key-points");
+  const [stream, setStream] = useState(false);
+  const [result, setResult] = useState("");
+  const [quota, setQuota] = useState("");
+  const options = useMemo(
+    () =>
+      ({
+        type,
+        format: "plain-text",
+        length: "short",
+        expectedInputLanguages: ["en"],
+        outputLanguage: "en",
+      }) as const,
+    [type],
+  );
+  const check = useCallback(() => Summarizer.availability(options), [options]);
+  const state = useAvailability("Summarizer", check);
+  const operation = useOperation();
+  return (
+    <Panel label={s.summary}>
+      <Stack gap="md">
+        <Textarea
+          label={s.threadLabel}
+          value={thread}
+          rows={9}
+          disabled={operation.busy}
+          onChange={(event) => {
+            setThread(event.target.value);
+            setResult("");
+            setQuota("");
+          }}
         />
-        <div className="demo-actions">
-          <button
-            type="button"
-            className="demo-button"
-            disabled={!supported || phase === "working"}
-            onClick={() => run(false)}
-          >
-            {phase === "working"
-              ? "Working…"
-              : "Detect and translate on this machine"}
-          </button>
-          {phase === "needs-download" ? (
-            <button
-              type="button"
-              className="demo-button ghost"
-              onClick={() => run(true)}
-            >
-              Download the language pack (small) and translate
-            </button>
-          ) : null}
-          {summarizer === "available" || summarizer === "downloadable" ? (
-            <Button
-              variant="outline"
-              disabled={summarising}
-              onClick={runSummary}
-            >
-              {summarising
-                ? "Summarising…"
-                : summarizer === "available"
-                  ? "Summarise a sample ticket thread (three bullets)"
-                  : "Download the shared model (several GB) and summarise"}
-            </Button>
-          ) : null}
-          {prompt === "available" || prompt === "downloadable" ? (
-            <Button variant="outline" disabled={asking} onClick={runAsk}>
-              {asking
-                ? "Asking…"
-                : prompt === "available"
-                  ? "Ask: extract order number and issue (JSON)"
-                  : "Download the shared model (several GB) and ask"}
-            </Button>
-          ) : null}
-        </div>
-
-        {progress !== null ? (
-          <div
-            className="demo-progress"
-            role="progressbar"
-            aria-label="Model download"
-          >
-            <span style={{ width: `${Math.round(progress * 100)}%` }} />
-          </div>
-        ) : null}
-
-        {phase === "needs-download" && result ? (
-          <p className="demo-note">
-            Detected {result.lang}. The {result.lang} → en pack is not on this
-            machine yet. Downloading it is your call, which is exactly how{" "}
-            <code>create()</code> should be treated in a product.
-          </p>
-        ) : null}
-
-        {phase === "done" && result ? (
-          <Panel>
-            Detected <strong>{result.lang}</strong> → &ldquo;{result.english}
-            &rdquo;
-            <p className="demo-note">
-              That sentence was translated on your machine. Nothing was sent to
-              a server; the network tab can confirm it.
-            </p>
-          </Panel>
-        ) : null}
-
-        {summary ? (
-          <Panel>
-            <strong>Key points</strong>
-            <p style={{ whiteSpace: "pre-line", margin: "0.5rem 0 0" }}>
-              {summary}
-            </p>
-            <p className="demo-note">
-              Short key points, plain text: the documented shape from the budget
-              section, produced on your machine from a four-message sample
-              thread.
-            </p>
-          </Panel>
-        ) : null}
-
-        {extracted ? (
-          <Panel>
-            <strong>Extracted</strong>
-            <p style={{ whiteSpace: "pre-line", margin: "0.5rem 0 0" }}>
-              <code>{extracted}</code>
-            </p>
-            <p className="demo-note">
-              The escape hatch with a schema: the Prompt API had to answer in
-              the declared JSON shape, on your machine.
-            </p>
-          </Panel>
-        ) : null}
-
-        {error ? <p className="demo-note">{error}</p> : null}
-
-        {!supported && detector !== "checking" ? (
-          <p className="demo-note">
-            Your browser does not expose these APIs. You are looking at the{" "}
-            <code>unavailable</code> state the article says to design for. In a
-            current desktop Chrome, the buttons above run entirely on the local
-            machine.
-          </p>
-        ) : (
-          <p className="demo-note">
-            The chips are live <code>availability()</code> answers from your
-            browser, for this origin, on this machine, for everything Chrome
-            offers today. Nothing downloads without your click, and every
-            download button says what it fetches: the language pack is small,
-            the shared model behind Summarise and Ask is a multi-gigabyte
-            download. Write, rewrite and proofread are in trials; they appear as
-            states here until their API shape settles.
-            {modelPresent
-              ? " The shared model is on this machine, so Summarise and Ask run immediately."
-              : ""}
-          </p>
-        )}
+        <Select
+          label={s.summaryType}
+          value={type}
+          options={s.summaryTypes}
+          disabled={operation.busy}
+          onChange={(event) => {
+            setType(event.target.value as typeof type);
+            setResult("");
+          }}
+        />
+        <p>{s.summaryOptions}</p>
+        <Checkbox
+          label={s.stream}
+          checked={stream}
+          onCheckedChange={setStream}
+          disabled={operation.busy}
+        />
+        <p>
+          {s.names.summarizer}: {s.state[state]}
+        </p>
+        <Button
+          disabled={!usable(state) || operation.busy || !thread.trim()}
+          onClick={() =>
+            operation.run(async () => {
+              setResult("");
+              setQuota("");
+              const summarizer = operation.track(
+                await Summarizer.create({
+                  ...options,
+                  monitor: operation.monitor,
+                }),
+              );
+              const usage = await summarizer.measureInputUsage(thread);
+              setQuota(s.quota(usage, summarizer.inputQuota));
+              if (usage > summarizer.inputQuota) throw new Error(s.tooLong);
+              if (stream) {
+                const reader = summarizer
+                  .summarizeStreaming(thread)
+                  .getReader();
+                try {
+                  while (true) {
+                    const chunk = await reader.read();
+                    if (chunk.done) break;
+                    setResult((text) => text + chunk.value);
+                  }
+                } finally {
+                  reader.releaseLock();
+                }
+              } else {
+                setResult(await summarizer.summarize(thread));
+              }
+            })
+          }
+        >
+          {operation.busy ? s.working : s.summarize}
+        </Button>
+        <OperationStatus operation={operation} />
+        {quota && <p>{quota}</p>}
+        {result && <Result label={s.summaryResult} value={result} />}
+        <p className="demo-note">{s.summaryCheck}</p>
       </Stack>
     </Panel>
   );
-};
+}
 
-export default OnDeviceDemo;
+const promptOptions = {
+  expectedInputs: [{ type: "text", languages: ["en"] }],
+  expectedOutputs: [{ type: "text", languages: ["en"] }],
+} satisfies LanguageModelCreateOptions;
+const checkPrompt = () => LanguageModel.availability(promptOptions);
+function ExtractionExample() {
+  const s = useStrings();
+  const [message, setMessage] = useState(s.extractionMessage);
+  const [result, setResult] = useState("");
+  const state = useAvailability("LanguageModel", checkPrompt);
+  const operation = useOperation();
+  return (
+    <Panel label={s.extraction}>
+      <Stack gap="md">
+        <Textarea
+          label={s.extractionInput}
+          value={message}
+          disabled={operation.busy}
+          onChange={(event) => {
+            setMessage(event.target.value);
+            setResult("");
+          }}
+        />
+        <p>
+          {s.names.prompt}: {s.state[state]}
+        </p>
+        <Button
+          disabled={!usable(state) || operation.busy || !message.trim()}
+          onClick={() =>
+            operation.run(async () => {
+              setResult("");
+              const session = operation.track(
+                await LanguageModel.create({
+                  ...promptOptions,
+                  monitor: operation.monitor,
+                }),
+              );
+              const raw = await session.prompt(
+                `Extract the order number and describe the issue in English.
+Use an empty string for a field that is missing.
+Message: ${message}`,
+                {
+                  responseConstraint: {
+                    type: "object",
+                    properties: {
+                      orderNumber: { type: "string" },
+                      issue: { type: "string" },
+                    },
+                    required: ["orderNumber", "issue"],
+                    additionalProperties: false,
+                  },
+                },
+              );
+              setResult(JSON.stringify(JSON.parse(raw), null, 2));
+            })
+          }
+        >
+          {operation.busy ? s.working : s.extract}
+        </Button>
+        <OperationStatus operation={operation} />
+        {result && <Result label={s.extracted} value={result} />}
+        <p className="demo-note">{s.extractionCheck}</p>
+      </Stack>
+    </Panel>
+  );
+}
+function ExtraAvailability() {
+  const s = useStrings();
+  const writer = useAvailability("Writer", writerAvailability);
+  const rewriter = useAvailability("Rewriter", rewriterAvailability);
+  const proofreader = useAvailability("Proofreader", proofreaderAvailability);
+  return (
+    <details>
+      <summary>{s.extra}</summary>
+      <p>{s.extraNote}</p>
+      <ul>
+        <li>
+          {s.names.writer}: {s.state[writer]}
+        </li>
+        <li>
+          {s.names.rewriter}: {s.state[rewriter]}
+        </li>
+        <li>
+          {s.names.proofreader}: {s.state[proofreader]}
+        </li>
+      </ul>
+    </details>
+  );
+}

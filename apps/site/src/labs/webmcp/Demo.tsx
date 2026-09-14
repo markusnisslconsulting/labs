@@ -1,173 +1,209 @@
 import { Stack } from "@labs/ui/components/Stack";
-import { useStrings } from "./strings";
-import { Table } from "@labs/ui/components/Table";
 import { Button } from "@labs/ui/components/Button";
 import { Panel } from "@labs/ui/components/Panel";
-import { StatusPill } from "@labs/ui/components/StatusPill";
+import { TextField } from "@labs/ui/components/TextField";
+import { Textarea } from "@labs/ui/components/Textarea";
+import { Select } from "@labs/ui/components/Select";
 import { useEffect, useRef, useState } from "react";
-import {
-  createDesk,
-  reorderPointToolDescriptor,
-  type DeskRow,
-} from "@labs/reorder-desk";
+import { createDesk, reorderPointToolDescriptor } from "@labs/reorder-desk";
+import { useStrings } from "./strings";
 
-type Registration = "checking" | "registered" | "absent";
+const START_ROWS = [{ sku: "4711", name: "Filter coffee 500 g", units: 800 }];
+type Mode = "javascript" | "form" | "autosubmit";
+type Source = "form" | "tool" | "direct";
+type AgentSubmitEvent = SubmitEvent & {
+  agentInvoked?: boolean;
+  respondWith(result: Promise<string>): void;
+};
 
-const START_ROWS: DeskRow[] = [
-  { sku: "4711", name: "Filter coffee 500 g", units: 800, proposed: null },
-  { sku: "4712", name: "Espresso beans 1 kg", units: 350, proposed: null },
-  { sku: "4713", name: "Oat drink 1 l", units: 1200, proposed: null },
-];
-
-const SAMPLE_CALL = { sku: "4711", units: 1240 };
-
-const WebMcpDemo = () => {
+export default function WebMcpDemo() {
   const s = useStrings();
-  const [rows, setRows] = useState<DeskRow[]>([...START_ROWS]);
-  const desk = useRef(createDesk(START_ROWS, setRows));
-  const [registration, setRegistration] = useState<Registration>("checking");
-  const [lastCall, setLastCall] = useState<string | null>(null);
-
-  const propose = (sku: string, units: number): string => {
-    const answer = desk.current.propose(sku, units);
-    return answer;
-  };
-
-  const resolve = (sku: string, accept: boolean) => {
-    desk.current.resolve(sku, accept);
-  };
+  const [rows, setRows] = useState(START_ROWS);
+  const [desk] = useState(() => createDesk(START_ROWS, setRows));
+  const [mode, setMode] = useState<Mode>("javascript");
+  const [enabled, setEnabled] = useState(true);
+  const [registration, setRegistration] = useState(s.checking);
+  const [args, setArgs] = useState('{ "sku": "4711", "units": 1240 }');
+  const [error, setError] = useState("");
+  const [trace, setTrace] = useState<{
+    source: Source;
+    input: unknown;
+    result: string;
+  } | null>(null);
+  const form = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (typeof document === "undefined" || !document.modelContext) {
-      // Checked here rather than in the initial state: probing asks for
-      // a browser property that does not exist while prerendering. Set
-      // in the initial state, server and browser would diverge and
-      // hydration would break. Runs exactly once.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setRegistration("absent");
-      return;
-    }
+    const element = form.current!;
+    const apply = (input: Record<string, unknown>, source: Source) => {
+      const result = desk.setReorderPoint(input);
+      setTrace({ source, input, result });
+      return result;
+    };
+    const submit = (event: SubmitEvent) => {
+      event.preventDefault();
+      const fields = new FormData(element);
+      const input = {
+        sku: fields.get("sku"),
+        units: Number(fields.get("units")),
+      };
+      const agentEvent = event as AgentSubmitEvent;
+      const result = apply(input, agentEvent.agentInvoked ? "tool" : "form");
+      if (agentEvent.agentInvoked)
+        agentEvent.respondWith(Promise.resolve(result));
+    };
+    element.addEventListener("submit", submit);
     const controller = new AbortController();
-    try {
-      const descriptor = reorderPointToolDescriptor(desk.current);
-      void document.modelContext.registerTool(
-        {
-          ...descriptor,
-          execute(input) {
-            setLastCall(
-              JSON.stringify({ tool: descriptor.name, input }, null, 2),
-            );
-            return descriptor.execute(input);
-          },
-        },
-        { signal: controller.signal },
-      );
-      setRegistration("registered");
-    } catch {
-      setRegistration("absent");
+    let active = true;
+    async function register() {
+      const context = document.modelContext;
+      if (!context) {
+        setRegistration(s.absent);
+        return;
+      }
+      if (!enabled) {
+        setRegistration(s.removed);
+        return;
+      }
+      setRegistration(s.checking);
+      try {
+        if (mode === "javascript") {
+          await context.registerTool(
+            {
+              ...reorderPointToolDescriptor(desk),
+              execute: (input) => apply(input, "tool"),
+            },
+            { signal: controller.signal },
+          );
+        } else {
+          element.setAttribute("toolname", "set_reorder_point");
+          element.setAttribute(
+            "tooldescription",
+            reorderPointToolDescriptor(desk).description,
+          );
+          if (mode === "autosubmit") element.setAttribute("toolautosubmit", "");
+        }
+        if (active) setRegistration(s.registered);
+      } catch (caught) {
+        if (active) setRegistration(s.failed(String(caught)));
+      }
     }
-    return () => controller.abort();
-  }, []);
+    void register();
+    return () => {
+      active = false;
+      controller.abort();
+      element.removeEventListener("submit", submit);
+      for (const attribute of ["toolname", "tooldescription", "toolautosubmit"])
+        element.removeAttribute(attribute);
+    };
+  }, [desk, mode, enabled, s]);
 
-  const simulate = () => {
-    setLastCall(
-      JSON.stringify(
-        { tool: "propose_reorder_point", input: SAMPLE_CALL },
-        null,
-        2,
-      ),
-    );
-    propose(SAMPLE_CALL.sku, SAMPLE_CALL.units);
-  };
-
-  const reset = () => {
-    desk.current.reset();
-    setLastCall(null);
-  };
+  function directCall() {
+    try {
+      const input: unknown = JSON.parse(args);
+      if (!input || typeof input !== "object" || Array.isArray(input))
+        throw new Error(s.invalid);
+      const result = desk.setReorderPoint(input as Record<string, unknown>);
+      setTrace({ source: "direct", input, result });
+      setError("");
+    } catch {
+      setError(s.invalid);
+    }
+  }
 
   return (
-    <Panel label={s.panel}>
-      <ul className="demo-status">
-        <li>
-          <code>propose_reorder_point</code> ·{" "}
-          {registration === "registered" ? (
-            <StatusPill tone="ok">{s.registered}</StatusPill>
-          ) : registration === "absent" ? (
-            <StatusPill tone="off">{s.absent}</StatusPill>
-          ) : (
-            <span className="state-off">{s.checking}</span>
-          )}
-        </li>
-      </ul>
-
-      <Table caption={s.table}>
-        <thead>
-          <tr>
-            <th scope="col">{s.sku}</th>
-            <th scope="col">{s.product}</th>
-            <th scope="col" data-numeric>
-              {s.reorderPoint}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr
-              key={row.sku}
-              className={row.proposed !== null ? "proposed" : ""}
-            >
-              <td>{row.sku}</td>
-              <td>{row.name}</td>
-              <td>
-                {row.proposed !== null ? (
-                  <>
-                    <span className="demo-old">{row.units}</span>
-                    <strong>{s.units(row.proposed)}</strong>
-                    <span className="demo-inline-actions">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => resolve(row.sku, true)}
-                      >
-                        {s.accept}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => resolve(row.sku, false)}
-                      >
-                        {s.discard}
-                      </Button>
-                    </span>
-                  </>
-                ) : (
-                  s.units(row.units)
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      <Stack direction="inline" gap="md" align="center" wrap>
-        <Button onClick={simulate}>{s.manualCall}</Button>
-        <Button variant="outline" onClick={reset}>
+    <Stack gap="lg">
+      <Panel label={s.panel}>
+        <Stack gap="md">
+          <p>{s.product}</p>
+          <p>
+            {s.current}:{" "}
+            <strong data-testid="reorder-point">
+              {s.units(rows[0]!.units)}
+            </strong>
+          </p>
+          <form ref={form}>
+            <Stack gap="md">
+              <TextField
+                label={s.sku}
+                name="sku"
+                defaultValue="4711"
+                required
+              />
+              <TextField
+                label={s.threshold}
+                name="units"
+                type="number"
+                min="0"
+                step="1"
+                defaultValue="1240"
+                required
+              />
+              <Button type="submit">{s.save}</Button>
+            </Stack>
+          </form>
+          <p className="demo-note">{s.localNote}</p>
+        </Stack>
+      </Panel>
+      <Select
+        label={s.mode}
+        value={mode}
+        options={s.modes}
+        onChange={(event) => {
+          setMode(event.target.value as Mode);
+          setEnabled(true);
+        }}
+      />
+      <p role="status">{registration}</p>
+      <p>
+        {mode === "javascript"
+          ? s.javascriptNote
+          : mode === "form"
+            ? s.formNote
+            : s.autoNote}
+      </p>
+      <Stack direction="inline" gap="md" wrap>
+        <Button variant="outline" onClick={() => setEnabled(!enabled)}>
+          {enabled ? s.remove : s.restore}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            desk.reset();
+            form.current?.reset();
+            setTrace(null);
+            setError("");
+          }}
+        >
           {s.reset}
         </Button>
       </Stack>
-
-      {lastCall ? (
-        <pre className="demo-call">
-          <code>{lastCall}</code>
-        </pre>
-      ) : null}
-
-      <p className="demo-note">
-        {registration === "registered" ? s.registeredNote : s.absentNote}{" "}
-        {s.localNote}
-      </p>
-    </Panel>
+      <p>{s.inspector}</p>
+      <Panel label={s.callHeading}>
+        <Stack gap="md">
+          <p>{s.callIntro}</p>
+          <Textarea
+            label={s.arguments}
+            value={args}
+            onChange={(event) => setArgs(event.target.value)}
+            error={error}
+          />
+          <Button onClick={directCall}>{s.direct}</Button>
+        </Stack>
+      </Panel>
+      {trace && (
+        <Panel label={s.source[trace.source]}>
+          <Stack gap="md">
+            <strong>{s.inputTitle}</strong>
+            <pre className="demo-call">
+              {JSON.stringify(trace.input, null, 2)}
+            </pre>
+            <strong>{s.resultTitle}</strong>
+            <pre className="demo-call" data-testid="tool-result">
+              {JSON.stringify(JSON.parse(trace.result), null, 2)}
+            </pre>
+          </Stack>
+        </Panel>
+      )}
+    </Stack>
   );
-};
-
-export default WebMcpDemo;
+}

@@ -9,6 +9,7 @@ declare global {
     static create(options?: {
       monitor?(monitor: EventTarget): void;
     }): Promise<LanguageDetector>;
+    destroy(): void;
     detect(
       text: string,
     ): Promise<Array<{ detectedLanguage: string; confidence: number }>>;
@@ -25,9 +26,12 @@ declare global {
       monitor?(monitor: EventTarget): void;
     }): Promise<Translator>;
     translate(text: string): Promise<string>;
+    destroy(): void;
   }
 
   interface SummarizerCreateOptions {
+    expectedInputLanguages?: readonly string[];
+    outputLanguage?: string;
     type?: "key-points" | "tldr" | "teaser" | "headline";
     format?: "markdown" | "plain-text";
     length?: "short" | "medium" | "long";
@@ -35,9 +39,12 @@ declare global {
   }
 
   class Summarizer {
-    static availability(): Promise<BuiltinAiAvailability>;
+    static availability(
+      options?: SummarizerCreateOptions,
+    ): Promise<BuiltinAiAvailability>;
     static create(options?: SummarizerCreateOptions): Promise<Summarizer>;
     summarize(input: string): Promise<string>;
+    summarizeStreaming(input: string): ReadableStream<string>;
     measureInputUsage(input: string): Promise<number>;
     readonly inputQuota: number;
     destroy(): void;
@@ -45,11 +52,17 @@ declare global {
 
   interface LanguageModelCreateOptions {
     monitor?(monitor: EventTarget): void;
-    expectedInputs?: { type: "text" | "image" | "audio" }[];
+    expectedInputs?: {
+      type: "text" | "image" | "audio";
+      languages?: string[];
+    }[];
+    expectedOutputs?: { type: "text"; languages?: string[] }[];
   }
 
   class LanguageModel {
-    static availability(): Promise<BuiltinAiAvailability>;
+    static availability(
+      options?: LanguageModelCreateOptions,
+    ): Promise<BuiltinAiAvailability>;
     static create(options?: LanguageModelCreateOptions): Promise<LanguageModel>;
     prompt(
       input: string,

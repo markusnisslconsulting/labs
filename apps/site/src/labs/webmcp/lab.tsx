@@ -3,11 +3,11 @@ export default {
   slug: "webmcp",
   title: "WebMCP: When a Page Declares Its Actions",
   summary:
-    "An inventory page exposes propose_reorder_point to WebMCP callers. Request a proposal, then accept or discard it on the row.",
+    "Set a reorder point through a form, then call the same operation through WebMCP. Inspect the arguments, the visible change, and the returned result.",
   explanation: [
-    "Product 4711 starts with a reorder point of 800 units. A tool call can propose a different value using its SKU and the new threshold. The page validates the input and displays the proposal for review.",
-    "The manual button and registered browser tool use the same desk state. This version adds a review step to the article's basic setter example. It keeps all changes in the tab and clears them on reset or reload.",
-    "To invoke the registered tool, use a Chrome configuration that exposes document.modelContext and open the Model Context Tool Inspector. The manual call also works when WebMCP is unavailable.",
+    "Product 4711 starts with a reorder point of 800 units. Save 1,240 through the form first. Then use the Model Context Tool Inspector to call set_reorder_point with 900 and follow the result back to the page.",
+    "Switch from JavaScript registration to an annotated HTML form to compare the two APIs. Remove a registration, try invalid input, and check which operations still work. Reset or reload restores the sample value.",
+    "The form and direct function call work in any browser. Actual WebMCP calls need a supporting Chrome configuration, such as the testing flag described in the article. No model or API key is needed for manual calls in the Inspector.",
   ],
   tags: ["agents", "web-apis"],
   article: {

@@ -4,10 +4,10 @@ export default {
   slug: "on-device-ai",
   title: "On-device AI in Chrome",
   summary:
-    "All seven built-in APIs checked live: detection, translation and summarising on the machine, and the honest unavailable state everywhere else. Nothing downloads without your click.",
+    "Translate a support message, detect its language, summarize a conversation, and extract an order number using Chrome's local AI APIs.",
   explanation: [
-    "Availability is a fact about this browser, this origin and this machine, so the honest first screen is the check itself. In a current desktop Chrome the buttons run entirely on the device; everywhere else you are looking at exactly the states the article says to design for.",
-    "The capability arrives by download, leaves when disk runs low, and changes version on the browser's schedule. The demo shows every one of those states instead of hiding them behind a feature flag.",
+    "Start with the German message and translate it to English. Then detect its language as a separate operation. The summary and extraction exercises have their own editable inputs, matching the article.",
+    "Each exercise shows availability for its configuration. Chrome may prepare model files after your click. If an API is unavailable, its example remains visible so you can inspect the input and requirements.",
   ],
   tags: ["web-ai", "chrome"],
   article: {
