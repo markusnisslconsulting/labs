@@ -40,6 +40,7 @@
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/browser": "^4.1.11",
     "@vitest/browser-playwright": "^4.1.11",
+    "ajv": "8.20.0",
     "axe-playwright": "^2.2.2",
     "chromatic": "^18.5.0",
     "concurrently": "^10.0.5",

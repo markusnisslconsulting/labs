@@ -1,0 +1,285 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://labs.markusnissl.com/catalogs/ticket-ui.json",
+  "catalogId": "https://labs.markusnissl.com/catalogs/ticket-ui.json",
+  "title": "Ticket UI catalog",
+  "description": "Six components for the AG-UI and A2UI lab. Plain text, absolute object paths, fixed child lists, and a single-choice picker. No function calls or child templates.",
+  "components": {
+    "Card": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string",
+          "const": "Card"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId"
+        }
+      },
+      "required": ["id", "component", "child"],
+      "additionalProperties": false
+    },
+    "Column": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string",
+          "const": "Column"
+        },
+        "children": {
+          "allOf": [
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList"
+            },
+            {
+              "type": "array"
+            }
+          ]
+        }
+      },
+      "required": ["id", "component", "children"],
+      "additionalProperties": false
+    },
+    "Row": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string",
+          "const": "Row"
+        },
+        "children": {
+          "allOf": [
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList"
+            },
+            {
+              "type": "array"
+            }
+          ]
+        }
+      },
+      "required": ["id", "component", "children"],
+      "additionalProperties": false
+    },
+    "Text": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string",
+          "const": "Text"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(?![\\s\\S]*\\/(?:__proto__|constructor|prototype)(?:\\/|$))\\/(?:[^~]|~[01])*$"
+                }
+              },
+              "required": ["path"],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["id", "component", "text"],
+      "additionalProperties": false
+    },
+    "Button": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string",
+          "const": "Button"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId"
+        },
+        "action": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "context": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "pattern": "^(?![\\s\\S]*\\/(?:__proto__|constructor|prototype)(?:\\/|$))\\/(?:[^~]|~[01])*$"
+                          }
+                        },
+                        "required": ["path"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": ["name", "context"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["event"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "component", "child", "action"],
+      "additionalProperties": false
+    },
+    "ChoicePicker": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string",
+          "const": "ChoicePicker"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "pattern": "^(?![\\s\\S]*\\/(?:__proto__|constructor|prototype)(?:\\/|$))\\/(?:[^~]|~[01])*$"
+                }
+              },
+              "required": ["path"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "variant": {
+          "type": "string",
+          "const": "mutuallyExclusive"
+        },
+        "options": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(?![\\s\\S]*\\/(?:__proto__|constructor|prototype)(?:\\/|$))\\/(?:[^~]|~[01])*$"
+                      }
+                    },
+                    "required": ["path"],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": ["label", "value"],
+            "additionalProperties": false
+          }
+        },
+        "value": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^(?![\\s\\S]*\\/(?:__proto__|constructor|prototype)(?:\\/|$))\\/(?:[^~]|~[01])*$"
+            }
+          },
+          "required": ["path"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["id", "component", "label", "variant", "options", "value"],
+      "additionalProperties": false
+    }
+  },
+  "functions": {},
+  "$defs": {
+    "anyComponent": {
+      "oneOf": [
+        {
+          "$ref": "#/components/Card"
+        },
+        {
+          "$ref": "#/components/Column"
+        },
+        {
+          "$ref": "#/components/Row"
+        },
+        {
+          "$ref": "#/components/Text"
+        },
+        {
+          "$ref": "#/components/Button"
+        },
+        {
+          "$ref": "#/components/ChoicePicker"
+        }
+      ]
+    },
+    "anyFunction": false,
+    "theme": {
+      "type": "object",
+      "additionalProperties": false
+    }
+  }
+}

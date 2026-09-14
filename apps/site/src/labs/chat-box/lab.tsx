@@ -1,16 +1,16 @@
 import type { LabMeta } from "../types";
 export default {
   slug: "chat-box",
-  title: "When an AI Assistant Changes a Record",
+  title: "AG-UI and A2UI: Connecting an Agent to Your Application",
   summary:
-    "Move a support ticket to Billing. Review one proposal in a conversation and beside the ticket, then follow the save to its result.",
+    "Follow a ticket request through AG-UI, then render an A2UI interface from JSON using the existing component library.",
   explanation: [
-    "Ticket T-104 belongs to General Support. The request is to move it to Billing, with a review before saving. The conversation card and ticket details show one shared proposal and use the same save operation.",
-    "A fixed script supplies the agent events, and a local service simulates the save response. Start with the ordinary save or discard, then open the additional controls to introduce a refusal or another person's edit.",
+    "AG-UI connects the application and agent through requests, streamed events and returned tool results. A2UI describes the components, data bindings and actions a renderer uses to build the interface.",
+    "Both examples use ticket T-104 and an in-memory ticket service. The backend is scripted; the clients process the real message shapes. Start with the fixed card, then change the A2UI JSON and choose a team in the rendered form.",
   ],
   tags: ["agents", "interfaces"],
   article: {
-    title: "When an AI Assistant Changes a Record",
+    title: "AG-UI and A2UI: Connecting an Agent to Your Application",
     href: "https://www.markusnissl.com/blog/the-chat-box-is-a-log",
   },
   source:
