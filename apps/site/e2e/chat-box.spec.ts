@@ -1,129 +1,129 @@
-import { expect, test } from "@playwright/test";
-
-test("either review surface resolves the shared proposal", async ({ page }) => {
-  await page.goto("/chat-box");
-  const stream = page
-    .locator("section")
-    .filter({
-      has: page.getByRole("heading", {
-        name: "Follow a proposal from the assistant to the screen",
-      }),
-    });
-  await stream.getByRole("button", { name: "Play scripted proposal" }).click();
-  await expect(
-    stream.getByRole("button", { name: "Accept proposal", exact: true }),
-  ).toHaveCount(2);
-  await stream
-    .getByRole("button", { name: "Accept proposal", exact: true })
-    .first()
+import { expect, test, type Page } from "@playwright/test";
+async function proposal(page: Page) {
+  await page
+    .getByRole("button", { name: "Request Billing assignment" })
     .click();
   await expect(
-    stream.getByRole("cell", { name: "1,240", exact: true }),
-  ).toBeVisible();
+    page.getByRole("button", { name: "Save assignment", exact: true }),
+  ).toHaveCount(2);
+}
+const additional = (page: Page) =>
+  page
+    .getByText("Try a refusal, a colleague's edit, or a reversal", {
+      exact: true,
+    })
+    .click();
+
+test("both review surfaces share the proposal, pending save, and acknowledged result", async ({
+  page,
+}) => {
+  await page.goto("/chat-box");
+  await proposal(page);
+  const save = page.getByRole("button", {
+    name: "Save assignment",
+    exact: true,
+  });
+  await expect(save).toHaveCount(2);
+  await save.first().click();
   await expect(
-    stream.getByRole("button", { name: "Accept proposal", exact: true }),
-  ).toHaveCount(0);
-  await stream.getByRole("button", { name: "Play scripted proposal" }).click();
-  await stream
-    .getByRole("button", { name: "Discard proposal", exact: true })
+    page.getByRole("button", { name: "Saving…", exact: true }),
+  ).toHaveCount(2);
+  await expect(page.getByTestId("saved-team")).toHaveText("General Support");
+  await expect(page.getByTestId("saved-team")).toHaveText("Billing");
+  await expect(save).toHaveCount(0);
+  await page.getByRole("button", { name: "Reset example" }).click();
+  await proposal(page);
+  await page
+    .getByRole("button", { name: "Discard", exact: true })
     .last()
     .click();
-  await expect(
-    stream.getByRole("cell", { name: "800", exact: true }),
-  ).toBeVisible();
+  await expect(save).toHaveCount(0);
+  await expect(page.getByTestId("saved-team")).toHaveText("General Support");
 });
 
-test("save and restore each need a reviewed write and keep both receipts", async ({
+test("a refusal keeps the proposal and allows retry from the other view", async ({
   page,
 }) => {
   await page.goto("/chat-box");
-  await page
-    .getByRole("button", { name: "Propose 1,240", exact: true })
-    .click();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "800 units · version 1",
-  );
-  await page.getByRole("button", { name: "Save reviewed value" }).click();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "1,240 units · version 2",
-  );
-  await page
-    .getByRole("button", { name: "Review restore to previous value" })
-    .click();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "1,240 units · version 2",
-  );
-  await page.getByRole("button", { name: "Save reviewed value" }).click();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "800 units · version 3",
-  );
-  const history = page.getByRole("table", {
-    name: "Successful writes in this tab",
-  });
-  await expect(history.getByRole("row")).toHaveCount(3);
-  await expect(
-    history.getByRole("cell", { name: "800 → 1,240", exact: true }),
-  ).toBeVisible();
-  await expect(
-    history.getByRole("cell", { name: "1,240 → 800", exact: true }),
-  ).toBeVisible();
+  await proposal(page);
+  await additional(page);
+  await page.getByRole("checkbox", { name: "Refuse next save" }).check();
+  await page.getByRole("button", { name: "Save assignment" }).first().click();
+  await expect(page.getByRole("status")).toContainText("refused this save");
+  await expect(page.getByTestId("service-team")).toHaveText("General Support");
+  await page.getByRole("button", { name: "Save assignment" }).last().click();
+  await expect(page.getByTestId("saved-team")).toHaveText("Billing");
 });
 
-test("a colleague's edit blocks a stale restore", async ({ page }) => {
+test("a conflict requires a new review and preserves the colleague's edit", async ({
+  page,
+}) => {
   await page.goto("/chat-box");
+  await proposal(page);
+  await additional(page);
   await page
-    .getByRole("button", { name: "Propose 1,240", exact: true })
+    .getByRole("button", { name: "Colleague assigns Technical Support" })
     .click();
-  await page.getByRole("button", { name: "Save reviewed value" }).click();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "1,240 units · version 2",
-  );
-  await page
-    .getByRole("button", { name: "Colleague saves a different value" })
-    .click();
-  await page
-    .getByRole("button", { name: "Review restore to previous value" })
-    .click();
-  await page.getByRole("button", { name: "Save reviewed value" }).click();
-  await expect(
-    page.getByRole("button", { name: "Review against latest value" }),
-  ).toBeVisible();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "1,340 units · version 3",
+  await expect(page.getByTestId("saved-team")).toHaveText("General Support");
+  await page.getByRole("button", { name: "Save assignment" }).first().click();
+  const review = page.getByRole("button", { name: "Review latest assignment" });
+  await expect(review).toHaveCount(2);
+  await expect(page.getByTestId("service-team")).toHaveText(
+    "Technical Support",
   );
   await expect(
-    page.getByRole("button", { name: "Save reviewed value" }),
+    page.getByRole("button", { name: "Save assignment" }),
   ).toHaveCount(0);
-  await page
-    .getByRole("button", { name: "Review against latest value" })
-    .click();
-  await page.getByRole("button", { name: "Save reviewed value" }).click();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "800 units · version 4",
-  );
+  await review.first().click();
+  await page.getByRole("button", { name: "Save assignment" }).last().click();
+  await expect(page.getByTestId("saved-team")).toHaveText("Billing");
 });
 
-test("a refused save leaves the store unchanged and can be retried", async ({
+test("restoring a previous assignment encounters the same version conflict", async ({
   page,
 }) => {
   await page.goto("/chat-box");
+  await proposal(page);
+  await page.getByRole("button", { name: "Save assignment" }).first().click();
+  await expect(page.getByTestId("saved-team")).toHaveText("Billing");
+  await additional(page);
   await page
-    .getByRole("button", { name: "Propose 1,240", exact: true })
+    .getByRole("button", { name: "Colleague assigns Technical Support" })
     .click();
   await page
-    .getByRole("checkbox", { name: "Refuse the next save before writing" })
-    .check();
-  await page.getByRole("button", { name: "Save reviewed value" }).click();
+    .getByRole("button", { name: "Review previous assignment" })
+    .click();
+  await page.getByRole("button", { name: "Save assignment" }).first().click();
   await expect(
-    page.getByText("The simulated store refused this save without writing.", {
-      exact: false,
-    }),
-  ).toBeVisible();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "800 units · version 1",
+    page.getByRole("button", { name: "Review latest assignment" }),
+  ).toHaveCount(2);
+  await expect(page.getByTestId("service-team")).toHaveText(
+    "Technical Support",
   );
-  await page.getByRole("button", { name: "Save reviewed value" }).click();
-  await expect(page.getByTestId("stored-record")).toHaveText(
-    "1,240 units · version 2",
+});
+
+test("reset cancels an in-flight response so it cannot update the new example", async ({
+  page,
+}) => {
+  await page.goto("/chat-box");
+  await proposal(page);
+  await page.getByRole("button", { name: "Save assignment" }).first().click();
+  await page.getByRole("button", { name: "Reset example" }).click();
+  await page.waitForTimeout(900);
+  await expect(page.getByTestId("saved-team")).toHaveText("General Support");
+  await expect(
+    page.getByRole("button", { name: "Save assignment" }),
+  ).toHaveCount(0);
+});
+
+test("expanded event details fit a narrow screen", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/chat-box");
+  await proposal(page);
+  await page
+    .getByText("Inspect the agent events and proposal", { exact: true })
+    .click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+    390,
   );
 });

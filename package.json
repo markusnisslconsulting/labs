@@ -18,6 +18,7 @@
     "size-report": "node scripts/component-size.mjs report"
   },
   "devDependencies": {
+    "@ag-ui/core": "0.0.58",
     "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/eslintrc": "^3.3.6",
     "@labs/tools": "workspace:*",

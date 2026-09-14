@@ -1,15 +1,14 @@
 import type { LabMeta } from "../types";
-
 export default {
   slug: "chat-box",
-  title: "When an AI assistant changes a record",
+  title: "When an AI Assistant Changes a Record",
   summary:
-    "Follow a scripted proposal into a review card and a product row. Save it, simulate a colleague's edit, and try restoring the previous value.",
+    "Move a support ticket to Billing. Review one proposal in a conversation and beside the ticket, then follow the save to its result.",
   explanation: [
-    "A buyer asks an assistant to prepare product 4711 for a promotion. The sample proposes raising its reorder point from 800 to 1,240 units. The conversation and table show the same proposal and offer the same review controls.",
-    "A second example separates the buyer's view from an in-memory store. Each saved version has a receipt; a stale save returns a conflict. Everything runs locally with fixed inputs, so the lab demonstrates interface behavior without a model or server.",
+    "Ticket T-104 belongs to General Support. The request is to move it to Billing, with a review before saving. The conversation card and ticket details show one shared proposal and use the same save operation.",
+    "A fixed script supplies the agent events, and a local service simulates the save response. Start with the ordinary save or discard, then open the additional controls to introduce a refusal or another person's edit.",
   ],
-  tags: ["agents", "agentic-ui"],
+  tags: ["agents", "interfaces"],
   article: {
     title: "When an AI Assistant Changes a Record",
     href: "https://www.markusnissl.com/blog/the-chat-box-is-a-log",

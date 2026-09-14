@@ -1,76 +1,55 @@
 import { createContext, useContext } from "react";
-
+import type { Team } from "./ticket";
 const english = {
-  lifecycleTitle: "Review, save, and restore a reorder point",
-  lifecycleIntro:
-    "Product 4711 starts at 800 units. Propose 1,240, review it, and save. Then try restoring 800. To test a conflict, let a colleague edit the stored record before your save completes.",
-  simulation:
-    "This simulation runs entirely in this tab. Timers imitate a delayed response; there is no model, server, authentication, or persistent database. Reset or reload clears the record and history.",
-  lifecyclePanel: "The buyer's view and the simulated store",
-  propose: "Propose 1,240",
-  reset: "Reset",
-  failNext: "Refuse the next save before writing",
-  colleague: "Colleague saves a different value",
-  buyerView: "Buyer's last acknowledged record",
-  product: "Product",
-  storedValue: "Last acknowledged value",
-  proposal: "Proposed value",
-  state: "Status",
-  review: "Review against latest value",
-  save: "Save reviewed value",
-  reject: "Discard proposal",
-  restore: "Review restore to previous value",
+  title: "Review and save a ticket assignment",
+  intro:
+    "Ask for the Billing assignment, inspect the proposal, then save from either view. Open the additional controls when you are ready to try a refusal or a colleague's edit.",
+  request: "Move this ticket to Billing. Show me the change before saving.",
+  run: "Request Billing assignment",
+  preparing: "Preparing proposal…",
+  reset: "Reset example",
+  conversation: "Conversation",
+  ticket: "Ticket details",
+  ticketTitle: "T-104 · Charged twice for my subscription",
+  savedTeam: "Saved team",
+  current: "Current team",
+  proposed: "Proposed team",
+  reviewCard: "Proposed assignment",
+  save: "Save assignment",
+  discard: "Discard",
   saving: "Saving…",
-  none: "No proposal",
-  unavailable:
-    "The simulated store refused this save without writing. You can retry.",
+  pending: "The assignment has not been saved.",
+  explanation:
+    "This ticket is about a duplicate charge. I propose assigning it to Billing for review.",
+  start: "Request a proposal to see it here.",
+  saved: (team: string) => `Saved: this ticket is assigned to ${team}.`,
+  discarded: "Proposal discarded. The saved assignment is unchanged.",
+  refused:
+    "The service refused this save before writing. The proposal is still available to retry.",
   conflict:
-    "The stored record changed after this proposal was prepared. Review the latest value before trying again, or discard the proposal.",
-  storeTitle: "Simulated store",
-  storeCaption: "Successful writes in this tab",
-  historyEmpty: "No writes yet. Proposals do not change the store.",
-  id: "Write",
-  actor: "Actor",
-  change: "Change",
-  version: "Version",
-  buyer: "Buyer",
-  colleagueActor: "Colleague",
-  status: {
-    settled: "No pending change",
-    proposed: "Awaiting review",
-    saving: "Saving",
-    saved: "Saved",
-    conflict: "Conflict",
-  },
-  value: (units: number, version: number) =>
-    `${units.toLocaleString("en-US")} units · version ${version}`,
-  transition: (before: number, after: number) =>
-    `${before.toLocaleString("en-US")} → ${after.toLocaleString("en-US")}`,
-  streamTitle: "Follow a proposal from the assistant to the screen",
-  streamIntro:
-    "A fixed script emits application events. Its text appears in the conversation; its proposal appears in both a review card and the product row. Either set of controls updates the same local state.",
-  streamPanel: "One proposal, two places to review it",
-  run: "Play scripted proposal",
-  conversation: "Conversation with a review card",
-  desk: "Ordering desk",
-  start: "Start the script to see the proposal arrive.",
-  request:
-    "Prepare product 4711 for next week's promotion. Show me the change before saving.",
-  narration:
-    "For this example, I propose a reorder point of 1,240 units for product 4711.",
-  working: "Preparing a proposal…",
-  reviewSummary: (units: number, proposed: number) =>
-    `Product 4711: ${units.toLocaleString("en-US")} → ${proposed.toLocaleString("en-US")} units. The stored value has not changed.`,
-  accept: "Accept proposal",
-  discard: "Discard proposal",
-  accepted:
-    "The proposal was accepted in the local simulation. Both views now show the same value. The save-and-conflict example below adds a separate store and response.",
-  discarded: "The proposal was discarded. The local value remains 800 units.",
-  events: "Application events emitted by the script",
-  streamNote:
-    "These are application events inspired by AG-UI's event families, not an AG-UI wire connection. No model or backend is involved.",
+    "A colleague changed the assignment. Review the latest team before saving again.",
+  review: "Review latest assignment",
+  restore: "Review previous assignment",
+  additional: "Try a refusal, a colleague's edit, or a reversal",
+  additionalIntro:
+    "These controls act on the same ticket service. A colleague's change is hidden from your saved view until the next service response, as it could be in a second browser session.",
+  colleague: "Colleague assigns Technical Support",
+  failNext: "Refuse next save",
+  actual: "Service's current record",
+  history: "Saved changes in this tab",
+  noHistory: "No changes have been saved.",
+  eventHeading: "Inspect the agent events and proposal",
+  eventNote:
+    "A local script emits these AG-UI events, and the frontend consumes their text and proposal data. No model or network connection is involved. Save and Discard are application actions; the save result comes from the simulated ticket service.",
+  local:
+    "The service and record live only in this tab. A short delay makes the save request visible. There is no authentication or persistent database; reset or reload clears the example.",
+  actor: { user: "User", colleague: "Colleague" },
+  teams: {
+    "general-support": "General Support",
+    billing: "Billing",
+    "technical-support": "Technical Support",
+  } satisfies Record<Team, string>,
+  version: (version: number) => `Version ${version}`,
 };
-
-/** Products embedding the lab can supply a translated string set. */
 export const ChatLabStrings = createContext(english);
 export const useStrings = () => useContext(ChatLabStrings);

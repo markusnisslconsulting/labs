@@ -314,6 +314,12 @@
     color: var(--uix-text-secondary);
   }
 
+  .demo-call {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+
   .demo-chat-line {
     padding: var(--uix-gap-sm) 0;
     border-bottom: 1px solid var(--uix-border-subtle);
