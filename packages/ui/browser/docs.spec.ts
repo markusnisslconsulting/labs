@@ -91,42 +91,31 @@ for (const { id, title } of docs) {
 test("docs chrome keeps its own focus ring", async ({ page }) => {
   await page.goto("/?path=/docs/components-button--docs");
   const frame = page.frameLocator("#storybook-preview-iframe");
-  await frame
-    .locator(".docblock-code-toggle")
-    .first()
-    .waitFor({ timeout: 20_000 });
-
-  const measured = await page.frames()[1]!.evaluate(() => {
-    const toggle = document.querySelector(
-      ".docblock-code-toggle",
-    ) as HTMLElement;
-    toggle.focus();
-    const chrome = getComputedStyle(toggle);
-    const ours = document.querySelector(".uix-button") as HTMLElement;
-    ours.focus();
-    const library = getComputedStyle(ours);
+  const toggle = frame.locator(".docblock-code-toggle").first();
+  const ours = frame.locator(".uix-button").first();
+  await expect(toggle).toBeVisible({ timeout: 20_000 });
+  await expect(ours).toBeVisible({ timeout: 20_000 });
+  const outline = (element: Element) => {
+    const style = getComputedStyle(element);
     return {
-      chrome: {
-        width: chrome.outlineWidth,
-        color: chrome.outlineColor,
-        style: chrome.outlineStyle,
-      },
-      library: {
-        width: library.outlineWidth,
-        color: library.outlineColor,
-        style: library.outlineStyle,
-      },
+      width: style.outlineWidth,
+      color: style.outlineColor,
+      style: style.outlineStyle,
     };
-  });
-
-  console.log(JSON.stringify(measured, null, 1));
+  };
+  await toggle.focus();
+  await expect(toggle).toBeFocused();
+  const chrome = await toggle.evaluate(outline);
+  await ours.focus();
+  await expect(ours).toBeFocused();
+  const library = await ours.evaluate(outline);
 
   // Our own button wears the brand ring.
   // The library's own button in a docs page wears the brand ring, exactly
   // as it does in a story. It did not, because a rule meant to spare
   // Storybook's chrome was scoped to Storybook's scroll wrapper.
-  expect(measured.library.width).toBe("2px");
-  expect(measured.library.style).toBe("solid");
+  expect(library.width).toBe("2px");
+  expect(library.style).toBe("solid");
   // Storybook's does not.
-  expect(measured.chrome.color).not.toBe(measured.library.color);
+  expect(chrome.color).not.toBe(library.color);
 });
