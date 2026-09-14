@@ -99,7 +99,9 @@ test("translation works before detection, and detecting does not start translati
 }) => {
   await installApis(page);
   await page.goto("/on-device-ai");
-  await page.getByRole("button", { name: "Translate to English" }).click();
+  await page
+    .getByRole("button", { name: "Translate to English", exact: true })
+    .click();
   await expect(
     page
       .getByLabel("English translation")
@@ -144,7 +146,9 @@ test("failed translation destroys its instance and leaves a retry", async ({
     (window as unknown as { aiTest: { failure: string } }).aiTest.failure =
       "Translation failed for testing";
   });
-  await page.getByRole("button", { name: "Translate to English" }).click();
+  await page
+    .getByRole("button", { name: "Translate to English", exact: true })
+    .click();
   await expect(page.getByRole("alert")).toHaveText(
     "Translation failed for testing",
   );
@@ -154,7 +158,7 @@ test("failed translation destroys its instance and leaves a retry", async ({
     ),
   ).toHaveLength(1);
   await expect(
-    page.getByRole("button", { name: "Translate to English" }),
+    page.getByRole("button", { name: "Translate to English", exact: true }),
   ).toBeEnabled();
 });
 
@@ -168,9 +172,14 @@ test("summary uses the visible input, matching options, quota, and streamed chun
     .fill("A replacement was shipped.");
   await page.getByLabel("Summary type").selectOption("headline");
   await page
-    .getByRole("checkbox", { name: "Stream the result as it arrives" })
+    .getByRole("checkbox", {
+      name: "Stream the result as it arrives",
+      exact: true,
+    })
     .check();
-  await page.getByRole("button", { name: "Summarize conversation" }).click();
+  await page
+    .getByRole("button", { name: "Summarize conversation", exact: true })
+    .click();
   await expect(
     page.getByText("Replacement shipped.", { exact: true }),
   ).toBeVisible();
@@ -192,7 +201,9 @@ test("summary uses the visible input, matching options, quota, and streamed chun
   await page.evaluate(() => {
     (window as unknown as { aiTest: { quota: number } }).aiTest.quota = 10;
   });
-  await page.getByRole("button", { name: "Summarize conversation" }).click();
+  await page
+    .getByRole("button", { name: "Summarize conversation", exact: true })
+    .click();
   await expect(page.getByRole("alert")).toContainText("too long");
   calls = (await state(page)).calls;
   expect(calls.filter((call) => call.method === "stream")).toHaveLength(1);
@@ -212,10 +223,13 @@ test("extraction has its own English input and the article's missing-field instr
     .getByLabel("English message to extract from")
     .fill("Customer Meier asks where the delivery is.");
   await page
-    .getByRole("button", { name: "Extract order number and issue" })
+    .getByRole("button", {
+      name: "Extract order number and issue",
+      exact: true,
+    })
     .click();
   await expect(
-    page.locator("pre").filter({ hasText: '"orderNumber": ""' }),
+    page.locator(".lab-demo pre").filter({ hasText: '"orderNumber": ""' }),
   ).toBeVisible();
   const calls = (await state(page)).calls;
   expect(

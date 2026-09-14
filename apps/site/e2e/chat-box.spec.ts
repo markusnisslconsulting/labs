@@ -7,7 +7,7 @@ async function start(
   await page.goto("/chat-box");
   if (mode === "a2ui")
     await page
-      .getByRole("tab", { name: "A2UI · component description" })
+      .getByRole("tab", { name: "A2UI · component description", exact: true })
       .click();
   if (choose)
     await page
@@ -55,7 +55,10 @@ test("AG-UI discard and refusal both reach the assistant without a record change
     await start(page);
     if (action === "refuse")
       await page
-        .getByRole("checkbox", { name: "Have the service refuse this save" })
+        .getByRole("checkbox", {
+          name: "Have the service refuse this save",
+          exact: true,
+        })
         .check();
     await page
       .getByRole("button", {
@@ -110,13 +113,18 @@ test("editing A2UI JSON changes rendered content and invalid input preserves the
 }) => {
   await start(page, "a2ui");
   await page.getByText("Change the A2UI message", { exact: true }).click();
-  const editor = page.getByRole("textbox", { name: "A2UI message JSON" });
+  const editor = page.getByRole("textbox", {
+    name: "A2UI message JSON",
+    exact: true,
+  });
   const message = JSON.parse(await editor.inputValue());
   message.updateComponents.components.find(
     (node: { id: string }) => node.id === "title",
   ).text = "Review this routing choice";
   await editor.fill(JSON.stringify(message));
-  await page.getByRole("button", { name: "Apply message" }).click();
+  await page
+    .getByRole("button", { name: "Apply message", exact: true })
+    .click();
   await expect(
     page.getByText("Review this routing choice", { exact: true }),
   ).toBeVisible();
@@ -124,7 +132,9 @@ test("editing A2UI JSON changes rendered content and invalid input preserves the
     (node: { id: string }) => node.id === "root",
   ).component = "Unsupported";
   await editor.fill(JSON.stringify(message));
-  await page.getByRole("button", { name: "Apply message" }).click();
+  await page
+    .getByRole("button", { name: "Apply message", exact: true })
+    .click();
   await expect(page.getByRole("status")).toContainText("could not be applied");
   await expect(
     page.getByText("Review this routing choice", { exact: true }),
@@ -138,7 +148,10 @@ test("A2UI refusal updates status, allows retry, and discard deletes its surface
 }) => {
   await start(page, "a2ui", true);
   await page
-    .getByRole("checkbox", { name: "Have the service refuse this save" })
+    .getByRole("checkbox", {
+      name: "Have the service refuse this save",
+      exact: true,
+    })
     .check();
   await page
     .getByRole("button", { name: "Save assignment", exact: true })
@@ -149,7 +162,9 @@ test("A2UI refusal updates status, allows retry, and discard deletes its surface
     .getByRole("button", { name: "Save assignment", exact: true })
     .click();
   await expect(page.getByTestId("saved-team")).toHaveText("Billing");
-  await page.getByRole("button", { name: "Reset example" }).click();
+  await page
+    .getByRole("button", { name: "Reset example", exact: true })
+    .click();
   await page.getByRole("button", { name: "Send request", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Discard", exact: true }),
@@ -172,12 +187,16 @@ test("reset and mode switching cancel pending messages and saves", async ({
   await page
     .getByRole("button", { name: "Save assignment", exact: true })
     .click();
-  await page.getByRole("button", { name: "Reset example" }).click();
+  await page
+    .getByRole("button", { name: "Reset example", exact: true })
+    .click();
   await page.waitForTimeout(1000);
   await expect(page.getByTestId("saved-team")).toHaveText("General Support");
   expect(await payloads(page)).toHaveLength(0);
   await page.getByRole("button", { name: "Send request", exact: true }).click();
-  await page.getByRole("tab", { name: "A2UI · component description" }).click();
+  await page
+    .getByRole("tab", { name: "A2UI · component description", exact: true })
+    .click();
   await page.waitForTimeout(1600);
   await expect(
     page.getByRole("button", { name: "Send request", exact: true }),
@@ -198,7 +217,7 @@ test("the A2UI picker, editor and message inspector work on a narrow screen", as
   await page.getByText("Change the A2UI message", { exact: true }).click();
   await page.getByText("Inspect the exchange", { exact: true }).click();
   await page
-    .locator("details details summary")
+    .locator(".lab-demo details details summary")
     .filter({ hasText: "updateComponents" })
     .first()
     .click();
@@ -214,7 +233,10 @@ test("malformed bindings preserve the surface and empty picker bindings show no 
   page.on("pageerror", (error) => errors.push(error.message));
   await start(page, "a2ui", true);
   await page.getByText("Change the A2UI message", { exact: true }).click();
-  const editor = page.getByRole("textbox", { name: "A2UI message JSON" });
+  const editor = page.getByRole("textbox", {
+    name: "A2UI message JSON",
+    exact: true,
+  });
   for (const path of [
     "/bad~",
     "/normal\n/__proto__/polluted",
@@ -229,7 +251,9 @@ test("malformed bindings preserve the surface and empty picker bindings show no 
         },
       }),
     );
-    await page.getByRole("button", { name: "Apply message" }).click();
+    await page
+      .getByRole("button", { name: "Apply message", exact: true })
+      .click();
     await expect(page.getByRole("status")).toContainText(
       "could not be applied",
     );
@@ -244,7 +268,9 @@ test("malformed bindings preserve the surface and empty picker bindings show no 
       updateDataModel: { surfaceId: "ticket-assignment", path: "/draft/team" },
     }),
   );
-  await page.getByRole("button", { name: "Apply message" }).click();
+  await page
+    .getByRole("button", { name: "Apply message", exact: true })
+    .click();
   const picker = page.getByRole("combobox", { name: "Assign to", exact: true });
   await expect(picker).toHaveValue("");
   await expect(picker.locator("option:checked")).toHaveText("Choose a team");

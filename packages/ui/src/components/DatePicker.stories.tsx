@@ -342,7 +342,8 @@ export const RefusedDaysAreVisible: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   args: { label: "" },
   render: function Render() {
-    const [value, setValue] = useState<IsoDate | null>(null);
+    // A selected day keeps the fixture in August regardless of today's date.
+    const [value, setValue] = useState<IsoDate | null>("2026-08-25");
     return (
       <>
         <DatePicker
@@ -350,7 +351,6 @@ export const RefusedDaysAreVisible: Story = {
           locale="de-DE"
           value={value}
           onValueChange={(next) => setValue(next as IsoDate | null)}
-          defaultValue={null}
           min="2026-08-20"
           disabledDate={(date) => date === "2026-08-26"}
         />
@@ -364,19 +364,20 @@ export const RefusedDaysAreVisible: Story = {
     );
 
     const cells = canvas.getAllByRole("gridcell");
-    const refused = cells.filter(
-      (cell) => cell.getAttribute("aria-disabled") === "true",
+    // Exercise both refusal rules, then prove that an allowed day is selectable.
+    for (const date of ["2026-08-19", "2026-08-26"]) {
+      const day = cells.find((cell) => cell.dataset.date === date)!;
+      await expect(day).toHaveAttribute("aria-disabled", "true");
+      await userEvent.click(day);
+      await expect(
+        canvas.getByTestId("value"),
+        "a refused day was picked",
+      ).toHaveTextContent("2026-08-25");
+    }
+    await userEvent.click(
+      cells.find((cell) => cell.dataset.date === "2026-08-27")!,
     );
-    await expect(
-      refused.length,
-      "nothing was refused, so min and disabledDate did nothing",
-    ).toBeGreaterThan(0);
-
-    await userEvent.click(refused[0]!);
-    await expect(
-      canvas.getByTestId("value"),
-      "a refused day was picked",
-    ).toHaveTextContent("none");
+    await expect(canvas.getByTestId("value")).toHaveTextContent("2026-08-27");
   },
 };
 

@@ -54,7 +54,7 @@ test("Save and an explicit call share validation and the returned record", async
     .getByLabel("Tool arguments (JSON)")
     .fill('{"sku":"4711","units":900}');
   await page
-    .getByRole("button", { name: "Call setReorderPoint directly" })
+    .getByRole("button", { name: "Call setReorderPoint directly", exact: true })
     .click();
   await expect(page.getByTestId("reorder-point")).toHaveText("900 units");
   await expect(page.getByTestId("tool-result")).toContainText(
@@ -64,7 +64,7 @@ test("Save and an explicit call share validation and the returned record", async
     .getByLabel("Tool arguments (JSON)")
     .fill('{"sku":"unknown","units":100}');
   await page
-    .getByRole("button", { name: "Call setReorderPoint directly" })
+    .getByRole("button", { name: "Call setReorderPoint directly", exact: true })
     .click();
   await expect(page.getByTestId("tool-result")).toContainText('"ok": false');
   await expect(page.getByTestId("reorder-point")).toHaveText("900 units");
@@ -78,12 +78,14 @@ test("native setter, removal, and reset preserve the form path", async ({
   await expect.poll(() => names(page)).toContain("set_reorder_point");
   await invoke(page, 975);
   await expect(page.getByTestId("reorder-point")).toHaveText("975 units");
-  await page.getByRole("button", { name: "Reset example" }).click();
+  await page
+    .getByRole("button", { name: "Reset example", exact: true })
+    .click();
   await invoke(page, 1100);
   await expect(page.getByTestId("reorder-point")).toHaveText("1,100 units");
   await invoke(page, -1);
   await expect(page.getByTestId("reorder-point")).toHaveText("1,100 units");
-  await page.getByRole("button", { name: "Remove tool" }).click();
+  await page.getByRole("button", { name: "Remove tool", exact: true }).click();
   await expect.poll(() => names(page)).not.toContain("set_reorder_point");
   await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByTestId("reorder-point")).toHaveText("1,240 units");
