@@ -59,7 +59,7 @@ pnpm gates
 pnpm nx run ui:visual-sweep
 ```
 
-`pnpm gates` runs formatting, the production dependency audit, the Nx targets declared in
+`pnpm gates` runs formatting, the dependency audit, the Nx targets declared in
 `tooling/checks/gates.ts`, build-backed bundle budgets and the changelog check.
 CI calls the same command: affected checks on pull requests, full checks on main
 and manual runs. [ADR 0016](docs/adr/0016-ci-comparison-and-gates.md) defines the

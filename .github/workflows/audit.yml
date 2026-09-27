@@ -15,8 +15,5 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
-      # High production findings fail this scheduled report. It does not gate deployment.
-      - name: Audit production dependencies
-        run: pnpm audit:production
-      - name: Audit full tree (non-blocking)
-        run: pnpm audit --audit-level moderate || true
+      - name: Audit dependencies
+        run: pnpm audit:dependencies

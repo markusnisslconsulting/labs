@@ -28,7 +28,7 @@ and [pull request checkout semantics](https://docs.github.com/en/actions/referen
 Main runs the whole graph so cancelling an earlier run cannot leave its changes
 unchecked in a later release. Manual runs also check the whole graph.
 
-`pnpm gates` is the single entry point for formatting, the production dependency
+`pnpm gates` is the single entry point for formatting, the dependency
 audit, Nx targets, build-backed bundle budgets and the changelog check. The audit
 requires registry access and fails on high/critical advisories or request errors. `pnpm gates --affected` selects affected
 projects when the workflow comparison is valid. Full-graph fallbacks remain full.

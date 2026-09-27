@@ -18,7 +18,7 @@
     "size-report": "node tooling/checks/component-size.mjs report",
     "dev": "nx run site:serve",
     "preview": "nx run release-tools:preview",
-    "audit:production": "pnpm audit --prod --audit-level high",
+    "audit:dependencies": "pnpm audit --audit-level high",
     "release:verify": "tsx tooling/release/verify-cli.ts"
   },
   "devDependencies": {

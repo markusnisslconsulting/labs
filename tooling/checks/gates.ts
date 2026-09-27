@@ -50,7 +50,7 @@ if (
   const run = (args: string[]) =>
     execFileSync("pnpm", args, { stdio: "inherit" });
   run(["format:check"]);
-  run(["audit:production"]);
+  run(["audit:dependencies"]);
   run(["exec", "nx", ...nxGateArgs(comparison, !args.includes("--affected"))]);
   // Budget probes must have all their inputs, including on an unrelated PR.
   run([
