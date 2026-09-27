@@ -1,0 +1,21 @@
+@layer components {
+  .brand-example {
+    min-width: 0;
+    color: var(--uix-text-primary);
+    background: var(--uix-bg-page);
+  }
+  .brand-example h2,
+  .brand-example p {
+    margin: 0;
+  }
+  .brand-example-logo {
+    display: block;
+    height: var(--uix-space-6);
+    aspect-ratio: 600 / 291;
+    background: currentColor;
+    mask: url("@labs/brand/logos/navy.webp") center / contain no-repeat;
+  }
+  .brand-example-raised {
+    box-shadow: var(--uix-elevation-raised);
+  }
+}

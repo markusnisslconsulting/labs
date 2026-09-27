@@ -4,6 +4,10 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
+  .uix-datatable {
+    min-inline-size: 0;
+  }
+
   .uix-datatable-viewport {
     overflow-x: auto;
   }
@@ -110,7 +114,6 @@
   }
 
   .uix-datatable-select {
-    width: 3rem;
     text-align: center;
   }
 

@@ -1,3 +1,4 @@
+import { exampleHref } from "../../.storybook/examplePages";
 import { useState } from "react";
 import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -243,7 +244,18 @@ export const RowsRenderedByTheCaller: Story = {
               background: "var(--uix-bg-subtle)",
             }}
           />
-          <a href="#preview">{entry.name}</a>
+          {entry.progress === 100 ? (
+            <a
+              href={exampleHref(
+                "contract",
+                "components-fileupload--rows-rendered-by-the-caller",
+              )}
+            >
+              {entry.name}
+            </a>
+          ) : (
+            <span>{entry.name}</span>
+          )}
         </span>
       )}
     />

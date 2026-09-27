@@ -1,0 +1,27 @@
+{
+  "name": "release-tests",
+  "tags": ["scope:shared", "type:tooling", "env:node"],
+  "metadata": {
+    "testPolicy": {
+      "kind": "integration",
+      "targets": ["release-tests:browser-test"]
+    }
+  },
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint tests/release --max-warnings 0" }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -p tests/release/tsconfig.json --noEmit" }
+    },
+    "browser-test": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["release-tools:assemble"],
+      "options": {
+        "command": "playwright test --config tests/release/playwright.config.ts"
+      }
+    }
+  }
+}

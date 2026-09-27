@@ -49,7 +49,14 @@ export async function openStory(
     .map((pair) => pair.split(":"))
     .flatMap(([name, value]) =>
       name && value && GLOBAL_ATTRIBUTES[name]
-        ? [[GLOBAL_ATTRIBUTES[name]!, value] as const]
+        ? [
+            [
+              GLOBAL_ATTRIBUTES[name]!,
+              (name === "density" || name === "brand") && value === "default"
+                ? null
+                : value,
+            ] as const,
+          ]
         : [],
     );
 
@@ -114,7 +121,7 @@ export async function openStory(
           ([attribute, value]) =>
             document.documentElement.getAttribute(attribute) === value,
         ),
-      requested.map(([a, v]) => [a, v] as [string, string]),
+      requested.map(([a, v]) => [a, v] as [string, string | null]),
       { timeout: 30_000 },
     );
   }

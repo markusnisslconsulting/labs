@@ -1,4 +1,4 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "include": ["src", ".storybook"]
+  "extends": "../../tsconfig.browser.json",
+  "include": ["src"]
 }

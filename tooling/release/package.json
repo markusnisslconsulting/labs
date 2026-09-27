@@ -1,0 +1,22 @@
+{
+  "name": "@labs/release-tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./assemble": "./assemble.ts",
+    "./http": "./http.ts",
+    "./vite-storybook": "./vite-storybook.ts",
+    "./manifest": "./schema.ts"
+  },
+  "dependencies": {
+    "@secretlint/core": "13.0.5",
+    "@secretlint/secretlint-rule-preset-recommend": "13.0.5",
+    "basic-ftp": "6.2.1",
+    "tar": "7.5.22",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "vite": "^8.2.1"
+  }
+}

@@ -1,3 +1,6 @@
+import { fileURLToPath } from "node:url";
+import { publicModules } from "@labs/tools/vite-public-modules";
+import { workbenchFacts } from "@labs/tools/vite-workbench-facts";
 import remarkGfm from "remark-gfm";
 import type { StorybookConfig } from "@storybook/react-vite";
 
@@ -9,20 +12,10 @@ const config: StorybookConfig = {
     "../src/**/*.stories.@(ts|tsx)",
   ],
   addons: [
-    // Runs every story as a Vitest test in a real browser. It replaced
-    // @storybook/test-runner, which Storybook deprecates and which warned
-    // on every run: this shares one Vitest instance with the rest of the
-    // suite, supports watch mode and coverage, and reuses the browser
-    // rather than driving it through a second harness.
     "@storybook/addon-vitest",
-    // Surfaces the status tag as a badge in the sidebar. Every component
-    // already declared "stable" or "beta"; until now nothing rendered it,
-    // so the maturity metadata existed for a linter and not for the
-    // person deciding whether to build on a component.
     "storybook-addon-tag-badges",
     {
-      // MDX 3 has no tables without GFM, so every table in the guides
-      // rendered as a row of pipes until this was added.
+      // MDX tables require GFM.
       name: "@storybook/addon-docs",
       options: {
         mdxPluginOptions: {
@@ -33,15 +26,37 @@ const config: StorybookConfig = {
     "@storybook/addon-a11y",
     "@storybook/addon-themes",
   ],
-  staticDirs: ["./public"],
+  viteFinal(config) {
+    config.build ??= {};
+    config.build.cssMinify = "esbuild";
+    config.optimizeDeps ??= {};
+    config.optimizeDeps.include ??= [];
+    config.optimizeDeps.include.push(
+      "@base-ui-components/react/direction-provider",
+    );
+    config.plugins ??= [];
+    config.plugins.push(
+      publicModules(fileURLToPath(new URL("../../..", import.meta.url))),
+      workbenchFacts(fileURLToPath(new URL("../../..", import.meta.url))),
+    );
+    return config;
+  },
+  staticDirs: [
+    "./public",
+    { from: "../../brand/src/logos", to: "/brand" },
+    { from: "../../brand/src/licenses", to: "/font-licenses" },
+  ],
   framework: {
     name: "@storybook/react-vite",
     options: {},
   },
-  // Enterprise posture: the workspace ships to customers, so the
-  // tooling phones nothing home.
+  features: {
+    sidebarOnboardingChecklist: false,
+    menuOnboardingChecklist: false,
+  },
   core: {
     disableTelemetry: true,
+    disableWhatsNewNotifications: true,
   },
 };
 

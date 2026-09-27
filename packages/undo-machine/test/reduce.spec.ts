@@ -152,3 +152,19 @@ describe("store validation", () => {
     expect(store.history()).toHaveLength(1);
   });
 });
+
+it("returned receipts and history cannot mutate the stored snapshots", () => {
+  const store = createReorderStore();
+  const result = store.write(request);
+  if (result.kind !== "saved") throw new Error("Expected a saved receipt");
+  result.receipt.before.units = 0;
+  result.receipt.after.units = 0;
+  const history = store.history();
+  history[0]!.after.units = 1;
+  history.length = 0;
+  expect(store.read()).toEqual({ units: 1240, version: 2 });
+  expect(store.history()[0]).toMatchObject({
+    before: { units: 800, version: 1 },
+    after: { units: 1240, version: 2 },
+  });
+});

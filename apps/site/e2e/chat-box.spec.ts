@@ -1,3 +1,5 @@
+import { RunAgentInputSchema } from "@ag-ui/core";
+import { z } from "zod";
 import { expect, test, type Page } from "@playwright/test";
 async function start(
   page: Page,
@@ -18,9 +20,9 @@ async function start(
     page.getByRole("button", { name: "Save assignment", exact: true }),
   ).toBeEnabled();
 }
-async function payloads(page: Page): Promise<Record<string, any>[]> {
+async function payloads(page: Page): Promise<Record<string, unknown>[]> {
   return (await page.locator("pre.demo-call").allTextContents()).map((text) =>
-    JSON.parse(text),
+    z.record(z.string(), z.unknown()).parse(JSON.parse(text)),
   );
 }
 test("AG-UI receives proposal state and returns the real service outcome in a follow-up run", async ({
@@ -38,10 +40,14 @@ test("AG-UI receives proposal state and returns the real service outcome in a fo
   );
   await expect(page.getByTestId("saved-team")).toHaveText("Billing");
   const messages = await payloads(page);
-  const runs = messages.filter((value) => value.messages);
+  const runs = messages
+    .filter((value) => value.messages)
+    .map((value) => RunAgentInputSchema.parse(value));
   expect(runs).toHaveLength(2);
-  expect(runs[0].context[0].value).toBe("T-104");
-  const result = runs[1].messages.at(-1);
+  expect(runs[0]?.context[0]?.value).toBe("T-104");
+  const result = z
+    .object({ toolCallId: z.string(), content: z.string() })
+    .parse(runs[1]?.messages.at(-1));
   expect(result.toolCallId).toBe("review-1");
   expect(JSON.parse(result.content)).toEqual({
     kind: "saved",
@@ -70,10 +76,15 @@ test("AG-UI discard and refusal both reach the assistant without a record change
       action === "discard" ? "discarded" : "refused",
     );
     await expect(page.getByTestId("saved-team")).toHaveText("General Support");
-    const runs = (await payloads(page)).filter((value) => value.messages);
-    expect(JSON.parse(runs[1].messages.at(-1).content).kind).toBe(
-      action === "discard" ? "discarded" : "refused",
-    );
+    const runs = (await payloads(page))
+      .filter((value) => value.messages)
+      .map((value) => RunAgentInputSchema.parse(value));
+    expect(
+      JSON.parse(
+        z.object({ content: z.string() }).parse(runs[1]?.messages.at(-1))
+          .content,
+      ).kind,
+    ).toBe(action === "discard" ? "discarded" : "refused");
   }
 });
 test("A2UI binds a selected team, sends resolved action context, and updates the same surface", async ({
@@ -103,8 +114,12 @@ test("A2UI binds a selected team, sends resolved action context, and updates the
   expect(
     messages.some(
       (value) =>
-        value.updateDataModel?.path === "/status" &&
-        value.updateDataModel.value.includes("Technical Support"),
+        z
+          .object({
+            path: z.literal("/status"),
+            value: z.string().includes("Technical Support"),
+          })
+          .safeParse(value.updateDataModel).success,
     ),
   ).toBe(true);
 });
@@ -176,7 +191,10 @@ test("A2UI refusal updates status, allows retry, and discard deletes its surface
   ).toHaveCount(0);
   expect(
     (await payloads(page)).some(
-      (value) => value.deleteSurface?.surfaceId === "ticket-assignment",
+      (value) =>
+        z
+          .object({ surfaceId: z.literal("ticket-assignment") })
+          .safeParse(value.deleteSurface).success,
     ),
   ).toBe(true);
 });

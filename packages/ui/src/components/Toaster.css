@@ -8,7 +8,7 @@
     position: fixed;
     display: grid;
     gap: var(--uix-gap-sm);
-    width: min(22rem, calc(100vw - 2 * var(--uix-space-4)));
+    width: min(22rem, calc(100vw - 2 * var(--uix-gap-lg)));
     z-index: var(--uix-z-toast);
   }
 
@@ -36,22 +36,22 @@
   }
 
   .uix-toast[data-severity="info"] {
-    border-left-color: var(--uix-info);
+    border-inline-start-color: var(--uix-info);
     background: var(--uix-container-info);
   }
 
   .uix-toast[data-severity="success"] {
-    border-left-color: var(--uix-status-ok);
+    border-inline-start-color: var(--uix-status-ok);
     background: var(--uix-container-success);
   }
 
   .uix-toast[data-severity="warning"] {
-    border-left-color: var(--uix-status-warn);
+    border-inline-start-color: var(--uix-status-warn);
     background: var(--uix-container-warning);
   }
 
   .uix-toast[data-severity="danger"] {
-    border-left-color: var(--uix-status-danger);
+    border-inline-start-color: var(--uix-status-danger);
     background: var(--uix-container-danger);
   }
 

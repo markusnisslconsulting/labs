@@ -1,55 +1,89 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Meta, Canvas, Source } from "@storybook/addon-docs/blocks";
+import * as Examples from "./Examples.stories";
+import formSource from "../../.storybook/examples/ContactForm.tsx?raw";
 
 <Meta title="Guides/Accessibility" />
 
 # Accessibility
 
-## What is enforced
+Start with the complete task: how someone finds the controls, understands the
+instructions, corrects a mistake and knows the action has finished. The shared
+components provide much of the wiring. The application supplies meaningful
+content and an interaction that can be completed.
 
-- **axe on every story**, with `test: "error"`. The test runner replays
-  all stories headless in CI and a violation fails the run.
-- **axe on every page of the labs site**, separately. Components can be
-  individually perfect and compose into a broken page; landmark and
-  heading-order failures only exist at page level. The first run of that
-  suite found a heading that jumped from `h2` to `h4`.
-- **A keyboard story per operable component.** Derived from the type, not
-  from goodwill: if a component renders something focusable and no story
-  drives it from the keyboard, the build fails. Turning this on found 33
-  of 34 components with no keyboard test.
-- **Contrast for every pairing, in every theme and brand.** 84 pairings
-  against WCAG AA, including non-text contrast for focus rings and for
-  surfaces against the surface behind them.
+## Label the control and explain the error
 
-## What is not enforced, and cannot be
+Use TextField when you need a labelled text input. Give the label a stable name,
+put supporting instructions in `hint`, and explain a failed requirement through
+`error`. Set `required` on the control instead of adding that word or an asterisk
+to the label yourself.
 
-Automated checks find a minority of real accessibility problems. They
-cannot tell you whether the focus order matches the reading order,
-whether an error message says what to do, or whether a live region
-announces at a useful moment. Treat green as the floor.
+Try saving this empty form. Its summary identifies the field and moves focus to
+it when you follow the error link. Enter a fictional name and save again:
 
-## Conventions the components follow
+<Canvas of={Examples.AccessibleForm} />
 
-**Colour is never the only channel.** `StatusPill` puts the state in
-words and leaves the dot decorative; `Badge` and `Banner` do the same.
-Deuteranopia and protanopia collapse exactly the red/green distinction
-status colours lean on hardest, so a tone is always an addition to a
-word, never a replacement for one.
+<Source
+  code={formSource.replaceAll("../../src/components/", "@labs/ui/components/")}
+  language="tsx"
+/>
 
-**Disabled means `aria-disabled` when the control is still relevant.**
-`Button`'s `loading` state does not use the native attribute, because a
-disabled button leaves the tab order: a user tabbing through a form would
-lose their place the moment a button started loading.
+The feature validates the value. Form supplies the summary, and TextField uses
+Field to connect its label, hint, error and required state. `noValidate` lets
+this example present its own messages instead of a native validation popup;
+the required state still belongs on the input.
 
-**A label must actually name the control.** Implicit label association
-only works for real form elements. A wrapping `<label>` around a
-`role="switch"` span makes the text clickable and names nothing, which is
-how every switch in this system once reached assistive technology
-unnamed. Where the control is not a native input, the name is explicit.
+For a custom control, spread Field's returned `control` object onto the actual
+control. Checkbox, Switch and other choice controls already provide their own
+label layout and field-message wiring.
 
-**Live regions are announced from their content.** A `role="status"`
-takes no accessible name from its children, so tests assert the announced
-text rather than a name.
+## Make changes understandable
 
-**Focus is visible and its ring has contrast.** `:focus-visible` only, so
-pointer users do not see rings, and the ring's non-text contrast against
-both the page and a surface is part of the contrast gate.
+State what happened and what the reader can do next. Keep the status message
+close to the action and use a live region when a change needs announcing without
+moving focus. Avoid announcing the same message in several places.
+
+Keep status meaning in text. Colour and icons can reinforce an error or a
+success, but someone must be able to understand it without distinguishing the
+colours. Preserve a visible label; placeholder text disappears during entry.
+
+A loading Button retains focus with `aria-disabled` and blocks activation.
+A native disabled Button is unavailable and may leave the tab order. Use the
+state that matches the operation, and make the operation's result clear.
+
+## Follow the task with a keyboard
+
+Start before the first control and use Tab, Shift+Tab, Enter, Space and the
+component's documented keys. Check where focus moves after opening a dialog,
+closing it, reporting an error and returning to the page. The Keyboard guide
+lists the supported component behavior.
+
+Repeat at a narrow width and with larger text. Controls must remain visible and
+reachable; reading order and focus order should still make sense when columns
+stack. Inspect the focus indicator against the actual backgrounds it crosses.
+
+## Check the accessible information
+
+Use accessible-name and description assertions to check the label and supporting
+text. Inspect roles, states and the accessibility tree to understand the order
+of information. Those checks cannot establish what a particular screen reader
+speaks or when it speaks it, so complete the task with the intended reader and
+browser as well.
+
+Record the component or page, versions, date, steps, observed speech and any
+problems. No completed manual screen-reader passes are currently recorded.
+
+## What we test and known limitations
+
+Story tests run axe in light and dark themes. Browser tests cover selected
+keyboard interactions, names, descriptions, accessibility trees and assembled
+page layouts. Contrast checks measure the registered token pairings.
+
+Run `pnpm gates` after a change and inspect the relevant examples. These checks
+establish their assertions for the tested fixtures. They do not establish
+accessibility for every composition, override or assistive-technology setup.
+
+The application supplies content, navigation and integrations. Check the complete
+task with those in place; component checks do not establish application-wide
+conformance. Automated accessibility-tree checks also cannot establish spoken
+phrasing, timing or usability with a particular screen reader.

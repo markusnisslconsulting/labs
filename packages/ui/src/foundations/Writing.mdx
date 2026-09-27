@@ -1,0 +1,42 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Writing" />
+
+# Writing
+
+Help someone understand where they are, what they can do and what happens next.
+Name the task before describing its details. Use the same words in a heading,
+control and confirmation when they refer to the same thing.
+
+| Situation    | Less useful                       | More useful                                        | Why it helps                                              |
+| ------------ | --------------------------------- | -------------------------------------------------- | --------------------------------------------------------- |
+| Introduction | Unlock a better experience.       | Choose a request or a form to work through.        | Names a concrete choice.                                  |
+| Action       | Continue                          | Save workshop title                                | Explains what the action changes.                         |
+| Hint         | Please provide valid information. | Use a fictional name. This example sends no data.  | States what to enter and where it goes.                   |
+| Error        | Invalid input.                    | Enter a name for this workshop request.            | Identifies the missing value and the recovery.            |
+| Confirmation | All done!                         | Request saved in this example.                     | States the result without implying a real submission.     |
+| Empty state  | Nothing here.                     | No topics match this search. Try a shorter phrase. | Connects the result to the action and offers a next step. |
+
+## Describe the actual result
+
+Distinguish saving a local draft from sending a request. A message should only
+claim what the application has confirmed. When a request fails, explain whether
+the person's entries remain available and what action they can take next.
+
+Avoid promising outcomes that the example cannot establish. Concrete content,
+such as the task and the next step, is more useful than claims about expertise or
+quality. The workshop example states that it is fictional before asking for input.
+
+## Keep controls understandable
+
+Use short, visible labels. Put examples and qualifications in hints rather than
+making a label carry a paragraph. An error belongs beside the field it concerns;
+a form summary helps people find multiple errors. Keep necessary instructions
+outside a tooltip so touch and keyboard users can find them too.
+
+Write link text that identifies its destination. Use a button label for an
+action and a link label for navigation. Avoid relying on colour, location or an
+icon alone to explain what someone should select.
+
+Application copy belongs with the feature's content. Shared control strings
+come from the library's string provider so applications can translate them.

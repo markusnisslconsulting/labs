@@ -16,7 +16,7 @@ explanation than one for it.
 October 2025, backed by Adobe, Figma, Google, Microsoft, Salesforce, Shopify
 and Tokens Studio. That makes it the interchange format, and a registry that
 speaks only TypeScript is readable by exactly one toolchain.
-`scripts/tokens/dtcg.ts` generates it and `ui:tokens-dtcg` keeps it current.
+`tooling/checks/tokens/dtcg.ts` generates it and `ui:tokens-dtcg` keeps it current.
 
 One detail the research names as the highest-yield item: components must not
 touch the primitive tier. That held here for colours and not for radius,
@@ -35,7 +35,7 @@ ADR 0009.
 
 **Codemods.** Material UI and Chakra ship one with every deprecation. Our
 ratchet prevented new uses and did not move the existing ones;
-`scripts/tokens/codemod.ts` closes that.
+`tooling/checks/tokens/codemod.ts` closes that.
 
 **Component coverage.** The maturity models name it as the first metric.
 Measured: 29.5 per cent, and 29 of 34 components with no consumer. That was
@@ -58,7 +58,7 @@ What is right about APCA stays right: it accounts for font size and weight,
 WCAG 2 does not. In practice a colour combination that passes APCA for its
 size almost always exceeds the WCAG 2 minimums — so little is lost by using
 the stricter old method. Should WCAG 3 settle on an algorithm,
-`scripts/tokens/contrast.ts` is the one file that changes.
+`tooling/checks/tokens/contrast.ts` is the one file that changes.
 
 **Tailwind or CSS Modules.** Both are named in 2026 as the route to Server
 Components compatibility, and both are moot here: we write CSS with cascade

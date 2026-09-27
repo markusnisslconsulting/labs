@@ -1,0 +1,15 @@
+@layer overrides {
+  .example-supplier-chrome {
+    padding-block: var(--uix-gap-md);
+  }
+
+  .example-supplier-nav {
+    list-style: none;
+    margin: 0;
+    padding: var(--uix-gap-lg);
+  }
+
+  .example-supplier-content {
+    padding-block: var(--uix-gap-xl);
+  }
+}

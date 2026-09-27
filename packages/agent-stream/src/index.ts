@@ -17,24 +17,17 @@ export interface RunCallbacks {
   onEvent(event: AgentEvent): void;
 }
 
-/** Injected time. The default wraps setTimeout; tests pass a queue. */
+/** Scheduling belongs to the caller; tests can pass a deterministic queue. */
 export interface Scheduler {
   set(fn: () => void, delayMs: number): unknown;
   clear(handle: unknown): void;
-}
-
-export function timeoutScheduler(): Scheduler {
-  return {
-    set: (fn, delayMs) => setTimeout(fn, delayMs),
-    clear: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),
-  };
 }
 
 export interface ScriptedRunConfig {
   fromUnits: number;
   toUnits: number;
   callbacks: RunCallbacks;
-  scheduler?: Scheduler;
+  scheduler: Scheduler;
   narration?: string;
 }
 
@@ -49,7 +42,7 @@ export interface ScriptedRun {
  * person's decision, not the script's.
  */
 export function createScriptedRun(config: ScriptedRunConfig): ScriptedRun {
-  const scheduler = config.scheduler ?? timeoutScheduler();
+  const scheduler = config.scheduler;
   const handles: unknown[] = [];
   const at = (delayMs: number, event: AgentEvent) => {
     handles.push(scheduler.set(() => config.callbacks.onEvent(event), delayMs));

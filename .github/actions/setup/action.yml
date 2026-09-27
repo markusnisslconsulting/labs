@@ -1,0 +1,19 @@
+name: Workspace setup
+description: Install the workspace with the repository's Node and pnpm versions
+inputs:
+  browser:
+    description: Install Chromium and its system dependencies
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v6
+    - uses: actions/setup-node@v7
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+    - run: pnpm install --frozen-lockfile
+      shell: bash
+    - if: inputs.browser == 'true'
+      run: pnpm exec playwright install --with-deps chromium
+      shell: bash

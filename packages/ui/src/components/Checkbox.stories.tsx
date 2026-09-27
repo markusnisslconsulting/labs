@@ -1,21 +1,36 @@
-import { expect, userEvent } from "storybook/test";
+import { booleanState } from "../../.storybook/booleanState";
+import { expect, fn, userEvent } from "storybook/test";
 import { RTL } from "../../.storybook/modes";
 import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Checkbox } from "./Checkbox";
 
 const meta = {
+  decorators: [booleanState("checked", "onCheckedChange")],
+
+  args: {
+    checked: false,
+    defaultChecked: false,
+    disabled: false,
+    indeterminate: false,
+    required: false,
+    onCheckedChange: fn(),
+  },
+
   title: "Components/Checkbox",
   component: Checkbox,
   tags: ["autodocs", "stable"],
-  argTypes: grouped(
-    "label",
-    "checked",
-    "defaultChecked",
-    "indeterminate",
-    "disabled",
-    "onChange",
-  ),
+  argTypes: {
+    ...grouped(
+      "label",
+      "checked",
+      "defaultChecked",
+      "indeterminate",
+      "disabled",
+      "onCheckedChange",
+    ),
+    defaultChecked: { control: false },
+  },
 } satisfies Meta<typeof Checkbox>;
 
 export default meta;
@@ -32,7 +47,7 @@ export const Checked: Story = {
      kept in the test run by the default `test` tag. */
   tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
-  args: { label: "Email me updates", defaultChecked: true },
+  args: { label: "Email me updates", checked: true },
   play: async ({ canvas }) => {
     await expect(
       canvas.getByRole("checkbox", { name: "Email me updates" }),

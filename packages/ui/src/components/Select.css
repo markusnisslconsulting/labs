@@ -13,29 +13,8 @@
     cursor: pointer;
   }
 
-  /* ---------------------------------------------------------------------
-   * Why the select spans its whole row
-   *
-   * The popup anchors to the `<select>`. The box a reader sees is the
-   * `.uix-field-row` around it, and the select was a flex child *inside*
-   * that row's padding, sharing it with the chevron: measured, a 384px
-   * field held a 334px select, so the menu came out 332px — 52px narrower
-   * than the field, inset 14px on one side and 38px on the other.
-   *
-   * That is the "menu is not using full width" Markus reported twice, and
-   * three rounds of measurement missed it because every one of them
-   * compared the popup to the `<select>` — which it matched to the pixel —
-   * rather than to the box on screen. Comparing a thing to the wrong
-   * reference reads exactly like the thing being correct.
-   *
-   * So the horizontal padding moves from the row to the select, and the
-   * chevron stops taking row space and overlays the control's end instead.
-   * The select then fills the row, the popup fills the field, and the value
-   * has not moved: it sits one `--uix-gap-md` in either way.
-   *
-   * Scoped with `:has()` so it reaches only rows holding a select. Every
-   * other field keeps the shared layout.
-   * ------------------------------------------------------------------ */
+  /* The native picker anchors to the select itself. Keep that element as wide
+   * as the visible field and overlay its chevron inside the end padding. */
   .uix-field-row:has(> .uix-select) {
     position: relative;
     padding-inline: 0;
@@ -54,24 +33,8 @@
     inset-block: 0;
   }
 
-  /* ------------------------------------------------ the popup, where we may
-   *
-   * Markus: "menu is not using full width of select box and uses browser
-   * native options, not sure if we want it like that". Both halves were true
-   * and, until recently, unfixable: the popup of a native `<select>` is the
-   * operating system's, macOS sizes it to its content, and no CSS reaches
-   * inside it.
-   *
-   * `appearance: base-select` changes that. It keeps the element a real
-   * `<select>` — form participation, typeahead, the mobile picker where the
-   * feature is unsupported — and moves the popup into the page, where it
-   * takes the field's width and this system's tokens. Measured in the
-   * Chromium Playwright ships (151): `CSS.supports("appearance",
-   * "base-select")` is true and `::picker(select)` parses.
-   *
-   * Behind `@supports`, so a browser without it renders exactly what it
-   * renders today rather than something half-styled. Nothing is traded away
-   * for this: it is the same element either way. */
+  /* Use the styled native picker where supported; other browsers retain
+   * their platform picker and native form and keyboard behaviour. */
   @supports (appearance: base-select) {
     .uix-select,
     .uix-select::picker(select) {
@@ -173,9 +136,7 @@
       color: var(--uix-text-disabled);
     }
 
-    /* Our chevron is a sibling span and stays the one on screen, so the
-       popup's own icon would be a second arrow beside it — which is the
-       defect Markus reported on Combobox earlier in this session. */
+    /* Hide the platform affordance when the component supplies its own. */
     .uix-select::picker-icon {
       display: none;
     }

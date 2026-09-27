@@ -10,6 +10,7 @@
      is a Field now; what is left below is the range track. */
 
   .uix-range {
+    min-block-size: var(--uix-control-sm);
     accent-color: var(--uix-accent);
     width: 100%;
     max-width: 24rem;

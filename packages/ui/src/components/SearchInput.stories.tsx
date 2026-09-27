@@ -3,6 +3,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SearchInput } from "./SearchInput";
 
 const meta = {
+  argTypes: { showLabel: { control: false } },
+
+  args: { hideLabel: true, showLabel: false, required: false },
+
   title: "Components/SearchInput",
   component: SearchInput,
   tags: ["autodocs", "stable"],

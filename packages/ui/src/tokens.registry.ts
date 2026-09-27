@@ -51,7 +51,7 @@ export interface TokenDescriptor {
    * The token that replaces this one, machine-readable.
    *
    * `deprecated` is prose for a human and for DTCG's `$deprecated`; this
-   * is what `scripts/tokens/codemod.ts` reads to rewrite call sites. A
+   * is what `tooling/checks/tokens/codemod.ts` reads to rewrite call sites. A
    * deprecation without it is a note asking every consumer to do the same
    * search-and-replace by hand, which is how a deprecated token survives
    * three releases.
@@ -70,7 +70,7 @@ export interface TokenDescriptor {
   /**
    * The day the token may be removed, ISO. The window, stated.
    *
-   * `scripts/tokens/usage.ts` fails once this date has passed, with
+   * `tooling/checks/tokens/usage.ts` fails once this date has passed, with
    * different instructions depending on what it finds: remove it if
    * nothing references it any more, or say so loudly if the window ran
    * out while call sites remain. Both are failures, because a window that

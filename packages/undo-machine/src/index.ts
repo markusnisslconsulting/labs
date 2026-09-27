@@ -17,13 +17,21 @@ export type WriteResult =
   | { kind: "conflict"; current: Snapshot }
   | { kind: "refused"; reason: "unavailable" | "invalid-units" };
 
+function copyReceipt(receipt: Receipt): Receipt {
+  return {
+    ...receipt,
+    before: { ...receipt.before },
+    after: { ...receipt.after },
+  };
+}
+
 /** The version check and update happen together in this synchronous store. */
 export function createReorderStore(units = 800) {
   let current: Snapshot = { units, version: 1 };
   const history: Receipt[] = [];
   return {
     read: (): Snapshot => ({ ...current }),
-    history: (): Receipt[] => structuredClone(history),
+    history: (): Receipt[] => history.map(copyReceipt),
     write(request: Write, actor: Receipt["actor"] = "buyer"): WriteResult {
       if (!Number.isSafeInteger(request.units) || request.units < 0) {
         return { kind: "refused", reason: "invalid-units" };
@@ -39,7 +47,7 @@ export function createReorderStore(units = 800) {
         action: request.action,
       };
       current = { ...receipt.after };
-      history.push(structuredClone(receipt));
+      history.push(copyReceipt(receipt));
       return { kind: "saved", receipt };
     },
   };

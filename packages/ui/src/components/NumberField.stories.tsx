@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NumberField } from "./NumberField";
 
 const meta = {
+  args: { required: false, hideLabel: false, disabled: false },
+
   title: "Components/NumberField",
   component: NumberField,
   tags: ["autodocs", "beta"],

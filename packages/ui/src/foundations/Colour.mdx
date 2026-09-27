@@ -1,0 +1,45 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+import * as ColourStories from "./Colour.stories";
+
+<Meta of={ColourStories} />
+
+# Colour
+
+Choose colour by its role in the interface. Text needs a readable foreground;
+an action needs a clear state; a surface needs enough separation from its
+surroundings. The identity palette supplies the brand's colours, while semantic
+roles select the appropriate value for each use and theme.
+
+<Canvas of={ColourStories.Reference} />
+
+## Identity colours and interface roles
+
+Navy carries the identity's text and dark surfaces. The decorative red is useful
+for artwork, but it does not meet the normal-text threshold on the identity's
+paper background. Text red and red-on-dark are separate pairings for those uses.
+
+Labs keeps its own tested accent and surface mapping. Use `--uix-accent` for
+interface actions and the corresponding foreground role for a filled control.
+Copy the role name into component styling rather than copying a swatch's hex
+value. The values above are read from the brand package.
+
+## Check a pair in context
+
+Contrast is a relationship between foreground and background. A colour does not
+pass by itself. The table calculates the listed opaque pairs and states the
+normal-size text threshold it compares them with. It does not cover every
+component state or every background an application may supply.
+
+Inspect hover, focus, selected, loading and disabled states as well as the
+resting control. Check the actual background behind translucent content. Keep
+text or another clear cue for status so colour is not its only carrier.
+
+## Use surfaces consistently
+
+Use page, surface and subtle roles to group content. Use the raised role for a
+surface that needs to appear above the one behind it in both themes. Use the
+scrim role for a backdrop that darkens. Check the theme toolbar with the Brands
+comparison to see those roles applied to the same components.
+
+Application overrides can introduce new pairings. Review those alongside the
+registered contrast report and in the complete composition.

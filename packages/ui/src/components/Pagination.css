@@ -78,7 +78,7 @@
   /* The chevrons point at the previous and next page, which swap sides
      with the writing direction. The label already says which is which,
      so only the picture has to turn. */
-  [dir="rtl"] .uix-pagination svg {
+  .uix-pagination:dir(rtl) svg {
     transform: scaleX(-1);
   }
 }

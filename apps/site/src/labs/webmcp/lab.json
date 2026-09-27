@@ -1,0 +1,92 @@
+{
+  "slug": "webmcp",
+  "kind": "demo",
+  "title": {
+    "en": "WebMCP: When a Page Declares Its Actions"
+  },
+  "summary": {
+    "en": "Set a reorder point through a form, then call the same operation through WebMCP. Inspect the arguments, the visible change, and the returned result."
+  },
+  "explanation": {
+    "en": [
+      "Product 4711 starts with a reorder point of 800 units. Save 1,240 through the form first. Then use the Model Context Tool Inspector to call set_reorder_point with 900 and follow the result back to the page.",
+      "Switch from JavaScript registration to an annotated HTML form to compare the two APIs. Remove a registration, try invalid input, and check which operations still work. Reset or reload restores the sample value.",
+      "The form and direct function call work in any browser. Actual WebMCP calls need a supporting Chrome configuration, such as the testing flag described in the article. No model or API key is needed for manual calls in the Inspector."
+    ]
+  },
+  "tags": ["agents", "web-apis"],
+  "resources": [
+    {
+      "kind": "article",
+      "title": {
+        "en": "WebMCP: When a Page Declares Its Actions"
+      },
+      "href": "https://www.markusnissl.com/blog/webmcp-the-page-as-a-tool-surface"
+    },
+    {
+      "kind": "source",
+      "title": {
+        "en": "Source on GitHub"
+      },
+      "href": "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/webmcp/Demo.tsx"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "webmcp",
+      "title": {
+        "en": "WebMCP-enabled browser for native calls"
+      },
+      "detail": {
+        "en": "The form and direct calls work without WebMCP. Native registration and the Inspector need a supporting browser configuration."
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "form",
+      "title": {
+        "en": "Save through the form"
+      },
+      "description": {
+        "en": "Update the fictional reorder point through ordinary form controls."
+      },
+      "execution": "browser",
+      "requirements": []
+    },
+    {
+      "id": "imperative",
+      "title": {
+        "en": "JavaScript registration"
+      },
+      "description": {
+        "en": "Register a tool, inspect its arguments and call the shared operation."
+      },
+      "execution": "native",
+      "requirements": ["webmcp"]
+    },
+    {
+      "id": "declarative",
+      "title": {
+        "en": "Annotated form"
+      },
+      "description": {
+        "en": "Expose the same operation using an annotated HTML form."
+      },
+      "execution": "native",
+      "requirements": ["webmcp"]
+    }
+  ],
+  "relatedComponents": [
+    "Button",
+    "Panel",
+    "Stack",
+    "TextField",
+    "Textarea",
+    "Select"
+  ],
+  "renderer": {
+    "type": "demo",
+    "entry": "labs/webmcp/LabDemo.tsx"
+  }
+}

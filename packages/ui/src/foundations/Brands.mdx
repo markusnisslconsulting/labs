@@ -1,0 +1,73 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+import { consulting } from "@labs/brand";
+import * as BrandStories from "./Brands.stories";
+
+<Meta of={BrandStories} />
+
+# Brands
+
+The consulting brand uses Atkinson Hyperlegible for body text and controls, and
+Bricolage Grotesque for display text. Both fonts load locally from `@labs/brand`.
+Coaching keeps its existing serif body/display roles and the shared interface
+face. The same components compose both examples; the form actions change local
+fixture state only.
+
+<Canvas of={BrandStories.Comparison} />
+
+## Use the consulting mapping
+
+Import the UI styles and then `@labs/brand/labs.css` once. It sets existing
+semantic roles on an unbranded root or a `data-brand="consulting"` scope.
+The separate package also supplies font-only CSS and a Tailwind adapter for the
+main site. Applications can consume a versioned package without a sibling
+checkout or a dependency on the main site's business content.
+
+## Colour roles
+
+The logo's decorative red and UI action colours have different jobs. The decorative red is {consulting.palette.red}; Labs retains
+{consulting.labs.accent.light} for light-theme action text and fills and
+{consulting.labs.accent.dark} in dark mode. Labs' page, surface and subtle roles
+retain their tested light/dark palettes. These differences are intentional;
+replacing every red with the logo colour would change text/control contrast.
+
+Use the theme toolbar to compare both schemes. Inspect control text, focus rings,
+disabled states and raised surfaces as well as the large swatches. Density and
+root text-size changes still need to fit the surrounding composition.
+
+## Logo usage
+
+Keep the supplied aspect ratio and use a minimum digital height of 24 CSS pixels.
+Leave clear space of one mark height on each side. Do not stretch, rotate or add
+shadows. A standalone image needs a meaningful accessible name; a logo beside
+the same written name can be decorative. The examples use a monochrome mask
+that follows the text role in each theme.
+
+The package includes navy, white, red and black variants. Use navy on light
+surfaces and white on dark surfaces. Red is artwork, not a replacement for the
+semantic accent role used by controls.
+
+## Fonts and licensing
+
+Atkinson includes regular, bold and regular italic Latin/Latin Extended faces.
+Bricolage includes weight 200–800 and optical-size 12–96 axes. Uncovered
+characters fall back to the declared system stack. Font loading uses `swap`, so
+text remains available while assets load.
+
+The font licenses ship with this workbench:
+
+- <a
+    href="./font-licenses/atkinsonhyperlegible-OFL.txt"
+    target="_blank"
+    rel="noreferrer"
+  >
+    Atkinson Hyperlegible license
+  </a>
+- <a
+    href="./font-licenses/bricolagegrotesque-OFL.txt"
+    target="_blank"
+    rel="noreferrer"
+  >
+    Bricolage Grotesque license
+  </a>
+
+Logos identify Markus Nissl; they are not a generic mark for another product.

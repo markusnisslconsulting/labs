@@ -10,6 +10,8 @@ import { Select } from "./Select";
 import { TextField } from "./TextField";
 
 const meta = {
+  args: { busy: false },
+
   title: "Components/Form",
   component: Form,
   tags: ["autodocs", "beta"],
@@ -62,6 +64,7 @@ export const Matrix: StoryObj = {
 
       <Form busy>
         <TextField name="email" label="Email" defaultValue="jane@example.com" />
+        <Select name="region" label="Supplier region" options={REGIONS} />
         <Form.Actions>
           <Button type="submit" loading>
             Saving

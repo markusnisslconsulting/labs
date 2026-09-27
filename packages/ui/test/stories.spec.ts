@@ -2,14 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-/**
- * Rules about the catalogue, not about any component.
- *
- * Every one of these was a defect Markus found by scrolling Storybook,
- * and every one passed the whole pipeline first. The gates asserted
- * properties of the DOM; nobody asserted anything about the list a person
- * actually reads.
- */
+/* Validate catalogue structure and story contracts alongside interaction tests. */
 
 const DIR = "packages/ui/src/components";
 const files = readdirSync(DIR).filter((f) => f.endsWith(".stories.tsx"));

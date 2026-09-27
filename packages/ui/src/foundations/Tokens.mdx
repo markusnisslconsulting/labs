@@ -1,73 +1,81 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
 import { TokenTable } from "./TokenTable";
 import { primitiveTokens, semanticTokens } from "../tokens.registry";
+import * as ButtonStories from "../components/Button.stories";
 
 <Meta title="Foundations/Tokens" />
 
 # Tokens
 
-One page, because there is one answer to "what can I use". This was four
-pages — an overview that repeated the primitive and semantic tables, plus
-one page per tier — and a reader had to notice that two of them said the
-same thing.
+Tokens give a shared name to a design choice. Choose the name by its purpose:
+`--uix-text-primary` for readable text, `--uix-bg-surface` for a surface, or
+`--uix-radius-control` for a control's corners. Components using those roles
+follow changes to the brand and theme.
 
-Every table below is generated from `tokens.registry.ts`. A test fails the
-build when the registry and the CSS disagree, so what you read here is
-what ships. Click a token name to copy it.
+## Choose the scope of a change
+
+| You want to change                         | Use                                               |
+| ------------------------------------------ | ------------------------------------------------- |
+| A design decision across the product       | A semantic role on the brand or application scope |
+| One part of one component in an area       | That component's override slot                    |
+| Space between items or the text-size scale | A spacing or font-size token                      |
+
+Button's accent fill uses `--uix-accent`. Compare its states in the matrix,
+including hover, focus, disabled and loading behavior:
+
+<Canvas of={ButtonStories.Matrix} />
+
+To change only the corners of medium buttons in a search area, set the Button
+slot on that area:
+
+```css
+@layer overrides {
+  .search-actions {
+    --uix-button-radius: var(--uix-radius-pill);
+  }
+}
+```
+
+The component's slot falls back to `--uix-radius-control` when no value is set.
+Small and large Button sizes use their own semantic radius roles. Check the
+component's slot documentation before applying the same override to another
+size or variant.
 
 ## Primitive
 
-Raw values with no opinion: the palette, the scales. **No component may
-name a primitive colour, radius, typeface or shadow.** Those four are
-what a theme or a brand remaps, so a component that names one has put
-itself out of their reach permanently — which is exactly why the brand
-axis could only ever re-point a hue. Spacing and font size are a shared
-rhythm and may be used directly.
+Primitive tokens hold palette values and scales. Brand mappings may use them to
+assign semantic roles. Components use semantic or component tokens for colour,
+radius, typeface and shadow so those choices remain configurable. Spacing and
+font-size scales may be used directly.
+
+The tables come from the token registry. Copy a token name with its button;
+values are checked against the stylesheets during the build.
 
 <TokenTable tokens={primitiveTokens} />
 
 ## Semantic
 
-Intent, not appearance, and not only colour: the shape roles
-(`--uix-radius-control`, `--uix-radius-container`, `--uix-radius-pill`),
-the type roles (`--uix-font-body`, `--uix-font-display`) and the
-elevation roles live here too, because a brand has to be able to change
-a corner and a typeface without touching a component.
+Semantic tokens describe use: text, surfaces, controls, status, focus and
+layout. Override these roles when defining a brand. Adding a semantic role
+changes the public API, so first check whether an existing role fits.
 
-This is the only layer a brand touches, and it is deliberately a closed
-vocabulary: adding one is an API change, not a convenience. Whatever a
-brand must be able to change has to have a role here — that is the whole
-constraint, and it is why the list is not longer.
-
-`--uix-ink` and `--uix-paper` are the two ends of the neutral ramp for the
-current theme. A component shades a fill by mixing toward them, so a hover
-deepens on light and brightens on dark without either being written twice.
+Some roles describe a relationship. `--uix-bg-raised` is lighter than the surface
+behind it in both themes. `--uix-scrim` darkens a backdrop. `--uix-ink` and
+`--uix-paper` change with the theme and are used inside `color-mix()` to shade a
+fill; they are not substitutes for a readable foreground/background pair.
 
 <TokenTable tokens={semanticTokens} />
 
 ## Component slots
 
-Per-part override points. These are **not declared anywhere**: each is
-referenced with its semantic default inline, so the slot costs nothing
-until a product fills it.
+A component slot changes one documented part. The component supplies its default
+where it reads the slot:
 
 ```css
-.uix-button[data-tone="accent"] {
-  background: var(--uix-button-accent-bg, var(--uix-accent));
-}
+background: var(--uix-button-accent-bg, var(--uix-accent));
 ```
 
-That is why the tier can grow to cover every component without the
-stylesheet growing with it.
-
-**The slots themselves are documented on the components**, under a
-Theming heading on each component's docs page. They used to be listed
-here as one table of every slot in the library, which is the wrong place
-twice over: a reader looking at Button had to leave the page to find out
-what they could override, and a list of every component's slots together
-is a list nobody reads.
-
-A test keeps that honest in both directions: every component-tier token
-in the registry appears in some component's table, and every default
-printed there is the value the registry holds. It caught three tables
-still naming `--uix-radius-m` after the shape roles landed.
+Slots are listed in each component's Theming documentation, with their defaults.
+They do not need global declarations. Keep overrides near the feature that uses
+them, and inspect the affected states. A custom fill can require a different
+foreground and can fall outside the library's registered contrast checks.

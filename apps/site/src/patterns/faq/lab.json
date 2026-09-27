@@ -1,0 +1,37 @@
+{
+  "slug": "faq",
+  "kind": "pattern",
+  "title": {
+    "en": "FAQ composition"
+  },
+  "summary": {
+    "en": "A responsive question-and-answer section built from Section and Accordion, with keyboard navigation and one open answer at a time."
+  },
+  "explanation": {
+    "en": [
+      "Browse the workshop questions. Open one answer at a time with a click, Enter or Space; arrow keys move between questions.",
+      "This pattern combines Section and Accordion. Supply your own headings and answer content; the shared components provide layout, disclosure state and keyboard handling."
+    ]
+  },
+  "tags": ["content", "navigation", "composition"],
+  "resources": [],
+  "requirements": [],
+  "scenarios": [
+    {
+      "id": "disclosure",
+      "title": {
+        "en": "Browse workshop questions"
+      },
+      "description": {
+        "en": "Open, switch and close answers using the pointer or keyboard."
+      },
+      "execution": "browser",
+      "requirements": []
+    }
+  ],
+  "relatedComponents": ["Accordion", "Section"],
+  "renderer": {
+    "type": "demo",
+    "entry": "patterns/faq/LabDemo.tsx"
+  }
+}

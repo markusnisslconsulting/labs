@@ -1,0 +1,41 @@
+{
+  "slug": "workbench",
+  "kind": "component",
+  "title": {
+    "en": "@labs/ui workbench"
+  },
+  "summary": {
+    "en": "Every demo component, isolated in Storybook: states you can drive on your own, accessibility checks on each render, and the props visible next to the pixels."
+  },
+  "explanation": {
+    "en": [
+      "Browse component examples, compare their states, and inspect their props and styling slots.",
+      "Foundations documents the design tokens. The theming guide covers brand, theme and density overrides."
+    ]
+  },
+  "tags": ["components", "storybook"],
+  "resources": [
+    {
+      "kind": "article",
+      "title": {
+        "en": "Design Systems, Storybook and AI-Assisted Development"
+      },
+      "href": "https://www.markusnissl.com/blog/your-design-system-ends-where-the-agent-starts"
+    },
+    {
+      "kind": "source",
+      "title": {
+        "en": "Source on GitHub"
+      },
+      "href": "https://github.com/markusnisslconsulting/labs/tree/main/packages/ui"
+    }
+  ],
+  "requirements": [],
+  "scenarios": [],
+  "relatedComponents": [],
+  "renderer": {
+    "type": "storybook",
+    "id": "introduction--docs",
+    "view": "docs"
+  }
+}

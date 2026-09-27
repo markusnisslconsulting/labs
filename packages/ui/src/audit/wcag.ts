@@ -1,31 +1,7 @@
 /**
- * WCAG 2.2 Level AA, criterion by criterion.
- *
- * The roadmap's stage 06 asks for this by name, and the reason is in the
- * stage's own title: axe finds a minority of real accessibility problems.
- * A green pipeline says nothing about focus order matching reading order,
- * whether an error message says what to do, or whether a live region
- * announces at a useful moment.
- *
- * So each criterion carries one of four statuses, and the difference
- * between them is what a reader can conclude:
- *
- *   - `gate` — something in this repository fails the build when it
- *     breaks, and `evidence` names it. This is the only status that is a
- *     guarantee.
- *   - `manual` — a person has to look. `evidence` says what they should
- *     look at. Nothing here is claimed to be satisfied.
- *   - `product` — the criterion belongs to the page a component sits in,
- *     not to the component. A library cannot satisfy "Bypass Blocks"; an
- *     application can, and this row says so rather than going quiet.
- *   - `n/a` — nothing in the library can trigger it. No audio, no video,
- *     no authentication.
- *
- * What this file must never do is claim `gate` for something no gate
- * checks. A conformance table that overstates is worse than none: it is
- * the document someone points at instead of testing.
+ * Maps WCAG criteria to automated checks, manual review and product responsibilities.
+ * A cited check covers its fixture and assertions; it is not a conformance claim.
  */
-
 export type CriterionStatus = "gate" | "manual" | "product" | "n/a";
 
 export interface Criterion {
@@ -192,7 +168,7 @@ export const WCAG_22_AA: Criterion[] = [
     name: "Non-text Contrast",
     status: "gate",
     evidence:
-      "scripts/tokens/contrast.ts includes focus ring, accent fill and " +
+      "tooling/checks/tokens/contrast.ts includes focus ring, accent fill and " +
       "surface pairings at 3:1. Inactive controls are exempt by the " +
       "criterion and the file records that rather than inventing a " +
       "threshold.",

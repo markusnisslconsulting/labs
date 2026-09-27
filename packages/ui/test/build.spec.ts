@@ -74,9 +74,9 @@ describe("nx cache inputs", () => {
    * A gate's own implementation is an input to it.
    *
    * The widest instance of everything above, and the last one found. Seven
-   * cached targets run a script from `scripts/`, and none of them counted
+   * cached targets run a script from `tooling/checks/`, and none of them counted
    * that script as an input. Measured: editing
-   * `scripts/stories/coverage.ts` so the check must fail, then running
+   * `tooling/checks/stories/coverage.ts` so the check must fail, then running
    * `nx run ui:story-coverage`, reported "Story coverage passed — 49
    * components" from the cache.
    *
@@ -85,7 +85,7 @@ describe("nx cache inputs", () => {
    * something else in the project happened to change. The verdict would
    * outlive the code that produced it.
    *
-   * `gateScripts` covers `scripts/**` and `tools/**` together rather than
+   * `gateScripts` covers `tooling/checks/**` and `tooling/build/**` together rather than
    * naming each file. Coarse — editing any script invalidates every
    * script-driven gate — and the coarseness is the point: a per-file input
    * misses the shared helper a script imports, and those gates are seconds
@@ -116,8 +116,8 @@ describe("nx cache inputs", () => {
           const command = JSON.stringify(target.options ?? {});
           /* Only the ones that actually run something from there. A target
              whose command is `vitest` or `storybook build` is not
-             implemented by a file in `scripts/`. */
-          if (!command.includes("scripts/") && !command.includes("tools/")) {
+             implemented by a file in `tooling/checks/`. */
+          if (!command.includes("tooling/")) {
             continue;
           }
           const inputs = target.inputs ??
@@ -131,7 +131,7 @@ describe("nx cache inputs", () => {
 
     expect(
       missing,
-      "these targets are implemented by a file in scripts/ or tools/ and do " +
+      "these targets are implemented by a file in tooling/checks/ or tooling/build/ and do " +
         "not count it as an input, so editing the check replays the previous " +
         "verdict",
     ).toEqual([]);
@@ -154,12 +154,7 @@ describe("nx cache inputs", () => {
    * can legitimately have nothing to unit-test, and cannot legitimately be
    * unchecked.
    */
-  const NO_UNIT_TESTS: Record<string, string> = {
-    site:
-      "the site's checks are end-to-end: `site:a11y` drives the built pages " +
-      "with Playwright and axe. A unit test over a page that is mostly " +
-      "composition would assert the composition.",
-  };
+  const NO_UNIT_TESTS: Record<string, string> = {};
 
   it("every project declares lint and typecheck, and test or a reason", () => {
     const roots = ["packages", "apps"];
@@ -198,32 +193,8 @@ describe("nx cache inputs", () => {
     ).toEqual([]);
   });
 
-  /**
-   * A cached test declares every workspace file it reads.
-   *
-   * The general form of the two defects this file already records, and it
-   * took a third instance to see it. `ui:test` reads `AGENTS.md`,
-   * `CONTRIBUTING.md` and `docs/roadmap.md` — the citation checker in
-   * `audit.spec.ts` is entirely about them — and declared none of them.
-   * `default` covers `{projectRoot}/**` and `sharedGlobals` covers three
-   * files at the root; a document two directories away is in neither.
-   *
-   * Measured: with those inputs undeclared, appending a citation of
-   * `nothing/at/all.ts` to the roadmap and running `nx run ui:test` reported
-   * "188 passed" from the cache. CI ran cold, caught it, and that is the
-   * only reason it was ever seen.
-   *
-   * And writing this rule found a fourth: `build.spec.ts` reads `nx.json`,
-   * so the gate about cache inputs was itself replayable when the cache
-   * configuration changed.
-   *
-   * The check reads every path-shaped string literal in the specs rather
-   * than only the arguments of `readFileSync`. That is deliberate: the
-   * documents that started this are passed to `it.each` as a list and read
-   * through a variable, so a scan of literal read calls finds `nx.json` and
-   * misses the three that mattered — a gate that would have passed while the
-   * bug was live.
-   */
+  /* Cached test targets must declare every workspace file their specs read,
+   * including paths supplied through tables rather than direct read calls. */
   it("every workspace file the tests read is an input", () => {
     const dir = "packages/ui/test";
     const named = new Map<string, string[]>();

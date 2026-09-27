@@ -1,277 +1,129 @@
+import { Meta, Canvas, Source } from "@storybook/addon-docs/blocks";
+import { facts } from "virtual:labs-facts";
+import { AvailableReferences } from "../.storybook/AvailableReferences";
+import * as Examples from "./guides/Examples.stories";
+import preferencesSource from "../.storybook/examples/Preferences.tsx?raw";
+
+<Meta title="Introduction" />
+
 # Labs UI
 
-Welcome to the component workbench for the labs at
-[labs.markusnissl.com](https://labs.markusnissl.com). This is not a
-scrapbook of one-off demos; it is the design system those demos are
-built from, reviewed in isolation.
+Build a page by composing controls, layout components and patterns. This
+workbench contains **{facts.componentCount} components**, with examples you can
+change, source you can copy and guidance on when to use each one.
 
-Everything this page claims is enforced by a test. That is the point:
-a design system is persuasive exactly as far as its promises are
-executable, and prose is not a guarantee.
+Start with the example below. It combines a Checkbox, Button and Stack into a
+small preference editor. The application owns the value; the components handle
+layout, labelling and interaction.
 
-## The token hierarchy
+## Use a component
 
-Three tiers, each with one job.
+The packages are workspace libraries. In an application in this repository,
+import the global styles once at the entry point. Add the brand adapter to load
+the local fonts and consulting mapping:
 
-- **Primitive** — raw values, no opinion: the palette, radii, spacing,
-  type and motion scales. No component may name a primitive **colour,
-  radius, typeface or shadow**. Those four are what a theme or a brand
-  remaps, so a component that names one has put itself out of their
-  reach permanently. This rule used to cover colour alone, and the
-  sentence that replaced this one said the radius and type scales "may
-  be used directly" — which is precisely why the brand axis could only
-  ever reach a hue. Spacing and font _size_ stay open: they are a rhythm
-  the whole library shares. Tests read the component stylesheets, so
-  each rule is checked where it actually breaks rather than in the
-  registry's own declarations.
-- **Semantic** — intent, and not only colour: `--uix-text-primary`,
-  `--uix-bg-page`, `--uix-accent`, `--uix-status-ok`, and alongside them
-  the shape roles (`--uix-radius-control`, `--uix-radius-container`,
-  `--uix-radius-pill`), the type roles (`--uix-font-body`,
-  `--uix-font-display`, `--uix-font-code`) and the elevation roles
-  (`--uix-elevation-raised`, `--uix-elevation-overlay`,
-  `--uix-elevation-modal`). This is the only layer a brand touches, so
-  whatever a brand must be able to change has to have a role here. `--uix-ink` and `--uix-paper` name the two ends of the
-  neutral ramp for the current theme, so a component can shade a fill
-  by mixing toward them and get the right result on light and dark
-  without naming either colour.
-- **Component** — per-part override slots: `--uix-button-accent-bg`,
-  `--uix-chip-active-bg`, `--uix-panel-radius`. These are deliberately
-  **not declared** anywhere. Each is referenced as
-  `var(--uix-button-accent-bg, var(--uix-accent))`, so the slot exists
-  as an override point and costs nothing until something fills it. It
-  is why the tier can grow to cover every component without the
-  stylesheet growing with it.
-
-`src/tokens.registry.ts` is the machine-readable counterpart — name,
-value, tier, intent, and an optional `deprecated` note mirroring
-DTCG's `$deprecated`. A parity test fails the build when the registry
-and the CSS disagree, in either direction.
-
-## Brands
-
-A brand is data, not a stylesheet edit. One file under
-`styles/brands/`, containing only semantic overrides, imported from
-`styles.css`. Adding a brand touches no core file, which is the
-property that makes multi-brand scale — brands cannot collide in a
-shared file.
-
-Two brands ship, and they are two businesses rather than two colour
-schemes. The default is the consulting practice: crimson, high-chroma,
-close-set, for someone buying delivery. `coaching` is the personal
-leadership practice, and its reader is deciding whether to trust someone
-with their own development — so it is cooler, quieter and more spacious.
-
-That difference is not expressible as a hue. `coaching` re-points the
-accent, four shape roles, the display face, three elevations _and_ the
-density multiplier, in one file, with no core stylesheet edited. Its
-controls are 16px-cornered against the default 11px and its whole
-geometry is 12% roomier, because taking its time is part of what the
-brand means.
-
-Everything derived follows without being named: `--uix-accent-soft` mixes
-from the accent and `--uix-focus-ring` aliases it, so a brand cannot
-forget them. A test asserts that a brand file declares nothing but
-semantic tokens — which is also the constraint that forced the shape,
-type and elevation roles to exist in the first place.
-
-Open **Foundations / Brands** to see both at once. That page is pinned to
-the two brands rather than following the toolbar, because a column that
-followed the toolbar was a duplicate of a control already on screen.
-
-## Density, and the reader's own text size
-
-`data-density="compact"` sets one multiplier, and the semantic
-`--uix-gap-*` roles carry it into padding, gaps and margins alike — not
-only the inside of controls. At the default density they resolve to the
-raw scale exactly, so cozy rendering is unchanged.
-
-Control heights are `max(24px, calc(<rem> * var(--uix-density)))`. The
-rem half means a reader who sets their browser text larger gets larger
-controls, which is what the unit is for; `font-size` is therefore set on
-`body` and never on `html`, because pinning the root size cancels that
-setting. The `24px` half is the one absolute length in the token layer:
-WCAG 2.2 target size is specified in CSS pixels, and at the compact
-multiplier of 0.72 the small height resolved to 23.04px. Clamping in the
-token rather than raising the multiplier means a product that sets its
-own density cannot reintroduce the violation.
-
-A browser test measures every matrix story against the control tokens at
-two densities and two root font sizes, reading the token values out of
-the page rather than asserting pixels. Growing past the floor is allowed
-— that is what a long label at 20px does — and clipping is not.
-
-## The floor under all of it
-
-`styles/reset.css` is the normalization layer, and for a long time there
-was none: `base.css` set a typographic voice and was mistaken for a
-foundation, so every user-agent default reached the components
-untouched. Nothing set `box-sizing`, which meant every `min-height` in
-the library was a floor on the _content_ box and any bordered control
-came out two pixels over the scale. Three separate reports about things
-not being centred were that one omission.
-
-The two files are deliberately separate. `reset.css` holds the box
-model, inheritance, and the places where engines still disagree, and
-every rule there names the browser that needs it. `base.css` holds only
-choices someone could reasonably make differently. It is not
-normalize.css, which mostly corrects browsers nobody ships any more.
-
-## CSS ships with the component
-
-There is no single stylesheet to import. `styles.css` is the global
-floor and nothing more: the token tiers, the brands, and element
-defaults. Every component imports its own CSS, so a page that renders
-a `Badge` downloads `Badge.css` and nothing else.
-
-That works because `styles.css` declares the cascade order once:
-
-```css
-@layer tokens, base, components, overrides;
+```tsx
+import "@labs/ui/styles.css";
+import "@labs/brand/labs.css";
 ```
 
-A component stylesheet arriving late — in a lazily loaded route chunk —
-still lands in `@layer components`. It cannot out-rank the tokens, and
-it cannot beat a product's `overrides`, whatever order the network
-happens to deliver. Without that declaration, split CSS would be
-decided by load order, which is the kind of bug that only reproduces on
-a cold cache.
+The UI library also works without the brand adapter, using its default font
+stacks and tokens. Declare the packages your application imports in its own
+manifest. A separate application needs the built package artifacts; these
+examples do not assume a package published to a public registry.
 
-Import per component to keep the benefit:
+Try turning reminders on, then resetting the preference:
 
-```ts
-import { Button } from "@labs/ui/components/Button";
-```
+<Canvas of={Examples.LocalPreferences} />
 
-The barrel (`@labs/ui`) re-exports everything and is convenient, but a
-CSS import is a side effect, so the barrel pulls every component's
-styles. Use it for prototypes, not for pages you measure.
+This is the complete component. The label describes the preference, the hint
+explains the example's scope, and the status reports its current value.
 
-## What a component costs
+<Source
+  code={preferencesSource.replaceAll(
+    "../../src/components/",
+    "@labs/ui/components/",
+  )}
+  language="tsx"
+/>
 
-Measured on the built package, gzip, and gated per component rather than
-in total — a single number over the library hides the case that matters,
-which is one component quietly growing.
+## Build a page
 
-|                                                         | gzip   |
-| ------------------------------------------------------- | ------ |
-| The floor every page pays (tokens, reset, voice, print) | 3.5 KB |
-| Median component, JavaScript and CSS together           | 0.9 KB |
-| Largest (Button, and it is mostly CSS)                  | 1.4 KB |
+Choose components by the work they do. Use TextField for a labelled text input,
+Form for fields submitted together, and a layout component to place them.
+Stack spaces items vertically; Cluster wraps a row; Columns reduces the column
+count as the available width narrows. Container limits the page's width, and
+Section groups a heading with its content.
 
-The floor was 10.7 KB until recently, and the reason is worth keeping:
-the stylesheets here are heavily commented, most rules carrying the
-measurement or the bug that produced them, and the publish step copied
-them verbatim. A consumer downloads the cascade, not the reasoning. They
-are minified into the package now and the source keeps its prose.
+Keep content, validation and service calls in the feature that owns the task.
+Extract a pattern when the same arrangement and behavior recur. A screen then
+composes those patterns with the appropriate content and state.
 
-`Menu` and `Popover` each pull `Button.css` as well as their own, because
-their triggers _are_ buttons. That is reuse rather than leakage, and it is
-the only cross-component CSS dependency in the library — a test asserts
-there are no others.
+Open a component's Docs page for its API and usage guidance. The Controls panel
+lets you change a story, and Code shows its source. Matrix stories collect
+related states for comparison. Interaction tests remain in the test run without
+adding duplicate examples to the sidebar.
 
-## The component API
+## Tokens and overrides
 
-Every component takes the attributes of the element it renders.
-`className` **merges** with the component's own class rather than
-replacing it, and everything else lands on the root, so `id`,
-`data-*`, `aria-*`, event handlers and refs all work. Base UI roots
-keep their function form of `className` too.
+Use semantic roles for colour, corners, typeface and shadow. A role such as
+`--uix-accent` follows the selected brand and theme. A component slot such as
+`--uix-button-accent-bg` changes only that part of the component. Spacing and
+font-size scales provide the shared rhythm between components.
 
-The one exception is `Tooltip`, which renders no element of its own —
-its trigger is the caller's element, so there is nothing to pass
-attributes to. That is documented on the component.
+The global stylesheet establishes this layer order:
 
-## What the build refuses
+<pre>
+  <code>{`@layer ${facts.layers.join(", ")};`}</code>
+</pre>
 
-Each of these closes a claim this page used to make in prose. Several
-were added after the claim turned out to be false.
+Put application styling in `@layer overrides` and component rules in
+`@layer components`. Normal declarations in later layers take precedence over
+normal declarations in earlier layers. Unlayered rules take precedence over all
+of those layers. The Tokens reference explains the available roles and slots.
 
-- **Token parity** — the registry and the CSS cannot disagree, in either
-  direction, and no component stylesheet may name a colour, radius,
-  typeface or shadow primitive, or hardcode a colour or a pixel radius.
-- **Docs pages** — every one of the forty is loaded in a browser and
-  must render. Components/Button had been dead for days with
-  "t.startsWith is not a function" while all 145 story tests were green,
-  because the runner replays stories and nothing had ever opened a docs
-  page. The cause was an un-backticked `<a href />` in a TSDoc comment:
-  markdown made it a real anchor, and Storybook's link renderer calls
-  `href.startsWith`, which a valueless attribute does not have. The bug
-  was in the prose, so no amount of story coverage could have found it.
-- **The control scale** — every matrix story measured against the
-  control tokens across density and root font size, with the token
-  values read out of the page. The first version of this asserted
-  32/40/48px, which describes exactly one configuration.
-- **Narrow** — nothing overflows at 360px, and what reads as one row
-  stays one row.
-- **Icons** — no component draws an icon with a text character. A glyph
-  is positioned by the font's metrics rather than by its box, so it
-  cannot be centred from CSS.
-- **Disabled** — a `disabled` prop and disabled styling imply each other
-  in _both_ directions. One direction alone let Switch ship a rule that
-  could never match Base UI's `<span role="switch">`, and let Tabs ship
-  styling for a state no tab could enter.
-- **Snapshotted stories do not mutate** — a story that clicks in
-  `play()` and is photographed baselines the state after the click under
-  a name that promised the state before it. Two were doing exactly that.
-- **Contrast** — every declared pairing is measured in every theme and
-  every brand, 144 of them, against WCAG AA. A brand may pick a hue; it
-  may not pick a pairing nobody can read. This caught an inverted
-  surface that was legible inside itself and invisible against the page
-  it sat on.
-- **Token usage** — reachability over the alias graph, so "is anyone
-  still using this" is answered by the graph rather than by grep, plus a
-  ratchet that fails on a new use of a deprecated token and on a
-  baseline that was not tightened after one was removed.
-- **Root font size and colour scheme** — `font-size` is never set on the
-  root element, and each theme declares its `color-scheme`. Both are
-  silent when broken: the first cancels a reader's text-size setting,
-  the second leaves a dark page with a light scrollbar and a white date
-  picker.
-- **Story coverage** — derived from each component's own types: every
-  union value rendered, every state boolean shown, one assertion, and a
-  keyboard story if the component is operable. Turning it on found 33 of
-  34 components with no keyboard test.
-- **Accessibility** — axe on every story, and separately on every page
-  of the labs site, because composition is where component-level
-  accessibility stops seeing.
-- **Cascade order** — the layer declaration is prepended to every
-  emitted stylesheet and then asserted, because the source having it
-  was not the same as the bundle having it.
+## Themes and brands
 
-## Stories: reference or interaction, never both
+The theme toolbar changes light, dark or system-following appearance. Set
+`data-theme` on the document root in an application. Brand changes are separate:
+the brand controls typography, colour and shape, while the theme controls the
+light/dark scheme.
 
-A reference story shows a state and does not change it. An interaction
-story drives behaviour and opts out of snapshots, because Chromatic
-captures the frame after `play()` resolves — a story that clicks its own
-control baselines the state after the click under a name that promised
-the state before it. Two deliberate exceptions keep their snapshots:
-Focus and Dialog, where the ring and the open dialog are the picture
-worth having.
+Use the brand and density toolbars to compare examples, then check them in a
+narrow viewport and with larger text. The Theming guide shows how to apply the
+same settings to an application and to a section within it. For translated UI,
+provide component strings through `LabsStrings` and set the document's `dir`.
 
-Every story is snapshotted in both themes. Brand coverage is set on
-Foundations / Brands, where a brand difference is the subject.
+## Package measurements
 
-## Accessibility
+Component imports include their required styles. The global stylesheet supplies
+tokens, reset, element defaults and print styles. Both the package barrel and
+component subpaths are supported; the isolated consumer check compares their
+output for the same fixture.
 
-The a11y addon runs with `test: "error"`, and the test runner replays
-every story headless in CI with axe injected, failing the run on a
-violation. Stories opt out per story with `parameters.a11y.disable`
-and narrow rules with `parameters.a11y.config.rules` — the same shape
-the panel reads, so CI and the panel never disagree.
+Measured **{facts.measuredAt.slice(0, 10)} (UTC)** from the built UI package:
 
-Interaction tests assert semantics directly: a filter chip toggles
-`aria-pressed`, a panel is reachable as a named region, a disabled
-button keeps its accessible name. Colour is never the only channel —
-`StatusPill` puts the state in words and leaves the dot decorative.
+| Measurement                                   | Gzip size                                     |
+| --------------------------------------------- | --------------------------------------------- |
+| Global stylesheet and its imported styles     | {(facts.globalStyles / 1024).toFixed(2)} KiB  |
+| Median component, internal JavaScript and CSS | {(facts.median / 1024).toFixed(2)} KiB        |
+| Largest component: {facts.largest.name}       | {(facts.largest.total / 1024).toFixed(2)} KiB |
 
-`Button`'s `loading` state uses `aria-disabled`, not the native
-attribute: a disabled button leaves the tab order, so a user tabbing a
-form would lose their place the moment a button started loading.
+These measurements sum separately gzipped package files, following static
+relative imports and counting shared files once per component. They exclude
+external dependencies such as React and Base UI. Components can share files, so
+adding these figures does not predict an application's download size. Measure
+its final bundle as well. `pnpm size-report` gives the component breakdown.
 
-## Where to start
+## Verification
 
-Open **Foundations / Tokens** for all three tiers, then
-**Components / Button** for a full state matrix. Flip the brand and
-theme toolbars on any story — that is the whole multi-brand mechanism,
-visible.
+Use `pnpm gates` before handing off a change. It runs the shared local and CI
+checks for contracts, interaction, accessibility fixtures, package output and
+size budgets. Inspect relevant examples in Docs and Canvas as well; a passing
+assertion does not establish that a composition is easy to use.
+
+The Accessibility guide describes the checks and their limitations. `pnpm nx run ui:visual-sweep` captures examples for visual review.
+
+## Reference pages
+
+<AvailableReferences />

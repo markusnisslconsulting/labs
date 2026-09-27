@@ -10,5 +10,13 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:4414",
     trace: "off",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    {
+      name: "webkit",
+      testMatch:
+        /(?:field-containment|brand-scope|guide-examples|appearance)\.spec\.ts/,
+      use: { ...devices["Desktop Safari"] },
+    },
+  ],
 });

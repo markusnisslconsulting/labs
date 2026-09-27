@@ -1,0 +1,14 @@
+{
+  "name": "@labs/ui-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@labs/ui-catalog": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@labs/ui": "workspace:*"
+  }
+}

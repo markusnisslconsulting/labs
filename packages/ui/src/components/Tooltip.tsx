@@ -1,5 +1,7 @@
 "use client";
 
+import { usePortalAppearance } from "../usePortalAppearance";
+
 import type { ReactNode } from "react";
 
 import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
@@ -61,6 +63,7 @@ export function Tooltip({
   defaultOpen,
   onOpenChange,
 }: TooltipProps) {
+  const appearance = usePortalAppearance();
   const id = useId();
 
   /* The open state, mirrored, so the description can be attached only
@@ -100,7 +103,8 @@ export function Tooltip({
           aria-describedby={isOpen ? id : undefined}
           render={children as ReactElement<Record<string, unknown>>}
         />
-        <BaseTooltip.Portal>
+        {appearance.anchor}
+        <BaseTooltip.Portal {...appearance.props}>
           <BaseTooltip.Positioner
             side={placement}
             sideOffset={6}

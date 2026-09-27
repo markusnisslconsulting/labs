@@ -43,7 +43,7 @@
     align-items: center;
     gap: var(--uix-gap-xs);
     padding-inline: var(--uix-gap-sm);
-    padding-block: 0.125rem;
+    padding-block: calc(var(--uix-gap-xs) / 2);
     border-radius: var(--uix-radius-pill);
     background: var(--uix-bg-subtle);
     color: var(--uix-text-primary);

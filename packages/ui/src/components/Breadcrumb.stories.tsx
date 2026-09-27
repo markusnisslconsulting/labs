@@ -1,3 +1,4 @@
+import { exampleHref } from "../../.storybook/examplePages";
 import { expect, userEvent } from "storybook/test";
 import { NARROW_AND_RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -19,8 +20,14 @@ export const Trail: Story = {
   },
   args: {
     items: [
-      { label: "Labs", href: "/" },
-      { label: "Chat box", href: "/chat-box" },
+      {
+        label: "Labs",
+        href: exampleHref("labs", "components-breadcrumb--trail"),
+      },
+      {
+        label: "Chat box",
+        href: exampleHref("chat", "components-breadcrumb--trail"),
+      },
       { label: "Undo machine" },
     ],
   },
@@ -72,13 +79,25 @@ export const TrailBehaviour: Story = {
 export const DeepTrail: Story = {
   args: {
     items: [
-      { label: "Labs", href: "/" },
-      { label: "Design system", href: "/design-system" },
-      { label: "Components", href: "/design-system/components" },
-      { label: "Navigation", href: "/design-system/components/navigation" },
+      {
+        label: "Labs",
+        href: exampleHref("labs", "components-breadcrumb--deep-trail"),
+      },
+      {
+        label: "Design system",
+        href: exampleHref("design", "components-breadcrumb--deep-trail"),
+      },
+      {
+        label: "Components",
+        href: exampleHref("components", "components-breadcrumb--deep-trail"),
+      },
+      {
+        label: "Navigation",
+        href: exampleHref("navigation", "components-breadcrumb--deep-trail"),
+      },
       {
         label: "Breadcrumb",
-        href: "/design-system/components/navigation/breadcrumb",
+        href: exampleHref("breadcrumb", "components-breadcrumb--deep-trail"),
       },
       { label: "Accessibility" },
     ],
@@ -90,8 +109,14 @@ export const ComposedTrail: Story = {
   args: { items: undefined },
   render: () => (
     <Breadcrumb label="Order trail">
-      <Breadcrumb.Crumb href="/">Ordering desk</Breadcrumb.Crumb>
-      <Breadcrumb.Crumb href="/suppliers">
+      <Breadcrumb.Crumb
+        href={exampleHref("ordering", "components-breadcrumb--composed-trail")}
+      >
+        Ordering desk
+      </Breadcrumb.Crumb>
+      <Breadcrumb.Crumb
+        href={exampleHref("suppliers", "components-breadcrumb--composed-trail")}
+      >
         Suppliers <StatusPill tone="warn">2 late</StatusPill>
       </Breadcrumb.Crumb>
       <Breadcrumb.Crumb current>Nordwind Logistik</Breadcrumb.Crumb>

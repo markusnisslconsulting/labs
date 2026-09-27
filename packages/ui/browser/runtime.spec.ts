@@ -1,30 +1,4 @@
-/**
- * What the expensive components cost at runtime.
- *
- * Stage 09 of the roadmap: "There is a bundle budget on the whole. There
- * is nothing per component, and nothing about runtime." The per-component
- * bundle half is `scripts/component-size.mjs`. This is the other half.
- *
- * Two things make this worth writing rather than assuming:
- *
- *   - Bundle size and runtime cost are unrelated. Divider is the smallest
- *     component in the library and Table is near it, and a table is the
- *     one component in here that can make a page unusable. Nothing about
- *     0.88 KB says how it behaves with ten thousand rows.
- *   - The costs that matter are the ones a component's own design causes.
- *     A combobox that re-filters a long list on every keystroke, a table
- *     that lays out every row it is given, a toast stack that re-renders
- *     the whole set per arrival — those are decisions in this repository,
- *     not the consumer's.
- *
- * Numbers rather than thresholds where possible. A wall-clock budget on a
- * developer laptop is a flaky test with a stern message: the same code is
- * three times slower on a cold CI runner. So each measurement below
- * asserts a *shape* — that cost grows with the work and not with the
- * square of it, that a keystroke touches one component and not the page —
- * and prints the number so a regression is visible in the log even when
- * it passes.
- */
+/* Runtime checks for component geometry, semantics and browser behaviour. */
 import { test, expect, type Page } from "@playwright/test";
 import { openStory } from "./ready";
 
@@ -309,26 +283,7 @@ test("a virtualised table is bounded in the DOM and honest in the tree", async (
   ).toBeLessThan(1);
 });
 
-/**
- * Every face in an avatar group overlaps the one before it, counter
- * included.
- *
- * A geometry assertion, because the defect was geometry and nothing else
- * here measures it. The overlap was written as `.item + .item`, and the
- * component rendered every visually hidden name *after* every avatar — so
- * between the last face and the "+2" counter sat a run of spans, the
- * adjacent-sibling selector matched nothing, and the counter lost its
- * negative margin and sat a full gap from the group.
- *
- * Markus found it in a screenshot. Every assertion in this repository passed
- * over it: the names were right, the roles were right, the accessible name
- * of the counter listed the hidden people, axe was clean. None of them knows
- * where anything is.
- *
- * Measured as "each item starts before the previous one ends", which is what
- * overlapping means and is true at every size without hardcoding the
- * offset.
- */
+/* Check the rendered geometry as well as the component state. */
 /**
  * An overlapping avatar may not cover the initials underneath it.
  *
@@ -341,7 +296,7 @@ test("a virtualised table is bounded in the DOM and honest in the tree", async (
  * fast as the diameter, so it sets the fraction for every size.
  *
  * Asserted as the geometry rather than the glyphs. Where a letter ends is a
- * pixel question and lives in `visual/` and Chromatic; that the next face
+ * pixel question and lives in `tooling/visual/regression/` and Chromatic; that the next face
  * starts at four fifths of this one is arithmetic a page can answer, and it
  * is the condition the pixel measurement produced.
  */
@@ -446,31 +401,7 @@ test("every avatar overlaps the one before it, counter included", async ({
   }
 });
 
-/**
- * The customizable-select popup is the width of the field a reader sees.
- *
- * "The field" is `.uix-field-row`, not the `<select>`. That distinction is
- * the entire history of this test. Markus reported twice that the menu was
- * not the width of the select box; three rounds of measurement said it was,
- * to the pixel — because all three compared the popup to the `<select>`,
- * which is a transparent, borderless control sitting inside the row's
- * padding and sharing it with the chevron. Measured: a 384px row held a
- * 334px select and a 332px popup. The popup matched the select exactly and
- * was 52px narrower than the box on screen.
- *
- * A measurement against the wrong reference reads exactly like the thing
- * being correct, and it is more convincing than no measurement at all. So
- * this asserts against the element that draws the border, and separately
- * that the chosen value does not move when the popup opens — the other half
- * of the same report.
- *
- * An earlier docstring here also claimed author sizing on `::picker(select)`
- * was ignored in Chromium 151. That came from reading `getComputedStyle` on
- * the pseudo-element, which reports `inline-size: auto` for a width it is
- * applying. It is not ignored. `anchor-size()` and percentages genuinely do
- * not resolve there, so the width still cannot be derived from the anchor —
- * it does not need to be, now that the anchor is the full field.
- */
+/* The select and its native picker must align with the visible field. */
 test("the select popup is the width of the field, and its text does not move", async ({
   page,
 }) => {
@@ -763,38 +694,7 @@ test("a split button's inner corners are square at every size", async ({
   ).toBeGreaterThan(1);
 });
 
-/**
- * The value in a customizable select sits on the middle of its own field.
- *
- * It rendered 7px above it. `appearance: base-select` makes the select
- * itself the button and the button a flex container; with a fixed
- * `block-size` and no `padding-block`, its content sits at the start. So the
- * value read high while the chevron beside it was centred, which is what
- * Markus saw and reported as "the text is not aligned".
- *
- * **What this test can and cannot see, because two instruments lied first.**
- *
- * Every box on that row measured centred — the field row, the control and
- * the chevron, all three at the same midpoint — because the misalignment was
- * inside the control, between its box and its own glyphs. Boxes cannot see
- * it.
- *
- * `caretRangeFromPoint` does reach into the select's shadow content and
- * returns an element for the rendered value, and that looked like the
- * instrument. It is not: the element is a full-size wrapper starting at the
- * field's own left edge, so its centre is the box's centre whatever the text
- * does. It reported the field as correct in both the broken and the fixed
- * build. Only pixels told them apart — measured at 3x over the field's own
- * box, the text's centre was row 39 broken and row 60 fixed, against a box
- * centre of 60.
- *
- * So the pixel property lives in `visual/visual.spec.ts`, where this
- * repository keeps pixels, and in Chromatic, which snapshots this story. What
- * is left here is the cascade: `align-items` has to survive to the select.
- * That is weaker than measuring the glyphs and it is stated as such — it
- * catches the rule being removed or outranked, not the rendering being wrong
- * for some new reason.
- */
+/* Check text alignment against the neighbouring control. */
 test("a base-select field centres its own value", async ({ page }) => {
   await openStory(page, "components-select--matrix");
 
@@ -835,7 +735,7 @@ test("a base-select field centres its own value", async ({ page }) => {
  *
  * `AppShell`'s three nav widths are here rather than in a photographed story
  * because three shells in one document is three banner landmarks — the
- * defect the component exists to prevent. `scripts/stories/coverage.ts`
+ * defect the component exists to prevent. `tooling/checks/stories/coverage.ts`
  * records that exception and points at this test, so this is the half that
  * has to exist for the exception to be honest.
  */

@@ -201,6 +201,7 @@ export function Tree({
         focusRow(next.node.id);
       };
 
+      const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
       switch (event.key) {
         case "ArrowDown":
           move(here + 1);
@@ -214,7 +215,7 @@ export function Tree({
         case "End":
           move(rows.length - 1);
           return;
-        case "ArrowRight":
+        case rtl ? "ArrowLeft" : "ArrowRight":
           /* Open, then step in. Two presses rather than one, which is the
              pattern's own rule: it keeps "open this" and "go into this"
              separable for someone exploring a structure. */
@@ -222,7 +223,7 @@ export function Tree({
           if (row.branch && !row.open) setOpen([...openIds, row.node.id]);
           else if (row.open) move(here + 1);
           return;
-        case "ArrowLeft":
+        case rtl ? "ArrowRight" : "ArrowLeft":
           event.preventDefault();
           if (row.open)
             setOpen(openIds.filter((entry) => entry !== row.node.id));

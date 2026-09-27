@@ -52,7 +52,7 @@ visible in one place, on an active chip with navy text on a navy surface.
 
 Two corrections:
 
-- `tools/vite-layer-order.ts` puts the declaration at the start of every
+- `tooling/build/vite-layer-order.ts` puts the declaration at the start of every
   emitted stylesheet and checks the result afterwards.
 - lightningcss collapsed `@layer a, b, c;` onto the one layer it could find
   a block for. The app therefore minifies CSS with esbuild.

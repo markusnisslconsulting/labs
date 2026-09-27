@@ -1,6 +1,7 @@
 import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "../components/Button";
+import { Cluster } from "../components/Cluster";
 
 const meta = {
   title: "Foundations/Focus",
@@ -9,6 +10,18 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+export const Preview: Story = {
+  render: () => (
+    <Cluster gap="sm">
+      <Button>First</Button>
+      <Button variant="outline">Second</Button>
+      <Button variant="outline" size="sm">
+        Third
+      </Button>
+    </Cluster>
+  ),
+};
 
 /**
  * The focus ring exists only for keyboard focus (`focus-visible`), so
@@ -25,15 +38,7 @@ export const KeyboardRing: Story = {
      kept in the test run by the default `test` tag. */
   tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: false } },
-  render: () => (
-    <div style={{ display: "flex", gap: "0.8rem" }}>
-      <Button>First</Button>
-      <Button variant="outline">Second</Button>
-      <Button variant="outline" size="sm">
-        Third
-      </Button>
-    </div>
-  ),
+  render: Preview.render,
   play: async ({ canvas }) => {
     await userEvent.tab();
     await expect(canvas.getByRole("button", { name: "First" })).toHaveFocus();

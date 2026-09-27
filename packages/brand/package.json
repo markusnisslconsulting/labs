@@ -1,0 +1,25 @@
+{
+  "name": "@labs/brand",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "src",
+    "README.md",
+    "provenance.json"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./fonts.css": "./src/fonts.css",
+    "./labs.css": "./src/labs.css",
+    "./tailwind.css": "./src/tailwind.css",
+    "./logos/*": "./src/logos/*",
+    "./licenses/*": "./src/licenses/*"
+  },
+  "devDependencies": {
+    "vite": "^8.2.1"
+  }
+}

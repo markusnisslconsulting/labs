@@ -16,7 +16,7 @@
     background: var(--uix-text-primary);
     color: var(--uix-bg-surface);
     font-size: var(--uix-font-size-200);
-    padding: 0.35rem 0.6rem;
+    padding: var(--uix-gap-xs) var(--uix-gap-sm);
     border-radius: var(--uix-radius-inset);
     max-width: 16rem;
     white-space: normal;

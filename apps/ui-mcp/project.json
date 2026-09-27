@@ -1,0 +1,31 @@
+{
+  "name": "ui-mcp",
+  "tags": ["scope:shared", "type:app", "env:node"],
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint apps/ui-mcp --max-warnings 0"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p apps/ui-mcp/tsconfig.json --noEmit && tsc -p apps/ui-mcp/tsconfig.test.json --noEmit"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --experimental-strip-types apps/ui-mcp/src/server.ts --workspace ."
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "vitest run --config apps/ui-mcp/vitest.config.ts"
+      }
+    }
+  }
+}

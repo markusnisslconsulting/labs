@@ -1,0 +1,33 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+import * as LogoStories from "./Logo.stories";
+
+<Meta of={LogoStories} />
+
+# Logo
+
+Use the supplied asset as a single mark. Choose a variant for its background,
+keep its proportions and leave clear space so nearby text or artwork does not
+merge with it. The download controls provide the actual files used below.
+
+<Canvas of={LogoStories.Reference} />
+
+## Place the mark
+
+Navy is the default on a light background. Use white on a dark background and
+black when the reproduction is restricted to one colour. The red variant is
+available for brand artwork; check how it competes with action and status colours
+in the surrounding composition.
+
+Keep the mark at least 24 CSS pixels high for digital use. The minimum-size
+specimen shows that height with clear space around it. Inspect the result at its
+actual rendered size, especially where borders or neighbouring content are close.
+These digital examples do not establish print-production requirements.
+
+## Give it an accessible name
+
+A standalone logo needs a useful name. When a logo shares a link with the written
+name, use empty image alt text so the name is not announced twice. A decorative
+mark can use an empty alt attribute or be hidden from the accessibility tree.
+
+Use the fixed asset rather than rebuilding the mark with text or shapes. Keep
+rotation, stretching and decorative shadows out of its presentation.

@@ -1,5 +1,7 @@
 "use client";
 
+import { usePortalAppearance } from "../usePortalAppearance";
+
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
 import {
   useId,
@@ -82,6 +84,7 @@ export function Dialog({
   className,
   ...rest
 }: DialogProps) {
+  const appearance = usePortalAppearance();
   const titleId = useId();
   const descriptionId = useId();
   const [popup, setPopup] = useState<HTMLElement | null>(null);
@@ -97,7 +100,8 @@ export function Dialog({
       modal={modal}
       onOpenChange={(next) => onOpenChange?.(Boolean(next))}
     >
-      <BaseDialog.Portal>
+      {appearance.anchor}
+      <BaseDialog.Portal {...appearance.props}>
         <BaseDialog.Backdrop className="uix-dialog-backdrop" />
         <BaseDialog.Popup
           ref={setPopup}
@@ -161,6 +165,7 @@ export function AlertDialog({
   className,
   ...rest
 }: AlertDialogProps) {
+  const appearance = usePortalAppearance();
   const titleId = useId();
   const descriptionId = useId();
 
@@ -171,7 +176,8 @@ export function AlertDialog({
       onOpenChange={(next) => onOpenChange?.(Boolean(next))}
       modal
     >
-      <BaseDialog.Portal>
+      {appearance.anchor}
+      <BaseDialog.Portal {...appearance.props}>
         <BaseDialog.Backdrop className="uix-dialog-backdrop" />
         <BaseDialog.Popup
           className={cxState("uix-dialog", className)}

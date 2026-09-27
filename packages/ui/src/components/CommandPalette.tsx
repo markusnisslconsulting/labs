@@ -1,5 +1,7 @@
 "use client";
 
+import { usePortalAppearance } from "../usePortalAppearance";
+
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
 import { Search } from "lucide-react";
 import {
@@ -135,6 +137,7 @@ export function CommandPalette({
   className,
   ...rest
 }: CommandPaletteProps) {
+  const appearance = usePortalAppearance();
   const strings = useStrings();
   const listId = useId();
   const optionId = useId();
@@ -256,7 +259,8 @@ export function CommandPalette({
         }
       }}
     >
-      <BaseDialog.Portal>
+      {appearance.anchor}
+      <BaseDialog.Portal {...appearance.props}>
         <BaseDialog.Backdrop className="uix-palette-backdrop" />
         <BaseDialog.Popup
           ref={setPopup}

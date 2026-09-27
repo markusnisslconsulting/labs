@@ -1,69 +1,72 @@
+import { Link } from "react-router";
+import { Badge } from "@labs/ui/components/Badge";
+import { Card } from "@labs/ui/components/Card";
 import { Chip } from "@labs/ui/components/Chip";
-import { StatusPill } from "@labs/ui/components/StatusPill";
+import { Cluster } from "@labs/ui/components/Cluster";
+import { Stack } from "@labs/ui/components/Stack";
+import type { CatalogEntry } from "../catalog/schema";
+import { localize } from "../catalog/localize";
+import { entryExecutions } from "../catalog/filters";
+import { useSiteStrings } from "../i18n/SiteStrings";
 
-export interface LabCardProps {
-  title: string;
-  href: string;
-  summary: string;
-  tags?: string[];
-  /** Optional external companion, typically the article. */
-  articleHref?: string;
-  articleTitle?: string;
-  /** Whether the lab has something running, or only stories to read. */
-  kind: "demo" | "workbench";
-}
-
-/**
- * Overview card for one lab.
- *
- * A column, not a block: the summary takes the slack and the footer is
- * pinned, so cards in a row end at the same line whatever the length of
- * the text. Ragged card bottoms in a grid are the usual symptom of
- * letting content decide height in a layout that already decided it.
- *
- * The title link is the only large target; the article link is external
- * and separate, so no interactive element nests inside another.
- */
 export function LabCard({
-  title,
-  href,
-  summary,
-  tags,
-  articleHref,
-  articleTitle = "Read the article",
-  kind,
-}: LabCardProps) {
+  entry,
+  returnTo,
+}: {
+  entry: CatalogEntry;
+  returnTo: string;
+}) {
+  const { strings, locale } = useSiteStrings();
+  const href = `/${entry.slug}`;
+  const article = entry.resources.find(
+    (resource) => resource.kind === "article",
+  );
+  const state = { catalogReturn: returnTo };
   return (
-    <article className="lab-card">
-      <div className="lab-card-top">
-        <StatusPill tone={kind === "demo" ? "ok" : "off"}>
-          {kind === "demo" ? "Runs in the browser" : "Storybook"}
-        </StatusPill>
-      </div>
-
-      <h2 className="lab-card-title">
-        <a href={href}>{title}</a>
-      </h2>
-      <p className="lab-card-summary">{summary}</p>
-
-      {tags?.length ? (
-        <ul className="lab-card-tags" aria-label="Tags">
-          {tags.map((tag) => (
-            <li key={tag}>
-              <Chip>{tag}</Chip>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-
-      <p className="lab-card-links">
-        <a href={href}>Open the lab</a>
-        {articleHref ? (
-          <a href={articleHref} target="_blank" rel="noopener noreferrer">
-            {articleTitle}
-          </a>
-        ) : null}
-      </p>
-    </article>
+    <Card className="lab-card">
+      <Card.Header>
+        <Stack gap="md">
+          <Cluster gap="xs">
+            {entryExecutions(entry).map((mode) => (
+              <Badge key={mode}>{strings.execution[mode]}</Badge>
+            ))}
+          </Cluster>
+          <h2 className="lab-card-title">
+            <Link id={`catalog-${entry.slug}`} to={href} state={state}>
+              {localize(entry.title, locale)}
+            </Link>
+          </h2>
+        </Stack>
+      </Card.Header>
+      <Card.Body className="lab-card-body">
+        <Stack gap="lg">
+          <p className="lab-card-summary">{localize(entry.summary, locale)}</p>
+          <Cluster
+            gap="xs"
+            renderAs={<ul />}
+            className="plain-list"
+            aria-label={strings.tags}
+          >
+            {entry.tags.map((tag) => (
+              <li key={tag}>
+                <Chip>{tag}</Chip>
+              </li>
+            ))}
+          </Cluster>
+        </Stack>
+      </Card.Body>
+      <Card.Footer>
+        <Cluster gap="md">
+          <Link id={`catalog-open-${entry.slug}`} to={href} state={state}>
+            {strings.openLab}
+          </Link>
+          {article ? (
+            <a href={article.href} target="_blank" rel="noopener noreferrer">
+              {strings.readArticle}
+            </a>
+          ) : null}
+        </Cluster>
+      </Card.Footer>
+    </Card>
   );
 }

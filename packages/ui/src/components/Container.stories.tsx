@@ -92,8 +92,15 @@ export const ItCentresItself: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
-    const style = getComputedStyle(canvas.getByTestId("centred"));
-    await expect(style.marginInlineStart).toBe(style.marginInlineEnd);
+    const element = canvas.getByTestId("centred");
+    await element.ownerDocument.fonts.ready;
+    const style = getComputedStyle(element);
+    // A ch-based width can leave auto margins one layout unit apart.
+    await expect(
+      Math.abs(
+        parseFloat(style.marginInlineStart) - parseFloat(style.marginInlineEnd),
+      ),
+    ).toBeLessThan(0.05);
   },
 };
 

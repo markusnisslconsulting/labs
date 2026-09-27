@@ -1,82 +1,80 @@
 name: Deploy to Hetzner
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
+    inputs:
+      ci_run_id:
+        description: Successful main CI run whose retained release should be deployed or restored
+        required: true
+        type: string
+      ci_attempt:
+        description: Successful attempt number for that CI run
+        required: true
+        default: "1"
+        type: string
 
 concurrency:
   group: deploy-main
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
-  build-and-deploy:
+  deploy:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch'))
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
-      - name: Check out the repository
+      - name: Check out deployment tooling
         uses: actions/checkout@v7
         with:
-          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Set up Node
-        uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup
         with:
-          node-version: 22
-          cache: pnpm
+          browser: "true"
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Select a successful CI artifact
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CI_RUN_ID: ${{ inputs.ci_run_id }}
+          CI_ATTEMPT: ${{ inputs.ci_attempt }}
+        run: pnpm exec tsx tooling/release/select-ci-cli.ts
 
-      # Two build artefacts: the site, and the workbench's Storybook.
-      - name: Build everything
-        run: |
-          pnpm exec nx run-many -t build
-          pnpm exec nx run ui:build-storybook
-
-      - name: Deploy over FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+      - name: Download the tested artifact
+        if: steps.release.outputs.deploy == 'true'
+        uses: actions/download-artifact@v8
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          protocol: ftps
-          local-dir: ./apps/site/dist/
-          server-dir: labs.markusnissl.com/public/
-          dangerous-clean-slate: true
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
+          artifact-ids: ${{ steps.release.outputs.artifact_id }}
+          run-id: ${{ steps.release.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: dist/incoming
+          digest-mismatch: error
 
-      - name: Deploy the Storybook workbench over FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          protocol: ftps
-          local-dir: ./dist/packages/ui-storybook/
-          server-dir: labs.markusnissl.com/public/storybook/
-          dangerous-clean-slate: true
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
+      - name: Extract and verify the exact release
+        if: steps.release.outputs.deploy == 'true'
+        env:
+          RELEASE_SHA: ${{ steps.release.outputs.source_sha }}
+        run: pnpm exec tsx tooling/release/extract-cli.ts
 
-      - name: Write the run summary
-        run: |
-          {
-            echo "### Deployed to labs.markusnissl.com"
-            echo ""
-            echo "- Commit: \`${GITHUB_SHA::7}\`"
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish over FTPS and verify in the browser
+        if: steps.release.outputs.deploy == 'true'
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ steps.release.outputs.source_sha }}
+        run: pnpm exec tsx tooling/release/deploy-cli.ts

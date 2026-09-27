@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Avatar } from "./Avatar";
 
 const meta = {
+  args: { decorative: false },
+
   title: "Components/Avatar",
   component: Avatar,
   tags: ["autodocs", "stable"],

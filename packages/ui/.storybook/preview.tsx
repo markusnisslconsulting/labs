@@ -1,8 +1,18 @@
+import {
+  Title,
+  Subtitle,
+  Description,
+  Primary,
+  ArgTypes,
+  Stories,
+} from "@storybook/addon-docs/blocks";
 import type { Decorator, Preview } from "@storybook/react-vite";
 import { withThemeByDataAttribute } from "@storybook/addon-themes";
 import { useEffect } from "react";
+import { DirectionProvider } from "@base-ui-components/react/direction-provider";
 import { create } from "storybook/theming";
 import "../src/styles.css";
+import "@labs/brand/labs.css";
 import "./preview.css";
 
 /** Docs pages read on the product palette, not Storybook defaults. */
@@ -47,7 +57,23 @@ function withRootAttribute(attribute: string, globalKey: string): Decorator {
 const preview: Preview = {
   parameters: {
     layout: "padded",
-    docs: { theme: labsTheme, toc: { headingSelector: "h2, h3" } },
+    docs: {
+      theme: labsTheme,
+      toc: { headingSelector: "h2, h3" },
+      codePanel: true,
+      page: () => (
+        <>
+          <Title />
+          <Subtitle />
+          <Description />
+          <Primary />
+          <ArgTypes />
+          <Stories />
+        </>
+      ),
+    },
+    controls: { exclude: /^on[A-Z]/ },
+    actions: { argTypesRegex: "^on[A-Z].*" },
     /**
      * Explicit navigation order. Without it Storybook falls back to the
      * order files happen to be discovered in, so the sidebar reorders
@@ -67,6 +93,10 @@ const preview: Preview = {
             "Tokens",
             ["Overview", "Primitive", "Semantic", "Component", "Slots"],
             "Brands",
+            "Logo",
+            "Typography",
+            "Colour",
+            "Writing",
             "Focus",
           ],
           "Components",
@@ -168,7 +198,7 @@ const preview: Preview = {
       toolbar: {
         icon: "contrast",
         items: [
-          { value: "default", title: "Cozy", icon: "expand" },
+          { value: "default", title: "Default", icon: "expand" },
           { value: "compact", title: "Compact", icon: "collapse" },
           { value: "comfortable", title: "Comfortable", icon: "grow" },
         ],
@@ -199,13 +229,23 @@ const preview: Preview = {
     theme: import.meta.env["VITE_LABS_THEME"] ?? "light",
   },
   decorators: [
+    (Story, context) => (
+      <DirectionProvider
+        direction={context.globals["direction"] === "rtl" ? "rtl" : "ltr"}
+      >
+        <Story />
+      </DirectionProvider>
+    ),
     // Padding as a real container: Chromatic crops snapshots to the
     // component, and focus rings with outline-offset need the room.
-    (Story) => (
-      <div style={{ padding: "var(--uix-space-5)" }}>
+    (Story, context) =>
+      context.parameters.layout === "fullscreen" ? (
         <Story />
-      </div>
-    ),
+      ) : (
+        <div style={{ padding: "var(--uix-space-5)" }}>
+          <Story />
+        </div>
+      ),
     withRootAttribute("data-density", "density"),
     // `dir` is a real attribute rather than a class, so logical properties
     // and the browser's own bidi handling do the work. A component that

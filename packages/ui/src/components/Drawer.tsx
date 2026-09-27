@@ -1,5 +1,7 @@
 "use client";
 
+import { usePortalAppearance } from "../usePortalAppearance";
+
 import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
 import {
   useId,
@@ -103,6 +105,7 @@ export function Drawer({
   className,
   ...rest
 }: DrawerProps) {
+  const appearance = usePortalAppearance();
   const titleId = useId();
   const descriptionId = useId();
   const [popup, setPopup] = useState<HTMLElement | null>(null);
@@ -118,7 +121,8 @@ export function Drawer({
       modal={modal}
       onOpenChange={(next) => onOpenChange?.(Boolean(next))}
     >
-      <BaseDialog.Portal>
+      {appearance.anchor}
+      <BaseDialog.Portal {...appearance.props}>
         {/* No backdrop when not modal. A scrim over a page that is still
             operable tells the reader the opposite of the truth, and it
             swallows the clicks it looks like it is inviting. */}

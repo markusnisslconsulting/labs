@@ -109,6 +109,16 @@
       translate: 0 100%;
     }
 
+    .uix-drawer[data-side="inline-end"]:dir(rtl)[data-starting-style],
+    .uix-drawer[data-side="inline-end"]:dir(rtl)[data-ending-style] {
+      translate: -100% 0;
+    }
+
+    .uix-drawer[data-side="inline-start"]:dir(rtl)[data-starting-style],
+    .uix-drawer[data-side="inline-start"]:dir(rtl)[data-ending-style] {
+      translate: 100% 0;
+    }
+
     .uix-drawer {
       transition:
         translate 200ms ease,

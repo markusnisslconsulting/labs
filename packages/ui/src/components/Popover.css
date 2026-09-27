@@ -5,7 +5,7 @@
 
 @layer components {
   .uix-popover {
-    width: min(18rem, calc(100vw - 2 * var(--uix-space-5)));
+    width: min(18rem, calc(100vw - 2 * var(--uix-gap-xl)));
     background: var(--uix-bg-surface);
     border: 1px solid var(--uix-border-subtle);
     border-radius: var(--uix-radius-surface);

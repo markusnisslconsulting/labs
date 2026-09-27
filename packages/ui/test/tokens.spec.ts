@@ -725,7 +725,7 @@ describe("the layering rules the architecture depends on", () => {
  * pipeline:
  *
  *   - Nothing could be measured. An opacity has no value to check against
- *     a background, so `scripts/tokens/contrast.ts` had nothing to look
+ *     a background, so `tooling/checks/tokens/contrast.ts` had nothing to look
  *     at, and disabled-ghost text sat near 2.6:1 while the contrast gate
  *     reported green.
  *   - The state stopped being distinct. Measured on Button: disabled and

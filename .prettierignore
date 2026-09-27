@@ -1,9 +1,15 @@
 dist
+apps/site/.out
 node_modules
 .nx
 storybook-static
 pnpm-lock.yaml
-apps/site/public/.htaccess
 packages/ui/src/tokens.registry.ts
 # Official A2UI schema fixtures are kept byte-for-byte for reproducible validation.
 apps/site/src/labs/chat-box/spec/*.json
+
+# Generated brand adapters are checked against their source.
+packages/brand/src/labs.css
+packages/brand/src/tailwind.css
+# Preserve upstream font license text.
+packages/brand/src/licenses/*.txt

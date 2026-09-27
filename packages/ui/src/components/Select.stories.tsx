@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Select } from "./Select";
 
 const meta = {
+  args: { required: false, hideLabel: false },
+
   title: "Components/Select",
   component: Select,
   tags: ["autodocs", "stable"],

@@ -1,27 +1,13 @@
-/**
- * Density composes, and a subtree can be denser than its page.
- *
- * This is the behaviour that registering the derived tokens with
- * @property would have quietly removed. A registered property resolves
- * at computed-value time, so --uix-control-md declared on :root would
- * inherit as an absolute pixel value and a compact subtree — which
- * re-declares only --uix-density — would keep the root's heights.
- * Unregistered, the calc() is substituted where it is used, so the
- * subtree's own multiplier applies. Nothing about that is visible in a
- * stylesheet review, which is why it is a test.
- *
- * It also pins the floor: compact must not take a control under the WCAG
- * 2.2 target size, whatever multiplier a product picks.
- */
+/** Density-derived tokens must resolve at each brand or density scope. */
 import { test, expect } from "@playwright/test";
 import { openStory } from "./ready";
 
-test("a compact subtree is denser than its cozy page", async ({ page }) => {
+test("a compact subtree is denser than its default page", async ({ page }) => {
   await openStory(page, "components-button--matrix");
 
   const measured = await page.evaluate(async () => {
     const root = document.documentElement;
-    root.setAttribute("data-density", "cozy");
+    root.setAttribute("data-density", "default");
 
     // A probe inside a compact subtree, and one outside it, so the
     // comparison is between two live elements on the same page rather
@@ -37,7 +23,7 @@ test("a compact subtree is denser than its cozy page", async ({ page }) => {
       return box;
     };
     document.body.append(outer, subtree);
-    const cozy = make(outer);
+    const standard = make(outer);
     const compact = make(subtree);
     await new Promise((resolve) =>
       requestAnimationFrame(() => requestAnimationFrame(resolve)),
@@ -46,7 +32,7 @@ test("a compact subtree is denser than its cozy page", async ({ page }) => {
       const box = el.getBoundingClientRect();
       return { height: box.height, gap: box.width };
     };
-    const result = { cozy: read(cozy), compact: read(compact) };
+    const result = { default: read(standard), compact: read(compact) };
     outer.remove();
     subtree.remove();
     return result;
@@ -56,11 +42,11 @@ test("a compact subtree is denser than its cozy page", async ({ page }) => {
     measured.compact.height,
     `a compact subtree kept the page's control height (${measured.compact.height}px); ` +
       `the derived tokens have probably been registered with @property`,
-  ).toBeLessThan(measured.cozy.height);
+  ).toBeLessThan(measured.default.height);
   expect(
     measured.compact.gap,
     "a compact subtree kept the page's gap",
-  ).toBeLessThan(measured.cozy.gap);
+  ).toBeLessThan(measured.default.gap);
   // The floor holds inside the subtree too.
   expect(
     measured.compact.height,

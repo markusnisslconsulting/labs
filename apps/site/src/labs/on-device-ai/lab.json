@@ -1,0 +1,103 @@
+{
+  "slug": "on-device-ai",
+  "kind": "demo",
+  "title": {
+    "en": "On-device AI in Chrome"
+  },
+  "summary": {
+    "en": "Translate a support message, detect its language, summarize a conversation, and extract an order number using Chrome's local AI APIs."
+  },
+  "explanation": {
+    "en": [
+      "Start with the German message and translate it to English. Then detect its language as a separate operation. The summary and extraction exercises have their own editable inputs, matching the article.",
+      "Each exercise shows availability for its configuration. Chrome may prepare model files after your click. If an API is unavailable, its example remains visible so you can inspect the input and requirements."
+    ]
+  },
+  "tags": ["web-ai", "chrome"],
+  "resources": [
+    {
+      "kind": "article",
+      "title": {
+        "en": "On-Device AI in Chrome: What You Can Ship Today"
+      },
+      "href": "https://www.markusnissl.com/blog/chrome-built-in-ai-apis"
+    },
+    {
+      "kind": "source",
+      "title": {
+        "en": "Source on GitHub"
+      },
+      "href": "https://github.com/markusnisslconsulting/labs/tree/main/apps/site/src/labs/on-device-ai/Demo.tsx"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "native-ai",
+      "title": {
+        "en": "Supported Chrome AI APIs"
+      },
+      "detail": {
+        "en": "Availability depends on the installed browser, device and model. Preparation may download model files after your click."
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "translation",
+      "title": {
+        "en": "Translation"
+      },
+      "description": {
+        "en": "Translate a German support message to English."
+      },
+      "execution": "native",
+      "requirements": ["native-ai"]
+    },
+    {
+      "id": "detection",
+      "title": {
+        "en": "Detection"
+      },
+      "description": {
+        "en": "Detect the message language independently of translation."
+      },
+      "execution": "native",
+      "requirements": ["native-ai"]
+    },
+    {
+      "id": "summary",
+      "title": {
+        "en": "Summary"
+      },
+      "description": {
+        "en": "Summarize an editable conversation."
+      },
+      "execution": "native",
+      "requirements": ["native-ai"]
+    },
+    {
+      "id": "extraction",
+      "title": {
+        "en": "Extraction"
+      },
+      "description": {
+        "en": "Extract an order number and issue from an English message."
+      },
+      "execution": "native",
+      "requirements": ["native-ai"]
+    }
+  ],
+  "relatedComponents": [
+    "Button",
+    "Panel",
+    "Stack",
+    "TextField",
+    "Textarea",
+    "Select",
+    "Checkbox"
+  ],
+  "renderer": {
+    "type": "demo",
+    "entry": "labs/on-device-ai/LabDemo.tsx"
+  }
+}

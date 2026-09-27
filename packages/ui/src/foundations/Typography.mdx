@@ -1,0 +1,46 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+import * as TypeStories from "./Typography.stories";
+
+<Meta of={TypeStories} />
+
+# Typography
+
+Bricolage Grotesque gives consulting headings their shape. Atkinson Hyperlegible
+carries reading text and the shared interface. Choose a role by the work the text
+does, then keep its hierarchy consistent through the page.
+
+<Canvas of={TypeStories.Reference} />
+
+## Build a reading hierarchy
+
+Use a page title to establish the subject and section headings to make the
+content navigable. Heading levels describe the document structure; the type-size
+role describes appearance. Do not choose a heading level only to get a larger
+font. PageHeader and Section help keep headings consistent in composed pages.
+
+Keep reading text within a comfortable measure using Container's prose width.
+Use Stack for spacing between content groups. Check a real paragraph and a long
+heading, because a short placeholder does not show wrapping or reading rhythm.
+
+## Keep controls readable
+
+Controls use `--uix-font-ui`, separately from body and display roles. This lets a
+brand change its prose while preserving the interface's familiar labels. Write
+a label that identifies the value or action, then allow space for longer wording
+and translated content.
+
+Use weight and hierarchy deliberately. Reserve emphasis for information someone
+needs to find or compare. A whole paragraph in bold makes its important part
+harder to distinguish.
+
+## Load the available faces
+
+The consulting adapter includes local font declarations with `font-display:
+swap`. Atkinson provides regular, bold and regular italic Latin/Latin Extended
+faces. Bricolage provides a variable weight range of 200–800 and an optical-size
+axis of 12–96. Characters outside the supplied subsets use the declared fallback
+stack. A font-family declaration alone does not load the asset.
+
+Leave the root font size configurable. Inspect narrow layouts, larger text,
+font-loading fallback and the languages the application actually serves. The
+specimen includes commonly confused characters so you can compare their shapes.

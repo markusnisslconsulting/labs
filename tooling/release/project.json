@@ -1,0 +1,33 @@
+{
+  "name": "release-tools",
+  "tags": ["scope:shared", "type:tooling", "env:node"],
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint tooling/release --max-warnings 0" }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -p tooling/release/tsconfig.json --noEmit" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run --config tooling/release/vitest.config.ts"
+      }
+    },
+    "assemble": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["site:build", "ui:build-storybook"],
+      "cache": false,
+      "options": { "command": "tsx tooling/release/assemble-cli.ts" },
+      "outputs": ["{workspaceRoot}/dist/release"]
+    },
+    "preview": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["assemble"],
+      "cache": false,
+      "options": { "command": "tsx tooling/release/serve.ts" }
+    }
+  }
+}

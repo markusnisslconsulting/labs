@@ -8,7 +8,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.45rem;
+    gap: var(--uix-gap-sm);
     font-weight: var(--uix-weight-ui);
     cursor: pointer;
     border: 1px solid transparent;

@@ -25,7 +25,7 @@ and `Dialog` keep their snapshots, because the focus ring and the open
 dialog are precisely the picture a baseline should hold.
 
 **Coverage is derived from the type signature, not negotiated.**
-`scripts/stories/coverage.ts` requires:
+`tooling/checks/stories/coverage.ts` requires:
 
 1. Every value of every union prop is rendered by some story, and every
    state boolean is `true` somewhere. A state nobody can see is a state

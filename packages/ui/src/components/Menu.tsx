@@ -1,5 +1,7 @@
 "use client";
 
+import { usePortalAppearance } from "../usePortalAppearance";
+
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Menu as BaseMenu } from "@base-ui-components/react/menu";
 import { ChevronDown } from "lucide-react";
@@ -111,6 +113,7 @@ export function Menu({
   align = "end",
   ...rest
 }: MenuProps) {
+  const appearance = usePortalAppearance();
   return (
     <BaseMenu.Root
       open={open}
@@ -127,12 +130,18 @@ export function Menu({
         {label}
         <ChevronDown size={16} aria-hidden />
       </BaseMenu.Trigger>
-      <BaseMenu.Portal>
+      {appearance.anchor}
+      <BaseMenu.Portal {...appearance.props}>
         <BaseMenu.Positioner
           className="uix-menu-positioner"
           sideOffset={6}
           side={side}
           align={align}
+          collisionAvoidance={{
+            side: "flip",
+            align: "shift",
+            fallbackAxisSide: "start",
+          }}
         >
           <BaseMenu.Popup className="uix-menu">
             {children ??

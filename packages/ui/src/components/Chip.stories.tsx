@@ -1,13 +1,27 @@
+import { booleanState } from "../../.storybook/booleanState";
 import { expect, fn, userEvent } from "storybook/test";
 import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Chip } from "./Chip";
 
 const meta = {
+  decorators: [booleanState("active", "onActiveChange")],
+
+  args: {
+    interactive: false,
+    active: false,
+    defaultActive: false,
+    disabled: false,
+    onActiveChange: fn(),
+  },
+
   title: "Components/Chip",
   component: Chip,
   tags: ["autodocs", "stable"],
-  argTypes: grouped("interactive", "active", "children", "onSelect"),
+  argTypes: {
+    ...grouped("interactive", "active", "children", "onActiveChange"),
+    defaultActive: { control: false },
+  },
 } satisfies Meta<typeof Chip>;
 
 export default meta;
@@ -26,13 +40,18 @@ export const FilterOff: Story = {
     interactive: true,
     active: false,
     children: "agents",
-    onSelect: fn(),
+    onActiveChange: fn(),
   },
 };
 
 export const FilterActive: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
-  args: { interactive: true, active: true, children: "agents", onSelect: fn() },
+  args: {
+    interactive: true,
+    active: true,
+    children: "agents",
+    onActiveChange: fn(),
+  },
 };
 
 /** Reachable from the keyboard. Interaction only, so it does not snapshot. */

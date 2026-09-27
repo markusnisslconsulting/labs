@@ -1,5 +1,5 @@
 {
-  "note": "Generated from packages/ui/src by scripts/inventory.ts. Every field is copied from something a person wrote — a prop signature, a doc sentence, a story tag — and a component missing one appears with the field absent rather than with a guess. Run `nx run ui:inventory-write` after a deliberate change; `nx run ui:inventory` fails when this file has drifted from the source.",
+  "note": "Generated from packages/ui/src by tooling/checks/inventory.ts. Every field is copied from something a person wrote — a prop signature, a doc sentence, a story tag — and a component missing one appears with the field absent rather than with a guess. Run `nx run ui:inventory-write` after a deliberate change; `nx run ui:inventory` fails when this file has drifted from the source.",
   "components": [
     {
       "component": "Accordion",

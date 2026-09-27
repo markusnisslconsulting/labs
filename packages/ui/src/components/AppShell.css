@@ -24,9 +24,7 @@
     min-inline-size: 0;
   }
 
-  /* Wraps to the top on a narrow viewport by dropping out of the row, with
-     no query: the navigation states a width it will not shrink past and the
-     main states a minimum, exactly as in Split. */
+  /* The navigation moves above main when the shell's container narrows. */
   .uix-appshell-nav {
     flex: 0 0 var(--uix-appshell-nav, 15rem);
     min-inline-size: 0;
@@ -59,11 +57,11 @@
 
   @container (max-width: 48rem) {
     .uix-appshell-body {
-      flex-wrap: wrap;
+      flex-direction: column;
     }
 
     .uix-appshell-nav {
-      flex-basis: 100%;
+      flex: none;
       border-inline-end: 0;
       border-block-end: 1px solid var(--uix-border-subtle);
     }

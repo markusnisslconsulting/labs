@@ -5,6 +5,9 @@
 @layer components {
   .uix-field {
     display: grid;
+    /* Native inputs can otherwise impose a min-content track in WebKit. */
+    grid-template-columns: minmax(0, 1fr);
+    min-inline-size: 0;
     gap: var(--uix-gap-sm);
     max-width: 24rem;
   }

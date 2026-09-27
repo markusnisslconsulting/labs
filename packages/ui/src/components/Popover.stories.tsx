@@ -1,9 +1,16 @@
-import { expect, userEvent } from "storybook/test";
+import { booleanState } from "../../.storybook/booleanState";
+import { expect, fn, userEvent } from "storybook/test";
 import { RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Popover } from "./Popover";
 
 const meta = {
+  decorators: [booleanState("open", "onOpenChange")],
+
+  argTypes: { defaultOpen: { control: false } },
+
+  args: { open: false, defaultOpen: false, onOpenChange: fn() },
+
   title: "Components/Popover",
   component: Popover,
   tags: ["autodocs", "stable"],
@@ -71,7 +78,7 @@ export const Open: Story = {
   /* The one photographed story: an open popover shows the popup, its
      title, its body and its close control in a single frame. */
   parameters: { chromatic: { disableSnapshot: false } },
-  args: { ...Details.args, defaultOpen: true },
+  args: { ...Details.args, open: true },
 };
 
 /**
@@ -80,7 +87,7 @@ export const Open: Story = {
  * room, and a footer control runs out of room every time.
  */
 export const AboveTheTrigger: Story = {
-  args: { ...Details.args, defaultOpen: true, side: "top", align: "start" },
+  args: { ...Details.args, open: true, side: "top", align: "start" },
   /* The trigger needs room above it or the popup flips back down, which
      is correct behaviour and a useless picture: the first version of this
      story put the trigger at the top of the canvas and rendered

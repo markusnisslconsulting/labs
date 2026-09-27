@@ -1,9 +1,17 @@
-import { expect, userEvent } from "storybook/test";
+import { booleanState } from "../../.storybook/booleanState";
+import { expect, fn, userEvent } from "storybook/test";
 import { RTL } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Columns } from "./Columns";
 import { Menu } from "./Menu";
 
 const meta = {
+  decorators: [booleanState("open", "onOpenChange")],
+
+  argTypes: { defaultOpen: { control: false } },
+
+  args: { open: false, defaultOpen: false, onOpenChange: fn() },
+
   title: "Components/Menu",
   component: Menu,
   tags: ["autodocs", "stable"],
@@ -69,7 +77,7 @@ export const RowActionsBehaviour: Story = {
  * was unreachable and every picture of it was a closed button.
  */
 export const Open: Story = {
-  args: { ...RowActions.args, defaultOpen: true },
+  args: { ...RowActions.args, open: true },
 };
 
 /**
@@ -83,7 +91,7 @@ export const Structured: Story = {
      the prop and styled nothing, so "Export as PDF" and "Copy link" were
      the same row. */
   parameters: { chromatic: { disableSnapshot: false } },
-  args: { label: "Order", defaultOpen: true, items: undefined },
+  args: { label: "Order", open: true, items: undefined },
   render: (args) => (
     <Menu {...args}>
       <Menu.Group>
@@ -116,12 +124,12 @@ export const Placements: StoryObj = {
     chromatic: { disableSnapshot: true },
   },
   render: () => (
-    <div
+    <Columns
+      min="sm"
+      gap="2xl"
       style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-        gap: "9rem 3rem",
-        padding: "7rem 3rem",
+        rowGap: "calc(var(--uix-gap-2xl) * 2)",
+        paddingBlock: "var(--uix-gap-2xl)",
       }}
     >
       {(
@@ -138,13 +146,12 @@ export const Placements: StoryObj = {
           label={`${side} / ${align}`}
           side={side}
           align={align}
-          defaultOpen
           items={[
             { id: "duplicate", label: "Duplicate" },
             { id: "archive", label: "Archive" },
           ]}
         />
       ))}
-    </div>
+    </Columns>
   ),
 };

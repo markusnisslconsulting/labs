@@ -10,7 +10,7 @@
       var(--uix-slate-400)
     );
     /* Readable, not invisible. Measured against page, surface and subtle
-       in both themes by scripts/tokens/contrast.ts, because a disabled
+       in both themes by tooling/checks/tokens/contrast.ts, because a disabled
        label a user cannot read is still a label they need. */
     --uix-text-disabled: light-dark(var(--uix-slate-500), var(--uix-slate-450));
     --uix-text-on-accent: light-dark(var(--uix-white), var(--uix-grey-900));
@@ -51,7 +51,7 @@
      *
      * Neutral, not a faded accent: a faded accent reads as an active
      * control seen through fog. --uix-text-disabled clears 4.5:1 on this
-     * in both themes, and scripts/tokens/contrast.ts checks that it
+     * in both themes, and tooling/checks/tokens/contrast.ts checks that it
      * still does. */
     --uix-bg-disabled: light-dark(var(--uix-grey-100), var(--uix-grey-700));
 
@@ -194,6 +194,13 @@
     );
   }
 
+  /* Resolve accent aliases within each brand instead of inheriting the
+     containing brand's already-resolved colours. */
+  [data-brand] {
+    --uix-accent-soft: color-mix(in srgb, var(--uix-accent) 16%, transparent);
+    --uix-focus-ring: var(--uix-accent);
+  }
+
   /* Z-index scale: one axis, documented. */
   :root {
     --uix-z-dropdown: 100;
@@ -258,7 +265,8 @@
 
   /* Density: one multiplier the components consume. Products set
      data-density="compact" on a subtree for tighter chrome. */
-  :root {
+  :root,
+  [data-density="default"] {
     --uix-density: 1;
   }
 

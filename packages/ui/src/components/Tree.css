@@ -73,11 +73,11 @@
     rotate: 90deg;
   }
 
-  .uix-tree:dir(rtl) .uix-tree-chevron svg {
+  .uix-tree-chevron:dir(rtl) svg {
     scale: -1 1;
   }
 
-  .uix-tree:dir(rtl) .uix-tree-chevron[data-open] svg {
+  .uix-tree-chevron:dir(rtl)[data-open] svg {
     rotate: -90deg;
   }
 

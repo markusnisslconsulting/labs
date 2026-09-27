@@ -1,32 +1,5 @@
-/**
- * What a screen reader is given, asserted.
- *
- * I claimed a screen reader could not be tested here and that the matrix
- * had to be manual. That was wrong, and Markus said so. Three layers are
- * automatable and only the third needs a person:
- *
- *   1. **The accessible name, description, role and state per node.**
- *      Playwright computes these to the AccName spec in a real browser —
- *      `toHaveAccessibleName`, `toHaveAccessibleDescription`, `getByRole`.
- *      This is exactly the string a reader speaks for a node. No new
- *      dependency, and it found a defect on its first run.
- *   2. **The accessibility tree in reading order.** `ariaSnapshot()`
- *      returns the tree a reader walks, as text. Order, nesting and state
- *      are all in it, which per-node assertions cannot see.
- *   3. **Real assistive technology.** NVDA and VoiceOver can be driven
- *      from Node by Guidepup, which captures the spoken phrase log. That
- *      one genuinely needs a Windows or macOS runner and, on a
- *      developer's machine, permission to turn VoiceOver on — so it stays
- *      in the manual matrix, and the matrix now says what these two
- *      layers already cover so its rows are about what only real AT can
- *      show: verbosity, punctuation, and the differences between readers.
- *
- * What layer 1 found immediately: every required field announced its
- * state twice. `required` was set on the control — which every reader
- * announces — and the word "required" was also appended to the label, so
- * the computed name came out "Required required". axe reports nothing:
- * there is nothing invalid about it.
- */
+/* Checks selected accessible names, descriptions, roles, states and reading order.
+ * Real screen-reader speech and task completion require separate testing. */
 import { test, expect } from "@playwright/test";
 import { openStory } from "./ready";
 

@@ -4,8 +4,13 @@
    so a lazily loaded chunk cannot win on load order alone. */
 
 @layer components {
+  .uix-stepper {
+    min-inline-size: 0;
+  }
+
   .uix-stepper-list {
     display: flex;
+    flex-wrap: wrap;
     /* No bullets and no indent: the numbers are the markers, and a browser
        default disc beside a numbered circle reads as two list systems. */
     list-style: none;
@@ -16,6 +21,7 @@
 
   .uix-stepper[data-orientation="vertical"] .uix-stepper-list {
     flex-direction: column;
+    flex-wrap: nowrap;
     gap: var(--uix-gap-sm);
   }
 
@@ -29,6 +35,11 @@
        horizontal layout cannot have — see the block below. */
     flex: 1;
     min-inline-size: 0;
+  }
+
+  /* Keep each marker and label together; wrap whole steps in a narrow host. */
+  .uix-stepper[data-orientation="horizontal"] .uix-stepper-step {
+    flex-basis: 10rem;
   }
 
   /* The connector, vertical only, and the reason is worth keeping.
@@ -106,9 +117,10 @@
   }
 
   .uix-stepper-text {
+    overflow-wrap: anywhere;
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap: calc(var(--uix-gap-xs) / 2);
     min-inline-size: 0;
   }
 

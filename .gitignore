@@ -4,7 +4,7 @@ dist
 *.local
 .DS_Store
 *.png
-visual/__screenshots__
+tooling/visual/regression/__screenshots__
 .visual-output
 
 # Environment variables
@@ -21,11 +21,12 @@ playwright-report
 # One pattern, because the last two attempts at this added one line per
 # target and the next target invented a new directory name: .sweep-output
 # was ignored, .axes-output was not, and CI failed on a committed
-# .last-run.json. Every visual target writes to scripts/visual/.out now,
+# .last-run.json. Every visual target writes to tooling/visual/.out now,
 # and the runs themselves go to a scratch directory outside the repo.
-scripts/visual/.out/
-scripts/consumer/.out/
+tooling/visual/.out/
+tooling/fixtures/consumers/.out/
 .sweep-output/
 .axes-output/
 .visual-sweep/
 .visual-axes/
+apps/site/.out/

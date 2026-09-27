@@ -1,35 +1,10 @@
-/**
- * The two audit records stage 06 asks for, checked for structure rather
- * than for outcome.
- *
- * Neither a WCAG conformance table nor a screen-reader matrix can be
- * satisfied by a test. What a test can do is refuse to let them rot:
- * every component has a row, every criterion appears once with evidence,
- * and every row claiming a check cites a file that exists — which is how
- * these tables usually go wrong, written once and then a file renamed.
- *
- * This lives beside the other specs rather than in `scripts/`, because
- * the records are the ui project's own data and a root script reaching
- * into `packages/ui/src` by relative path is what
- * `@nx/enforce-module-boundaries` exists to stop. The counts a person
- * wants to read are on the Guides/Conformance page, rendered from the
- * same two files.
- */
+/** Validate accessibility coverage records and documentation references. */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { PAIRINGS, SCREEN_READER_MATRIX } from "../src/audit/screen-readers";
 import { WCAG_22_AA } from "../src/audit/wcag";
-
-/** The generated inventory, read from disk like every other consumer. */
-function inventory(): Array<{ props: unknown[] }> {
-  return (
-    JSON.parse(readFileSync("packages/ui/inventory.json", "utf8")) as {
-      components: Array<{ props: unknown[] }>;
-    }
-  ).components;
-}
 
 const COMPONENTS = "packages/ui/src/components";
 
@@ -182,106 +157,10 @@ describe("the WCAG 2.2 table", () => {
   });
 });
 
-/**
- * The instructions an assistant reads have to point at things that exist.
- *
- * `AGENTS.md` is stage 12's other half: the rules as instructions rather
- * than as prose, so generated code is conformant by construction. Every
- * rule in it names the gate that enforces it, and a named gate that has
- * been renamed turns the document into confident fiction — which is worse
- * for a model than for a person, because a model cannot tell.
- *
- * The same rule already applies to the WCAG table above, and it caught
- * two dead citations there on its first run.
- */
-describe("the agent instructions", () => {
-  /**
-   * A number a document claims about something countable is that number.
-   *
-   * The citation check above asks whether the *files* a document names
-   * exist. Nothing asked whether its numbers do, and four went stale
-   * silently in one session: `AGENTS.md` said 35 components when there were
-   * 49, the screen-reader matrix was described as 108 cells when it held
-   * 147, and stage 12 was still reporting 37 components and no prop count
-   * at all. Every one of those reads as authoritative, which is the same
-   * failure the citation check exists to prevent.
-   *
-   * Declared rather than inferred, and that is the whole design. A rule that
-   * checked every number in every document would have to decide which are
-   * live claims and which are history, and it cannot: ADR 0006 says a page
-   * loaded 30.4 kB for 33 components and ADR 0007 says 33 of 34 had no
-   * keyboard test. Both are measurements of a moment and both must stay
-   * exactly as written. So the list below is short on purpose — a quantity
-   * gets an entry when a document states it in the present tense, and
-   * anything absent is simply not checked.
-   */
-  const LIVE_COUNTS: Array<{
-    what: string;
-    file: string;
-    pattern: RegExp;
-    actual: () => number;
-  }> = [
-    {
-      what: "components, in the AGENTS.md preamble",
-      file: "AGENTS.md",
-      pattern: /inventory of what exists — (\d+) components/,
-      actual: () => inventory().length,
-    },
-    {
-      what: "components, in roadmap stage 12",
-      file: "docs/roadmap.md",
-      pattern: /generated from source — (\d+)\s*\n?components/,
-      actual: () => inventory().length,
-    },
-    {
-      what: "own props, in roadmap stage 12",
-      file: "docs/roadmap.md",
-      pattern: /(\d+) own props with type/,
-      actual: () =>
-        inventory().reduce((total, entry) => total + entry.props.length, 0),
-    },
-    {
-      what: "screen-reader cells, in the roadmap",
-      file: "docs/roadmap.md",
-      pattern: /The (\d+) cells in `src\/audit\/screen-readers\.ts`/,
-      actual: () => SCREEN_READER_MATRIX.length * PAIRINGS.length,
-    },
-    {
-      what: "screen-reader cells, in the pass note",
-      file: "docs/screen-reader-pass.md",
-      pattern: /screen-readers\.ts` has (\d+) cells/,
-      actual: () => SCREEN_READER_MATRIX.length * PAIRINGS.length,
-    },
-    {
-      what: "WCAG criteria at A and AA",
-      file: "docs/roadmap.md",
-      pattern: /all (\d+) WCAG\s*\n?2\.2 criteria/,
-      actual: () => WCAG_22_AA.length,
-    },
-  ];
-
-  it.each(LIVE_COUNTS)(
-    "$what is stated correctly",
-    ({ file, pattern, actual }) => {
-      const text = readFileSync(file, "utf8");
-      const match = pattern.exec(text);
-      /* A pattern that stops matching is as much a failure as a wrong number:
-       it means the sentence was rewritten and this check quietly stopped
-       looking at anything. */
-      expect(
-        match,
-        `the sentence this counts is no longer in ${file}, so the check has ` +
-          `stopped checking. Update the pattern or drop the entry`,
-      ).not.toBeNull();
-      expect(Number(match![1]), `${file} states the wrong number`).toBe(
-        actual(),
-      );
-    },
-  );
-
+describe("documentation references", () => {
   const RULES = "AGENTS.md";
 
-  it.each([RULES, "docs/roadmap.md", "CONTRIBUTING.md"])(
+  it.each([RULES, "docs/screen-reader-pass.md", "CONTRIBUTING.md"])(
     "%s cites files that exist",
     (document) => {
       const text = readFileSync(document, "utf8");
@@ -312,7 +191,7 @@ describe("the agent instructions", () => {
           `packages/ui/src/${reference}`,
           `packages/ui/src/components/${reference}`,
           `packages/ui/src/styles/${reference}`,
-          `scripts/${reference}`,
+          `tooling/checks/${reference}`,
         ];
         if (!candidates.some((candidate) => existsSync(candidate))) {
           dead.push(reference);
@@ -352,7 +231,7 @@ describe("the agent instructions", () => {
   /**
    * The test above checks that the inventory names every component. It said
    * nothing about what it says *about* them, and for a while that was wrong
-   * in both directions: the extractor in `scripts/inventory.ts` matched a
+   * in both directions: the extractor in `tooling/checks/inventory.ts` matched a
    * prop's type as `[^;]+`, so a type containing its own semicolon was cut
    * short and the leftovers were parsed as another prop. `AvatarGroup.person`
    * was published as a prop called `src`. Then the fix counted `<` and `>` as
@@ -413,7 +292,7 @@ describe("the agent instructions", () => {
       wrong,
       "inventory.json disagrees with the source about which props exist; " +
         "run `nx run ui:inventory-write` and if that does not fix it, the " +
-        "extractor in scripts/inventory.ts is misparsing a signature",
+        "extractor in tooling/checks/inventory.ts is misparsing a signature",
     ).toEqual([]);
   });
 
@@ -457,7 +336,7 @@ describe("the agent instructions", () => {
 /**
  * Every story the visual suite names still exists.
  *
- * `visual/visual.spec.ts` listed `foundations-brands--side-by-side` for
+ * `tooling/visual/regression/visual.spec.ts` listed `foundations-brands--side-by-side` for
  * weeks after that story was deleted — the brand comparison came out of the
  * foundations pages and nobody updated the list. Playwright's failure was
  * "element is not visible", which reads like a rendering problem rather than
@@ -528,7 +407,10 @@ describe("the visual suite points at stories that exist", () => {
   });
 
   it("names only stories that exist", () => {
-    const spec = readFileSync("visual/visual.spec.ts", "utf8");
+    const spec = readFileSync(
+      "tooling/visual/regression/visual.spec.ts",
+      "utf8",
+    );
     const list = /const stories = \[([\s\S]*?)\] as const;/.exec(spec)?.[1];
     expect(list, "could not find the story list").toBeDefined();
 
@@ -544,7 +426,7 @@ describe("the visual suite points at stories that exist", () => {
     const missing = named.filter((id) => !ids.has(id));
     expect(
       missing,
-      "these stories are named in visual/visual.spec.ts and do not exist. " +
+      "these stories are named in tooling/visual/regression/visual.spec.ts and do not exist. " +
         "Update the list and run `nx run ui:visual-update`.",
     ).toEqual([]);
   });

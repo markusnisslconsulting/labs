@@ -1,7 +1,7 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "ui",
-  "tags": ["scope:shared", "type:ui"],
+  "tags": ["scope:shared", "type:ui", "env:browser"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
@@ -11,7 +11,7 @@
         "commands": [
           "vite build --config packages/ui/vite.config.ts",
           "tsc -p packages/ui/tsconfig.build.json",
-          "node scripts/prepare-dist.mjs packages/ui dist/packages/ui"
+          "node tooling/checks/prepare-dist.mjs packages/ui dist/packages/ui"
         ],
         "parallel": false
       },
@@ -28,13 +28,14 @@
         "command": "storybook build -c packages/ui/.storybook --output-dir dist/packages/ui-storybook --stats-json",
         "cwd": "."
       },
-      "outputs": ["{workspaceRoot}/dist/packages/ui-storybook"]
+      "outputs": ["{workspaceRoot}/dist/packages/ui-storybook"],
+      "dependsOn": ["build"]
     },
     "contrast-check": {
       "executor": "nx:run-commands",
       "cache": true,
       "options": {
-        "command": "tsx scripts/tokens/contrast.ts check",
+        "command": "tsx tooling/checks/tokens/contrast.ts check",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -42,7 +43,7 @@
     "contrast-report": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/tokens/contrast.ts report",
+        "command": "tsx tooling/checks/tokens/contrast.ts report",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -57,7 +58,7 @@
       "executor": "nx:run-commands",
       "cache": true,
       "options": {
-        "command": "tsx scripts/stories/snapshots.ts check",
+        "command": "tsx tooling/checks/stories/snapshots.ts check",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -65,7 +66,7 @@
     "snapshot-budget-report": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/stories/snapshots.ts report",
+        "command": "tsx tooling/checks/stories/snapshots.ts report",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -73,7 +74,7 @@
     "snapshot-budget-write": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/stories/snapshots.ts write-budget",
+        "command": "tsx tooling/checks/stories/snapshots.ts write-budget",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -82,7 +83,7 @@
       "executor": "nx:run-commands",
       "cache": true,
       "options": {
-        "command": "tsx scripts/stories/coverage.ts check",
+        "command": "tsx tooling/checks/stories/coverage.ts check",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -90,7 +91,7 @@
     "story-coverage-report": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/stories/coverage.ts report",
+        "command": "tsx tooling/checks/stories/coverage.ts report",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -99,7 +100,8 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "storybook dev -c packages/ui/.storybook -p 4400"
-      }
+      },
+      "dependsOn": ["build"]
     },
     "test": {
       "executor": "nx:run-commands",
@@ -111,10 +113,12 @@
         "^production",
         "{workspaceRoot}/AGENTS.md",
         "{workspaceRoot}/CONTRIBUTING.md",
-        "{workspaceRoot}/docs/roadmap.md",
         "{workspaceRoot}/docs/screen-reader-pass.md",
-        "{workspaceRoot}/visual/visual.spec.ts",
-        "{workspaceRoot}/nx.json"
+        "{workspaceRoot}/tooling/visual/regression/visual.spec.ts",
+        "{workspaceRoot}/nx.json",
+        "gateScripts",
+        "{workspaceRoot}/apps/site/e2e/**/*",
+        "{workspaceRoot}/tests/release/**/*"
       ]
     },
     "test-storybook": {
@@ -123,16 +127,17 @@
       "options": {
         "cwd": "packages/ui",
         "commands": [
-          "vitest run --config vitest.storybook.config.ts",
-          "VITE_LABS_THEME=dark vitest run --config vitest.storybook.config.ts"
+          "vitest run --config vitest.config.ts",
+          "VITE_LABS_THEME=dark vitest run --config vitest.config.ts"
         ],
         "parallel": false
-      }
+      },
+      "dependsOn": ["build"]
     },
     "tokens-baseline": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/tokens/usage.ts baseline",
+        "command": "tsx tooling/checks/tokens/usage.ts baseline",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -141,7 +146,7 @@
       "executor": "nx:run-commands",
       "cache": true,
       "options": {
-        "command": "tsx scripts/tokens/usage.ts check",
+        "command": "tsx tooling/checks/tokens/usage.ts check",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -149,7 +154,7 @@
     "tokens-report": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/tokens/usage.ts report",
+        "command": "tsx tooling/checks/tokens/usage.ts report",
         "cwd": "{workspaceRoot}"
       },
       "inputs": ["default", "^default", "gateScripts"]
@@ -157,7 +162,7 @@
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsc -p packages/ui/tsconfig.json --noEmit"
+        "command": "tsc -p packages/ui/tsconfig.json --noEmit && tsc -p packages/ui/tsconfig.tools.json --noEmit"
       }
     },
     "visual-serve": {
@@ -170,15 +175,17 @@
       "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4520 --silent\" \"wait-on tcp:127.0.0.1:4520 && pnpm exec playwright test --config visual/playwright.config.ts\""
-      }
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4520 --silent\" \"wait-on tcp:127.0.0.1:4520 && pnpm exec playwright test --config tooling/visual/regression/playwright.config.ts\""
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "visual-update": {
       "dependsOn": ["build-storybook"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4520 --silent\" \"wait-on tcp:127.0.0.1:4520 && pnpm exec playwright test --config visual/playwright.config.ts --update-snapshots\""
-      }
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4520 --silent\" \"wait-on tcp:127.0.0.1:4520 && pnpm exec playwright test --config tooling/visual/regression/playwright.config.ts --update-snapshots\""
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "browser-test": {
       "executor": "nx:run-commands",
@@ -191,14 +198,14 @@
       "executor": "nx:run-commands",
       "cache": true,
       "options": {
-        "command": "tsx scripts/tokens/dtcg.ts check"
+        "command": "tsx tooling/checks/tokens/dtcg.ts check"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
     "tokens-dtcg-write": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/tokens/dtcg.ts write"
+        "command": "tsx tooling/checks/tokens/dtcg.ts write"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
@@ -218,14 +225,14 @@
     "tokens-codemod": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/tokens/codemod.ts report"
+        "command": "tsx tooling/checks/tokens/codemod.ts report"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
     "tokens-codemod-write": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/tokens/codemod.ts write"
+        "command": "tsx tooling/checks/tokens/codemod.ts write"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
@@ -233,21 +240,21 @@
       "executor": "nx:run-commands",
       "cache": true,
       "options": {
-        "command": "tsx scripts/adoption.ts check"
+        "command": "tsx tooling/checks/adoption.ts check"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
     "adoption-report": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/adoption.ts report"
+        "command": "tsx tooling/checks/adoption.ts report"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
     "adoption-write-floor": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/adoption.ts write-floor"
+        "command": "tsx tooling/checks/adoption.ts write-floor"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
@@ -255,7 +262,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build-storybook"],
       "options": {
-        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4530 --silent\" \"wait-on tcp:127.0.0.1:4530 && SWEEP_OUT=${SWEEP_OUT:-.visual-sweep} pnpm exec playwright test --config scripts/visual/sweep.config.ts\""
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4530 --silent\" \"wait-on tcp:127.0.0.1:4530 && SWEEP_OUT=${SWEEP_OUT:-.visual-sweep} pnpm exec playwright test --config tooling/visual/sweep.config.ts\""
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
@@ -263,21 +270,21 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build-storybook"],
       "options": {
-        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4530 --silent\" \"wait-on tcp:127.0.0.1:4530 && SWEEP_OUT=${SWEEP_OUT:-.visual-axes} pnpm exec playwright test --config scripts/visual/axes.config.ts\""
+        "command": "concurrently -k -s first \"http-server dist/packages/ui-storybook -p 4530 --silent\" \"wait-on tcp:127.0.0.1:4530 && SWEEP_OUT=${SWEEP_OUT:-.visual-axes} pnpm exec playwright test --config tooling/visual/axes.config.ts\""
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
     "inventory": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/inventory.ts check"
+        "command": "tsx tooling/checks/inventory.ts check"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
     "inventory-write": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx scripts/inventory.ts write"
+        "command": "tsx tooling/checks/inventory.ts write"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
@@ -285,7 +292,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
-        "command": "tsx scripts/api-surface.ts check"
+        "command": "tsx tooling/checks/api-surface.ts check"
       },
       "inputs": ["default", "^default", "gateScripts"]
     },
@@ -293,7 +300,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
-        "command": "tsx scripts/api-surface.ts write"
+        "command": "tsx tooling/checks/api-surface.ts write"
       },
       "inputs": ["default", "^default", "gateScripts"]
     }

@@ -1,12 +1,12 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "reorder-desk",
-  "tags": ["scope:shared", "type:feature"],
+  "tags": ["scope:shared", "type:domain", "env:neutral"],
   "targets": {
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsc -p packages/reorder-desk/tsconfig.lib.json --noEmit"
+        "command": "tsc -p packages/reorder-desk/tsconfig.lib.json --noEmit && tsc -p packages/reorder-desk/tsconfig.json --noEmit"
       }
     },
     "test": {

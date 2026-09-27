@@ -1,3 +1,4 @@
+import { exampleHref } from "../../.storybook/examplePages";
 import { expect } from "storybook/test";
 import { NARROW } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -29,7 +30,13 @@ export const Matrix: StoryObj = {
       <PageHeader
         breadcrumb={
           <Breadcrumb
-            items={[{ label: "Operations", href: "#" }, { label: "Suppliers" }]}
+            items={[
+              {
+                label: "Operations",
+                href: exampleHref("ordering", "components-pageheader--matrix"),
+              },
+              { label: "Suppliers" },
+            ]}
           />
         }
         title="Northwind Textiles"
@@ -124,8 +131,20 @@ export const ADetailPage: Story = {
       breadcrumb={
         <Breadcrumb
           items={[
-            { label: "Operations", href: "#" },
-            { label: "Suppliers", href: "#" },
+            {
+              label: "Operations",
+              href: exampleHref(
+                "ordering",
+                "components-pageheader--a-detail-page",
+              ),
+            },
+            {
+              label: "Suppliers",
+              href: exampleHref(
+                "suppliers",
+                "components-pageheader--a-detail-page",
+              ),
+            },
             { label: "Northwind Textiles" },
           ]}
         />

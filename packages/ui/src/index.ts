@@ -257,3 +257,8 @@ export {
   type CommandPaletteProps,
   type Command,
 };
+
+export {
+  DirectionProvider,
+  type DirectionProviderProps,
+} from "@base-ui-components/react/direction-provider";

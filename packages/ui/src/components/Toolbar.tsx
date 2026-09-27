@@ -118,8 +118,19 @@ export function Toolbar({
       const all = controls();
       if (!all.length) return;
 
-      const forward = orientation === "vertical" ? "ArrowDown" : "ArrowRight";
-      const back = orientation === "vertical" ? "ArrowUp" : "ArrowLeft";
+      const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
+      const forward =
+        orientation === "vertical"
+          ? "ArrowDown"
+          : rtl
+            ? "ArrowLeft"
+            : "ArrowRight";
+      const back =
+        orientation === "vertical"
+          ? "ArrowUp"
+          : rtl
+            ? "ArrowRight"
+            : "ArrowLeft";
 
       /* Only these five, and nothing else is intercepted. A toolbar that
          swallowed other keys would break the controls inside it — a text

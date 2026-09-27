@@ -45,9 +45,9 @@ import { describe, expect, it } from "vitest";
 
 const ROOTS = [
   "packages/ui/browser",
-  "visual",
-  "scripts/visual",
+  "tooling/visual",
   "apps/site/e2e",
+  "tests/release",
 ];
 
 /** Whole-document selectors, which cannot be ambiguous. */

@@ -1,0 +1,19 @@
+{
+  "name": "@labs/checks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./eslint-boundaries": "./eslint-boundaries.ts"
+  },
+  "devDependencies": {
+    "@labs/ui": "workspace:*",
+    "@labs/ui-catalog": "workspace:*",
+    "eslint": "^9.39.5",
+    "typescript": "~5.9.3",
+    "zod": "^4.4.3",
+    "@nx/devkit": "23.1.1",
+    "yaml": "^2.9.0",
+    "nx": "23.1.1"
+  }
+}

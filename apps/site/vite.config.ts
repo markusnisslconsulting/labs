@@ -1,21 +1,29 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
+import { storybookMount } from "@labs/release-tools/vite-storybook";
+import { publicModules } from "@labs/tools/vite-public-modules";
 import { layerOrder } from "@labs/tools/vite-layer-order";
+import { catalogValidation } from "./scripts/catalog-plugin.ts";
+import { workbenchDirectory } from "./scripts/workbench-plugin";
 import react from "@vitejs/plugin-react";
 
-// The ui package is consumed as source, so both the app and Storybook
-// compile one copy of each component.
-const uiSrc = fileURLToPath(new URL("../../packages/ui/src", import.meta.url));
-
 export default defineConfig({
+  base: "./",
+  ssr: { noExternal: ["@labs/ui"] },
   root: fileURLToPath(new URL(".", import.meta.url)),
-  plugins: [react(), layerOrder()],
-  resolve: {
-    alias: {
-      "@labs/ui": uiSrc,
-    },
-  },
+  plugins: [
+    react(),
+    publicModules(fileURLToPath(new URL("../..", import.meta.url))),
+    layerOrder(),
+    catalogValidation(),
+    workbenchDirectory(),
+    storybookMount(
+      fileURLToPath(
+        new URL("../../dist/packages/ui-storybook", import.meta.url),
+      ),
+    ),
+  ],
   server: { port: 4300 },
   build: {
     outDir: fileURLToPath(new URL("./dist", import.meta.url)),

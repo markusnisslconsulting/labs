@@ -7,7 +7,7 @@
   .uix-badge {
     display: inline-block;
     border-radius: var(--uix-radius-pill);
-    padding: 0.1rem 0.6rem;
+    padding: calc(var(--uix-gap-xs) / 2) var(--uix-gap-sm);
     font-size: 0.8rem;
     font-weight: var(--uix-weight-ui);
     background: var(--uix-chip-bg, var(--uix-bg-subtle));

@@ -1,80 +1,117 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Meta, Source } from "@storybook/addon-docs/blocks";
+import preferencesSource from "../../.storybook/examples/Preferences.tsx?raw";
 
 <Meta title="Guides/Contributing" />
 
 # Contributing
 
-Every rule here is a build gate, so none of it depends on being
-remembered.
+Start with the task the reader needs to complete. Check the generated inventory
+for an existing component, compound part or slot that provides the behavior.
+Choose the smallest change that can be used and verified independently.
 
-## Stories: reference or interaction, never both
+## Change an existing component
 
-A **reference story** shows a state and does not change it. It is the
-documentation and the visual baseline.
+Read its usage guidance, props, states and keyboard contract. Keep existing
+consumers in mind when changing behavior or an exported type. Describe any
+compatibility impact in the changelog and update the relevant examples.
 
-An **interaction story** drives behaviour and opts out of snapshots:
+Use semantic or component tokens for colour, corners, typeface and shadow.
+Keep stylesheet rules in `@layer components`, register new component slots and
+read each with its semantic fallback. Prefer a component slot to a new semantic
+role when the change concerns one part of one component.
 
-```ts
+## Compose a pattern or page
+
+Use layout components to arrange shared controls. Keep content, validation and
+service state in the feature that owns the task. Extract a reusable pattern
+when the arrangement and behavior recur; accept content and children where
+consumers need different wording or structure.
+
+This small composition owns a preference while reusing the control and layout
+behavior:
+
+<Source
+  code={preferencesSource.replaceAll(
+    "../../src/components/",
+    "@labs/ui/components/",
+  )}
+  language="tsx"
+/>
+
+A full page follows the same approach: compose its navigation, sections, form
+and footer from shared parts. Check each pattern on its own as well as in the
+page, because a narrow container can occur inside a wide viewport.
+
+## Add a primitive
+
+A new primitive needs a responsibility that existing components and compositions
+cannot provide. Keep its public contract consistent with the library:
+
+- Provide the complete controlled/uncontrolled value contract when both modes
+  are offered. Uncontrolled state must update every value the control displays.
+- Use Field's returned control props for a custom text-like control. Choice
+  controls use the field-message helper with their own label layout.
+- Read default user-facing strings, including accessible labels, from the library
+  string provider. Application content remains with the consuming feature.
+- Document keyboard behavior and cover it with matching browser events. Check
+  accessible names, descriptions and state as well as axe results.
+
+## Write useful stories
+
+Reference stories show meaningful uses and variants. Choose one matrix story
+per component for visual snapshots, with
+`chromatic: { disableSnapshot: false }`. Other stories inherit the disabled
+snapshot default unless an explicit exception applies.
+
+Interaction tests use `tags: ["!dev"]` so a tested resting state does not appear
+as another catalogue example. This complete story file tests the label behavior:
+
+```tsx
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent } from "storybook/test";
+import { Checkbox } from "@labs/ui/components/Checkbox";
+
+const meta = {
+  title: "Examples/Email preference",
+  component: Checkbox,
+  argTypes: { checked: { control: false } },
+  args: {
+    label: "Email updates",
+    defaultChecked: false,
+    disabled: false,
+    indeterminate: false,
+    required: false,
+  },
+} satisfies Meta<typeof Checkbox>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+
 export const TogglesFromTheLabel: Story = {
-  parameters: { chromatic: { disableSnapshot: true } },
+  tags: ["!dev"],
   play: async ({ canvas }) => {
-    /* ... */
+    const control = canvas.getByRole("checkbox", { name: "Email updates" });
+    await userEvent.click(canvas.getByText("Email updates"));
+    await expect(control).toBeChecked();
   },
 };
 ```
 
-Why the split: Chromatic captures the frame **after** `play()` resolves.
-A story that clicks its own control baselines the state after the click
-under a name that promised the state before it. `Switch/Off` used to
-click its own label, so the off switch was photographed on.
+Give each exposed boolean control an explicit initial value in `args`. Keep
+controlled examples synchronized with Controls, and avoid exposing competing
+controlled and initial-state props. Events remain in the Docs table while being
+excluded from Controls. Use explicit `fn()` callbacks when asserting calls.
 
-Two deliberate exceptions keep their snapshots — `Focus` and `Dialog` —
-because the focus ring and the open dialog are the picture worth having.
+## Verify the change
 
-## What a component owes Storybook
-
-Derived from its own types, not negotiated:
-
-1. Every union value rendered and every state boolean shown somewhere.
-2. At least one assertion. A story with no `expect` is a picture.
-3. A keyboard story if the component is operable.
-
-Values the component itself defaults to count as shown. Exceptions live
-in `scripts/stories/coverage.ts` with a reason, so an exemption is a
-decision in the repository rather than a silence.
-
-## One matrix, not one image per variant
-
-Snapshots are billed and they multiply by modes. A component with five
-tones does not need five images: one `Matrix` story renders every
-combination in one frame, and the per-state stories opt out. They still
-run as tests and still document each state on its own.
-
-A committed ceiling in `snapshot-budget.json` fails the build when the
-projected total rises, so a bigger bill arrives as a diff someone
-reviewed. Every component must still have at least one snapshotted story.
-
-## Tokens
-
-- Components bind to semantic or component tokens. **No colour
-  primitive** and no colour literal in a component stylesheet — both are
-  checked.
-- A new component token is an override slot: reference it with its
-  semantic default inline and register it. Do not declare it.
-- Removing a token is a two-step move. Mark it `deprecated` in the
-  registry with a reason and a replacement, let the ratchet stop new
-  uses, then delete it once the count reaches zero. "Unused here" is not
-  "safe to delete": a consuming product holds references this repository
-  cannot see.
-
-## Before opening a pull request
-
-```
-pnpm nx run-many -t lint typecheck test build build-storybook \
-  test-storybook browser-test tokens-check contrast-check story-coverage \
-  snapshot-budget
-pnpm nx run site:a11y
+```sh
+pnpm gates
+pnpm nx run ui:visual-sweep
 ```
 
-Reports, when you want to see rather than gate: `ui:contrast-report`,
-`ui:tokens-report`, `ui:story-coverage-report`, `ui:snapshot-budget-report`.
+The gate command is shared with CI. The visual sweep creates images for review;
+it does not compare them with an approved baseline. Inspect relevant states,
+themes, widths and keyboard behavior in Docs and Canvas. Record any native or
+manual accessibility checks that still need to happen.
+
+Use the contrast, token, story-coverage and size reports when investigating a
+specific result. Follow the Deprecation guide when replacing a public token.

@@ -1,0 +1,63 @@
+{
+  "sourceRepository": "https://github.com/markusnisslconsulting/www.markusnissl.com",
+  "sourceCommit": "0d62defbe2ca2b1e554280d45a534cbe3de3a04b",
+  "sourcePaths": [
+    "src/styles/fonts.css",
+    "public/fonts",
+    "public/MN_Logo_*.webp"
+  ],
+  "assets": [
+    {
+      "file": "fonts/atkinsonhyperlegible-9Bt23C1KxNDXMspQ1lPyU89-1h6ONRlW45G04pIoWQeCbA.woff2",
+      "sha256": "a60206dd4793eb886952e48dc3e1c1d59942c004b2ab1e0086e7ccd156a7852d"
+    },
+    {
+      "file": "fonts/atkinsonhyperlegible-9Bt23C1KxNDXMspQ1lPyU89-1h6ONRlW45G07JIoWQeCbGWn.woff2",
+      "sha256": "e15e89caea888e8df98f6705fc0a5968aa4f62076da8fe9667c8dd4a197ff4ef"
+    },
+    {
+      "file": "fonts/atkinsonhyperlegible-9Bt43C1KxNDXMspQ1lPyU89-1h6ONRlW45G056IkUwCgblWmLWQ.woff2",
+      "sha256": "fde16438f63b803e79eab5681554bf1c2918acc9520e4cd21b7d4c6e13ceafbb"
+    },
+    {
+      "file": "fonts/atkinsonhyperlegible-9Bt43C1KxNDXMspQ1lPyU89-1h6ONRlW45G056IqUwCgblWm.woff2",
+      "sha256": "5ee711c886e479406e0ef239f5cc6db7cae99906af00e774950d96189113ed9d"
+    },
+    {
+      "file": "fonts/atkinsonhyperlegible-9Bt73C1KxNDXMspQ1lPyU89-1h6ONRlW45G8Wbc9dCWPRl-uFQ.woff2",
+      "sha256": "1cc7c0c5fbf16d1be3cb6d95c89fc0afd0e11f264e239ac97c64a326c5d88fe4"
+    },
+    {
+      "file": "fonts/atkinsonhyperlegible-9Bt73C1KxNDXMspQ1lPyU89-1h6ONRlW45G8Wbc9eiWPRl-uFV24.woff2",
+      "sha256": "69b1029853229409286380f46b81a137c566825a0b1cd458f2a3536df8459805"
+    },
+    {
+      "file": "fonts/bricolagegrotesque-3y9K6as8bTXq_nANBjzKo3IeZx8z6up5BeSl9D4dj_x9PpZBMlGGInHWVyNJtvI.woff2",
+      "sha256": "1d04719f1325400ea4267e630dba29b02af87eb094d7d71d2e4d80a05479d07a"
+    },
+    {
+      "file": "fonts/bricolagegrotesque-3y9K6as8bTXq_nANBjzKo3IeZx8z6up5BeSl9D4dj_x9PpZBMlGHInHWVyNJtvI.woff2",
+      "sha256": "7e13a14cb0bd5fcacf4907e47ac01fb4adb471540663987ecf356043612368c0"
+    },
+    {
+      "file": "fonts/bricolagegrotesque-3y9K6as8bTXq_nANBjzKo3IeZx8z6up5BeSl9D4dj_x9PpZBMlGIInHWVyNJ.woff2",
+      "sha256": "85f55a58a31e61a2e19e8bb25fed503181bf2a6b4cab76c589992cfaac377447"
+    },
+    {
+      "file": "logos/navy.webp",
+      "sha256": "205c8c384b7146812a39de0454834bd465a31894921a6ff372a69a628aded8cd"
+    },
+    {
+      "file": "logos/white.webp",
+      "sha256": "dbdb55d9c6ae1347cbb3029ba9c9f5cf21e1ac624027874c4963589121b30e76"
+    },
+    {
+      "file": "logos/red.webp",
+      "sha256": "0d49175be8d2f8e6d8136a74b4a17fc53886f451e04db7c21b49bd16f2ec94bd"
+    },
+    {
+      "file": "logos/black.webp",
+      "sha256": "c83b316c48ac2e0ca7e0e0035ae797f74c96367192c709e7d995d06dc8c9382a"
+    }
+  ]
+}

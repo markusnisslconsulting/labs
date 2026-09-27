@@ -1,0 +1,18 @@
+{
+  "name": "@labs/tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./vite-layer-order": "./vite-layer-order.ts",
+    "./vite-use-client": "./vite-use-client.ts",
+    "./vite-public-modules": "./vite-public-modules.ts",
+    "./package-sizes": "./package-sizes.ts",
+    "./vite-workbench-facts": "./vite-workbench-facts.ts"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vite": "^8.2.1",
+    "@labs/ui-catalog": "workspace:*"
+  }
+}

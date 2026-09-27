@@ -1,0 +1,48 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "scripts",
+  "tags": ["scope:shared", "type:tooling", "env:node"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tooling/checks/tsconfig.json"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint tooling/checks eslint.config.ts --max-warnings 0"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "command": "vitest run tooling/checks/test/ --root ."
+      },
+      "inputs": [
+        "default",
+        "{workspaceRoot}/eslint.config.ts",
+        "{workspaceRoot}/apps/site/tsconfig.json",
+        "{workspaceRoot}/apps/*/package.json",
+        "{workspaceRoot}/apps/*/project.json",
+        "{workspaceRoot}/packages/*/package.json",
+        "{workspaceRoot}/packages/*/project.json",
+        "gateScripts",
+        "{workspaceRoot}/.github/**/*"
+      ]
+    },
+    "quality-graph": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{workspaceRoot}/**/*"],
+      "options": {
+        "command": "tsx tooling/checks/quality-graph.ts"
+      }
+    }
+  },
+  "metadata": {
+    "ownedFiles": ["eslint.config.ts"]
+  }
+}

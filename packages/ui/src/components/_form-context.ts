@@ -9,7 +9,7 @@ import { createContext, useContext, type ReactNode } from "react";
  * hook from it, but importing that hook from `Form.tsx` pulls in the whole
  * module — `Form.Summary`, its use of the string table, and `Form.css`. So
  * a page rendering one `TextField` downloaded the error-summary machinery
- * it will never show. Measured by `scripts/component-size.mjs`, which is
+ * it will never show. Measured by `tooling/checks/component-size.mjs`, which is
  * the gate that caught it: every one of the nine field components grew by
  * about 2.4 KB gzip, roughly doubling the smallest of them.
  *

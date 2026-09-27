@@ -5,6 +5,7 @@
 
 @layer components {
   .uix-checkbox {
+    min-block-size: var(--uix-control-sm);
     display: inline-flex;
     align-items: center;
     gap: var(--uix-gap-sm);

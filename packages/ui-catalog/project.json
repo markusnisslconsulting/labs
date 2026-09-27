@@ -1,0 +1,25 @@
+{
+  "name": "ui-catalog",
+  "tags": ["scope:shared", "type:contract", "env:neutral"],
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint packages/ui-catalog --max-warnings 0"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p packages/ui-catalog/tsconfig.lib.json --noEmit && tsc -p packages/ui-catalog/tsconfig.json --noEmit"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run packages/ui-catalog/test --root ."
+      },
+      "inputs": ["default", "{workspaceRoot}/packages/ui/inventory.json"]
+    }
+  }
+}

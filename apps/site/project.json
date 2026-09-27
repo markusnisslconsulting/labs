@@ -1,30 +1,72 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "site",
-  "tags": ["scope:site", "type:app"],
-  "// targets": [
-    "build and serve are inferred by the @nx/vite plugin from",
-    "vite.config.ts; typecheck and lint are explicit."
-  ],
+  "tags": ["scope:site", "type:app", "env:browser"],
   "targets": {
     "a11y": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build"],
+      "dependsOn": ["release-tools:assemble"],
       "options": {
-        "command": "concurrently -k -s first \"http-server apps/site/dist -p 4620 --silent --proxy http://127.0.0.1:4620?\" \"wait-on tcp:127.0.0.1:4620 && pnpm exec playwright test --config apps/site/playwright.config.ts\""
-      }
+        "command": "concurrently -k -s first \"tsx tooling/release/serve.ts\" \"wait-on tcp:127.0.0.1:4620 && pnpm exec playwright test --config apps/site/playwright.config.ts\""
+      },
+      "inputs": ["default", "^default", "gateScripts"]
     },
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "eslint apps/site/src --max-warnings 0"
+        "command": "eslint apps/site --max-warnings 0"
       }
     },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsc -p apps/site/tsconfig.json --noEmit"
+        "command": "tsc -p apps/site/tsconfig.json --noEmit && tsc -p apps/site/tsconfig.tools.json --noEmit"
       }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run --config apps/site/vitest.config.ts"
+      }
+    },
+    "probe-ai": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "tsx apps/site/scripts/probe-ai.ts"
+      }
+    },
+    "probe-ai-flags": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "tsx apps/site/scripts/probe-ai-flags.ts"
+      }
+    },
+    "catalog-check": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["ui:build-storybook"],
+      "inputs": ["default", "^default"],
+      "options": {
+        "command": "tsx apps/site/scripts/catalog-check.ts"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build", "catalog-check"],
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/.out/prerender"],
+      "options": {
+        "commands": [
+          "vite build --config apps/site/vite.config.ts",
+          "vite build --config apps/site/vite.config.ts --ssr scripts/prerender-entry.tsx --outDir .out/prerender",
+          "tsx apps/site/scripts/prerender.ts"
+        ],
+        "parallel": false
+      }
+    },
+    "serve": {
+      "dependsOn": ["ui:build-storybook"]
     }
   }
 }

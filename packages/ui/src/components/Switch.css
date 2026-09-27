@@ -5,6 +5,7 @@
 
 @layer components {
   .uix-switch-row {
+    min-block-size: var(--uix-control-sm);
     display: inline-flex;
     align-items: center;
     gap: var(--uix-gap-md);
@@ -27,17 +28,8 @@
     flex-shrink: 0;
   }
 
-  /* Base UI renders the track as a <span role="switch">, so :disabled
-     never matched and a disabled switch looked enabled.
-     It then looked *almost* enabled, which is the report Markus filed
-     twice: the fix was `opacity: 0.55`, and the off track is already a
-     light grey, so 55% of a light grey on a light page is a slightly
-     lighter light grey. Off and disabled-off were the same picture.
-     A switch is a drawing of a state, so being unavailable has to change
-     the drawing. Three things do it, and the third is the one that
-     carries: the track gains an edge, the thumb loses its lift, and the
-     thumb stops being white. The white lifted knob is what makes a switch
-     look like something you can push. */
+  /* Use the disabled background and border roles to distinguish unavailable
+     controls from enabled controls in both themes. */
   .uix-switch:disabled,
   .uix-switch[data-disabled] {
     background: var(--uix-bg-disabled);
@@ -90,7 +82,7 @@
      the writing direction; a physical translate sent it off the track.
      Offered as a slot with its default inline, like every other
      component token, and only *declared* for RTL. */
-  [dir="rtl"] .uix-switch {
+  .uix-switch:dir(rtl) {
     --uix-switch-travel: -1.3rem;
   }
 

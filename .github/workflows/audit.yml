@@ -14,16 +14,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: pnpm
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      # Production dependencies: high and critical block. Dev dependencies
-      # are reported weekly without blocking.
+      - uses: ./.github/actions/setup
+      # High production findings fail this scheduled report. It does not gate deployment.
       - name: Audit production dependencies
-        run: pnpm audit --prod --audit-level high
+        run: pnpm audit:production
       - name: Audit full tree (non-blocking)
         run: pnpm audit --audit-level moderate || true

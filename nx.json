@@ -5,7 +5,15 @@
     "sharedGlobals": [
       "{workspaceRoot}/tsconfig.base.json",
       "{workspaceRoot}/package.json",
-      "{workspaceRoot}/pnpm-lock.yaml"
+      "{workspaceRoot}/pnpm-lock.yaml",
+      "{workspaceRoot}/tsconfig.browser.json",
+      "{workspaceRoot}/tsconfig.node.json",
+      "{workspaceRoot}/eslint.config.ts",
+      "{workspaceRoot}/tooling/checks/eslint-boundaries.ts",
+      "{workspaceRoot}/.nvmrc",
+      "{workspaceRoot}/pnpm-workspace.yaml",
+      "{workspaceRoot}/.github/workflows/**/*",
+      "{workspaceRoot}/.github/actions/**/*"
     ],
     "production": [
       "default",
@@ -19,8 +27,8 @@
       "!{projectRoot}/**/test/**"
     ],
     "gateScripts": [
-      "{workspaceRoot}/scripts/**/*",
-      "{workspaceRoot}/tools/**/*"
+      "{workspaceRoot}/tooling/**/*",
+      "{workspaceRoot}/packages/ui-catalog/src/**/*"
     ]
   },
   "plugins": [
@@ -30,7 +38,8 @@
         "buildTargetName": "build",
         "serveTargetName": "serve",
         "testTargetName": "test"
-      }
+      },
+      "exclude": ["tooling/fixtures/**"]
     }
   ],
   "targetDefaults": {
@@ -42,19 +51,39 @@
     "build": {
       "dependsOn": ["^build"],
       "cache": true,
-      "inputs": ["production", "{workspaceRoot}/tsconfig.base.json"]
+      "inputs": [
+        "production",
+        "^production",
+        "{workspaceRoot}/tsconfig.base.json"
+      ]
     },
     "test": {
       "cache": true,
       "inputs": ["default", "^production"]
     },
     "lint": {
-      "cache": true
+      "cache": true,
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/apps/*/project.json",
+        "{workspaceRoot}/packages/*/project.json",
+        "{workspaceRoot}/apps/*/package.json",
+        "{workspaceRoot}/packages/*/package.json",
+        "{workspaceRoot}/tooling/**/package.json",
+        "{workspaceRoot}/tooling/**/project.json",
+        "{workspaceRoot}/tests/*/package.json",
+        "{workspaceRoot}/tests/*/project.json"
+      ]
     },
     "build-storybook": {
       "dependsOn": ["^build"],
       "cache": true,
-      "inputs": ["storybook", "{workspaceRoot}/tsconfig.base.json"]
+      "inputs": [
+        "storybook",
+        "^production",
+        "{workspaceRoot}/tsconfig.base.json"
+      ]
     },
     "storybook": {
       "cache": false

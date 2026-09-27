@@ -2,129 +2,108 @@
 
 ## Setup
 
-```sh
-pnpm install
-pnpm nx serve site        # labs.markusnissl.com locally (:4300)
-pnpm nx storybook ui      # Workbench (:4400)
-```
-
-## What belongs where
-
-| Content                  | Place                                                       |
-| ------------------------ | ----------------------------------------------------------- |
-| Design system components | `packages/ui/src/components/`                               |
-| Tokens                   | `packages/ui/src/styles/tokens/` + `src/tokens.registry.ts` |
-| Product demos            | `apps/site/src/labs/<slug>/` (demo + manifest)              |
-| Logic with tests         | `packages/<name>` (their own Nx projects)                   |
-
-Two boundaries are enforced: apps import only through package entry
-points, and component tokens live on the part's own docs page — not in
-Foundations.
-
-## The way in
-
-An RFC first, then code. The form under _Issues → Propose a component_ asks
-five questions, and two of them are the actual point: **who else needs it**
-and **what it replaces**.
-
-A component exactly one product needs belongs in that product. That is not
-a refusal. A design system that takes in every request becomes a collection
-of special cases nobody uses twice — and the way back is open as soon as a
-second product wants it.
-
-What an RFC does not need: finished code, a Figma file, an estimate.
-
-## The bar
-
-What "reviewed" means, in order — technical first, because that is cheap to
-check, and then what only a person can see.
-
-1. **`pnpm gates` is green.** Seventeen Nx targets, the bundle budget and
-   the changelog gate — everything CI gates on. No
-   review starts before that; it is not a ritual, it saves both sides a
-   round trip.
-2. **Looked at.** `nx run ui:visual-sweep` renders every visible story in
-   two engines. Both rendering faults that last reached Markus were
-   engine-specific and invisible in exactly the engine the pipeline used. A
-   gate that checks a DOM property is not a substitute for looking.
-3. **The axes hold.** Do the props generalise, or is the component still
-   carrying a product detail?
-4. **The contract is in the docs.** "Use it for" and "reach for something
-   else when", the accessibility line, and what the caller still owes.
-   `ui:inventory` checks the sentences are there.
-5. **Who reviews.** Today one maintainer, see `CODEOWNERS`. That is a
-   single person and therefore this system's bottleneck — it does not grow
-   past what one person can carry. It is written here because it is a
-   property of the system and not an oversight.
-
-## Response times
-
-Predictability is why a team uses a system instead of forking it. So
-commitments rather than intentions:
-
-| What                   | First reply    | Decision                                  |
-| ---------------------- | -------------- | ----------------------------------------- |
-| Bug blocking a product | 1 working day  | as fast as possible, workaround if needed |
-| Bug, otherwise         | 3 working days | slotted into the next cycle               |
-| Pull request           | 3 working days | 2 weeks                                   |
-| Component RFC          | 1 week         | 2 weeks, yes/no/later with a reason       |
-
-"First reply" means read and triaged, not solved. A reply saying "this will
-take until March" is worth more than silence.
-
-The roadmap is in `docs/roadmap.md` and names, per stage, what stands and
-what does not.
-
-## Contributing components
-
-1. **Check Base UI first:** interactive components sit on
-   [`@base-ui-components/react`](https://base-ui.com) parts (focus
-   management, ARIA, keyboard). Native platform elements stay where the
-   widget itself is the best accessibility (Button, RadioGroup, TextField,
-   Select, Breadcrumb, Pagination). Deviations get an ADR (`docs/adr/`).
-2. **Props, not use-case variants:** axes that generalise (`variant`,
-   `tone`, `size`), not one-off variants.
-3. **Slots by rule:** prop slots for small inline content the component has
-   to style (`leading`, `prefix`); compound slots in place for structural
-   regions (`Card.Header`). Never filter on `child.type`.
-4. **Tokens at three tiers:** components bind to semantic or component
-   tokens, never to primitive values. The parity test
-   (`test/tokens.spec.ts`) blocks drift.
-5. **Stories that claim something:** every component gets stories for all
-   its states; plays assert semantics (roles, attributes), not pixels. Axe
-   findings fail (`a11y: { test: "error" }`).
-
-## Gates before every push
+Use the Node version in `.nvmrc` and the pnpm version in `package.json`.
 
 ```sh
-pnpm gates                        # exactly the targets CI runs
-pnpm nx run ui:visual-test        # locally, against committed baselines
-pnpm nx run ui:visual-sweep       # contact sheets to look at, not a gate
+pnpm install --frozen-lockfile
+pnpm dev                         # site and built Storybook at localhost:4300
+pnpm storybook                   # live component workbench at localhost:4400
 ```
 
-`pnpm gates` lives in package.json and covers both gating steps in
-`.github/workflows/ci.yml` — the Nx targets and the bundle budget. The list
-used to be written here as well, maintained in two places, and three targets
-were missing here — `package-check`, `tokens-dtcg` and `adoption`.
-`tokens-dtcg` is exactly the one that then fell over in CI after everything
-was green locally: new tokens with no regenerated DTCG export.
+The site mounts a built Storybook. Rebuild `ui:build-storybook` after editing
+stories when using `pnpm dev`, or use the live workbench during component work.
 
-The same shape recurred with the bundle budget, which CI ran as its own step
-and `pnpm gates` did not run at all. So a change that made every field
-component 2.44 KB gzip heavier passed locally and failed in CI, and the
-number that mattered was the one only CI saw. `size-check` is part of
-`pnpm gates` now. The rule behind both: if CI checks it, this command runs
-it — one list, or it is not a list.
+## Ownership and boundaries
 
-CI runs affected; axe and test findings block deploys.
+| Content                                      | Location                         |
+| -------------------------------------------- | -------------------------------- |
+| Shared components, tokens and stories        | `packages/ui/`                   |
+| Demo content, manifests and feature state    | `apps/site/src/labs/<slug>/`     |
+| Composed patterns and fixture content        | `apps/site/src/patterns/<slug>/` |
+| Independently reusable logic                 | `packages/<name>/`               |
+| Workspace build, check and release tools     | `tooling/`                       |
+| Browser checks across the assembled surfaces | `tests/release/`                 |
 
-## Releases
+Import packages through their declared entry points. Screens compose shared
+components and reusable patterns; feature-specific state stays in the owning
+application. See [package ownership](docs/adr/0012-package-ownership-and-environments.md)
+and [screen composition](docs/adr/0013-screen-composition.md).
 
-`pnpm nx release --dry-run` for a preview, `pnpm nx release` for the
-packages' version and changelog (configured in `nx.json`).
+`CODEOWNERS` names the current maintainer. A code-owner entry requests review;
+it does not itself prevent merging. Repository rules are configured separately
+on GitHub. There is no guaranteed response or resolution time.
 
-## Decisions
+## Proposing a component
 
-Architecture decisions are recorded as short ADRs: `docs/adr/` — number,
-status, context, decision, consequences. The large directions (Base UI as
-the headless foundation, token tiers, the labs registry) each have one.
+Use the component proposal issue form for additions to the shared library.
+Describe the consumers, the interaction contract, and what existing composition
+cannot provide. Keep application-specific components with their feature until
+there is a reusable contract to share.
+
+Before adding UI, read `packages/ui/inventory.json`. Prefer existing components,
+slots and patterns. Interactive components use Base UI or native elements;
+record a substantial departure in an ADR.
+
+Component changes should include:
+
+- Semantic/component token bindings and layered CSS.
+- Documented props, states, slots, appropriate uses and limitations.
+- Stories covering meaningful states, with interaction tests for behavior.
+- Keyboard, accessible-name and description checks where relevant.
+- A changelog entry for public API changes, including compatibility impact.
+
+## Verification and review
+
+```sh
+pnpm gates
+pnpm nx run ui:visual-sweep
+```
+
+`pnpm gates` runs formatting, the production dependency audit, the Nx targets declared in
+`tooling/checks/gates.ts`, build-backed bundle budgets and the changelog check.
+CI calls the same command: affected checks on pull requests, full checks on main
+and manual runs. [ADR 0016](docs/adr/0016-ci-comparison-and-gates.md) defines the
+comparison ranges, missing-history behavior and local `NX_BASE` override.
+
+Inspect the visual sweep for component or layout changes. Automated DOM and axe
+checks do not replace visual or assistive-technology review. Include the checks
+run and any unverified behavior in the pull request.
+
+Chromatic reports visual differences in a separate workflow. Its pull-request
+job fails on unaccepted differences; main runs refresh the baseline. The weekly
+full dependency report is separate. High/critical production findings also fail
+`pnpm gates`; the audit requires registry access.
+
+Successful main CI runs retain the verified release archive. Deployment selects
+that successful run's exact artifact, validates its source SHA and file hashes,
+and uploads through the existing FTPS pipeline. Promotion, recovery and rollback
+are described in the [release runbook](tooling/release/README.md). A local gate
+run does not deploy anything.
+
+## Storybook controls and tests
+
+`packages/ui/vitest.config.ts` declares the browser project used by both the
+sidebar test runner and `ui:test-storybook`. The Nx target runs it once per
+theme; `ui:test` keeps the filesystem and contract tests in Node.
+
+Every exposed boolean control needs an explicit boolean in component or story
+`args`. A state shown elsewhere in a matrix does not initialize that control.
+Controlled checkbox, switch, chip and popup examples use the `booleanState`
+decorator to synchronize interaction and Controls. Their initial-state props
+remain in the read-only Docs table instead of competing with the controlled
+value in Controls. Event callbacks stay documented under Events and are excluded
+from Controls. Use explicit `fn()` callbacks in interaction stories.
+
+The browser suite checks resolved Storybook args and exercises the manager's
+controls, Code panel and Docs event table. Restart the live workbench after
+changing manager features in `.storybook/main.ts`.
+
+## Releases and decisions
+
+`pnpm nx release --dry-run` previews the package version and changelog changes
+configured in `nx.json`. Publishing and production deployment require separate
+authorization.
+
+Record substantial architectural decisions in `docs/adr/` with their context,
+decision and consequences. Keep setup instructions and operational claims aligned
+with the current commands and workflow dependencies.

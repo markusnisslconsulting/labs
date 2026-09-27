@@ -1,52 +1,10 @@
-/* Coaching — the second real brand.
- *
- * Two brands share this system, and they are two businesses rather than
- * two colour schemes. The default is the consulting practice: crimson,
- * tight, decisive, made for someone buying delivery. This one is the
- * personal leadership-coaching practice, and its reader is a person
- * deciding whether to trust someone with their own development.
- *
- * So the difference is not only the hue. Consulting is warm, high-chroma
- * and close-set; coaching is cooler, quieter and more spacious. Same
- * components throughout, same logo, one file, no core stylesheet edited.
- *
- * What it re-points, and why each one:
- *
- *   Colour   A deep petrol teal, chosen against the crimson rather than
- *            on its own: cooler and lower in chroma, which reads calm
- *            instead of urgent, and nowhere near the corporate blue every
- *            consultancy already owns. Measured at 6.94:1 on the page and
- *            7.32:1 on a surface, so it carries a link at body size, and
- *            white sits on it at 7.32:1 for a solid button.
- *
- *   Shape    Noticeably softer corners. A 16px control against the
- *            default 11px is the difference between a form that means
- *            business and one that means come in.
- *
- *   Type     Prose in a serif, interface in a sans. Headings and running
- *            text go serif at regular weight with open tracking and loose
- *            leading; buttons, fields and labels stay in the hyperlegible
- *            sans, because legibility beats identity on a control. The
- *            largest difference between the brands after the colour, and
- *            the one a reader feels before reading a word.
- *
- *   Depth    Wider, fainter shadows, tinted with the accent rather than
- *            neutral black. The consulting brand's elevation is a crisp
- *            lift; this is a room with light in it.
- *
- *   Density  1.12, the one brand token that changes the geometry of every
- *            component at once, and the most honest expression of the
- *            difference: this brand takes its time.
- *
- * No [data-theme] selector anywhere below, because every theme-dependent
- * value states both themes in one light-dark(). That is what stops a
- * nested brand from holding a light accent under a dark root.
- */
+/* Coaching maps the existing semantic roles to teal accents, softer
+   corners, serif prose and more spacious controls. Font delivery belongs
+   to the consuming application. */
 
 @layer tokens {
   [data-brand="coaching"] {
-    /* Colour. --uix-accent-soft mixes from this and --uix-focus-ring
-       aliases it, so both follow without being named here. */
+    /* Accent aliases resolve locally in semantic.css. */
     --uix-accent: light-dark(var(--uix-teal-600), var(--uix-teal-400));
 
     /* Shape */
@@ -55,22 +13,7 @@
     --uix-radius-surface: 1rem;
     --uix-radius-container: 1.5rem;
 
-    /* Type. The largest difference between the two brands after the
-       colour, and the one a reader feels before they read a word.
-       Consulting sets everything in the hyperlegible sans: one voice,
-       efficient, the same face on a heading and on a button.
-
-       Coaching splits it. Prose — headings and running text — goes into a
-       serif, because this brand's content is read rather than scanned and
-       a serif is what long-form reading wants. The interface stays in the
-       sans, because a form field is not prose and legibility beats
-       identity on a control. Headings drop to regular weight and open up:
-       a serif at 700 with tight tracking shouts, which is the opposite of
-       the point.
-
-       Nothing here ships a webfont. A design system that pulls a font
-       file makes every consumer pay for a network request they did not
-       choose, so both brands work from stacks the platform already has. */
+    /* Serif prose; controls retain the shared sans stack. */
     --uix-font-body: var(--uix-font-serif);
     --uix-font-display: var(--uix-font-serif);
     --uix-font-ui: var(--uix-font-sans);
@@ -86,10 +29,10 @@
       light-dark(rgba(15, 95, 107, 0.14), rgba(0, 0, 0, 0.5));
     --uix-elevation-modal: 0 24px 60px
       light-dark(rgba(15, 95, 107, 0.2), rgba(0, 0, 0, 0.62));
+  }
 
-    /* Breathing room. This works only because the density-derived roles
-       are declared on [data-brand] as well as on :root — see the comment
-       in tokens/semantic.css for what happens without that. */
+  /* An explicit density on this scope or an ancestor takes precedence. */
+  [data-brand="coaching"]:not([data-density], [data-density] *) {
     --uix-density: 1.12;
   }
 }

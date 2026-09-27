@@ -1,3 +1,4 @@
+import { exampleHref } from "../../.storybook/examplePages";
 import { expect } from "storybook/test";
 import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -74,7 +75,7 @@ export const AsLink: StoryObj = {
       // The anchor's content comes from Badge's children, which jsx-a11y
       // cannot see at this call site.
       // eslint-disable-next-line jsx-a11y/anchor-has-content
-      renderAs={<a href="#open-orders" />}
+      renderAs={<a href={exampleHref("orders", "components-badge--as-link")} />}
     >
       12 open
     </Badge>
@@ -83,7 +84,10 @@ export const AsLink: StoryObj = {
     const link = canvas.getByRole("link", { name: "12 open" });
     // The element is the caller's; the styling is ours. Both survive.
     await expect(link).toHaveClass("uix-badge");
-    await expect(link).toHaveAttribute("href", "#open-orders");
+    await expect(link).toHaveAttribute(
+      "href",
+      exampleHref("orders", "components-badge--as-link"),
+    );
   },
 };
 

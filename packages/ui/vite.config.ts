@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+import { publicModules } from "@labs/tools/vite-public-modules";
 import { layerOrder } from "@labs/tools/vite-layer-order";
 import { assertClientDirectiveFirst } from "@labs/tools/vite-use-client";
 
@@ -73,7 +74,7 @@ const componentEntries = Object.fromEntries(
  * once, under their own names, and Vite stops copying them into the
  * component assets. Measured after: 47 of 47 imports resolve, and
  * `Checkbox.css` no longer carries the field rules it used to duplicate.
- * `scripts/check-size.mjs` fails the build if that stops being true.
+ * `tooling/checks/check-size.mjs` fails the build if that stops being true.
  */
 function keepCssImports() {
   return {
@@ -123,11 +124,14 @@ function keepCssImports() {
 export default defineConfig({
   plugins: [
     react(),
+    publicModules(fileURLToPath(new URL("../..", import.meta.url))),
     keepCssImports(),
     layerOrder(),
     assertClientDirectiveFirst(),
   ],
   build: {
+    // Direction selectors must retain their meaning independently of language.
+    cssMinify: "esbuild",
     outDir: fileURLToPath(new URL("../../dist/packages/ui", import.meta.url)),
     emptyOutDir: true,
     // Off by default in library mode, which would inline every

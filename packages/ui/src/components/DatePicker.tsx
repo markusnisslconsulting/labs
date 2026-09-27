@@ -1,10 +1,12 @@
 "use client";
 
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { useDirection } from "@base-ui-components/react/direction-provider";
 import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -281,6 +283,37 @@ export function DatePicker({
   );
   const root = useRef<HTMLDivElement>(null);
   const grid = useRef<HTMLDivElement>(null);
+  const calendar = useRef<HTMLDivElement>(null);
+  const direction = useDirection();
+  const [calendarOffset, setCalendarOffset] = useState(0);
+
+  useLayoutEffect(() => {
+    if (!open || !root.current || !calendar.current) return;
+    const anchor = root.current;
+    const popup = calendar.current;
+    // A calendar may be wider than its input, especially with larger text.
+    const position = () => {
+      const rect = anchor.getBoundingClientRect();
+      const width = popup.getBoundingClientRect().width;
+      const gutter = parseFloat(getComputedStyle(popup).paddingInlineStart);
+      const rtl = getComputedStyle(anchor).direction === "rtl";
+      const start = rtl ? rect.right - width : rect.left;
+      const left = Math.max(
+        gutter,
+        Math.min(start, document.documentElement.clientWidth - width - gutter),
+      );
+      setCalendarOffset(rtl ? start - left : left - start);
+    };
+    position();
+    const observer = new ResizeObserver(position);
+    observer.observe(anchor);
+    observer.observe(popup);
+    window.addEventListener("resize", position);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", position);
+    };
+  }, [open, direction]);
 
   const commit = useCallback(
     (next: IsoDate | [IsoDate, IsoDate | null] | null) => {
@@ -399,9 +432,10 @@ export function DatePicker({
 
   const onGridKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
+      const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
       const moves: Record<string, number> = {
-        ArrowRight: 1,
-        ArrowLeft: -1,
+        ArrowRight: rtl ? -1 : 1,
+        ArrowLeft: rtl ? 1 : -1,
         ArrowDown: 7,
         ArrowUp: -7,
       };
@@ -545,6 +579,8 @@ export function DatePicker({
               accessibility tree while it is closed. */}
           <div
             className="uix-datepicker-calendar"
+            ref={calendar}
+            style={{ insetInlineStart: calendarOffset }}
             id={gridId}
             data-open={open || undefined}
           >

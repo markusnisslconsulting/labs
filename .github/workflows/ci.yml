@@ -2,18 +2,19 @@ name: CI
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
+    inputs:
+      base:
+        description: Commit before the changes whose API changelog should be checked
+        required: true
+        type: string
 
 permissions:
   contents: read
 
-# Three pushes in five minutes used to run three full pipelines to
-# completion. Only the newest commit on a ref is worth testing.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -21,33 +22,14 @@ concurrency:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
         with:
-          # nx affected compares against the merge base, so it needs
-          # enough history to find one.
           fetch-depth: 0
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v6
-
-      # One source of truth for the Node version. It used to be pinned
-      # here as well as in engines and .nvmrc, which is two places to
-      # forget.
-      - name: Set up Node
-        uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # Nx caches by input hash, so a run that changed one component does
-      # not rebuild the other three packages. Without this the cache lives
-      # only inside a single run and every push starts cold.
+          browser: "true"
       - name: Restore the Nx cache
         uses: actions/cache@v4
         with:
@@ -56,50 +38,24 @@ jobs:
           restore-keys: |
             nx-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
             nx-${{ runner.os }}-
-
-      - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
-
-      # Affected everywhere: PRs against the merge base, pushes to main
-      # against HEAD~1 (everything since the last push). On a first commit
-      # with no predecessor the run falls back to the whole graph.
-      - name: Determine base
-        id: base
-        run: |
-          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-            echo "args=" >> "$GITHUB_OUTPUT"
-          elif git rev-parse HEAD~1 >/dev/null 2>&1; then
-            echo "args=--base=HEAD~1" >> "$GITHUB_OUTPUT"
-          else
-            echo "args=--base=main" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Formatting
-        run: pnpm format:check
-
-      # One invocation rather than a shell loop over targets. The loop
-      # stopped at the first failure, so a lint error hid every test
-      # result behind it and the next push found the next problem. Nx runs
-      # these in dependency order, in parallel where it can, and reports
-      # every failure from one run.
-      - name: Gates
-        run: >-
-          pnpm exec nx affected
-          --targets=lint,typecheck,test,build,build-storybook,test-storybook,browser-test,package-check,tokens-check,tokens-dtcg,contrast-check,story-coverage,snapshot-budget,adoption,a11y,inventory,api-surface
-          ${{ steps.base.outputs.args }}
-
-      # The base is the one `nx affected` used above, so two ways of
-      # deciding "what changed" cannot disagree about the same diff.
-      - name: A moved API surface has a changelog entry
-        run: >-
-          node scripts/changelog-gate.mjs
-          ${{ github.event_name == 'pull_request'
-              && format('origin/{0}', github.base_ref)
-              || 'HEAD~1' }}
-
-      - name: Bundle budget
-        run: pnpm run size-check
-        # A separate step from Gates because it reads dist rather than
-        # running an Nx target, and it skips cleanly when nothing was
-        # built. `pnpm gates` runs it too, which it did not until a field
-        # component grew 2.44 KB and only CI said so.
+      - name: Verify pull request changes
+        if: github.event_name == 'pull_request'
+        run: pnpm gates --affected
+      # Main runs the full graph, including changes from cancelled or failed runs.
+      - name: Verify the complete workspace
+        if: github.event_name != 'pull_request'
+        run: pnpm gates
+      - name: Verify the tested release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: pnpm release:verify "$GITHUB_SHA"
+      - name: Archive the tested release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: tar -czf dist/labs-release.tar.gz -C dist/release manifest.json public
+      - name: Retain the tested release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: labs-release-${{ github.sha }}-${{ github.run_attempt }}
+          path: dist/labs-release.tar.gz
+          if-no-files-found: error
+          retention-days: 30

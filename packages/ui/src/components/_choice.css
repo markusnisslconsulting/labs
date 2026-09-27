@@ -4,6 +4,7 @@
 
 @layer components {
   .uix-check {
+    min-block-size: var(--uix-control-sm);
     display: inline-flex;
     align-items: center;
     gap: var(--uix-gap-sm);

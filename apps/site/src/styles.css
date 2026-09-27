@@ -1,249 +1,122 @@
-/* The labs shell.
- *
- * This file is layout and page chrome only. Anything that looks like a
- * component belongs in @labs/ui, and the visual language comes entirely
- * from its tokens — there is not a colour literal in here, which is what
- * makes the brand and theme switches reach this page too.
- *
- * It sits in the `overrides` layer the design system declares for exactly
- * this purpose. Unlayered CSS outranks every layer, so while this file
- * was outside the layers the shell silently beat the whole system.
- */
-
 @layer overrides {
-  /* Shell ---------------------------------------------------------------- */
+  .site-shell {
+    --uix-measure-app: 64rem;
+  }
 
   .site-header {
     background: var(--uix-bg-surface);
     border-bottom: 1px solid var(--uix-border-subtle);
-    position: sticky;
-    top: 0;
-    z-index: var(--uix-z-dropdown);
-  }
-
-  .site-header-inner,
-  main {
-    max-width: 64rem;
-    margin: 0 auto;
-    padding-inline: var(--uix-gap-lg);
   }
 
   .site-header-inner {
     padding-block: var(--uix-gap-md);
-    display: flex;
-    align-items: center;
-    gap: var(--uix-gap-xl);
   }
-
-  main {
-    padding-block: var(--uix-space-6) var(--uix-space-6);
+  .site-shell main {
+    padding-block: var(--uix-gap-2xl);
   }
-
   .site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--uix-gap-sm);
     font-weight: var(--uix-font-weight-bold);
-    letter-spacing: 0.02em;
     color: var(--uix-text-primary);
     text-decoration: none;
   }
-
-  .site-nav {
-    display: flex;
-    gap: var(--uix-gap-xl);
-    flex-wrap: wrap;
-    margin-left: auto;
+  .site-logo {
+    display: inline-block;
+    width: calc(max(24px, 1.5rem) * 600 / 291);
+    height: max(24px, 1.5rem);
+    background: currentColor;
+    mask: url("/logo.webp") center / contain no-repeat;
   }
-
   .site-nav a {
     color: var(--uix-text-secondary);
-    text-decoration: none;
     font-size: var(--uix-text-ui);
   }
-
-  .site-nav a:hover {
-    color: var(--uix-accent);
+  .directory-nav {
+    padding-block-start: var(--uix-gap-lg);
   }
-
+  .directory-nav a[aria-current="page"] {
+    font-weight: var(--uix-font-weight-bold);
+    color: var(--uix-text-primary);
+  }
   .site-footer {
     border-top: 1px solid var(--uix-border-subtle);
     background: var(--uix-bg-surface);
     color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-200);
+    padding-block: var(--uix-gap-xl);
   }
-
-  .site-footer > * {
-    max-width: 64rem;
-    margin: 0 auto;
-    padding: var(--uix-gap-xl) var(--uix-gap-lg);
-  }
-
-  /* Page furniture -------------------------------------------------------- */
-
-  .eyebrow {
-    font-size: var(--uix-text-caption);
-    font-weight: var(--uix-font-weight-bold);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--uix-text-secondary);
+  .site-footer p {
     margin: 0;
   }
-
+  .skip-link {
+    position: absolute;
+    inset-inline-start: var(--uix-gap-md);
+    inset-block-start: var(--uix-gap-md);
+    transform: translateY(-200%);
+    z-index: var(--uix-z-dropdown);
+    padding: var(--uix-gap-sm) var(--uix-gap-md);
+    background: var(--uix-bg-surface);
+    border: 1px solid var(--uix-border-strong);
+    border-radius: var(--uix-radius-control);
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+  }
   .page-lede {
     font-size: var(--uix-font-size-400);
     color: var(--uix-text-secondary);
-    max-width: 42rem;
+    max-width: 68ch;
+    margin: 0;
   }
-
-  /* The index ------------------------------------------------------------- */
-
-  .hero {
-    padding-block: var(--uix-gap-xl) var(--uix-gap-lg);
-    border-bottom: 1px solid var(--uix-border-subtle);
-    margin-bottom: var(--uix-gap-xl);
-  }
-
-  .hero h1 {
-    font-size: clamp(1.9rem, 4vw, 2.6rem);
-    line-height: var(--uix-line-height-tight);
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-    margin: var(--uix-gap-sm) 0 var(--uix-gap-md);
-    max-width: 20ch;
-  }
-
-  .lab-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--uix-gap-md) var(--uix-gap-lg);
-    margin-bottom: var(--uix-gap-md);
-  }
-
-  .chip-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--uix-gap-xs);
-  }
-
   .count-line {
     color: var(--uix-text-secondary);
     font-size: var(--uix-font-size-200);
-    margin: 0 0 var(--uix-gap-lg);
+    margin: 0;
   }
-
-  /* Cards.
-     Grid rows stretch, and each card is a column whose summary takes the
-     slack, so every card in a row ends on the same line however long its
-     text is. */
-
-  .lab-list {
+  .plain-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(24rem, 100%), 1fr));
-    gap: var(--uix-gap-lg);
   }
-
   .lab-list > li {
     display: flex;
+    min-width: 0;
   }
-
   .lab-card {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: var(--uix-gap-lg);
-    border: 1px solid var(--uix-border-subtle);
-    border-radius: var(--uix-radius-container);
-    background: var(--uix-bg-surface);
-    transition:
-      border-color var(--uix-duration-fast) var(--uix-ease-out),
-      box-shadow var(--uix-duration-fast) var(--uix-ease-out);
   }
-
-  .lab-card:hover,
-  .lab-card:focus-within {
-    border-color: var(--uix-accent);
-    box-shadow: var(--uix-elevation-overlay);
+  .lab-card-body {
+    flex: 1;
   }
-
-  .lab-card-top {
-    margin-bottom: var(--uix-gap-md);
-  }
-
-  .lab-card-title {
-    margin: 0 0 var(--uix-gap-sm);
+  .lab-card-title,
+  .directory-card-title {
+    margin: 0;
     font-size: var(--uix-font-size-400);
     line-height: var(--uix-line-height-tight);
     text-wrap: balance;
   }
-
-  .lab-card-title a {
+  .lab-card-title a,
+  .directory-card-title a {
     color: var(--uix-text-primary);
-    text-decoration: none;
   }
-
-  .lab-card-title a:hover {
+  .lab-card-title a:hover,
+  .directory-card-title a:hover {
     color: var(--uix-accent);
   }
-
-  /* The one flexible row: it absorbs the difference in summary length. */
   .lab-card-summary {
-    margin: 0 0 var(--uix-gap-lg);
-    color: var(--uix-text-secondary);
-    font-size: var(--uix-font-size-200);
-    flex: 1;
-  }
-
-  .lab-card-tags {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--uix-gap-xs);
-    padding: 0;
-    margin: 0 0 var(--uix-gap-md);
-  }
-
-  .lab-card-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--uix-gap-md);
     margin: 0;
-    padding-top: var(--uix-gap-md);
-    border-top: 1px solid var(--uix-border-subtle);
-    font-size: var(--uix-font-size-200);
-  }
-
-  .link-button {
-    border: none;
-    background: none;
-    padding: 0;
-    font: inherit;
-    color: var(--uix-accent);
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .link-button:focus-visible {
-    outline: 2px solid var(--uix-focus-ring);
-    outline-offset: 2px;
-    border-radius: var(--uix-radius-inset);
-  }
-
-  /* A lab page ------------------------------------------------------------ */
-
-  .crumb {
     color: var(--uix-text-secondary);
-  }
-
-  .link-row {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--uix-gap-lg);
-    padding: 0;
-    margin: var(--uix-gap-lg) 0 var(--uix-space-6);
     font-size: var(--uix-font-size-200);
+  }
+  .link-row {
+    font-size: var(--uix-font-size-200);
+  }
+  .workbench-preview {
+    width: 100%;
   }
 
   .lab-demo {

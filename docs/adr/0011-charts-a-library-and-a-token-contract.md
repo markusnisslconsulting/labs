@@ -4,8 +4,8 @@ Status: accepted (2026-08)
 
 ## Context
 
-The roadmap has said since it was written that charts are "a decision, not
-components". This records the decision.
+Chart rendering belongs to a dedicated library, with visual integration through
+the design system's tokens.
 
 The pressure to build them is real. A chart drawn with the system's own
 tokens looks like the system; a chart from a library looks like the library
@@ -55,7 +55,7 @@ in this order.** Naming a winner today would be inventing a measurement:
 - **Its accessibility story is a starting point rather than a rewrite.**
   Roles on the marks, a way to supply a text alternative, keyboard access to
   data points.
-- **Its bundle cost is measurable per chart type.** `scripts/component-size.mjs`
+- **Its bundle cost is measurable per chart type.** `tooling/checks/component-size.mjs`
   measures per component here; a charting dependency that is all-or-nothing
   cannot be held to that, and a page with one sparkline should not pay for
   the whole grammar.

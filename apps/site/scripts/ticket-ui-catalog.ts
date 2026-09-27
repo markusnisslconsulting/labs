@@ -13,7 +13,10 @@ const components = Object.fromEntries(
       properties["children"] = {
         allOf: [{ $ref: common + "ChildList" }, { type: "array" }],
       };
-    return [properties["component"]!.const, definition];
+    const name = z
+      .object({ const: z.string() })
+      .parse(properties["component"]).const;
+    return [name, definition];
   }),
 );
 const catalog = {

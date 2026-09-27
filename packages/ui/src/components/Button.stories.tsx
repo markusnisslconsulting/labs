@@ -1,3 +1,4 @@
+import { exampleHref } from "../../.storybook/examplePages";
 import { expect, userEvent } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
@@ -6,6 +7,7 @@ const meta = {
   title: "Components/Button",
   component: Button,
   tags: ["autodocs", "stable"],
+  args: { disabled: false, loading: false },
   argTypes: {
     variant: {
       control: "radio",
@@ -169,8 +171,10 @@ export const AsLink: Story = {
       {...args}
       // The anchor's content comes from Button's children, which
       // jsx-a11y cannot see at this call site.
-      // eslint-disable-next-line jsx-a11y/anchor-has-content
-      renderAs={<a href="#anchor" />}
+      renderAs={
+        // eslint-disable-next-line jsx-a11y/anchor-has-content
+        <a href={exampleHref("article", "components-button--as-link")} />
+      }
     />
   ),
   play: async ({ canvas }) => {
@@ -178,7 +182,10 @@ export const AsLink: Story = {
     // middle-click and "open in new tab" all depend on the real element.
     const link = canvas.getByRole("link", { name: /Read the article/ });
     await expect(link).toHaveClass("uix-button");
-    await expect(link).toHaveAttribute("href", "#anchor");
+    await expect(link).toHaveAttribute(
+      "href",
+      exampleHref("article", "components-button--as-link"),
+    );
   },
 };
 

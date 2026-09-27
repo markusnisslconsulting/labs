@@ -20,7 +20,7 @@ carries the reason and the replacement, mirrored onto DTCG `$deprecated`.
 Tools can read it; a comment in the CSS cannot be read.
 
 **Usage is computed as reachability, not as a text search.**
-`scripts/tokens/usage.ts` builds the alias graph (an edge means "A
+`tooling/checks/tokens/usage.ts` builds the alias graph (an edge means "A
 references B in its own value"), takes as roots everything referenced from
 component CSS, element defaults, product code or a theme/brand block, and
 computes the closure. Whatever is unreachable from every root is dead.

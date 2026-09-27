@@ -37,3 +37,16 @@
   outline-offset: revert;
   border-radius: revert;
 }
+
+/* Inline paths and token expressions must fit narrow Docs prose. Code blocks
+   keep their own scrolling, and embedded stories keep their own styles. */
+.sbdocs-content :where(p, li) > code:not(.sb-unstyled, .sb-unstyled *) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Inline stories use the selected theme even when Docs chrome stays light. */
+.sbdocs-preview .docs-story {
+  background: var(--uix-bg-page);
+  color: var(--uix-text-primary);
+}

@@ -1,10 +1,11 @@
 packages:
   - apps/*
   - packages/*
-  - tools
+  - tooling/*
+  - tooling/fixtures/*
+  - tests/*
 
-# Two dependencies ship postinstall scripts that patch their own native
-# binaries; without them installs stay slower or fall back entirely.
+# Native build helpers allowed during dependency installation.
 allowBuilds:
   nx: true
   esbuild: true

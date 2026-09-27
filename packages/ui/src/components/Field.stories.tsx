@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Field } from "./Field";
 
 const meta = {
+  args: { required: false, hideLabel: false },
+
   title: "Components/Field",
   component: Field,
   tags: ["autodocs", "stable"],

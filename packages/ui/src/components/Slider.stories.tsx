@@ -4,6 +4,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Slider } from "./Slider";
 
 const meta = {
+  args: { required: false, hideLabel: false, showValue: true, disabled: false },
+
   title: "Components/Slider",
   component: Slider,
   tags: ["autodocs", "beta"],

@@ -173,6 +173,8 @@ export type DataTableProps<Row> = DataTableOwnProps<Row> &
 
 /** How many rows to render outside the viewport, above and below. */
 const OVERSCAN = 4;
+const SELECTION_WIDTH = "calc(var(--uix-control-sm) + 2 * var(--uix-gap-md))";
+const DEFAULT_COLUMN_WIDTH = "calc(16ch + 2 * var(--uix-gap-md))";
 
 export function DataTable<Row>({
   caption,
@@ -300,6 +302,17 @@ export function DataTable<Row>({
       >
         <table
           className="uix-datatable-table"
+          // Preserve readable columns and scroll inside the viewport on narrow screens.
+          style={{
+            minInlineSize: `calc(${
+              [
+                ...columns.map(
+                  (column) => column.width ?? DEFAULT_COLUMN_WIDTH,
+                ),
+                ...(selectable ? [SELECTION_WIDTH] : []),
+              ].join(" + ") || "0px"
+            })`,
+          }}
           /* The truth about size, for everyone who cannot see the
              scrollbar. Without these a virtualised table announces the
              length of its window. */
@@ -307,7 +320,7 @@ export function DataTable<Row>({
         >
           <caption className="uix-visually-hidden">{caption}</caption>
           <colgroup>
-            {selectable ? <col style={{ width: "3rem" }} /> : null}
+            {selectable ? <col style={{ width: SELECTION_WIDTH }} /> : null}
             {columns.map((column) => (
               <col key={column.key} style={{ width: column.width }} />
             ))}

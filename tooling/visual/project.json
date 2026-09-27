@@ -1,0 +1,24 @@
+{
+  "name": "visual",
+  "tags": ["scope:shared", "type:tooling", "env:node"],
+  "metadata": {
+    "testPolicy": {
+      "kind": "manual-visual",
+      "targets": ["ui:visual-sweep", "ui:visual-axes", "ui:visual-test"]
+    }
+  },
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint tooling/visual --max-warnings 0"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p tooling/visual/tsconfig.json --noEmit"
+      }
+    }
+  }
+}

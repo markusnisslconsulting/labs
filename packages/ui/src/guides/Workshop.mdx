@@ -1,0 +1,42 @@
+import { Meta, Canvas, Source } from "@storybook/addon-docs/blocks";
+import * as WorkshopStories from "./Workshop.stories";
+import workshopSource from "../../.storybook/examples/Workshop.tsx?raw";
+
+<Meta of={WorkshopStories} />
+
+# Workshop page
+
+This fictional landing page composes navigation, an introduction, topic cards,
+questions, a form and a footer. Every destination stays within the example.
+The form validates a name and changes local state; it does not create a booking.
+
+<Canvas of={WorkshopStories.Page} />
+
+## Adapt the composition
+
+The page owns the content and section destinations. Its patterns accept content
+and children; shared components supply layout, control behavior and styling.
+The contact form owns its values and validation. Keeping those responsibilities
+separate lets a page change its subject without rebuilding its controls.
+
+Container supplies the outer measure and gutter. Stack creates the vertical
+rhythm, Columns wraps the cards, and Section maintains the heading hierarchy.
+The form uses a narrower reading measure inside the page. None of these widths
+depends on the browser viewport being wider than the Storybook canvas.
+
+Use the Navigation, Intro, Topics, FAQ, Request and Footer stories to inspect
+parts independently. The complete page uses an isolated Docs frame so its
+landmarks and fragment links remain local to that example.
+
+<Source code={workshopSource} language="tsx" />
+
+## Check a page before using it
+
+Follow each link, open each question and submit the form empty and with a value.
+Then repeat with the keyboard. Check the page at a narrow width and with larger
+text in both themes. Long labels should wrap; fields should stay inside their
+panel; focus should remain visible.
+
+Replace the fictional content in the consuming application. A real submission
+also needs service-specific pending, failure and success behavior before it can
+claim that a request was sent.

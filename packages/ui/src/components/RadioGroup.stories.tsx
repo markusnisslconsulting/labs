@@ -7,6 +7,8 @@ const meta = {
   component: RadioGroup,
   tags: ["autodocs", "stable"],
   args: {
+    required: false,
+    disabled: false,
     name: "shipping",
     legend: "Shipping speed",
     defaultValue: "standard",

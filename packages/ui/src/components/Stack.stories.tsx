@@ -20,7 +20,7 @@ export const Matrix: StoryObj = {
   render: () => (
     <Stack gap="xl">
       {(["none", "xs", "sm", "md", "lg", "xl", "2xl"] as const).map((gap) => (
-        <Stack key={gap} direction="inline" gap={gap} align="center">
+        <Stack key={gap} direction="inline" gap={gap} align="center" wrap>
           <span
             style={{ inlineSize: "3rem", color: "var(--uix-text-secondary)" }}
           >

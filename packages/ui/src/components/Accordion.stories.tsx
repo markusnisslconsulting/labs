@@ -9,6 +9,7 @@ const meta = {
   component: Accordion,
   tags: ["autodocs", "stable"],
   args: {
+    multiple: false,
     items: [
       {
         id: "what",

@@ -1,6 +1,7 @@
 import { expect } from "storybook/test";
 import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Stack } from "./Stack";
 import { Skeleton } from "./Skeleton";
 
 const meta = {
@@ -37,11 +38,11 @@ export const Block: Story = {
 export const CardPlaceholder: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
-    <div style={{ display: "grid", gap: "var(--uix-gap-md)", width: "18rem" }}>
+    <Stack gap="md" style={{ maxInlineSize: "18rem" }}>
       <Skeleton shape="block" />
       <Skeleton shape="line" />
       <Skeleton shape="line" />
-    </div>
+    </Stack>
   ),
 };
 

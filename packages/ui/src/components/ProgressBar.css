@@ -34,6 +34,19 @@
     animation: uix-indeterminate 1.2s ease-in-out infinite;
   }
 
+  .uix-progress-track.indeterminate:dir(rtl) .uix-progress-fill {
+    animation-name: uix-indeterminate-rtl;
+  }
+
+  @keyframes uix-indeterminate-rtl {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(-350%);
+    }
+  }
+
   @keyframes uix-indeterminate {
     from {
       transform: translateX(-100%);
@@ -44,7 +57,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .uix-progress-track.indeterminate .uix-progress-fill {
+    .uix-progress-track.indeterminate .uix-progress-fill,
+    .uix-progress-track.indeterminate:dir(rtl) .uix-progress-fill {
       animation: none;
       transform: scaleX(0.3);
     }

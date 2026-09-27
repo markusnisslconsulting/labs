@@ -2,7 +2,7 @@ import { expect } from "storybook/test";
 import { NARROW } from "../../.storybook/modes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AppShell } from "./AppShell";
-import { Container } from "./Container";
+import { SupplierPage } from "../examples/SupplierPage";
 import { PageHeader } from "./PageHeader";
 import { Section } from "./Section";
 import { Stack } from "./Stack";
@@ -11,6 +11,10 @@ const meta = {
   title: "Components/AppShell",
   component: AppShell,
   tags: ["autodocs", "stable"],
+  parameters: {
+    layout: "fullscreen",
+    docs: { story: { inline: false, height: "600px" } },
+  },
 } satisfies Meta<typeof AppShell>;
 
 export default meta;
@@ -29,31 +33,7 @@ const NAV = (
 
 export const Matrix: StoryObj = {
   parameters: { chromatic: { disableSnapshot: false, modes: { ...NARROW } } },
-  render: () => (
-    <AppShell
-      header={
-        <div style={{ padding: "0.75rem 1rem" }}>Nordwind Operations</div>
-      }
-      nav={NAV}
-      navLabel="Sections"
-      footer={<div style={{ padding: "0.75rem 1rem" }}>v2.14.0</div>}
-    >
-      <Container>
-        <Stack gap="xl" style={{ paddingBlock: "1.5rem" }}>
-          <PageHeader
-            title="Suppliers"
-            description="Every supplier with an active contract."
-          />
-          <Section title="Delivery windows">
-            <p>Content.</p>
-          </Section>
-          <Section title="Contacts">
-            <p>Two named contacts.</p>
-          </Section>
-        </Stack>
-      </Container>
-    </AppShell>
-  ),
+  render: () => <SupplierPage />,
 };
 
 /**
@@ -131,29 +111,5 @@ export const NoNavigationMeansNoNavLandmark: Story = {
 export const AnApplicationPage: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   args: { children: null },
-  render: () => (
-    <AppShell
-      header={
-        <div style={{ padding: "0.75rem 1rem" }}>Nordwind Operations</div>
-      }
-      nav={NAV}
-      navLabel="Sections"
-      navWidth="sm"
-    >
-      <Container>
-        <Stack gap="xl" style={{ paddingBlock: "1.5rem" }}>
-          <PageHeader
-            title="Northwind Textiles"
-            description="Contract NW-4417, renewed in March."
-          />
-          <Section title="Delivery windows">
-            <p>Weekly, Tuesday and Friday.</p>
-          </Section>
-          <Section title="Contacts">
-            <p>Two named contacts.</p>
-          </Section>
-        </Stack>
-      </Container>
-    </AppShell>
-  ),
+  render: () => <SupplierPage detail />,
 };

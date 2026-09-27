@@ -27,7 +27,38 @@ that file changed, this one needs an entry.
 Nothing is published yet, so this section is the whole history. It will be
 cut at the first release.
 
+### breaking
+
+- **agent-stream** — callers now provide a `Scheduler`. The package no longer reads global timers, so it can run in a neutral JavaScript environment. Pass `{ set: (fn, delay) => setTimeout(fn, delay), clear: (handle) => clearTimeout(handle) }` from a browser adapter, or a queue in tests. The previous `timeoutScheduler` export has been removed; all workspace consumers already inject scheduling.
+
 ### fixed
+
+- **DataTable** — narrow viewports scroll horizontally while preserving readable
+  column widths. Selection columns also reserve room for density-scaled padding.
+
+- **Guides** — accessibility coverage and limitations are described in the
+  Accessibility guide. The separate Conformance page and empty status tables
+  have been removed.
+
+- **Appearance** — explicit density settings take precedence over brand defaults,
+  including nested scopes. Choice controls, calendar cells and internal spacing
+  now follow the density scale. Portaled overlays retain their containing brand,
+  density and direction.
+- **Direction** — Storybook supplies the interaction direction as well as the DOM
+  attribute. Toolbar, Tree and DatePicker keys follow visual order in RTL;
+  Switch, Pagination, Drawer and ProgressBar mirror within their own direction
+  scope. Builds preserve direction selectors independently of document language.
+
+- **Brand tokens** — nested brand scopes resolve their own focus ring and soft
+  accent instead of inheriting the containing brand's colours.
+
+- **Field** — allows its grid column to shrink inside narrow padded containers.
+  Native input sizing in WebKit no longer pushes the field row beyond its parent.
+
+- **Menu** — falls back to a vertical placement when neither side has room for a horizontal popup.
+
+- **AppShell** — stacks navigation above the page at narrow container widths without collapsing main content. Full-page Storybook examples use an unpadded canvas and isolated docs previews.
+- **Stepper** — wraps complete steps within narrow containers instead of widening the page.
 
 - **Panel** — no longer sets an outer margin. It had
   `margin: 0 0 var(--uix-gap-xl)`, which is a component claiming space
@@ -212,6 +243,16 @@ cut at the first release.
   no stylesheet at all.
 
 ### added
+
+- **DirectionProvider** — exported from `@labs/ui` for applications to pair with
+  the DOM `dir` attribute at the root or in a section with its own direction.
+
+- **Workbench** — logo downloads, typography and colour specimens, writing guidance, and a composed workshop example. Guides include runnable preference and form examples with their source.
+
+- **brand** — local Atkinson Hyperlegible and Bricolage Grotesque assets, font
+  licenses, logo variants and generated Labs/Tailwind mappings in `@labs/brand`.
+  Site and Storybook now load the consulting body/display faces. Generic UI
+  consumers opt into the brand adapter; existing component APIs are unchanged.
 
 - **AppShell, Section, PageHeader, Stack, Cluster, Columns, Container,
   Split** — the composition layer. Eight primitives for the level above the
@@ -459,9 +500,13 @@ window in which this section matters.
 
 ### internal
 
+- **Deployment** — consumes the exact successful CI artifact, retains versioned assets, verifies FTPS transfers, and restores prior entry files when promotion or browser smoke checks fail. Private journals support recovery after interrupted jobs; manual rollback selects a retained CI run and attempt.
+
+- **Workbench** — expose the discoverable Vitest browser project, story Code panel and initialized boolean controls. Keep event documentation separate from editable Controls and disable onboarding notices.
+
 - **Build cache** — a gate's own implementation is now an input to it. Seven
-  cached targets are implemented by a file in `scripts/` and none counted it:
-  editing `scripts/stories/coverage.ts` so the check must fail still reported
+  cached targets are implemented by a file in `tooling/checks/` and none counted it:
+  editing `tooling/checks/stories/coverage.ts` so the check must fail still reported
   "Story coverage passed — 49 components" from the cache. A broken or
   weakened gate would have replayed its previous verdict until something else
   in the project changed.
@@ -482,22 +527,10 @@ window in which this section matters.
   a `CHANGELOG.md` entry, enforced in CI against the same base `nx affected`
   uses. The surface file made "which component moved" a line in a diff; this
   is what makes somebody say what it meant.
-- **Documentation** — the numbers documents state about countable things are
-  checked. Four had gone stale in one session: `AGENTS.md` said 35 components
-  when there were 49, the screen-reader matrix was described as 108 cells in
-  two documents when it holds 147, and roadmap stage 12 still reported 37
-  components with no prop count. The check fails both on a wrong number and
-  on a sentence rewritten so the pattern stops matching — a check that has
-  quietly stopped looking is not a lesser failure. Declared rather than
-  inferred, because a rule over every number cannot tell a live claim from a
-  measurement of a moment: ADR 0006's "30.4 kB for 33 components" has to stay
-  exactly as written.
-- **Build cache** — `ui:test` declares the workspace documents its citation
-  and count checks read, and `nx.json`, which `build.spec.ts` reads. None
-  were inputs, so editing any of them replayed the previous result — measured
-  at "188 passed" from cache against a roadmap citing a file that does not
-  exist. A gate now checks the class: every path-shaped literal in a cached
-  test's specs has to be among that target's inputs.
+- **Documentation** — reference checks detect links to missing source files and
+  inventory entries for missing components.
+- **Build cache** — cached test targets declare the workspace documents and
+  configuration files they read. Changing those inputs invalidates cached results.
 - **Build cache** — `build-storybook` no longer uses the `production` input
   set, which excludes `*.stories.tsx`. A Storybook build is made of stories,
   so editing one left the cache warm: measured at `Cache: 1/1 hit (100%)`
@@ -505,7 +538,7 @@ window in which this section matters.
   were therefore exercising the previous stories. `nx.json` has a `storybook`
   named input now, and `packages/ui/test/build.spec.ts` asserts both it and
   the deliberate exclusion on `build`.
-- **Packaging** — `scripts/prepare-dist.mjs` now gives inferred type imports
+- **Packaging** — `tooling/checks/prepare-dist.mjs` now gives inferred type imports
   their extension too. It rewrote `from "./X"` and not `import("./X")`, which
   is the shape TypeScript emits for an inferred type — so a consumer on
   node16 module resolution got a declaration pointing at a module Node

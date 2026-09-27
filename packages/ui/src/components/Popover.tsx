@@ -1,5 +1,7 @@
 "use client";
 
+import { usePortalAppearance } from "../usePortalAppearance";
+
 import type { ComponentPropsWithRef, ReactNode } from "react";
 import { Popover as BasePopover } from "@base-ui-components/react/popover";
 
@@ -69,6 +71,7 @@ export function Popover({
   align = "end",
   ...rest
 }: PopoverProps) {
+  const appearance = usePortalAppearance();
   const strings = useStrings();
 
   return (
@@ -86,7 +89,8 @@ export function Popover({
       >
         {trigger}
       </BasePopover.Trigger>
-      <BasePopover.Portal>
+      {appearance.anchor}
+      <BasePopover.Portal {...appearance.props}>
         <BasePopover.Positioner
           className="uix-menu-positioner"
           sideOffset={6}

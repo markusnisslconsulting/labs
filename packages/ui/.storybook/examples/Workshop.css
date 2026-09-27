@@ -1,0 +1,10 @@
+@layer components {
+  .workshop-example {
+    padding-block: var(--uix-gap-xl);
+    overflow-wrap: anywhere;
+  }
+  .workshop-example p,
+  .workshop-example h3 {
+    margin: 0;
+  }
+}

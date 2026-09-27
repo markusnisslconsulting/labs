@@ -1,6 +1,6 @@
 # 0003 — The labs registry via glob rather than a central list
 
-Status: accepted (2026-08)
+Status: amended by [0014](0014-validated-catalog.md) (2026-09-22)
 
 ## Context
 

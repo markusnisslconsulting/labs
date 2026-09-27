@@ -5,59 +5,57 @@ import { KeyboardTable } from "./KeyboardTable";
 
 # Keyboard
 
-Every row below is asserted by a test in
-`packages/ui/browser/keyboard.spec.ts`. The table is generated from
-`packages/ui/browser/keyboard.map.ts`, which is the same file those tests
-read — so a promise cannot appear on this page without something checking
-it, and a check cannot exist without appearing here.
+Use the keyboard to complete the same task as someone using a pointer. Every
+action needs a reachable control, visible focus and a predictable next position.
+The table below lists the keys supported by each component.
 
-That arrangement exists because the alternative was measured. Eleven
-components named a key in their documentation; six key presses were
-asserted in the whole repository, three of them written the same afternoon
-for one slider. Everything else was prose.
+## Follow focus through a composition
 
-## What writing it down found
+Begin outside the example. Tab into it, move forward and backward, activate an
+action, then leave the example again. Check that the order follows the content
+and that a sticky header or open layer does not hide the focused control.
 
-Both defects were in the prose rather than the behaviour, which is the
-argument for the table.
+For menus, dialogs and other layers, check both entry and exit. Closing a layer
+should return focus to an appropriate control. A form error summary should let
+you reach the field that needs attention without searching for it again.
 
-**Tabs** said it handled "Arrow/Home/End per the ARIA pattern". That
-pattern has two variants, and the sentence named neither — so a reader
-could not tell whether arrowing changes the panel. It does not: arrows
-move focus and Enter commits. The first three tests written against it
-assumed the other variant, two failed, and one passed for the wrong
-reason.
+## Distinguish focus from selection
 
-**Tooltip** said Base UI announced its hint "(its own wiring)". Measured
-in the open state, the trigger had no `aria-describedby` and the popup no
-role. The component minted an id, handed it to the popup and never
-referenced it — half the wiring. Sighted users saw a box; a screen reader
-was told nothing.
+Some widgets let the reader explore before committing. Tabs use manual
+activation: arrow keys move focus between tabs; Enter or Space activates the
+focused tab. Check the focused tab and selected panel separately. Do not make
+an expensive action run just because focus moved.
 
-## Who implements each row
+Use the documented behavior for the particular control. A native checkbox,
+slider and radio group have different keyboard contracts; replacing them with
+clickable containers would require rebuilding that behavior.
 
-The last column matters when a row fails.
+## Check both writing directions
 
-**The component** means a JavaScript keydown handler, ours or Base UI's. A
-failure there is a bug in this library.
+In horizontal tabs and toolbars, arrows follow the visible order: Left advances
+in RTL and Right advances in LTR. A tree expands toward its inline end and
+collapses toward its inline start. Calendar arrows move to the adjacent visible
+date. Up and Down retain their vertical meaning.
 
-**The browser** means a native control's own behaviour — arrow keys on a
-radio group, Space on a checkbox, Home on a range input. The library's
-claim is narrower and still worth holding: that nothing here took it
-away. CSS can. A wrapper with `pointer-events: none`, an input moved
-off-screen instead of clipped, an `appearance` reset that swallows focus —
-each removes platform behaviour while the component goes on calling it the
-platform's.
+Set both the DOM direction and `DirectionProvider`, as shown in Theming. Check
+nested sections and open overlays as well as the document root.
 
-Rows owned by the browser only respond to trusted key events, which is why
-every row is exercised from Playwright rather than from a story. Measured:
-`userEvent.keyboard` moves a range input's label and never its thumb.
+## Component and browser behavior
 
-## Two claims with no row
+The owner column distinguishes component/Base UI handlers from native browser
+behavior. Styling and wrappers can interfere with either, so both are covered
+by browser tests using trusted key events.
 
-`Select` and `Combobox` both promise typeahead, and both hand it to a
-picker drawn by the operating system. A page cannot observe what happens
-inside it. Those two are listed as untestable in `api.spec.ts` with that
-reason, and a gate refuses a third entry unless someone writes one down.
+Native Select and datalist Combobox typeahead also depend on platform pickers.
+The test exceptions are recorded in `api.spec.ts`; DOM assertions do not verify
+the operating system's picker UI. Check those interactions on the target
+platform before relying on them in a task.
 
 <KeyboardTable />
+
+## Verify your page
+
+The table comes from `keyboard.map.ts`, with matching browser checks. It covers
+the recorded scenarios. Also check application shortcuts, route transitions,
+focus restoration and the complete page's tab order. Repeat with the intended
+screen reader, which can change how keys reach the page.

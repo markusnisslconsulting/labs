@@ -86,7 +86,7 @@ design system that depends on a product is no longer one.
 
 - **A cached target declares every file its tests read.** The general form of
   the above, and it took a third instance to see it. `ui:test` reads
-  `AGENTS.md`, `CONTRIBUTING.md` and `docs/roadmap.md` — its citation checker
+  `AGENTS.md`, `CONTRIBUTING.md` and `docs/screen-reader-pass.md` — its citation checker
   is entirely about them — and declared none: `default` covers
   `{projectRoot}/**` and `sharedGlobals` three files at the root, and a
   document two directories away is in neither. Measured: with those
@@ -121,8 +121,8 @@ design system that depends on a product is no longer one.
 
 - **`namedInputs.gateScripts`**, and a gate's own implementation counts as an
   input to it. This is the widest of the five and the last found. Seven
-  cached targets are implemented by a file in `scripts/` and none of them
-  counted it. Measured: editing `scripts/stories/coverage.ts` so the check
+  cached targets are implemented by a file in `tooling/checks/` and none of them
+  counted it. Measured: editing `tooling/checks/stories/coverage.ts` so the check
   must fail, then running `nx run ui:story-coverage`, reported "Story
   coverage passed — 49 components" from the cache.
 
@@ -131,7 +131,7 @@ design system that depends on a product is no longer one.
   project happened to change — the verdict outliving the code that produced
   it.
 
-  `gateScripts` covers `scripts/**` and `tools/**` together rather than
+  `gateScripts` covers `tooling/checks/**` and `tooling/build/**` together rather than
   naming each file, and the coarseness is deliberate: a per-file input misses
   the shared helper a script imports, and these gates are seconds each while
   a wrong one is invisible.
@@ -190,7 +190,7 @@ would have published all of it without complaint.
 ## Consequences
 
 Three Playwright configurations (`packages/ui` for the library, `apps/site`
-for the site, `visual/` for the local screenshots) is one more than would be
+for the site, `tooling/visual/regression/` for the local screenshots) is one more than would be
 pleasant. They stay separate because they start different servers and need
 different base URLs; one shared configuration with three projects would be
 the next step if a fourth appears.

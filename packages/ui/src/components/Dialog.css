@@ -35,8 +35,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(32rem, calc(100vw - 2 * var(--uix-space-5)));
-    max-height: calc(100vh - 2 * var(--uix-space-6));
+    width: min(32rem, calc(100vw - 2 * var(--uix-gap-xl)));
+    max-height: calc(100vh - 2 * var(--uix-gap-2xl));
     overflow: auto;
     background: var(--uix-bg-surface);
     border: 1px solid var(--uix-border-subtle);

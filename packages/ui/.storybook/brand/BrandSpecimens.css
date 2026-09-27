@@ -1,0 +1,56 @@
+@layer components {
+  .brand-specimens {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  .brand-specimens p,
+  .brand-specimens figure,
+  .brand-specimens h2 {
+    margin: 0;
+  }
+  .brand-logo-stage {
+    display: grid;
+    place-items: center;
+    padding: var(--uix-gap-xl);
+    min-block-size: calc(var(--uix-space-6) * 3);
+    border-radius: var(--uix-radius-inset);
+  }
+  .brand-logo-stage img {
+    block-size: var(--uix-space-6);
+    inline-size: auto;
+    max-inline-size: 100%;
+    object-fit: contain;
+  }
+  .brand-clear-space {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    padding: var(--brand-logo-height);
+    background: var(--uix-bg-raised);
+    border: 1px dashed var(--uix-border-strong);
+  }
+  .brand-clear-space img {
+    display: block;
+    block-size: var(--brand-logo-height);
+    inline-size: auto;
+    max-inline-size: 100%;
+    object-fit: contain;
+  }
+  .brand-type-display {
+    font-size: var(--uix-text-display);
+  }
+  .brand-type-heading {
+    font-family: var(--uix-font-display);
+    font-size: var(--uix-text-heading);
+    font-weight: var(--uix-weight-display);
+    line-height: var(--uix-leading-display);
+  }
+  .brand-type-characters {
+    font-size: var(--uix-font-size-400);
+  }
+  .brand-colour-swatch {
+    display: block;
+    block-size: var(--uix-space-6);
+    border: 1px solid var(--uix-border-strong);
+    border-radius: var(--uix-radius-inset);
+  }
+}

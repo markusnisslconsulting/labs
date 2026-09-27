@@ -1,4 +1,5 @@
-import { expect, userEvent } from "storybook/test";
+import { booleanState } from "../../.storybook/booleanState";
+import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { RTL } from "../../.storybook/modes";
 import { grouped } from "../../.storybook/argTypes";
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -19,17 +20,29 @@ import { Switch } from "./Switch";
  * and every snapshot saw an on switch called Off.
  */
 const meta = {
+  decorators: [booleanState("checked", "onCheckedChange")],
+
   title: "Components/Switch",
   component: Switch,
   tags: ["autodocs", "stable"],
-  argTypes: grouped(
-    "label",
-    "checked",
-    "defaultChecked",
-    "disabled",
-    "onChange",
-  ),
-  args: { label: "Compact rows" },
+  argTypes: {
+    ...grouped(
+      "label",
+      "checked",
+      "defaultChecked",
+      "disabled",
+      "onCheckedChange",
+    ),
+    defaultChecked: { control: false },
+  },
+  args: {
+    checked: false,
+    defaultChecked: false,
+    disabled: false,
+    required: false,
+    onCheckedChange: fn(),
+    label: "Compact rows",
+  },
 } satisfies Meta<typeof Switch>;
 
 export default meta;
@@ -55,7 +68,7 @@ export const On: Story = {
      kept in the test run by the default `test` tag. */
   tags: ["!dev"],
   parameters: { chromatic: { disableSnapshot: true } },
-  args: { defaultChecked: true },
+  args: { checked: true },
   play: async ({ canvas }) => {
     await expect(canvas.getByRole("switch")).toHaveAttribute(
       "aria-checked",
@@ -66,7 +79,7 @@ export const On: Story = {
 
 export const Disabled: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
-  args: { disabled: true, defaultChecked: true },
+  args: { disabled: true, checked: true },
 };
 
 export const TogglesFromTheLabel: Story = {
@@ -79,7 +92,9 @@ export const TogglesFromTheLabel: Story = {
     const control = canvas.getByRole("switch");
     // The label text toggles too, so the whole row is the target.
     await userEvent.click(canvas.getByText("Compact rows"));
-    await expect(control).toHaveAttribute("aria-checked", "true");
+    await waitFor(() =>
+      expect(control).toHaveAttribute("aria-checked", "true"),
+    );
   },
 };
 
@@ -93,7 +108,9 @@ export const TogglesWithTheKeyboard: Story = {
     const control = canvas.getByRole("switch");
     control.focus();
     await userEvent.keyboard(" ");
-    await expect(control).toHaveAttribute("aria-checked", "true");
+    await waitFor(() =>
+      expect(control).toHaveAttribute("aria-checked", "true"),
+    );
   },
 };
 
